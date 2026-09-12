@@ -501,7 +501,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                           <span className="text-[#6e675f] block mt-0.5">
                             {lang === 'es'
                               ? 'Salida desde la Plaza de España de Salamanca con regreso al finalizar la fiesta.'
-                              : 'Departing from Plaza de España with return shuttles throughout the evening.'}
+                              : 'Departing from Plaza de España with return shuttle service throughout the evening.'}
                           </span>
                         </div>
                       </label>

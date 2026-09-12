@@ -9,7 +9,6 @@ import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { OrnamentalDivider } from './components/OrnamentalDivider';
 import { HorizontalTrencadis } from './components/HorizontalTrencadis';
-import { DatesHighlight } from './components/DatesHighlight';
 import { ScheduleSection } from './components/ScheduleSection';
 import { CastleGallery } from './components/CastleGallery';
 import { JourneyMap } from './components/JourneyMap';
@@ -27,7 +26,7 @@ export default function App() {
   // Track scroll position to update active navigation
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['hero', 'dates', 'schedule', 'castle', 'journey', 'registry', 'rsvp', 'guestbook', 'faq'];
+      const sections = ['hero', 'schedule', 'castle', 'journey', 'registry', 'rsvp', 'guestbook', 'faq'];
       const scrollPosition = window.scrollY + 250;
 
       for (const sectionId of sections) {
@@ -48,15 +47,17 @@ export default function App() {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
-    const el = document.getElementById(sectionId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+    // If target is dates, redirect smoothly to schedule
+    const targetId = sectionId === 'dates' ? 'schedule' : sectionId;
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] text-[#1c1917] relative selection:bg-[#5c141e]/15 selection:text-[#5c141e]">
-      {/* Top Navigation */}
+    <div className="min-h-screen bg-[#faf7f2] text-[#2c241e] font-sans selection:bg-[#5c141e] selection:text-white relative">
+      {/* Sticky Header with Navigation & Language Switcher */}
       <Header
         lang={lang}
         onLanguageChange={setLang}
@@ -67,10 +68,9 @@ export default function App() {
       <div className="hidden xl:flex fixed right-5 top-1/2 -translate-y-1/2 z-40 flex-col gap-2.5 bg-[#faf7f2]/90 backdrop-blur-md p-3 rounded-full border border-[rgba(92,20,30,0.15)] shadow-[0_8px_25px_rgba(0,0,0,0.06)]">
         {[
           { id: 'hero', labelEs: 'Inicio', labelEn: 'Home' },
-          { id: 'dates', labelEs: 'Celebración', labelEn: 'Celebration' },
           { id: 'schedule', labelEs: 'Programa', labelEn: 'Schedule' },
           { id: 'castle', labelEs: 'El Castillo', labelEn: 'The Castle' },
-          { id: 'journey', labelEs: 'Historia', labelEn: 'Story' },
+          { id: 'journey', labelEs: 'Viaje & Hoteles', labelEn: 'Travel/Hotels' },
           { id: 'registry', labelEs: 'Lista de Bodas', labelEn: 'Registry' },
           { id: 'rsvp', labelEs: 'Asistencia', labelEn: 'RSVP' },
         ].map((item) => {
@@ -109,17 +109,10 @@ export default function App() {
         {/* Ornamental Divider */}
         <OrnamentalDivider variant="braid" />
 
-        {/* Prominent Dates Showcase: September 3 & 4 */}
-        <DatesHighlight
-          lang={lang}
-          onSelectDay={(day) => setSelectedDay(day)}
-          onScrollToSchedule={() => scrollToSection('schedule')}
-        />
-
-        {/* Horizontal Trencadís: Authentic Gaudí mosaic divider between the introductory celebration and the rest of the website */}
+        {/* Horizontal Trencadís: Authentic Gaudí mosaic divider */}
         <HorizontalTrencadis />
 
-        {/* Comprehensive Interactive Schedule for September 3 & 4 */}
+        {/* Consolidated Interactive Schedule for September 3 & 4 */}
         <ScheduleSection
           lang={lang}
           selectedDay={selectedDay}
@@ -132,13 +125,13 @@ export default function App() {
         {/* Ornamental Divider */}
         <OrnamentalDivider variant="braid" />
 
-        {/* Vintage Journey Map: Barcelona -> Salamanca & Travel Guide */}
+        {/* Vintage Journey Map: Travel & Lodging Guide */}
         <JourneyMap lang={lang} />
 
         {/* Ornamental Divider */}
         <OrnamentalDivider variant="flourish" />
 
-        {/* Polished & Rich Wedding Registry (Honeymoon Fund + Bank Info) */}
+        {/* Polished Wedding Registry (Honeymoon Fund + Our Home + Bank Info) */}
         <RegistrySection lang={lang} />
 
         {/* Ornamental Divider */}

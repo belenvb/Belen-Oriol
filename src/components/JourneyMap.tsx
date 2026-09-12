@@ -52,11 +52,11 @@ export function JourneyMap({ lang }: JourneyMapProps) {
             <span>{lang === 'es' ? 'Historia & Desplazamiento' : 'Travel & Lodging'}</span>
           </div>
           <h2 className="font-cinzel text-3xl sm:text-5xl text-[#37080e] font-bold tracking-[0.03em] uppercase leading-tight">
-            {lang === 'es' ? 'Nuestro Camino' : 'Our Journey'}
+            {lang === 'es' ? 'Viaje & Hoteles' : 'Travel/Hotels'}
           </h2>
           <p className="font-cormorant text-xl sm:text-2xl text-[#44403c] italic mt-3 leading-relaxed">
             {lang === 'es'
-              ? 'Información de viaje, transporte y alojamiento para acompañarnos en Salamanca'
+              ? 'Información de viaje, transporte y opciones de alojamiento en Salamanca'
               : 'Travel, transportation, and lodging guide to join us in Salamanca'}
           </p>
           <div className="w-20 h-[1.5px] bg-[#b89243] mx-auto mt-5" />
@@ -127,14 +127,6 @@ export function JourneyMap({ lang }: JourneyMapProps) {
               </div>
             </div>
           </div>
-
-          <div className="text-center pt-6 border-t border-[#8c6d53]/30">
-            <p className="font-cormorant text-lg sm:text-xl text-[#5c141e] italic">
-              {lang === 'es'
-                ? '«Donde la historia castellana y el amor eterno abren sus puertas para recibirnos a todos»'
-                : '«Where Castilian romance opens ancient castle gates to welcome all who journey here»'}
-            </p>
-          </div>
         </motion.div>
 
         {/* Travel Transport Guide */}
@@ -166,12 +158,12 @@ export function JourneyMap({ lang }: JourneyMapProps) {
           <div className="p-6 rounded-2xl bg-[#faf7f2] border-2 border-[#b89243] shadow-xs">
             <Bus className="w-6 h-6 text-[#5c141e] mb-3" />
             <h3 className="font-cinzel text-lg font-bold text-[#37080e] mb-2">
-              {lang === 'es' ? 'Autobús Privado' : 'Shuttle Bus'}
+              {lang === 'es' ? 'Autobús de Cortesía' : 'Complimentary Shuttle'}
             </h3>
             <p className="text-xs text-[#6e675f] leading-relaxed">
               {lang === 'es'
-                ? 'Autobuses de cortesía tanto el Viernes 3 como el Sábado 4 desde la Plaza de España de Salamanca al castillo (ida y vuelta).'
-                : 'Complimentary guest shuttles running on Friday Sep 3 and Saturday Sep 4 between central Salamanca and the castle.'}
+                ? 'Autobús lanzadera de cortesía el Viernes 3 y el Sábado 4 entre la Plaza de España de Salamanca y el castillo.'
+                : 'Complimentary guest shuttle running on Friday Sep 3 and Saturday Sep 4 between central Salamanca and the castle.'}
             </p>
           </div>
         </div>
@@ -182,26 +174,31 @@ export function JourneyMap({ lang }: JourneyMapProps) {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#5c141e]/10 text-[#5c141e] text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-2">
                 <BedDouble className="w-3.5 h-3.5 text-[#b89243]" />
-                <span>{lang === 'es' ? 'Alojamiento Exclusivo en el Castillo' : 'Exclusive Castle Lodging'}</span>
+                <span>{lang === 'es' ? 'Alojamiento en el Castillo' : 'Castle Lodging'}</span>
               </div>
               <h3 className="font-cinzel text-2xl sm:text-3xl text-[#37080e] font-bold">
-                {lang === 'es' ? 'Tarifas Especiales de Boda' : 'Special Wedding Rates'}
+                {lang === 'es' ? 'Habitaciones en el Castillo' : 'Rooms at the Castle'}
               </h3>
               <p className="font-sans text-xs sm:text-sm text-[#6e675f] mt-1">
                 {lang === 'es'
-                  ? 'Precios especiales concertados con el Castillo del Buen Amor para nuestros invitados.'
-                  : 'Special negotiated rates at Castillo del Buen Amor exclusively for our guests.'}
+                  ? 'Tarifas especiales concertadas con el Castillo del Buen Amor para nuestros invitados (desayuno incluido).'
+                  : 'Special negotiated rates at Castillo del Buen Amor for our guests (breakfast included).'}
               </p>
             </div>
 
-            {/* Price guarantee badge */}
-            <div className="flex flex-col sm:items-end gap-1.5 bg-[#f5ecdc] p-3.5 rounded-xl border border-[#b89243]/40">
+            {/* Room block guarantee badge */}
+            <div className="flex flex-col sm:items-end gap-1 bg-[#f5ecdc] p-3.5 rounded-xl border border-[#b89243]/40 max-w-sm">
               <div className="flex items-center gap-1.5 text-xs font-bold text-[#5c141e] uppercase tracking-wider">
                 <Calendar className="w-4 h-4 text-[#b89243]" />
-                <span>{lang === 'es' ? 'Precios hasta el 31 de Diciembre' : 'Special rates until December 31st'}</span>
+                <span>{lang === 'es' ? 'Bloqueo hasta el 31 de Diciembre' : 'Room block until December 31st'}</span>
               </div>
-              <span className="text-[11px] font-semibold text-[#8c6d3b]">
-                {lang === 'es' ? '✦ Todas las tarifas incluyen desayuno' : '✦ All rates include buffet breakfast'}
+              <span className="text-[11px] text-[#6e5832] sm:text-right leading-snug">
+                {lang === 'es'
+                  ? 'El bloqueo de habitaciones solo está disponible hasta el 31 de diciembre; a partir de esa fecha no podemos garantizar disponibilidad.'
+                  : 'Room block is only reserved until December 31st; after this date, availability cannot be guaranteed.'}
+              </span>
+              <span className="text-[10px] font-semibold text-[#8c6d3b] sm:text-right mt-0.5">
+                {lang === 'es' ? '✦ Desayuno incluido' : '✦ Breakfast included'}
               </span>
             </div>
           </div>
@@ -251,7 +248,7 @@ export function JourneyMap({ lang }: JourneyMapProps) {
                     </p>
 
                     {/* Room Key Highlights */}
-                    <ul className="space-y-1.5 mb-5 text-[11px] text-[#6e675f]">
+                    <ul className="space-y-1.5 mb-3 text-[11px] text-[#6e675f]">
                       {(lang === 'es' ? room.features : room.featuresEn).map((feat, fIdx) => (
                         <li key={fIdx} className="flex items-center gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#b89243] shrink-0" />
@@ -259,6 +256,19 @@ export function JourneyMap({ lang }: JourneyMapProps) {
                         </li>
                       ))}
                     </ul>
+
+                    {/* Direct Castle Room Link */}
+                    <div className="mb-4">
+                      <a
+                        href={room.url || 'https://buenamor.net/alojamiento/habitaciones/'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] text-[#5c141e] hover:text-[#b89243] font-semibold underline transition-colors"
+                      >
+                        <span>{lang === 'es' ? 'Ver habitación en buenamor.net' : 'View room on castle website'}</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
                   </div>
 
                   {/* Availability Counter & Reservation Link */}
@@ -306,8 +316,8 @@ export function JourneyMap({ lang }: JourneyMapProps) {
           <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-xs text-[#6e5832] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span>
               {lang === 'es'
-                ? '📌 Las habitaciones del castillo se asignan por orden de confirmación en el formulario de RSVP. Los precios con descuento especial se mantienen hasta el 31 de Diciembre.'
-                : '📌 Castle rooms are allocated in order of confirmation in the RSVP form. Special rates remain valid until December 31st.'}
+                ? '📌 Las habitaciones del castillo se asignan por orden de confirmación en el formulario de RSVP. El bloqueo de habitaciones solo está disponible hasta el 31 de diciembre; a partir de esa fecha no podemos garantizar disponibilidad.'
+                : '📌 Castle rooms are allocated in order of confirmation in the RSVP form. Room block is only reserved until December 31st; after this date, availability cannot be guaranteed.'}
             </span>
             <button
               onClick={() => handleSelectRoomForRsvp('estandar')}
@@ -329,7 +339,7 @@ export function JourneyMap({ lang }: JourneyMapProps) {
               <p className="text-xs text-[#6e675f] mt-0.5">
                 {lang === 'es'
                   ? 'Para quienes prefieran alojarse en la ciudad (con servicio de autobús lanzadera directo a la boda).'
-                  : 'For guests preferring to stay in central Salamanca (complimentary shuttles to and from wedding).'}
+                  : 'For guests preferring to stay in central Salamanca (complimentary shuttle to and from wedding).'}
               </p>
             </div>
           </div>
