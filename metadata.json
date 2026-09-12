@@ -1,0 +1,6 @@
+{
+  "name": "Belén & Oriol — Wedding Celebration",
+  "description": "Official wedding celebration website for Belén & Oriol at El Castillo del Buen Amor, Salamanca — September 3 & 4, 2027.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #1c1917;
+  --ink-light: #44403c;
+  --muted: #78716c;
+  --paper: #faf7f2;
+  --cream: #f3ede2;
+  --parchment: #ece3d2;
+  --burgundy: #5c141e;
+  --burgundy-dark: #37080e;
+  --burgundy-light: #7e1d2c;
+  --burgundy-subtle: rgba(92, 20, 30, 0.06);
+  --gold: #b89243;
+  --gold-light: #e6ce92;
+  --gold-dark: #8c6d3b;
+  --gold-metallic: linear-gradient(135deg, #dfc285 0%, #b89243 50%, #dfc285 100%);
+  --line: rgba(92, 20, 30, 0.14);
+  --line-gold: rgba(184, 146, 67, 0.3);
+  --white: #fdfbf7;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Subtle organic paper grain overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Custom Font utilities */
+.font-cinzel {
+  font-family: "Cinzel Decorative", Georgia, serif;
+}
+
+.font-script {
+  font-family: "Great Vibes", cursive;
+}
+
+.font-playfair {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+.font-cormorant {
+  font-family: "Cormorant Garamond", Georgia, serif;
+}
+
+.font-baroque {
+  font-family: "UnifrakturMaguntia", "Cinzel Decorative", Georgia, serif;
+}
+
+.font-sans-app {
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Gold Gradient Text */
+.gold-text {
+  background: linear-gradient(135deg, #dfc285 0%, #b89243 45%, #f6e6c2 70%, #9a762f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border {
+  border-color: #b89243;
+}
+
+.gold-foil-card {
+  background: linear-gradient(145deg, rgba(253,251,247,0.98) 0%, rgba(246,239,228,0.95) 100%);
+  position: relative;
+}
+
+.gold-foil-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(135deg, rgba(223, 194, 133, 0.8) 0%, rgba(184, 146, 67, 0.4) 50%, rgba(223, 194, 133, 0.9) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Wax seal badge */
+.wax-seal {
+  background: radial-gradient(circle at 35% 35%, #7a1d2b, #450c14);
+  box-shadow: 0 4px 14px rgba(69, 12, 20, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.2), inset 0 -2px 5px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(223, 194, 133, 0.4);
+}
+
+/* Subtle Shimmer effect */
+@keyframes goldShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-gold {
+  background: linear-gradient(90deg, transparent, rgba(229, 203, 143, 0.25), transparent);
+  background-size: 200% 100%;
+  animation: goldShimmer 6s infinite;
+}
+
+.burgundy-text {
+  color: var(--burgundy);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--paper);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(184, 146, 67, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* Smooth selection */
+::selection {
+  background: rgba(92, 20, 30, 0.15);
+  color: var(--burgundy);
+}
+
