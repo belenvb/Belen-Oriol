@@ -4,17 +4,16 @@
  */
 
 import { useState, useEffect } from 'react';
+import { motion, useScroll } from 'motion/react';
 import { Language } from './types';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
-import { OrnamentalDivider } from './components/OrnamentalDivider';
 import { HorizontalTrencadis } from './components/HorizontalTrencadis';
 import { ScheduleSection } from './components/ScheduleSection';
 import { CastleGallery } from './components/CastleGallery';
 import { JourneyMap } from './components/JourneyMap';
 import { RegistrySection } from './components/RegistrySection';
 import { RsvpSection } from './components/RsvpSection';
-import { DigitalGuestbook } from './components/DigitalGuestbook';
 import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 
@@ -22,14 +21,16 @@ export default function App() {
   const [lang, setLang] = useState<Language>('es');
   const [selectedDay, setSelectedDay] = useState<'sept3' | 'sept4'>('sept4');
   const [activeSection, setActiveSection] = useState<string>('hero');
+  const { scrollYProgress } = useScroll();
+
+  const sectionList = ['hero', 'schedule', 'castle', 'journey', 'registry', 'rsvp', 'faq'];
 
   // Track scroll position to update active navigation
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['hero', 'schedule', 'castle', 'journey', 'registry', 'rsvp', 'guestbook', 'faq'];
       const scrollPosition = window.scrollY + 250;
 
-      for (const sectionId of sections) {
+      for (const sectionId of sectionList) {
         const el = document.getElementById(sectionId);
         if (el) {
           const top = el.offsetTop;
@@ -47,7 +48,6 @@ export default function App() {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
-    // If target is dates, redirect smoothly to schedule
     const targetId = sectionId === 'dates' ? 'schedule' : sectionId;
     const element = document.getElementById(targetId);
     if (element) {
@@ -57,6 +57,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#faf7f2] text-[#2c241e] font-sans selection:bg-[#5c141e] selection:text-white relative">
+      {/* Fluid Reading & Scroll Progress Indicator (Gold-Burgundy Jewel Bar) */}
+      <motion.div
+        style={{ scaleX: scrollYProgress }}
+        className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#dfc285] via-[#b89243] to-[#5c141e] origin-left z-[60] pointer-events-none"
+      />
+
       {/* Sticky Header with Navigation & Language Switcher */}
       <Header
         lang={lang}
@@ -73,6 +79,7 @@ export default function App() {
           { id: 'journey', labelEs: 'Viaje & Hoteles', labelEn: 'Travel/Hotels' },
           { id: 'registry', labelEs: 'Lista de Bodas', labelEn: 'Registry' },
           { id: 'rsvp', labelEs: 'Asistencia', labelEn: 'RSVP' },
+          { id: 'faq', labelEs: 'Q&A', labelEn: 'Q&A' },
         ].map((item) => {
           const isActive = activeSection === item.id;
           return (
@@ -99,52 +106,88 @@ export default function App() {
         })}
       </div>
 
-      <main>
+      <main className="relative">
         {/* Cinematic Hero */}
         <Hero
           lang={lang}
           onNavigate={scrollToSection}
         />
 
-        {/* Ornamental Divider */}
-        <OrnamentalDivider variant="braid" />
-
-        {/* Horizontal Trencadís: Authentic Gaudí mosaic divider */}
+        {/* Authentic Full-Width Gaudí Trencadís Mosaic Divider */}
         <HorizontalTrencadis />
 
-        {/* Consolidated Interactive Schedule for September 3 & 4 */}
-        <ScheduleSection
-          lang={lang}
-          selectedDay={selectedDay}
-          onSelectDay={setSelectedDay}
-        />
+        {/* Hand-drawn Pergamino Schedule for September 3 & 4 with Viewport Reveal */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.08 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <ScheduleSection
+            lang={lang}
+            selectedDay={selectedDay}
+            onSelectDay={setSelectedDay}
+          />
+        </motion.div>
 
-        {/* El Castillo del Buen Amor Photo Gallery with Lightbox */}
-        <CastleGallery lang={lang} />
+        {/* El Castillo del Buen Amor Photo Gallery with Viewport Reveal */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.08 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <CastleGallery lang={lang} />
+        </motion.div>
 
-        {/* Ornamental Divider */}
-        <OrnamentalDivider variant="braid" />
+        {/* Authentic Full-Width Gaudí Trencadís Mosaic Divider */}
+        <HorizontalTrencadis />
 
-        {/* Vintage Journey Map: Travel & Lodging Guide */}
-        <JourneyMap lang={lang} />
+        {/* Vintage Journey Map: Travel & Lodging Guide with Viewport Reveal */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.08 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <JourneyMap lang={lang} />
+        </motion.div>
 
-        {/* Ornamental Divider */}
-        <OrnamentalDivider variant="flourish" />
+        {/* Authentic Full-Width Gaudí Trencadís Mosaic Divider */}
+        <HorizontalTrencadis />
 
-        {/* Polished Wedding Registry (Honeymoon Fund + Our Home + Bank Info) */}
-        <RegistrySection lang={lang} />
+        {/* Polished Wedding Registry with Viewport Reveal */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.08 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <RegistrySection lang={lang} />
+        </motion.div>
 
-        {/* Ornamental Divider */}
-        <OrnamentalDivider variant="simple" />
+        {/* Authentic Full-Width Gaudí Trencadís Mosaic Divider */}
+        <HorizontalTrencadis />
 
-        {/* RSVP Confirmation Section */}
-        <RsvpSection lang={lang} />
+        {/* RSVP Confirmation Section with Viewport Reveal */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.08 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <RsvpSection lang={lang} />
+        </motion.div>
 
-        {/* Digital Guestbook of Wishes */}
-        <DigitalGuestbook lang={lang} />
-
-        {/* Guest FAQs */}
-        <FaqSection lang={lang} />
+        {/* Guest FAQs with Viewport Reveal */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.08 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <FaqSection lang={lang} />
+        </motion.div>
       </main>
 
       {/* Royal Footer */}

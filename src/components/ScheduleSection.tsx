@@ -13,16 +13,16 @@ import {
   Clock,
   MapPin,
   Calendar,
-  Download,
   Shirt,
   Columns,
   Layers,
-  Check,
+  Scroll,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { scheduleData } from '../data/content';
 import { Language, ScheduleItem } from '../types';
-import { generateGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
+import { generateGoogleCalendarUrl } from '../utils/calendar';
+import { Monogram } from './Monogram';
 
 interface ScheduleSectionProps {
   lang: Language;
@@ -43,42 +43,64 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Coffee,
 };
 
-// Hand-drawn ribbon loop flourish component (matching JourneyMap aesthetic)
-function HandDrawnLoop({ className = '' }: { className?: string }) {
+// Hand-drawn botanical vine separating chapters in the parchment
+function HandDrawnBotanicalVine({ className = '' }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 140 32"
-      className={`overflow-visible pointer-events-none ${className}`}
+      viewBox="0 0 400 32"
+      className={`w-full max-w-sm mx-auto overflow-visible pointer-events-none opacity-60 ${className}`}
       fill="none"
     >
       <path
-        d="M 5 18 C 25 6, 45 28, 60 16 C 70 8, 75 4, 80 16 C 85 28, 72 28, 74 16 C 76 6, 95 24, 115 14 C 125 9, 135 18, 138 20"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeDasharray="4 3"
+        d="M 20 16 C 80 8, 140 24, 200 16 C 260 8, 320 24, 380 16"
+        stroke="#8c6d4f"
+        strokeWidth="1.2"
         strokeLinecap="round"
       />
-      <circle cx="77" cy="15" r="2.5" fill="currentColor" />
+      {/* Leaves along the vine */}
+      <path d="M 80 14 C 75 7, 85 4, 90 10 C 85 12, 82 14, 80 14 Z" fill="#466c42" opacity="0.75" />
+      <path d="M 140 18 C 145 25, 135 28, 130 22 C 135 20, 138 18, 140 18 Z" fill="#466c42" opacity="0.75" />
+      <path d="M 260 14 C 255 7, 265 4, 270 10 C 265 12, 262 14, 260 14 Z" fill="#466c42" opacity="0.75" />
+      <path d="M 320 18 C 325 25, 315 28, 310 22 C 315 20, 318 18, 320 18 Z" fill="#466c42" opacity="0.75" />
+      {/* Central berry / flower */}
+      <circle cx="200" cy="16" r="3" fill="#5c141e" />
+      <circle cx="194" cy="14" r="1.8" fill="#b89243" />
+      <circle cx="206" cy="14" r="1.8" fill="#b89243" />
     </svg>
   );
 }
 
-// Hand-drawn ornamental divider knot
-function HandDrawnKnot({ className = '' }: { className?: string }) {
+// Hand-sketched parchment corner flourish
+function ParchmentCornerFlourish({ position }: { position: 'tl' | 'tr' | 'bl' | 'br' }) {
+  const transforms = {
+    tl: '',
+    tr: 'scale-x-[-1]',
+    bl: 'scale-y-[-1]',
+    br: 'scale-[-1]',
+  };
+
   return (
     <svg
-      viewBox="0 0 260 28"
-      className={`overflow-visible pointer-events-none ${className}`}
+      viewBox="0 0 60 60"
+      className={`w-12 h-12 pointer-events-none text-[#8c6d4f] opacity-40 ${transforms[position]}`}
       fill="none"
     >
       <path
-        d="M 10 14 C 50 4, 90 24, 120 14 C 126 11, 130 8, 134 14 C 138 20, 131 22, 129 15 C 128 8, 137 7, 142 14 C 170 24, 210 4, 250 14"
+        d="M 6 54 C 6 25, 25 6, 54 6"
         stroke="currentColor"
         strokeWidth="1.5"
-        strokeDasharray="5 3"
-        strokeLinecap="round"
+        strokeDasharray="4 2"
       />
-      <circle cx="130" cy="14" r="3" fill="#5c141e" />
+      <path
+        d="M 14 54 C 14 32, 32 14, 54 14"
+        stroke="currentColor"
+        strokeWidth="0.8"
+      />
+      <path
+        d="M 6 6 C 18 18, 18 18, 26 12 C 32 6, 22 2, 14 6 C 10 8, 8 12, 12 16"
+        stroke="#5c141e"
+        strokeWidth="1"
+      />
     </svg>
   );
 }
@@ -94,135 +116,124 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay }: ScheduleSect
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const handleIcsExport = (day: 'sept3' | 'sept4') => {
-    const event = currentSchedule[day].calEvent;
-    downloadIcsFile(event, `boda-belen-oriol-${day}.ics`);
-  };
-
   const formatPeriodLabel = (time: string) => {
     const lower = time.toLowerCase();
     if (lang === 'es') {
       if (lower.includes('afternoon')) return 'Tarde';
-      if (lower.includes('evening')) return 'Atardecer';
+      if (lower.includes('evening')) return 'Tarde-Noche';
       if (lower.includes('night')) return 'Noche';
       return time;
     }
-    // English
     if (lower.includes('afternoon')) return 'Afternoon';
     if (lower.includes('evening')) return 'Evening';
     if (lower.includes('night')) return 'Night';
     return time;
   };
 
-  const renderTimelineEvents = (events: ScheduleItem[], isSept4: boolean) => {
+  // Render events as verses in an illuminated parchment scroll (NO CARD BOXES)
+  const renderParchmentEvents = (events: ScheduleItem[], isSept4: boolean) => {
     return (
-      <div className="relative pl-8 sm:pl-12 space-y-7 sm:space-y-9">
-        {/* Hand-drawn sketched vertical dashed ribbon spine */}
-        <div className="absolute top-4 bottom-4 left-3.5 sm:left-5 w-[2px] -translate-x-1/2 pointer-events-none">
+      <div className="relative py-4 sm:py-6">
+        {/* Continuous organic hand-drawn ink spine running down the scroll */}
+        <div className="absolute top-6 bottom-6 left-5 sm:left-8 w-[2px] pointer-events-none">
           <svg className="w-4 h-full overflow-visible" preserveAspectRatio="none">
             <line
               x1="2"
               y1="0"
               x2="2"
               y2="100%"
-              stroke={isSept4 ? '#5c141e' : '#b89243'}
-              strokeWidth="2"
-              strokeDasharray="5 4"
+              stroke={isSept4 ? '#8c6d4f' : '#b89243'}
+              strokeWidth="1.6"
+              strokeDasharray="6 4"
               strokeLinecap="round"
-              opacity="0.65"
+              opacity="0.6"
             />
           </svg>
         </div>
 
-        {events.map((event, idx) => {
-          const IconComponent = iconMap[event.iconName] || Sparkles;
-          const isHigh = event.highlight;
+        <div className="space-y-4 sm:space-y-5">
+          {events.map((event, idx) => {
+            const IconComponent = iconMap[event.iconName] || Sparkles;
+            const isHigh = event.highlight;
+            const locationLabel = event.location || (isSept4 ? 'Castillo del Buen Amor' : 'Salamanca');
 
-          return (
-            <motion.div
-              key={event.id}
-              initial={{ opacity: 0, x: -16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-30px' }}
-              transition={{ duration: 0.5, delay: idx * 0.05, ease: [0.22, 1, 0.36, 1] }}
-              className="relative group transition-all duration-300"
-            >
-              {/* Hand-drawn organic sketch circle pin */}
-              <div className="absolute -left-[27px] sm:-left-[39px] top-3.5 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center z-10 transition-transform duration-300 group-hover:scale-115">
-                <svg viewBox="0 0 36 36" className="absolute inset-0 w-full h-full overflow-visible">
-                  <path
-                    d="M 18 3.5 C 26.5 3, 33 9.5, 32.5 18 C 32 26.5, 25.5 32.5, 17.5 32 C 9.5 31.5, 3.5 25.5, 4 17.5 C 4.5 9, 10 4, 18 3.5 Z"
-                    fill={isHigh ? (isSept4 ? '#5c141e' : '#b89243') : '#fdfbf7'}
-                    stroke={isHigh ? '#e5cb8f' : '#b89243'}
-                    strokeWidth="1.8"
-                    strokeDasharray={isHigh ? 'none' : '4 2'}
-                  />
-                </svg>
-                <IconComponent
-                  className={`relative z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 ${
-                    isHigh ? 'text-[#e5cb8f]' : 'text-[#5c141e]'
-                  }`}
-                />
-              </div>
-
-              {/* Hand-crafted Event Card */}
-              <div
-                className={`p-5 sm:p-6 rounded-2xl transition-all duration-300 relative ${
-                  isHigh
-                    ? isSept4
-                      ? 'bg-gradient-to-br from-[#fdf9f2] via-[#faf2e3] to-[#f4e8d3] border-2 border-[#b89243] shadow-[0_8px_30px_rgba(184,146,67,0.18)]'
-                      : 'bg-gradient-to-br from-[#fdfbf7] via-[#f8f1e4] to-[#f2e6d2] border-2 border-[#b89243]/80 shadow-[0_8px_25px_rgba(184,146,67,0.15)]'
-                    : 'bg-white/95 border border-[rgba(92,20,30,0.15)] hover:border-[#b89243] shadow-xs'
-                }`}
+            return (
+              <motion.div
+                key={event.id}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.5, delay: idx * 0.06 }}
+                className="relative pl-14 sm:pl-20 group"
               >
-                {/* Subtle hand-drawn top ribbon accent for highlighted events */}
-                {isHigh && (
-                  <div className="absolute top-2 right-4 text-[#b89243]/50 hidden sm:block">
-                    <HandDrawnLoop className="w-16 h-4" />
-                  </div>
-                )}
+                {/* Hand-drawn circular wax seal or ink insignia on the spine */}
+                <div
+                  className={`absolute left-1.5 sm:left-4 top-1 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center z-10 transition-transform duration-300 group-hover:scale-110 shadow-sm ${
+                    isHigh
+                      ? isSept4
+                        ? 'bg-gradient-to-br from-[#7a1d2b] to-[#400810] text-[#f7eedc] ring-2 ring-[#b89243] ring-offset-2 ring-offset-[#fcf8ef]'
+                        : 'bg-gradient-to-br from-[#b89243] to-[#8c6d3b] text-white ring-2 ring-[#e5cb8f] ring-offset-2 ring-offset-[#fcf8ef]'
+                      : 'bg-[#faf2e3] border border-[#8c6d4f]/50 text-[#5c141e]'
+                  }`}
+                >
+                  <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 stroke-[1.8]" />
+                </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5">
-                  <div className="flex items-center gap-2.5">
-                    {/* Period Label (Afternoon / Evening / Night) */}
-                    <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-serif italic font-bold tracking-wider ${
-                        isHigh
-                          ? 'bg-[#5c141e] text-white shadow-2xs'
-                          : 'bg-[#b89243]/15 text-[#5c141e] border border-[#b89243]/30'
-                      }`}
-                    >
-                      <Clock className="w-3.5 h-3.5 text-[#dfc285]" />
+                {/* Hand-drawn manuscript verse layout (completely free of card rectangles) */}
+                <div className="relative pr-2">
+                  {/* Time Ribbon & Location stamp */}
+                  <div className="flex flex-wrap items-baseline gap-2 sm:gap-4 mb-1.5">
+                    <span className="font-cinzel text-xs sm:text-sm font-bold tracking-widest text-[#5c141e] flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-[#b89243]" />
                       <span>{formatPeriodLabel(event.time)}</span>
                     </span>
 
+                    <span className="text-[#8c6d4f] font-serif italic text-xs">·</span>
+
+                    <span className="font-cormorant text-sm sm:text-base font-semibold text-[#8c6d4f] flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-[#b89243]" />
+                      <span>{locationLabel}</span>
+                    </span>
+
                     {event.badge && (
-                      <span className="px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-widest font-bold bg-[#b89243]/20 text-[#37080e] border border-[#b89243]/40">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-wider uppercase bg-[#5c141e]/10 text-[#5c141e] border border-[#5c141e]/20 ml-auto">
                         {event.badge}
                       </span>
                     )}
                   </div>
 
-                  {/* Standardized Location: Castillo del Buen Amor */}
-                  <span className="flex items-center gap-1.5 text-xs text-[#5c141e] font-cinzel font-semibold">
-                    <MapPin className="w-3.5 h-3.5 text-[#b89243]" />
-                    <span>Castillo del Buen Amor</span>
-                  </span>
+                  {/* Event Title with illuminated calligraphy touch */}
+                  <div className="flex items-center gap-2">
+                    <h4
+                      className={`font-playfair text-xl sm:text-2xl font-bold leading-tight ${
+                        isHigh ? 'text-[#37080e]' : 'text-[#443831]'
+                      }`}
+                    >
+                      {event.title}
+                    </h4>
+                    {isHigh && (
+                      <span className="text-[#b89243] text-sm animate-pulse">✦</span>
+                    )}
+                  </div>
+
+                  {/* Hand-written description in elegant italic literary prose */}
+                  {event.description && (
+                    <p className="font-cormorant text-base sm:text-lg text-[#554a40] italic leading-relaxed mt-1 max-w-2xl">
+                      {event.description}
+                    </p>
+                  )}
+
+                  {/* Subtle hand-drawn divider flourish below each moment */}
+                  {idx < events.length - 1 && (
+                    <div className="pt-3 opacity-30">
+                      <HandDrawnBotanicalVine className="max-w-xs !mx-0" />
+                    </div>
+                  )}
                 </div>
-
-                <h4 className="font-playfair text-xl sm:text-2xl text-[#37080e] font-bold leading-snug">
-                  {event.title}
-                </h4>
-
-                {event.description && (
-                  <p className="font-cormorant text-lg sm:text-xl text-[#44403c] italic leading-relaxed mt-2">
-                    {event.description}
-                  </p>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     );
   };
@@ -230,289 +241,133 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay }: ScheduleSect
   return (
     <section
       id="schedule"
-      className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#faf7f2] relative border-y border-[rgba(92,20,30,0.12)] overflow-hidden"
+      className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#f5efe3] relative border-y border-[rgba(92,20,30,0.12)] overflow-hidden"
     >
-      {/* Anchor for any navigation directed to #dates */}
       <div id="dates" className="absolute -top-20" />
 
-      {/* Hand-drawn watermark flourish */}
-      <div className="absolute -right-20 top-20 text-[#b89243]/10 pointer-events-none hidden lg:block">
-        <HandDrawnLoop className="w-96 h-28" />
-      </div>
-
-      <div className="max-w-5xl mx-auto relative z-10">
-        {/* Consolidated Section Header */}
+      <div className="max-w-4xl mx-auto relative z-10">
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center max-w-2xl mx-auto mb-12 sm:mb-16"
+          transition={{ duration: 0.7 }}
+          className="text-center max-w-2xl mx-auto mb-10 sm:mb-12"
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#b89243]/30 bg-[#b89243]/10 text-[#5c141e] text-[10px] sm:text-xs tracking-[0.32em] font-semibold uppercase mb-3 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#b89243]" />
-            <span>{lang === 'es' ? 'El Programa · Castillo del Buen Amor' : 'Celebration Schedule'}</span>
+            <Scroll className="w-3.5 h-3.5 text-[#b89243]" />
+            <span>{lang === 'es' ? 'El Programa · 3 & 4 de Septiembre' : 'Celebration Itinerary'}</span>
           </div>
 
           <h2 className="font-cinzel text-3xl sm:text-5xl text-[#37080e] font-bold tracking-[0.03em] uppercase leading-tight">
-            {lang === 'es' ? '3 & 4 de Septiembre' : 'September 3 & 4'}
+            {lang === 'es' ? 'Itinerario' : 'Wedding Itinerary'}
           </h2>
 
-          <div className="flex justify-center my-2 text-[#b89243]">
-            <HandDrawnKnot className="w-56 h-6" />
+          <div className="my-3">
+            <HandDrawnBotanicalVine />
           </div>
 
-          <p className="font-cormorant text-xl sm:text-2xl text-[#6e675f] italic leading-relaxed">
+          <p className="font-cormorant text-xl sm:text-2xl text-[#554a40] italic leading-relaxed">
             {lang === 'es'
-              ? 'Dos días de celebración en el Castillo del Buen Amor: cóctel de bienvenida, ceremonia nupcial y fiesta.'
-              : 'Two days celebrating at Castillo del Buen Amor: welcome cocktails, ceremony, banquet and dancing.'}
+              ? 'El itinerario detallado de nuestra celebración en Salamanca y el Castillo del Buen Amor'
+              : 'The detailed itinerary of our celebration in Salamanca and Castillo del Buen Amor'}
           </p>
         </motion.div>
 
-        {/* Consolidated Day Selector Cards: Day 1 & Day 2 (Replacing separate large duplicate section) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 mb-10">
-          {/* Day 1: September 3 Card */}
-          <motion.div
-            whileHover={{ y: -2 }}
-            transition={{ duration: 0.2 }}
+        {/* Day Selector Tabs Styled as Parchment Ribbons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch mb-8">
+          {/* Day 1: September 3 */}
+          <button
             onClick={() => {
               onSelectDay('sept3');
               setViewMode('tabbed');
             }}
-            className={`p-6 sm:p-7 rounded-2xl border-2 transition-all duration-300 cursor-pointer relative overflow-hidden flex flex-col justify-between ${
+            className={`flex-1 p-4 sm:p-5 rounded-xl transition-all duration-300 text-left relative cursor-pointer shadow-sm border ${
               selectedDay === 'sept3' && viewMode === 'tabbed'
-                ? 'bg-gradient-to-br from-[#fcf7ec] via-[#f7eedc] to-[#f0e2ca] border-[#b89243] shadow-md ring-2 ring-[#b89243]/30'
-                : 'bg-white/80 border-[rgba(92,20,30,0.15)] hover:border-[#b89243]/60 shadow-2xs'
+                ? 'bg-[#fcf8ef] border-[#b89243] ring-2 ring-[#b89243]/40 shadow-md'
+                : 'bg-[#faf2e3]/70 hover:bg-[#faf2e3] border-[#8c6d4f]/30'
             }`}
           >
-            {/* Hand-drawn top accent */}
-            <div className="absolute top-2 right-3 text-[#b89243]/35">
-              <HandDrawnLoop className="w-20 h-5" />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="px-3 py-1 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#5c141e] text-white">
-                  {lang === 'es' ? 'DÍA 1 · BIENVENIDA' : 'DAY 1 · WELCOME'}
-                </span>
-                <span className="font-cinzel text-xs font-bold tracking-widest text-[#8c6d3b]">
-                  {lang === 'es' ? '03.09.2027' : '09.03.2027'}
-                </span>
-              </div>
-
-              <div className="flex items-baseline gap-3 mb-2">
-                <span className="font-cinzel text-3xl sm:text-4xl font-bold text-[#37080e]">
-                  03
-                </span>
-                <div>
-                  <h3 className="font-playfair text-xl sm:text-2xl font-bold text-[#37080e]">
-                    {lang === 'es' ? 'Viernes 3 de Septiembre' : 'Friday, September 3'}
-                  </h3>
-                  <span className="font-cormorant text-base sm:text-lg text-[#8c6d3b] italic block">
-                    {lang === 'es' ? 'Cóctel & Tapas de Bienvenida' : 'Welcome Reception & Cocktails'}
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-xs text-[#6e675f] leading-relaxed mt-2 mb-4">
-                {lang === 'es'
-                  ? 'Encuentro relajado para abrir boca en los jardines del castillo antes del gran día.'
-                  : 'A relaxed gathering to welcome everyone in the castle courtyards.'}
-              </p>
-            </div>
-
-            <div className="pt-3 border-t border-[rgba(92,20,30,0.1)] flex items-center justify-between text-xs">
-              <span className="text-[#5c141e] font-semibold flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#b89243]" />
-                Castillo del Buen Amor
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#5c141e] text-white flex items-center gap-1 shadow-xs">
+                <span>🔒</span>
+                <span>{lang === 'es' ? 'SOLO CON INVITACIÓN' : 'INVITATION ONLY'}</span>
               </span>
-              <span
-                className={`font-semibold uppercase tracking-wider text-[11px] ${
-                  selectedDay === 'sept3' && viewMode === 'tabbed'
-                    ? 'text-[#5c141e]'
-                    : 'text-[#8c6d3b]'
-                }`}
-              >
-                {selectedDay === 'sept3' && viewMode === 'tabbed'
-                  ? lang === 'es'
-                    ? '✓ Seleccionado'
-                    : '✓ Selected'
-                  : lang === 'es'
-                  ? 'Ver Horario →'
-                  : 'View Details →'}
-              </span>
+              <span className="font-cinzel text-xs font-bold text-[#8c6d3b]">03.09.2027</span>
             </div>
-          </motion.div>
+            <h3 className="font-playfair text-lg sm:text-xl font-bold text-[#37080e]">
+              {lang === 'es' ? 'Viernes 3 de Septiembre' : 'Friday, September 3'}
+            </h3>
+            <p className="font-cormorant italic text-sm text-[#8c6d4f] mt-0.5">
+              {lang === 'es'
+                ? 'Salamanca · Cóctel de Víspera (Exclusivo con Convocatoria)'
+                : 'Salamanca · Eve Gathering (Strictly by Invitation)'}
+            </p>
+          </button>
 
-          {/* Day 2: September 4 Card */}
-          <motion.div
-            whileHover={{ y: -2 }}
-            transition={{ duration: 0.2 }}
+          {/* Day 2: September 4 */}
+          <button
             onClick={() => {
               onSelectDay('sept4');
               setViewMode('tabbed');
             }}
-            className={`p-6 sm:p-7 rounded-2xl border-2 transition-all duration-300 cursor-pointer relative overflow-hidden flex flex-col justify-between ${
+            className={`flex-1 p-4 sm:p-5 rounded-xl transition-all duration-300 text-left relative cursor-pointer shadow-sm border ${
               selectedDay === 'sept4' && viewMode === 'tabbed'
-                ? 'bg-gradient-to-br from-[#37080e] via-[#4d0c15] to-[#250308] border-[#e5cb8f] text-white shadow-lg ring-2 ring-[#e5cb8f]/40'
-                : 'bg-white/80 border-[rgba(92,20,30,0.15)] hover:border-[#b89243]/60 shadow-2xs'
+                ? 'bg-[#fcf8ef] border-[#5c141e] ring-2 ring-[#5c141e]/30 shadow-md'
+                : 'bg-[#faf2e3]/70 hover:bg-[#faf2e3] border-[#8c6d4f]/30'
             }`}
           >
-            {/* Hand-drawn top accent */}
-            <div
-              className={`absolute top-2 right-3 ${
-                selectedDay === 'sept4' && viewMode === 'tabbed'
-                  ? 'text-[#e5cb8f]/40'
-                  : 'text-[#b89243]/35'
-              }`}
-            >
-              <HandDrawnLoop className="w-20 h-5" />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <span
-                  className={`px-3 py-1 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase ${
-                    selectedDay === 'sept4' && viewMode === 'tabbed'
-                      ? 'bg-[#e5cb8f] text-[#37080e]'
-                      : 'bg-[#5c141e] text-white'
-                  }`}
-                >
-                  {lang === 'es' ? 'DÍA 2 · EL ENLACE' : 'DAY 2 · THE WEDDING'}
-                </span>
-                <span
-                  className={`font-cinzel text-xs font-bold tracking-widest ${
-                    selectedDay === 'sept4' && viewMode === 'tabbed'
-                      ? 'text-[#e5cb8f]'
-                      : 'text-[#8c6d3b]'
-                  }`}
-                >
-                  {lang === 'es' ? '04.09.2027' : '09.04.2027'}
-                </span>
-              </div>
-
-              <div className="flex items-baseline gap-3 mb-2">
-                <span
-                  className={`font-cinzel text-3xl sm:text-4xl font-bold ${
-                    selectedDay === 'sept4' && viewMode === 'tabbed'
-                      ? 'text-[#e5cb8f]'
-                      : 'text-[#37080e]'
-                  }`}
-                >
-                  04
-                </span>
-                <div>
-                  <h3
-                    className={`font-playfair text-xl sm:text-2xl font-bold ${
-                      selectedDay === 'sept4' && viewMode === 'tabbed'
-                        ? 'text-white'
-                        : 'text-[#37080e]'
-                    }`}
-                  >
-                    {lang === 'es' ? 'Sábado 4 de Septiembre' : 'Saturday, September 4'}
-                  </h3>
-                  <span
-                    className={`font-cormorant text-base sm:text-lg italic block ${
-                      selectedDay === 'sept4' && viewMode === 'tabbed'
-                        ? 'text-[#e5cb8f]'
-                        : 'text-[#8c6d3b]'
-                    }`}
-                  >
-                    {lang === 'es' ? 'La Ceremonia, Banquete & Fiesta' : 'Ceremony, Banquet & Dancing'}
-                  </span>
-                </div>
-              </div>
-
-              <p
-                className={`text-xs leading-relaxed mt-2 mb-4 ${
-                  selectedDay === 'sept4' && viewMode === 'tabbed'
-                    ? 'text-white/80'
-                    : 'text-[#6e675f]'
-                }`}
-              >
-                {lang === 'es'
-                  ? 'El gran enlace nupcial, cóctel castellano, banquete de gala y fiesta hasta la madrugada.'
-                  : 'The main ceremony, celebratory gala banquet, and festive late-night dancing.'}
-              </p>
-            </div>
-
-            <div
-              className={`pt-3 border-t flex items-center justify-between text-xs ${
-                selectedDay === 'sept4' && viewMode === 'tabbed'
-                  ? 'border-white/20'
-                  : 'border-[rgba(92,20,30,0.1)]'
-              }`}
-            >
-              <span
-                className={`font-semibold flex items-center gap-1.5 ${
-                  selectedDay === 'sept4' && viewMode === 'tabbed'
-                    ? 'text-[#e5cb8f]'
-                    : 'text-[#5c141e]'
-                }`}
-              >
-                <MapPin className="w-3.5 h-3.5 text-[#b89243]" />
-                Castillo del Buen Amor
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#5c141e] text-white">
+                {lang === 'es' ? 'DÍA 2 · EL GRAN ENLACE' : 'DAY 2 · THE WEDDING'}
               </span>
-              <span
-                className={`font-semibold uppercase tracking-wider text-[11px] ${
-                  selectedDay === 'sept4' && viewMode === 'tabbed'
-                    ? 'text-[#e5cb8f]'
-                    : 'text-[#8c6d3b]'
-                }`}
-              >
-                {selectedDay === 'sept4' && viewMode === 'tabbed'
-                  ? lang === 'es'
-                    ? '✓ Seleccionado'
-                    : '✓ Selected'
-                  : lang === 'es'
-                  ? 'Ver Horario →'
-                  : 'View Details →'}
-              </span>
+              <span className="font-cinzel text-xs font-bold text-[#5c141e]">04.09.2027</span>
             </div>
-          </motion.div>
+            <h3 className="font-playfair text-lg sm:text-xl font-bold text-[#37080e]">
+              {lang === 'es' ? 'Sábado 4 de Septiembre' : 'Saturday, September 4'}
+            </h3>
+            <p className="font-cormorant italic text-sm text-[#8c6d4f] mt-0.5">
+              {lang === 'es'
+                ? 'El Castillo del Buen Amor · Banquete & Fiesta'
+                : 'Castillo del Buen Amor · Ceremony & Banquet'}
+            </p>
+          </button>
         </div>
 
-        {/* View Mode & Calendar Controls */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 pb-5 border-b border-[rgba(92,20,30,0.15)]">
-          {/* Active selection info */}
+        {/* View Mode & Calendar Export Controls */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6 pb-3 border-b border-[#8c6d4f]/20">
           <div className="text-xs text-[#6e675f] font-cinzel tracking-wider flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#b89243] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#b89243]" />
             <span>
               {viewMode === 'both'
-                ? lang === 'es'
-                  ? 'Viendo ambos días (3 y 4 de Septiembre)'
-                  : 'Viewing both days (September 3 & 4)'
+                ? lang === 'es' ? 'Viendo programa de ambas jornadas' : 'Viewing both celebration days'
                 : selectedDay === 'sept3'
-                ? lang === 'es'
-                  ? 'Viernes 3 de Septiembre (03.09.2027)'
-                  : 'Friday, September 3 (09.03.2027)'
-                : lang === 'es'
-                ? 'Sábado 4 de Septiembre (04.09.2027)'
-                : 'Saturday, September 4 (09.04.2027)'}
+                ? lang === 'es' ? 'Viernes 3 de Septiembre · Salamanca (Solo con Invitación)' : 'Friday Sep 3 · Salamanca (Invitation Only)'
+                : lang === 'es' ? 'Sábado 4 de Septiembre · Castillo del Buen Amor' : 'Saturday Sep 4 · Castillo'}
             </span>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={() => setViewMode(viewMode === 'tabbed' ? 'both' : 'tabbed')}
-              className="text-xs uppercase tracking-wider text-[#5c141e] hover:text-[#37080e] font-semibold border border-[rgba(92,20,30,0.3)] px-3.5 py-2 rounded-lg bg-white/70 hover:bg-white transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
+              className="text-xs uppercase tracking-wider text-[#5c141e] font-semibold border border-[#8c6d4f]/30 px-3 py-1.5 rounded-lg bg-[#faf2e3] hover:bg-white transition-colors cursor-pointer flex items-center gap-1.5"
             >
               {viewMode === 'tabbed' ? (
                 <>
                   <Columns className="w-3.5 h-3.5 text-[#b89243]" />
-                  <span>{lang === 'es' ? 'Ver 3 y 4 Juntos' : 'View Both Days'}</span>
+                  <span>{lang === 'es' ? 'Ver Ambas' : 'View Both'}</span>
                 </>
               ) : (
                 <>
                   <Layers className="w-3.5 h-3.5 text-[#b89243]" />
-                  <span>{lang === 'es' ? 'Ver Día Individual' : 'Single Day View'}</span>
+                  <span>{lang === 'es' ? 'Por Día' : 'Single'}</span>
                 </>
               )}
             </button>
 
             <button
               onClick={() => handleCalendarExport(selectedDay)}
-              className="text-xs uppercase tracking-wider bg-[#5c141e] text-white hover:bg-[#7a1d2b] font-medium px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
+              className="text-xs uppercase tracking-wider bg-[#5c141e] text-white hover:bg-[#7a1d2b] font-medium px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
             >
               <Calendar className="w-3.5 h-3.5 text-[#dfc285]" />
               <span>Google Cal</span>
@@ -520,169 +375,209 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay }: ScheduleSect
           </div>
         </div>
 
-        {/* Content Body with Animated Transitions */}
-        <AnimatePresence mode="wait">
-          {viewMode === 'tabbed' ? (
-            <motion.div
-              key={selectedDay}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {/* Day Header Banner */}
-              <div
-                className={`p-6 sm:p-8 rounded-2xl border-2 mb-8 shadow-md relative overflow-hidden ${
-                  selectedDay === 'sept4'
-                    ? 'bg-gradient-to-br from-[#37080e] via-[#4d0c15] to-[#250308] border-[#e5cb8f] text-white'
-                    : 'bg-gradient-to-br from-[#fdfbf7] via-[#f9f3e7] to-[#f4ebe0] border-[#b89243] text-[#37080e]'
-                }`}
-              >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 border-b border-current/15 pb-6 mb-6">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase ${
-                          selectedDay === 'sept4'
-                            ? 'bg-[#e5cb8f] text-[#37080e]'
-                            : 'bg-[#5c141e] text-white'
-                        }`}
-                      >
-                        {activeData.dayNumber === '1'
-                          ? lang === 'es'
-                            ? 'VIERNES 3 · BIENVENIDA'
-                            : 'FRIDAY SEP 3 · WELCOME'
-                          : lang === 'es'
-                          ? 'SÁBADO 4 · LA BODA'
-                          : 'SATURDAY SEP 4 · WEDDING'}
-                      </span>
-                      <span className="font-cinzel text-xs font-bold tracking-widest opacity-80">
+        {/* The Hand-Drawn Pergamino Container */}
+        <div className="relative">
+          {/* Pergamino Scroll Top Spindle Roll */}
+          <div className="relative h-6 sm:h-7 w-full bg-gradient-to-r from-[#8c6d4f] via-[#d4b996] to-[#8c6d4f] rounded-t-full shadow-md flex items-center justify-between px-3 border border-[#6b5138]">
+            <div className="w-3 h-3 rounded-full bg-[#5c141e] border border-[#dfc285]" />
+            <div className="h-0.5 w-1/3 bg-[#8c6d4f]/40" />
+            <span className="font-cinzel text-[9px] tracking-[0.25em] uppercase font-bold text-[#37080e]/80">
+              {lang === 'es' ? 'ITINERARIO' : 'ITINERARY'}
+            </span>
+            <div className="h-0.5 w-1/3 bg-[#8c6d4f]/40" />
+            <div className="w-3 h-3 rounded-full bg-[#5c141e] border border-[#dfc285]" />
+          </div>
+
+          {/* Parchment Body (Rich vintage vellum texture, deckle borders, hand-drawn ink guidelines) */}
+          <div className="bg-gradient-to-b from-[#fcf8ef] via-[#f9f2e3] to-[#f4ead5] border-x-4 border-[#8c6d4f] p-6 sm:p-10 lg:p-12 shadow-[0_20px_50px_rgba(55,20,10,0.15)] relative">
+            {/* Hand-drawn double ink margin lines */}
+            <div className="absolute inset-3 sm:inset-5 border border-[#8c6d4f]/40 pointer-events-none rounded-lg" />
+            <div className="absolute inset-4 sm:inset-6 border border-dashed border-[#8c6d4f]/25 pointer-events-none rounded-md" />
+
+            {/* Corner Ornamental Flourishes */}
+            <div className="absolute top-4 left-4 pointer-events-none">
+              <ParchmentCornerFlourish position="tl" />
+            </div>
+            <div className="absolute top-4 right-4 pointer-events-none">
+              <ParchmentCornerFlourish position="tr" />
+            </div>
+            <div className="absolute bottom-4 left-4 pointer-events-none">
+              <ParchmentCornerFlourish position="bl" />
+            </div>
+            <div className="absolute bottom-4 right-4 pointer-events-none">
+              <ParchmentCornerFlourish position="br" />
+            </div>
+
+            {/* Pergamino Header Monogram Wax Seal */}
+            <div className="relative z-10 text-center mb-8">
+              <div className="inline-flex flex-col items-center">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-[#7a1d2b] to-[#3a0810] border-2 border-[#dfc285] flex items-center justify-center shadow-md mb-2">
+                  <Monogram size={40} variant="gold" />
+                </div>
+                <span className="font-cinzel text-xs tracking-[0.25em] font-bold text-[#5c141e] uppercase">
+                  Belén & Oriol
+                </span>
+                <span className="font-cormorant italic text-xs text-[#8c6d4f]">
+                  Salamanca · 4 de Septiembre de 2027
+                </span>
+              </div>
+            </div>
+
+            {/* Dynamic Content: Tabbed or Dual Scroll View */}
+            <div className="relative z-10">
+              <AnimatePresence mode="wait">
+                {viewMode === 'tabbed' ? (
+                  <motion.div
+                    key={selectedDay}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {/* Day Title & Decree Inscription */}
+                    <div className="text-center pb-6 mb-6 border-b border-[#8c6d4f]/30">
+                      <span className="font-cinzel text-xs tracking-[0.2em] font-bold uppercase text-[#8c6d4f] block mb-1">
                         {selectedDay === 'sept3'
-                          ? lang === 'es'
-                            ? '03.09.2027'
-                            : '09.03.2027'
-                          : lang === 'es'
-                          ? '04.09.2027'
-                          : '09.04.2027'}
+                          ? lang === 'es' ? 'VIERNES 3 DE SEPTIEMBRE' : 'FRIDAY, SEPTEMBER 3'
+                          : lang === 'es' ? 'SÁBADO 4 DE SEPTIEMBRE' : 'SATURDAY, SEPTEMBER 4'}
                       </span>
-                    </div>
-
-                    <h3 className="font-cinzel text-2xl sm:text-4xl font-bold tracking-wide">
-                      {activeData.fullDateString}
-                    </h3>
-                    <p
-                      className={`font-cormorant text-xl sm:text-2xl italic mt-1.5 ${
-                        selectedDay === 'sept4' ? 'text-[#e5cb8f]' : 'text-[#6e675f]'
-                      }`}
-                    >
-                      {activeData.subtitle}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleIcsExport(selectedDay)}
-                      className={`px-4 py-2.5 rounded-lg text-xs tracking-wider uppercase font-semibold border transition-colors flex items-center gap-2 cursor-pointer shadow-2xs ${
-                        selectedDay === 'sept4'
-                          ? 'border-white/40 bg-white/10 hover:bg-white/20 text-white'
-                          : 'border-[#b89243] bg-white hover:bg-[#b89243]/10 text-[#5c141e]'
-                      }`}
-                    >
-                      <Download className="w-4 h-4 text-[#dfc285]" />
-                      <span>{lang === 'es' ? 'Descargar .iCS' : 'Download .iCS'}</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Dress Code & Complimentary Shuttle Quick Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                  <div
-                    className={`p-4 rounded-xl border flex items-start gap-3.5 ${
-                      selectedDay === 'sept4'
-                        ? 'bg-black/30 border-white/15'
-                        : 'bg-white/80 border-[#b89243]/30 shadow-2xs'
-                    }`}
-                  >
-                    <Shirt className="w-5 h-5 text-[#b89243] shrink-0 mt-0.5" />
-                    <div>
-                      <span className="font-bold uppercase tracking-wider block text-[11px] mb-0.5">
-                        {lang === 'es' ? 'Código de Vestimenta' : 'Dress Code'}:{' '}
-                        {activeData.dressCode.title}
-                      </span>
-                      <p className="opacity-80 leading-relaxed text-[11px]">
-                        {activeData.dressCode.description}
+                      <h3 className="font-playfair text-2xl sm:text-3xl font-bold text-[#37080e]">
+                        {activeData.title}
+                      </h3>
+                      <p className="font-cormorant text-lg sm:text-xl italic text-[#5c141e] mt-1 max-w-xl mx-auto">
+                        {activeData.subtitle}
                       </p>
-                    </div>
-                  </div>
 
-                  <div
-                    className={`p-4 rounded-xl border flex items-start gap-3.5 ${
-                      selectedDay === 'sept4'
-                        ? 'bg-black/30 border-white/15'
-                        : 'bg-white/80 border-[#b89243]/30 shadow-2xs'
-                    }`}
+                      {/* Inscribed Badges on the Parchment */}
+                      <div className="flex flex-wrap items-center justify-center gap-3 mt-4 text-xs">
+                        {/* Dress code */}
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#8c6d4f]/10 border border-[#8c6d4f]/30 text-[#443831]">
+                          <Shirt className="w-3.5 h-3.5 text-[#b89243]" />
+                          <span className="font-cinzel font-semibold">Dress Code:</span>
+                          <span className="font-cormorant italic font-semibold text-[#5c141e]">
+                            {activeData.dressCode.title}
+                          </span>
+                        </div>
+
+                        {/* Guest bus on Saturday */}
+                        {selectedDay === 'sept4' && (
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#5c141e]/10 border border-[#5c141e]/20 text-[#5c141e]">
+                            <Bus className="w-3.5 h-3.5 text-[#5c141e]" />
+                            <span className="font-cinzel font-semibold">
+                              {lang === 'es'
+                                ? 'Autobús para invitados Salamanca ⇄ Castillo'
+                                : 'Guest Bus Salamanca ⇄ Castle'}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Preboda invite-only notice */}
+                        {selectedDay === 'sept3' && (
+                          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#5c141e] text-white shadow-xs">
+                            <span className="font-cinzel font-bold text-[11px] tracking-wider">
+                              {lang === 'es' ? '🔒 SOLO CON INVITACIÓN INDIVIDUAL' : '🔒 STRICTLY BY INVITATION ONLY'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {selectedDay === 'sept3' && (
+                        <div className="mt-5 p-4 rounded-xl bg-[#5c141e]/10 border-2 border-[#5c141e]/40 max-w-lg mx-auto text-center shadow-xs">
+                          <span className="font-cinzel text-xs font-bold text-[#5c141e] uppercase tracking-wider block mb-1">
+                            {lang === 'es' ? '✦ Encuentro Íntimo de Víspera ✦' : '✦ Intimate Eve Gathering ✦'}
+                          </span>
+                          <p className="font-sans text-xs text-[#443831] leading-relaxed">
+                            {lang === 'es'
+                              ? 'Por limitaciones de aforo del recinto, la preboda del viernes en Salamanca es exclusiva para aquellos invitados que hayan recibido la invitación correspondiente.'
+                              : 'Due to venue capacity restrictions, Friday\'s pre-wedding gathering in Salamanca is exclusively for guests who received an individual invitation.'}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Timeline Events on Parchment */}
+                    {renderParchmentEvents(activeData.events, selectedDay === 'sept4')}
+                  </motion.div>
+                ) : (
+                  /* Dual Day Scroll Inscription */
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-12"
                   >
-                    <Bus className="w-5 h-5 text-[#b89243] shrink-0 mt-0.5" />
+                    {/* Day 1 Section */}
                     <div>
-                      <span className="font-bold uppercase tracking-wider block text-[11px] mb-0.5">
-                        {lang === 'es' ? 'Autobús de Cortesía' : 'Complimentary Shuttle'}
-                      </span>
-                      <p className="opacity-80 leading-relaxed text-[11px]">
-                        {lang === 'es'
-                          ? 'Servicio de autobús lanzadera entre la Plaza de España de Salamanca y el Castillo del Buen Amor.'
-                          : 'Complimentary shuttle service between central Salamanca (Plaza de España) and Castillo del Buen Amor.'}
-                      </p>
+                      <div className="text-center pb-4 mb-4 border-b border-[#8c6d4f]/30">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#5c141e] text-white text-[10px] font-cinzel font-bold tracking-widest uppercase mb-1 shadow-xs">
+                          <span>🔒</span>
+                          <span>{lang === 'es' ? 'SOLO CON INVITACIÓN INDIVIDUAL' : 'STRICTLY BY INVITATION ONLY'}</span>
+                        </div>
+                        <h3 className="font-playfair text-2xl font-bold text-[#37080e] mt-1">
+                          {currentSchedule.sept3.title}
+                        </h3>
+                        <p className="font-cormorant text-base italic text-[#5c141e]">
+                          {lang === 'es'
+                            ? 'Viernes 3 de Septiembre · Salamanca · Encuentro Íntimo de Víspera'
+                            : 'Friday September 3 · Salamanca · Intimate Eve Gathering'}
+                        </p>
+                      </div>
+                      <div className="mb-4 p-3 rounded-lg bg-[#5c141e]/10 border border-[#5c141e]/30 text-center max-w-md mx-auto">
+                        <p className="text-xs text-[#5c141e] font-sans font-medium">
+                          {lang === 'es'
+                            ? 'Por limitación de aforo, la preboda es exclusiva para invitados convocados de forma individual.'
+                            : 'Due to venue capacity, the pre-wedding is strictly for guests with an individual invitation.'}
+                        </p>
+                      </div>
+                      {renderParchmentEvents(currentSchedule.sept3.events, false)}
                     </div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Hand-drawn Timeline Events */}
-              {renderTimelineEvents(activeData.events, selectedDay === 'sept4')}
-            </motion.div>
-          ) : (
-            /* View Both Days Stacked/Dual View */
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="space-y-16"
-            >
-              {/* Day 1 Section */}
-              <div>
-                <div className="flex items-center gap-3 mb-6 pb-3 border-b border-[#b89243]/30">
-                  <span className="px-3 py-1 rounded-full text-xs font-cinzel font-bold bg-[#5c141e] text-white">
-                    {lang === 'es' ? 'VIERNES 3 DE SEPTIEMBRE' : 'FRIDAY, SEPTEMBER 3'}
-                  </span>
-                  <span className="font-cinzel text-xs font-bold text-[#8c6d3b]">
-                    {lang === 'es' ? '03.09.2027' : '09.03.2027'}
-                  </span>
-                  <span className="text-xs text-[#6e675f] italic ml-auto">
-                    {lang === 'es' ? 'Cóctel & Tapas' : 'Welcome Reception'}
-                  </span>
-                </div>
-                {renderTimelineEvents(currentSchedule.sept3.events, false)}
-              </div>
+                    <div className="my-6">
+                      <HandDrawnBotanicalVine />
+                    </div>
 
-              {/* Day 2 Section */}
-              <div>
-                <div className="flex items-center gap-3 mb-6 pb-3 border-b border-[#b89243]/30">
-                  <span className="px-3 py-1 rounded-full text-xs font-cinzel font-bold bg-[#37080e] text-[#e5cb8f] border border-[#e5cb8f]">
-                    {lang === 'es' ? 'SÁBADO 4 DE SEPTIEMBRE' : 'SATURDAY, SEPTEMBER 4'}
-                  </span>
-                  <span className="font-cinzel text-xs font-bold text-[#8c6d3b]">
-                    {lang === 'es' ? '04.09.2027' : '09.04.2027'}
-                  </span>
-                  <span className="text-xs text-[#6e675f] italic ml-auto">
-                    {lang === 'es' ? 'El Gran Día · La Boda' : 'The Wedding Celebration'}
-                  </span>
-                </div>
-                {renderTimelineEvents(currentSchedule.sept4.events, true)}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                    {/* Day 2 Section */}
+                    <div>
+                      <div className="text-center pb-4 mb-4 border-b border-[#8c6d4f]/30">
+                        <span className="font-cinzel text-xs tracking-widest font-bold text-[#5c141e] uppercase">
+                          {lang === 'es' ? 'Jornada 2 · El Castillo del Buen Amor' : 'Day 2 · Castillo del Buen Amor'}
+                        </span>
+                        <h3 className="font-playfair text-2xl font-bold text-[#37080e]">
+                          {currentSchedule.sept4.title}
+                        </h3>
+                        <p className="font-cormorant text-base italic text-[#5c141e]">
+                          {lang === 'es'
+                            ? 'Dress code: Cocktail o Black Tie · Autobús de invitados disponible'
+                            : 'Dress code: Cocktail or Black Tie · Guest bus service provided'}
+                        </p>
+                      </div>
+                      {renderParchmentEvents(currentSchedule.sept4.events, true)}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Pergamino Footer Signature / Wax Stamp */}
+            <div className="mt-8 pt-4 border-t border-[#8c6d4f]/30 text-center relative z-10">
+              <span className="font-cinzel text-[11px] tracking-[0.2em] uppercase font-bold text-[#5c141e] block">
+                Belén & Oriol · Salamanca 2027
+              </span>
+            </div>
+          </div>
+
+          {/* Pergamino Scroll Bottom Spindle Roll */}
+          <div className="relative h-6 sm:h-7 w-full bg-gradient-to-r from-[#8c6d4f] via-[#d4b996] to-[#8c6d4f] rounded-b-full shadow-lg flex items-center justify-between px-3 border border-[#6b5138]">
+            <div className="w-3 h-3 rounded-full bg-[#5c141e] border border-[#dfc285]" />
+            <div className="h-0.5 w-1/3 bg-[#8c6d4f]/40" />
+            <span className="font-cinzel text-[9px] tracking-[0.25em] uppercase font-bold text-[#37080e]/80">
+              ✦ CASTILLO DEL BUEN AMOR ✦
+            </span>
+            <div className="h-0.5 w-1/3 bg-[#8c6d4f]/40" />
+            <div className="w-3 h-3 rounded-full bg-[#5c141e] border border-[#dfc285]" />
+          </div>
+        </div>
       </div>
     </section>
   );

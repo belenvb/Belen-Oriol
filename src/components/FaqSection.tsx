@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { Language } from '../types';
+import { GaudiModernistDivider } from './GaudiAccents';
 
 interface FaqSectionProps {
   lang: Language;
@@ -15,16 +16,16 @@ interface FaqItem {
 
 const faqs: FaqItem[] = [
   {
-    qEs: '¿Cómo funciona el servicio de autobuses lanzadera desde Salamanca?',
-    qEn: 'How does the guest shuttle service from Salamanca work?',
-    aEs: 'Disponemos de autobuses privados tanto el Viernes 3 (18:45h) como el Sábado 4 (16:45h) con salida desde la Plaza de España de Salamanca. Habrá varios turnos de regreso durante la noche y madrugada. Puedes reservar tu plaza al completar el RSVP.',
-    aEn: 'Private shuttles depart from Plaza de España in Salamanca on Friday Sep 3 (18:45) and Saturday Sep 4 (16:45). Multiple return trips run throughout the night. Simply reserve your seats in the RSVP form.',
+    qEs: '¿Cómo funciona el servicio de autobús para invitados entre Salamanca y el Castillo del Buen Amor?',
+    qEn: 'How does the guest bus service between Salamanca and Castillo del Buen Amor work?',
+    aEs: 'Para el sábado 4 (día de la boda), disponemos de un servicio de autobús para invitados con salida desde Salamanca hacia el Castillo del Buen Amor para la ceremonia, y varios turnos de regreso durante la fiesta y la madrugada. Puedes reservar tu plaza al completar el RSVP.',
+    aEn: 'For Saturday Sep 4 (the wedding day), guest bus transportation is provided from Salamanca to Castillo del Buen Amor for the ceremony, with multiple return buses during the evening and late night. You can easily reserve your seat on the RSVP form.',
   },
   {
     qEs: '¿Cuál es el código de vestimenta para el Viernes 3 y el Sábado 4?',
     qEn: 'What is the dress code for Friday Sep 3 and Saturday Sep 4?',
-    aEs: 'Para la víspera del Viernes 3 el estilo es "Cocktail Chic / Elegante Relajado" (lino, trajes claros, vestidos de cóctel). Para el Sábado 4 es "Formal Elegante / Black Tie Optional" (traje oscuro o chaqué para caballeros, vestido largo o cóctel para señoras).',
-    aEn: 'Friday Sep 3 is "Cocktail Chic / Effortless Elegance" (linens, warm palettes, relaxed tailoring). Saturday Sep 4 is "Formal Elegance / Black Tie Optional" (dark suit or tuxedo for gentlemen, floor-length or elevated cocktail gowns for ladies).',
+    aEs: 'Para la preboda del Viernes 3 en Salamanca el dress code es Casual (ropa cómoda y relajada). Para la boda del Sábado 4 en el castillo el dress code es Cocktail o Black Tie (vestido de cóctel o largo para señoras, traje oscuro o esmoquin para caballeros).',
+    aEn: 'For Friday Sep 3 in Salamanca, the dress code is Casual (comfortable and relaxed). For Saturday Sep 4 at the castle, the dress code is Cocktail or Black Tie (cocktail or evening gown for ladies, dark suit or tuxedo for gentlemen).',
   },
   {
     qEs: '¿Hay aparcamiento en El Castillo del Buen Amor?',
@@ -37,6 +38,12 @@ const faqs: FaqItem[] = [
     qEn: 'Are special dietary menus catered for celiac, vegans, and allergies?',
     aEs: 'Absolutamente. El equipo de cocina del castillo adaptará cada plato con el máximo rigor para cualquier intolerancia, celiaquía o preferencia alimentaria. Por favor indícalo en el formulario de confirmación.',
     aEn: 'Absolutely. The castle culinary team caters dedicated menus for celiac (gluten-free), vegan, vegetarian, and all specific allergies. Please note your requirements in the RSVP.',
+  },
+  {
+    qEs: '¿Pueden asistir niños a la boda?',
+    qEn: 'Are children invited to the wedding?',
+    aEs: 'Aunque adoramos a los más pequeños, hemos decidido que nuestra boda sea una celebración exclusivamente para adultos. Deseamos que todos los invitados podáis desconectar, brindar y disfrutar al máximo de la fiesta con nosotros.',
+    aEn: 'Although we love little ones, our wedding celebration is strictly an adults-only event. We hope this allows all our guests to relax, let loose, and fully enjoy the party with us.',
   },
 ];
 
@@ -57,7 +64,7 @@ export function FaqSection({ lang }: FaqSectionProps) {
           <h2 className="font-cinzel text-3xl sm:text-4xl text-[#37080e] font-bold tracking-[0.03em] uppercase">
             {lang === 'es' ? 'Información para Invitados' : 'Guest Information'}
           </h2>
-          <div className="w-16 h-[1.5px] bg-[#b89243] mx-auto mt-4" />
+          <GaudiModernistDivider variant="mosaic" className="mt-4" />
         </div>
 
         <div className="space-y-4">

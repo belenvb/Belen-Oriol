@@ -34,6 +34,7 @@ export function Header({ lang, onLanguageChange, activeSection }: HeaderProps) {
     { href: '#castle', es: 'El Castillo', en: 'The Castle' },
     { href: '#journey', es: 'Viaje & Hoteles', en: 'Travel/Hotels' },
     { href: '#registry', es: 'Lista de Bodas', en: 'Registry' },
+    { href: '#faq', es: 'Q&A', en: 'Q&A' },
     { href: '#rsvp', es: 'Asistencia', en: 'RSVP' },
   ];
 
@@ -64,28 +65,17 @@ export function Header({ lang, onLanguageChange, activeSection }: HeaderProps) {
           className="flex items-center gap-3 group focus:outline-none"
         >
           <Monogram
-            size={40}
+            size={42}
             variant={isScrolled ? 'burgundy' : 'gold'}
             className="transition-transform duration-300 group-hover:scale-105"
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col justify-center">
             <span
-              className={`font-cinzel text-sm sm:text-base tracking-[0.16em] uppercase font-bold transition-colors ${
-                isScrolled ? 'text-[#37080e]' : 'text-[#fcfaf6]'
+              className={`text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-semibold transition-colors font-cinzel ${
+                isScrolled ? 'text-[#5c141e]' : 'text-[#dfc285]'
               }`}
             >
-              Belén{' '}
-              <span className="font-serif italic text-xs lowercase text-[#b89243] font-normal">
-                &amp;
-              </span>{' '}
-              Oriol
-            </span>
-            <span
-              className={`text-[9px] tracking-[0.24em] uppercase font-medium transition-colors ${
-                isScrolled ? 'text-[#8c6d3b]' : 'text-[#dfc285]'
-              }`}
-            >
-              Salamanca · 3 &amp; 4 Sep 2027
+              Salamanca · 4 September 2027
             </span>
           </div>
         </a>

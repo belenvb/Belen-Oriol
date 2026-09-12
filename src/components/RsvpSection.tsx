@@ -3,6 +3,7 @@ import { CheckCircle2, Heart, Send, Sparkles, User, Mail, Utensils, Bus, Music, 
 import { motion } from 'motion/react';
 import { GuestRsvp, Language } from '../types';
 import { CASTLE_ROOMS, getCastleRoomBookings, recordRoomBooking } from '../data/rooms';
+import { GaudiModernistDivider } from './GaudiAccents';
 
 interface RsvpSectionProps {
   lang: Language;
@@ -138,7 +139,38 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
               ? 'Por favor confírmanos tu asistencia antes del 15 de Julio de 2027 para organizar cada detalle de tu estancia.'
               : 'Please confirm your attendance before July 15, 2027 to help us curate every aspect of your experience.'}
           </p>
-          <div className="w-16 h-[1.5px] bg-[#b89243] mx-auto mt-6" />
+          <GaudiModernistDivider variant="mosaic" className="mt-4" />
+        </motion.div>
+
+        {/* Prominent Castle Room Block & Headcount Notice before Dec 31 */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#faf2e3] via-[#fcf8ef] to-[#faf2e3] border-2 border-[#b89243] shadow-md relative overflow-hidden"
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-[#5c141e] border-2 border-[#dfc285] flex items-center justify-center text-[#dfc285] shrink-0 shadow-sm">
+              <BedDouble className="w-6 h-6" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#5c141e] text-white">
+                  {lang === 'es' ? 'AVISO IMPORTANTE · ANTES DEL 31 DE DICIEMBRE' : 'IMPORTANT NOTICE · BEFORE DECEMBER 31'}
+                </span>
+              </div>
+              <h3 className="font-playfair text-base sm:text-lg font-bold text-[#37080e]">
+                {lang === 'es'
+                  ? 'Conteo Inicial para el Bloqueo de Habitaciones del Castillo'
+                  : 'Initial Headcount for the Castle Room Block'}
+              </h3>
+              <p className="font-sans text-xs sm:text-sm text-[#554f47] leading-relaxed mt-1">
+                {lang === 'es'
+                  ? 'Para poder gestionar con el Castillo del Buen Amor el bloqueo de habitaciones exclusivas para los invitados, necesitamos un conteo inicial antes del 31 de diciembre. Si tienes intención de acompañarnos y/o alojarte en el castillo, por favor envíanos tu confirmación preliminar lo antes posible.'
+                  : 'In order to arrange and reserve the exclusive room block at Castillo del Buen Amor for our guests, we kindly request an initial headcount before December 31st. If you plan to join us and/or stay at the castle, please submit your preliminary response as early as possible.'}
+              </p>
+            </div>
+          </div>
         </motion.div>
 
         {/* Confirmation Card if already submitted */}
@@ -395,20 +427,27 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                       >
                         <option value="both">
                           {lang === 'es'
-                            ? 'Ambos Días — Viernes 3 (Bienvenida) y Sábado 4 (La Boda)'
-                            : 'Both Days — Friday Sep 3 & Saturday Sep 4'}
+                            ? 'Ambos Días — Viernes 3 (Preboda íntima · Solo Invitación) y Sábado 4 (La Boda)'
+                            : 'Both Days — Friday Sep 3 (Intimate · Invite Only) & Saturday Sep 4 (Wedding)'}
                         </option>
                         <option value="sept4_only">
                           {lang === 'es'
-                            ? 'Solo Sábado 4 de Septiembre (La Boda)'
-                            : 'Saturday Sep 4 Only (The Wedding)'}
+                            ? 'Solo Sábado 4 de Septiembre (El Gran Día · La Boda)'
+                            : 'Saturday Sep 4 Only (The Wedding Day)'}
                         </option>
                         <option value="sept3_only">
                           {lang === 'es'
-                            ? 'Solo Viernes 3 de Septiembre (Bienvenida)'
-                            : 'Friday Sep 3 Only (Welcome Evening)'}
+                            ? 'Solo Viernes 3 de Septiembre (Preboda íntima · Solo Invitación)'
+                            : 'Friday Sep 3 Only (Intimate Gathering · Invite Only)'}
                         </option>
                       </select>
+                      {(formData.attendingDays === 'both' || formData.attendingDays === 'sept3_only') && (
+                        <p className="text-[11px] text-[#8c6d3b] font-medium mt-1.5 italic">
+                          {lang === 'es'
+                            ? '✦ Nota: Por motivos de aforo, el encuentro del viernes es un encuentro íntimo y exclusivo para quienes hayáis recibido la invitación correspondiente.'
+                            : '✦ Note: Due to venue capacity, the Friday evening is an intimate gathering strictly for guests who received an invitation.'}
+                        </p>
+                      )}
                     </div>
 
                     {/* Number of Guests */}
@@ -495,13 +534,13 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                           <span className="font-bold text-[#37080e] flex items-center gap-1.5 uppercase tracking-wider">
                             <Bus className="w-3.5 h-3.5 text-[#b89243]" />
                             {lang === 'es'
-                              ? 'Deseo reservar plaza en el autobús Salamanca - Castillo'
-                              : 'Reserve seats on the Salamanca - Castle shuttle'}
+                              ? 'Deseo reservar plaza en el servicio de autobús para invitados (Salamanca - Castillo)'
+                              : 'Reserve seats on the guest bus service (Salamanca - Castle)'}
                           </span>
                           <span className="text-[#6e675f] block mt-0.5">
                             {lang === 'es'
-                              ? 'Salida desde la Plaza de España de Salamanca con regreso al finalizar la fiesta.'
-                              : 'Departing from Plaza de España with return shuttle service throughout the evening.'}
+                              ? 'Salida desde Salamanca con regreso al finalizar la fiesta.'
+                              : 'Departing from Salamanca with return shuttle service throughout the evening.'}
                           </span>
                         </div>
                       </label>

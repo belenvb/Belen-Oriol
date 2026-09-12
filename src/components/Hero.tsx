@@ -74,7 +74,7 @@ export function Hero({ lang, onNavigate }: HeroProps) {
         >
           <h1 className="font-cinzel text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-[0.12em] text-[#fcfaf6] uppercase leading-tight drop-shadow-md flex items-center justify-center gap-2 sm:gap-3">
             <span>Belén</span>
-            <span className="font-baroque text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#dfc285] select-none mx-1 font-normal drop-shadow-[0_2px_10px_rgba(223,194,133,0.3)]">
+            <span className="font-cormorant italic font-normal text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#dfc285] select-none mx-2 sm:mx-3 inline-block leading-none drop-shadow-[0_2px_10px_rgba(223,194,133,0.35)]">
               &amp;
             </span>
             <span>Oriol</span>

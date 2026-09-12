@@ -1,176 +1,387 @@
-import { useMemo } from 'react';
-import { motion } from 'motion/react';
+import { useMemo, useRef } from 'react';
+import { motion, useInView } from 'motion/react';
 
 interface HorizontalTrencadisProps {
   className?: string;
-  showCenterMedallion?: boolean;
 }
 
-export function HorizontalTrencadis({
-  className = '',
-  showCenterMedallion = true,
-}: HorizontalTrencadisProps) {
-  // Palette inspired by Gaudí's trencadís and Belén & Oriol's royal wedding invitations:
-  // Deep wine/burgundy, warm terracotta, Spanish olive/moss, rich saffron/ochre, lapis blue, and glazed porcelain
-  const palette = useMemo(
-    () => [
-      { fill: '#5c141e', highlight: '#84202d' }, // Burgundy
-      { fill: '#781a28', highlight: '#9b2638' }, // Crimson
-      { fill: '#3d5c38', highlight: '#557a50' }, // Olive Green
-      { fill: '#2e482b', highlight: '#42633d' }, // Deep Moss
-      { fill: '#d69929', highlight: '#f0b748' }, // Ochre Gold
-      { fill: '#c2831c', highlight: '#dba235' }, // Saffron
-      { fill: '#c6532d', highlight: '#de6d47' }, // Terracotta
-      { fill: '#a83e1d', highlight: '#c4512e' }, // Burnt Clay
-      { fill: '#244874', highlight: '#3a6498' }, // Cobalt Blue
-      { fill: '#1b375b', highlight: '#2a4f7e' }, // Lapis
-      { fill: '#faf5ea', highlight: '#ffffff' }, // Glazed Porcelain
-      { fill: '#ede2ce', highlight: '#fdfbf7' }, // Cream Tile
-      { fill: '#5c141e', highlight: '#7a1a27' }, // Deep Wine
-      { fill: '#4a6d45', highlight: '#688f61' }, // Sage Leaf
-      { fill: '#e5b03b', highlight: '#ffd269' }, // Warm Gold
-      { fill: '#8c2432', highlight: '#ab3242' }, // Rose Red
-    ],
-    []
-  );
+interface TileShard {
+  id: string;
+  points: string;
+  facetPoints?: string;
+  fill: string;
+  opacity: number;
+  scatterX: number;
+  scatterY: number;
+  scatterRotate: number;
+  scatterScale: number;
+}
 
-  // Generate an intricate, authentic set of polygonal mosaic shards for a seamless horizontal repeating tile
-  // Width 400, Height 54
-  const shards = useMemo(() => {
-    return [
-      // Row 1 (top band)
-      { points: '0,0 28,0 22,18 0,16', colorIdx: 0 },
-      { points: '28,0 58,0 64,16 22,18', colorIdx: 4 },
-      { points: '58,0 92,0 86,17 64,16', colorIdx: 2 },
-      { points: '92,0 128,0 120,18 86,17', colorIdx: 6 },
-      { points: '128,0 162,0 156,15 120,18', colorIdx: 10 },
-      { points: '162,0 196,0 202,17 156,15', colorIdx: 1 },
-      { points: '196,0 234,0 226,18 202,17', colorIdx: 8 },
-      { points: '234,0 268,0 262,16 226,18', colorIdx: 3 },
-      { points: '268,0 304,0 310,18 262,16', colorIdx: 5 },
-      { points: '304,0 338,0 332,15 310,18', colorIdx: 7 },
-      { points: '338,0 372,0 366,17 332,15', colorIdx: 11 },
-      { points: '372,0 400,0 400,16 366,17', colorIdx: 0 },
+interface RosetteFragment {
+  cx: number;
+  cy: number;
+  r: number;
+  color: string;
+  innerColor: string;
+  scatterX: number;
+  scatterY: number;
+}
 
-      // Row 2 (upper mid)
-      { points: '0,16 22,18 16,34 0,32', colorIdx: 7 },
-      { points: '22,18 64,16 56,35 16,34', colorIdx: 11 },
-      { points: '64,16 86,17 92,36 56,35', colorIdx: 0 },
-      { points: '86,17 120,18 114,35 92,36', colorIdx: 4 },
-      { points: '120,18 156,15 162,34 114,35', colorIdx: 8 },
-      { points: '156,15 202,17 194,36 162,34', colorIdx: 2 },
-      { points: '202,17 226,18 232,35 194,36', colorIdx: 6 },
-      { points: '226,18 262,16 254,34 232,35', colorIdx: 10 },
-      { points: '262,16 310,18 304,36 254,34', colorIdx: 1 },
-      { points: '310,18 332,15 338,35 304,36', colorIdx: 9 },
-      { points: '332,15 366,17 360,34 338,35', colorIdx: 3 },
-      { points: '366,17 400,16 400,33 360,34', colorIdx: 5 },
+export function HorizontalTrencadis({ className = '' }: HorizontalTrencadisProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { amount: 0.05, once: false });
 
-      // Row 3 (lower mid)
-      { points: '0,32 16,34 24,46 0,44', colorIdx: 2 },
-      { points: '16,34 56,35 48,48 24,46', colorIdx: 5 },
-      { points: '56,35 92,36 84,49 48,48', colorIdx: 9 },
-      { points: '92,36 114,35 122,48 84,49', colorIdx: 1 },
-      { points: '114,35 162,34 154,49 122,48', colorIdx: 3 },
-      { points: '162,34 194,36 200,48 154,49', colorIdx: 7 },
-      { points: '194,36 232,35 224,49 200,48', colorIdx: 11 },
-      { points: '232,35 254,34 262,48 224,49', colorIdx: 0 },
-      { points: '254,34 304,36 296,49 262,48', colorIdx: 4 },
-      { points: '304,36 338,35 344,48 296,49', colorIdx: 8 },
-      { points: '338,35 360,34 368,48 344,48', colorIdx: 10 },
-      { points: '360,34 400,33 400,46 368,48', colorIdx: 6 },
-
-      // Row 4 (bottom band)
-      { points: '0,44 24,46 18,54 0,54', colorIdx: 8 },
-      { points: '24,46 48,48 54,54 18,54', colorIdx: 1 },
-      { points: '48,48 84,49 78,54 54,54', colorIdx: 4 },
-      { points: '84,49 122,48 116,54 78,54', colorIdx: 10 },
-      { points: '122,48 154,49 160,54 116,54', colorIdx: 2 },
-      { points: '154,49 200,48 192,54 160,54', colorIdx: 5 },
-      { points: '200,48 224,49 230,54 192,54', colorIdx: 9 },
-      { points: '224,49 262,48 256,54 230,54', colorIdx: 7 },
-      { points: '262,48 296,49 302,54 256,54', colorIdx: 3 },
-      { points: '296,49 344,48 338,54 302,54', colorIdx: 11 },
-      { points: '344,48 368,48 374,54 338,54', colorIdx: 0 },
-      { points: '368,48 400,46 400,54 374,54', colorIdx: 4 },
+  // Pure Gaudí & Catalan Modernist ceramic palette (No white tiles!)
+  const { shards, rosettes } = useMemo(() => {
+    const palette = [
+      '#74182a', // Wine Burgundy
+      '#d79523', // Salamanca Ochre Gold
+      '#1b542e', // Forest Emerald
+      '#1a3d6f', // Mediterranean Cobalt
+      '#bf4d28', // Terracotta Orange
+      '#532d43', // Deep Plum Ceramic
+      '#c2841b', // Catalan Amber
+      '#265b40', // Deep Forest
+      '#163761', // Lapis Blue
+      '#9c3321', // Warm Paprika
+      '#621827', // Dark Wine
+      '#2f4858', // Slate Ceramic
+      '#a86518', // Warm Ochre
+      '#3b1728', // Dark Burgundy
     ];
+
+    // Deterministic pseudorandom generator
+    const pseudo = (seed: number) => {
+      const s = Math.sin(seed * 92.8371 + 45.1932) * 43758.5453;
+      return s - Math.floor(s);
+    };
+
+    const totalW = 1600;
+    const totalH = 44;
+    const topY = 2;
+    const botY = 42;
+
+    // We build 3 slender undulating organic boundary paths across 1600px width.
+    // Level 0: top boundary (y = 2)
+    // Level 1: upper wave (y ~ 14 to 18)
+    // Level 2: lower wave (y ~ 26 to 30)
+    // Level 3: bottom boundary (y = 42)
+
+    const generateLevelNodes = (approxSpacing: number, seedBase: number) => {
+      const nodes: { x: number; y: number }[] = [];
+      let currentX = 0;
+      let idx = 0;
+
+      while (currentX < totalW) {
+        nodes.push({ x: currentX, y: 0 });
+        const step = approxSpacing * (0.7 + pseudo(seedBase + idx * 3.7) * 0.6);
+        currentX += step;
+        idx++;
+      }
+      nodes.push({ x: totalW, y: 0 });
+      return nodes;
+    };
+
+    const l0Nodes = generateLevelNodes(28, 101).map((n) => ({ x: n.x, y: topY }));
+
+    const l1Nodes = generateLevelNodes(26, 202).map((n, idx) => {
+      const wave = Math.sin((n.x / 160) * Math.PI) * 4;
+      const jY = (pseudo(idx * 7.1 + 10) - 0.5) * 4.5;
+      const y = Math.max(9, Math.min(22, 15 + wave + jY));
+      return { x: n.x, y };
+    });
+
+    const l2Nodes = generateLevelNodes(26, 303).map((n, idx) => {
+      const wave = Math.sin((n.x / 150) * Math.PI) * 4 + Math.cos((n.x / 240) * Math.PI) * 2;
+      const jY = (pseudo(idx * 8.3 + 20) - 0.5) * 4.5;
+      const y = Math.max(22, Math.min(36, 29 + wave + jY));
+      return { x: n.x, y };
+    });
+
+    const l3Nodes = generateLevelNodes(28, 404).map((n) => ({ x: n.x, y: botY }));
+
+    const shardList: TileShard[] = [];
+    let shardCounter = 0;
+
+    const weaveLevels = (
+      upper: { x: number; y: number }[],
+      lower: { x: number; y: number }[],
+      tierName: string,
+      colorOffset: number
+    ) => {
+      let uIdx = 0;
+      let lIdx = 0;
+
+      while (uIdx < upper.length - 1 || lIdx < lower.length - 1) {
+        const uCurrent = upper[uIdx];
+        const uNext = upper[Math.min(uIdx + 1, upper.length - 1)];
+        const lCurrent = lower[lIdx];
+        const lNext = lower[Math.min(lIdx + 1, lower.length - 1)];
+
+        // Large, dramatic scatter translations that fly in from across the page!
+        const scAngle = pseudo(shardCounter * 2.3) * Math.PI * 2;
+        const scDist = 180 + pseudo(shardCounter * 3.1) * 320;
+        const scX = Math.cos(scAngle) * scDist;
+        const scY = (pseudo(shardCounter * 4.7) - 0.5) * 280;
+        const scR = (pseudo(shardCounter * 6.7) - 0.5) * 160;
+        const scScale = 0.3 + pseudo(shardCounter * 1.7) * 0.9;
+        const opacity = 0.86 + pseudo(shardCounter * 5.1) * 0.12;
+
+        if (uNext.x < lCurrent.x + 6 && uIdx < upper.length - 1) {
+          const p0 = `${uCurrent.x.toFixed(1)},${uCurrent.y.toFixed(1)}`;
+          const p1 = `${uNext.x.toFixed(1)},${uNext.y.toFixed(1)}`;
+          const p2 = `${lCurrent.x.toFixed(1)},${lCurrent.y.toFixed(1)}`;
+          const color = palette[(shardCounter * 3 + colorOffset) % palette.length];
+
+          shardList.push({
+            id: `${tierName}-tu-${shardCounter++}`,
+            points: `${p0} ${p1} ${p2}`,
+            facetPoints: `${p0} ${p1} ${(uCurrent.x * 0.4 + lCurrent.x * 0.6).toFixed(1)},${(uCurrent.y * 0.4 + lCurrent.y * 0.6).toFixed(1)}`,
+            fill: color,
+            opacity,
+            scatterX: scX,
+            scatterY: scY,
+            scatterRotate: scR,
+            scatterScale: scScale,
+          });
+          uIdx++;
+        } else if (lNext.x < uCurrent.x + 6 && lIdx < lower.length - 1) {
+          const p0 = `${uCurrent.x.toFixed(1)},${uCurrent.y.toFixed(1)}`;
+          const p1 = `${lNext.x.toFixed(1)},${lNext.y.toFixed(1)}`;
+          const p2 = `${lCurrent.x.toFixed(1)},${lCurrent.y.toFixed(1)}`;
+          const color = palette[(shardCounter * 5 + colorOffset + 1) % palette.length];
+
+          shardList.push({
+            id: `${tierName}-tl-${shardCounter++}`,
+            points: `${p0} ${p1} ${p2}`,
+            facetPoints: `${p0} ${(lCurrent.x * 0.5 + lNext.x * 0.5).toFixed(1)},${lCurrent.y.toFixed(1)} ${p2}`,
+            fill: color,
+            opacity,
+            scatterX: scX,
+            scatterY: scY,
+            scatterRotate: scR,
+            scatterScale: scScale,
+          });
+          lIdx++;
+        } else {
+          const p0 = `${uCurrent.x.toFixed(1)},${uCurrent.y.toFixed(1)}`;
+          const p1 = `${uNext.x.toFixed(1)},${uNext.y.toFixed(1)}`;
+          const p2 = `${lNext.x.toFixed(1)},${lNext.y.toFixed(1)}`;
+          const p3 = `${lCurrent.x.toFixed(1)},${lCurrent.y.toFixed(1)}`;
+
+          // Every ~2nd piece fractures diagonally with overlapping translucency
+          const shouldFracture = pseudo(shardCounter * 7.9) > 0.4;
+
+          if (shouldFracture) {
+            const colorA = palette[(shardCounter * 3 + colorOffset) % palette.length];
+            shardList.push({
+              id: `${tierName}-fA-${shardCounter++}`,
+              points: `${p0} ${p1} ${p3}`,
+              facetPoints: `${p0} ${p1} ${(uCurrent.x * 0.5 + uNext.x * 0.5).toFixed(1)},${(uCurrent.y + 4).toFixed(1)}`,
+              fill: colorA,
+              opacity,
+              scatterX: scX * 1.1,
+              scatterY: scY * 1.1,
+              scatterRotate: scR,
+              scatterScale: scScale,
+            });
+
+            const colorB = palette[(shardCounter * 4 + colorOffset + 2) % palette.length];
+            shardList.push({
+              id: `${tierName}-fB-${shardCounter++}`,
+              points: `${p1} ${p2} ${p3}`,
+              facetPoints: `${p1} ${p2} ${(lCurrent.x * 0.5 + lNext.x * 0.5).toFixed(1)},${lNext.y.toFixed(1)}`,
+              fill: colorB,
+              opacity: opacity * 0.94,
+              scatterX: -scX * 0.9,
+              scatterY: -scY * 0.9,
+              scatterRotate: -scR,
+              scatterScale: scScale,
+            });
+          } else {
+            const color = palette[(shardCounter * 3 + colorOffset) % palette.length];
+            shardList.push({
+              id: `${tierName}-q-${shardCounter++}`,
+              points: `${p0} ${p1} ${p2} ${p3}`,
+              facetPoints: `${p0} ${p1} ${p3}`,
+              fill: color,
+              opacity,
+              scatterX: scX,
+              scatterY: scY,
+              scatterRotate: scR,
+              scatterScale: scScale,
+            });
+          }
+
+          if (uIdx < upper.length - 1) uIdx++;
+          if (lIdx < lower.length - 1) lIdx++;
+        }
+      }
+    };
+
+    weaveLevels(l0Nodes, l1Nodes, 'tier0', 0);
+    weaveLevels(l1Nodes, l2Nodes, 'tier1', 4);
+    weaveLevels(l2Nodes, l3Nodes, 'tier2', 8);
+
+    // Decorative broken ceramic rosettes (No white centers!)
+    const rosetteList: RosetteFragment[] = [
+      { cx: 140, cy: 22, r: 7.5, color: '#d79523', innerColor: '#74182a', scatterX: -260, scatterY: -140 },
+      { cx: 420, cy: 21, r: 7, color: '#1a3d6f', innerColor: '#c2841b', scatterX: 300, scatterY: 150 },
+      { cx: 750, cy: 23, r: 8, color: '#74182a', innerColor: '#d79523', scatterX: -190, scatterY: 180 },
+      { cx: 1080, cy: 20, r: 7, color: '#1b542e', innerColor: '#bf4d28', scatterX: 250, scatterY: -160 },
+      { cx: 1420, cy: 22, r: 7.5, color: '#bf4d28', innerColor: '#163761', scatterX: -320, scatterY: 120 },
+    ];
+
+    return { shards: shardList, rosettes: rosetteList };
   }, []);
 
   return (
     <div
-      className={`relative w-full overflow-hidden select-none my-0 py-0 ${className}`}
-      aria-label="Cinta decorativa de trencadís catalán"
+      ref={containerRef}
+      className={`relative w-full overflow-visible select-none my-0 py-0 z-20 ${className}`}
     >
-      {/* Top Gold & Filigree Edge */}
-      <div className="h-1.5 w-full bg-gradient-to-r from-[#dfc285] via-[#b89243] to-[#dfc285] relative shadow-xs">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.4),transparent_70%)]" />
+      {/* Top Refined Gilded Relief Fillet (Seamless embossed gold, no heavy black lines) */}
+      <div className="relative w-full h-[3px] bg-gradient-to-r from-transparent via-[#dfc285] to-transparent shadow-[0_1px_3px_rgba(184,146,67,0.35)]">
+        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#fff5df] to-transparent opacity-90" />
+        <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#8c6d3b] to-transparent opacity-50" />
       </div>
-      <div className="h-[2px] w-full bg-[#37080e]/40" />
 
-      {/* Main Mosaic Canvas / Frieze */}
-      <div className="relative h-14 sm:h-16 md:h-18 w-full bg-[#362921] overflow-hidden flex items-center justify-center">
-        {/* Subtle texture shadow under tiles */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/35 pointer-events-none z-10" />
+      {/* Main Slender Gaudí Trencadís Mosaic Bed (Seamless dark mortar integrated with page) */}
+      <div className="relative h-9 sm:h-11 md:h-12 w-full overflow-visible bg-[#1a1514] shadow-inner">
+        {/* Subtle texture mortar backdrop */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#161211] via-[#1f1918] to-[#161211] opacity-95" />
 
-        {/* Repeating Vector Mosaic using SVG Pattern */}
+        {/* Dynamic Mosaic Tiles with Page-Wide Flying Convergence Animation */}
         <svg
-          className="absolute inset-0 w-full h-full"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="repeat"
+          viewBox="0 0 1600 44"
+          className="relative z-10 w-full h-full overflow-visible"
+          preserveAspectRatio="none"
         >
           <defs>
-            <pattern
-              id="trencadis-tile-pattern"
-              width="400"
-              height="54"
-              patternUnits="userSpaceOnUse"
-              patternTransform="scale(1.25)"
-            >
-              {/* Mortar / Grout Base */}
-              <rect width="400" height="54" fill="#2d221b" />
-
-              {/* Broken ceramic pieces */}
-              {shards.map((shard, idx) => {
-                const color = palette[shard.colorIdx % palette.length];
-                return (
-                  <g key={idx}>
-                    {/* Shadow underneath individual tile shard */}
-                    <polygon
-                      points={shard.points}
-                      fill="#19130f"
-                      transform="translate(0.5, 0.8)"
-                      opacity="0.75"
-                    />
-                    {/* Main ceramic body */}
-                    <polygon
-                      points={shard.points}
-                      fill={color.fill}
-                      stroke="#2d221b"
-                      strokeWidth="1.6"
-                      strokeLinejoin="round"
-                    />
-                    {/* Glazed bevel highlight */}
-                    <polygon
-                      points={shard.points}
-                      fill={color.highlight}
-                      opacity="0.32"
-                      transform="scale(0.92) translate(1, 0.8)"
-                    />
-                  </g>
-                );
-              })}
-            </pattern>
+            <filter id="gaudi-mosaic-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0.4" dy="0.8" stdDeviation="0.6" floodColor="#000000" floodOpacity="0.65" />
+            </filter>
           </defs>
 
-          {/* Fill with seamless trencadís pattern */}
-          <rect width="100%" height="100%" fill="url(#trencadis-tile-pattern)" />
+          {/* Broken Ceramic Shards */}
+          {shards.map((shard, idx) => {
+            const targetX = isInView ? 0 : shard.scatterX;
+            const targetY = isInView ? 0 : shard.scatterY;
+            const targetRotate = isInView ? 0 : shard.scatterRotate;
+            const targetScale = isInView ? 1 : shard.scatterScale;
+            const targetOpacity = isInView ? shard.opacity : 0;
+
+            return (
+              <motion.g
+                key={shard.id}
+                initial={{
+                  x: shard.scatterX,
+                  y: shard.scatterY,
+                  rotate: shard.scatterRotate,
+                  scale: shard.scatterScale,
+                  opacity: 0,
+                }}
+                animate={{
+                  x: targetX,
+                  y: targetY,
+                  rotate: targetRotate,
+                  scale: targetScale,
+                  opacity: targetOpacity,
+                }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 95,
+                  damping: 15,
+                  mass: 0.65,
+                  delay: (idx % 20) * 0.012,
+                }}
+                whileHover={{
+                  scale: 1.08,
+                  filter: 'brightness(1.2)',
+                  cursor: 'pointer',
+                }}
+                className="transition-all"
+              >
+                {/* Base Glazed Ceramic Polygon */}
+                <polygon
+                  points={shard.points}
+                  fill={shard.fill}
+                  fillOpacity={shard.opacity}
+                  stroke="#140f0e"
+                  strokeWidth="1.6"
+                  strokeLinejoin="round"
+                  filter="url(#gaudi-mosaic-glow)"
+                />
+
+                {/* Overlapping Glazed Specular Facet */}
+                {shard.facetPoints && (
+                  <polygon
+                    points={shard.facetPoints}
+                    fill="#dfc285"
+                    opacity="0.18"
+                    className="pointer-events-none"
+                  />
+                )}
+              </motion.g>
+            );
+          })}
+
+          {/* Authentic Gaudí Rosette Accents */}
+          {rosettes.map((rosette, rIdx) => (
+            <motion.g
+              key={`rosette-${rIdx}`}
+              initial={{
+                x: rosette.scatterX,
+                y: rosette.scatterY,
+                scale: 0.2,
+                opacity: 0,
+              }}
+              animate={{
+                x: isInView ? 0 : rosette.scatterX,
+                y: isInView ? 0 : rosette.scatterY,
+                scale: isInView ? 1 : 0.2,
+                opacity: isInView ? 1 : 0,
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 90,
+                damping: 14,
+                delay: 0.15 + rIdx * 0.04,
+              }}
+            >
+              <circle
+                cx={rosette.cx}
+                cy={rosette.cy}
+                r={rosette.r}
+                fill={rosette.color}
+                stroke="#140f0e"
+                strokeWidth="1.5"
+                filter="url(#gaudi-mosaic-glow)"
+              />
+              <circle
+                cx={rosette.cx}
+                cy={rosette.cy}
+                r={rosette.r * 0.52}
+                fill={rosette.innerColor}
+                stroke="#140f0e"
+                strokeWidth="1.1"
+              />
+              <circle
+                cx={rosette.cx}
+                cy={rosette.cy}
+                r={rosette.r * 0.2}
+                fill="#d79523"
+                opacity="0.9"
+              />
+            </motion.g>
+          ))}
         </svg>
       </div>
 
-      {/* Bottom Gold & Filigree Edge */}
-      <div className="h-[2px] w-full bg-[#37080e]/40" />
-      <div className="h-1.5 w-full bg-gradient-to-r from-[#dfc285] via-[#b89243] to-[#dfc285] relative shadow-xs">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.4),transparent_70%)]" />
+      {/* Bottom Refined Gilded Relief Fillet (Seamless embossed gold, no heavy black lines) */}
+      <div className="relative w-full h-[3px] bg-gradient-to-r from-transparent via-[#b89243] to-transparent shadow-[0_1px_3px_rgba(184,146,67,0.35)]">
+        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#8c6d3b] to-transparent opacity-50" />
+        <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#fff5df] to-transparent opacity-90" />
       </div>
     </div>
   );

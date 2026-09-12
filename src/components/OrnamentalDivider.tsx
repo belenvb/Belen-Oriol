@@ -56,30 +56,13 @@ export function OrnamentalDivider({ className = '', variant = 'braid' }: Ornamen
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
-      className={`w-full flex items-center justify-center py-9 select-none ${className}`}
+      className={`w-full flex items-center justify-center py-7 select-none ${className}`}
     >
-      <svg
-        viewBox="0 0 500 40"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-80 md:w-[480px] h-auto text-[#b89243] opacity-85 drop-shadow-xs"
-      >
-        <path
-          d="M10,20 C70,2 130,38 190,20 C250,2 310,38 370,20 C430,2 490,20 490,20"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M10,20 C70,38 130,2 190,20 C250,38 310,2 370,20 C430,38 490,20 490,20"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-        <circle cx="250" cy="20" r="3.5" fill="currentColor" />
-        <circle cx="190" cy="20" r="2.5" fill="currentColor" />
-        <circle cx="310" cy="20" r="2.5" fill="currentColor" />
-        <circle cx="130" cy="20" r="1.5" fill="currentColor" />
-        <circle cx="370" cy="20" r="1.5" fill="currentColor" />
-      </svg>
+      <div className="flex items-center gap-4">
+        <div className="h-[1px] w-24 sm:w-36 bg-gradient-to-r from-transparent to-[#b89243]/70" />
+        <div className="w-1.5 h-1.5 rotate-45 bg-[#b89243]" />
+        <div className="h-[1px] w-24 sm:w-36 bg-gradient-to-l from-transparent to-[#b89243]/70" />
+      </div>
     </motion.div>
   );
 }
