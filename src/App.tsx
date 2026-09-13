@@ -65,8 +65,9 @@ export default function App() {
         <HorizontalTrencadis />
         <StorySection lang={lang} />
 
-        <section className="rainbow-break" aria-label={lang === 'es' ? 'Islandia' : 'Iceland'}>
-          <img src="/photos/rainbow.jpg" alt={lang === 'es' ? 'Belén y Oriol bajo un arcoíris en Islandia' : 'Belén and Oriol beneath a rainbow in Iceland'} loading="lazy" />
+        <section className="parallax-photo-break photo-rainbow-break" aria-label={lang === 'es' ? 'Islandia' : 'Iceland'}>
+          <div className="parallax-photo-fixed" />
+          <div className="photo-break-caption">{lang === 'es' ? 'Islandia · un arcoíris entre dos mundos' : 'Iceland · a rainbow between two worlds'}</div>
         </section>
 
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
@@ -75,12 +76,22 @@ export default function App() {
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <CastleGallery lang={lang} />
         </motion.div>
+
+        <section className="parallax-photo-break photo-temple-break" aria-label={lang === 'es' ? 'Viajes juntos' : 'Travels together'}>
+          <div className="parallax-photo-fixed" />
+          <div className="photo-break-caption">{lang === 'es' ? 'Viajes que se quedan con nosotros' : 'Places that stay with us'}</div>
+        </section>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <JourneyMap lang={lang} />
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <RegistrySection lang={lang} />
         </motion.div>
+
+        <section className="parallax-photo-break photo-basalt-break" aria-label={lang === 'es' ? 'Camino a la celebración' : 'Path to the celebration'}>
+          <div className="parallax-photo-fixed" />
+          <div className="photo-break-caption">{lang === 'es' ? 'El viaje también es parte de la historia' : 'The journey is part of the story'}</div>
+        </section>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <RsvpSection lang={lang} />
         </motion.div>
