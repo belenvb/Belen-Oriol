@@ -115,6 +115,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const [isOpen, setIsOpen] = useState(false);
   const [coverFace, setCoverFace] = useState<'front' | 'back'>('front');
   const [isClosingBack, setIsClosingBack] = useState(false);
+  const [introSeen, setIntroSeen] = useState(false);
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [pendingSpread, setPendingSpread] = useState<number | null>(null);
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
@@ -198,11 +199,22 @@ export function TransportPassport({ lang }: { lang: Language }) {
     const stage = passportStageRef.current;
     if (!stage) return undefined;
 
-    const handleNativeWheel = (event: WheelEvent) => {
+    const handleNativeWheel = (event: globalThis.WheelEvent) => {
       if (Math.abs(event.deltaY) < 10 || flipDirection || isClosingBack) return;
+
+      const rect = stage.getBoundingClientRect();
+      const stageIsInView = rect.top < window.innerHeight * 0.72 && rect.bottom > window.innerHeight * 0.28;
+
+      if (!stageIsInView) return;
 
       event.preventDefault();
       event.stopPropagation();
+
+      if (!introSeen) {
+        stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setIntroSeen(true);
+        return;
+      }
 
       if (!isOpen) {
         openPassport();
@@ -220,7 +232,10 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
     stage.addEventListener('wheel', handleNativeWheel, { passive: false });
     return () => stage.removeEventListener('wheel', handleNativeWheel);
-  }, [flipDirection, isClosingBack, isOpen, spreadIndex, spreads.length]);
+  }, [flipDirection, introSeen, isClosingBack, isOpen, spreadIndex, spreads.length]);
+
+
+
 
 
 
@@ -247,7 +262,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
         setIsOpen(false);
         setIsClosingBack(false);
         setSpreadIndex(spreads.length - 1);
-      }, 720);
+      }, 980);
       return;
     }
 
@@ -360,9 +375,6 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <aside className="passport-side-note">
             <span className="passport-side-note-kicker">03 / {isSpanish ? 'EL LUGAR' : 'THE PLACE'}</span>
             <h3>Castillo<br />del <em>Buen Amor.</em></h3>
-            <div className="passport-side-note-arches" aria-hidden="true">
-              <span /><span /><span />
-            </div>
             <div className="passport-side-note-vine" aria-hidden="true">
               <span /><span /><span /><span /><i /><i />
             </div>
@@ -424,10 +436,6 @@ export function TransportPassport({ lang }: { lang: Language }) {
                 </div>
               </div>
             )}
-
-            <div className={`passport-drag-hint ${showLeftHint ? 'is-left' : 'is-right'}`} aria-hidden="true">
-              {isSpanish ? 'Haz clic, desliza o usa la rueda para pasar página' : 'Click, swipe or scroll to turn page'}
-            </div>
           </div>
         </div>
       </div>
