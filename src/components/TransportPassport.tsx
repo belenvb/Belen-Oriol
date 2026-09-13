@@ -12,12 +12,12 @@ export function TransportPassport({ lang }: { lang: Language }) {
     {
       id: 'flights',
       num: '01',
-      pageLabel: isSpanish ? 'VISADO AÉREO · PÁG. 01' : 'AIR TRAVEL VISA · PG. 01',
+      pageLabel: isSpanish ? 'VISADO AÉREO · PÁG. 01' : 'AIR TRAVEL · PG. 01',
       icon: Plane,
       badge: isSpanish ? 'EN AVIÓN' : 'BY AIR',
       title: isSpanish ? 'Vuelos & Aeropuertos' : 'Flights & Airports',
       subtitle: 'MADRID-BARAJAS & VALLADOLID',
-      card1Title: 'Madrid-Barajas (MAD) → Salamanca',
+      card1Title: 'Madrid-Barajas (MAD)',
       card1Distance: isSpanish ? '220 km · ~2h en coche / 1h 35m en tren' : '220 km / 137 miles · ~2h drive / 1h 35m train',
       card1Text: isSpanish
         ? 'Desde Madrid-Barajas, la conexión más sencilla es Cercanías desde la T4 hasta Chamartín y desde allí Alvia directo a Salamanca.'
@@ -27,8 +27,9 @@ export function TransportPassport({ lang }: { lang: Language }) {
       card2Text: isSpanish
         ? 'Valladolid puede ser una alternativa cómoda para quienes viajen desde Barcelona, con conexión por carretera o tren hasta Salamanca.'
         : 'Valladolid can be a convenient alternative for guests travelling from Barcelona, with onward road or rail connections to Salamanca.',
+      tagline: isSpanish ? 'Conexiones vía Madrid o Valladolid' : 'Connections via Madrid or Valladolid',
       stampText: `MAD · ${dateFormatted}`,
-      stampSub: 'CONTROL DE ENTRADA / ENTRY',
+      stampSub: 'ENTRY / ENTRADA',
     },
     {
       id: 'trains',
@@ -50,10 +51,11 @@ export function TransportPassport({ lang }: { lang: Language }) {
       card2Title: isSpanish ? 'En coche' : 'By car',
       card2Distance: isSpanish ? 'Madrid → Salamanca · ~2h' : 'Madrid → Salamanca · ~2h',
       card2Text: isSpanish
-        ? 'La ruta por autovía es sencilla y directa. Desde Barcelona, el trayecto completo es más largo y también existe opción ferroviaria con conexión.'
-        : 'The motorway route is simple and direct. From Barcelona, the full drive is longer and rail options are also available with a connection.',
+        ? 'La ruta por autovía es sencilla y directa. Desde Barcelona también existen opciones ferroviarias con conexión.'
+        : 'The motorway route is simple and direct. From Barcelona, rail options are also available with a connection.',
+      tagline: isSpanish ? 'Salamanca por tren o carretera' : 'Salamanca by rail or road',
       stampText: `SALAMANCA · ${dateFormatted}`,
-      stampSub: 'TRÁNSITO FERROVIARIO',
+      stampSub: 'TRANSIT / TRÁNSITO',
     },
     {
       id: 'castle',
@@ -73,8 +75,9 @@ export function TransportPassport({ lang }: { lang: Language }) {
       card2Text: isSpanish
         ? 'El castillo dispone de aparcamiento privado para invitados.'
         : 'Private guest parking is available at the castle.',
+      tagline: isSpanish ? 'A 25 minutos de Salamanca' : '25 minutes from Salamanca',
       stampText: `BUEN AMOR · ${dateFormatted}`,
-      stampSub: 'SELLO DE LLEGADA / ARRIVAL',
+      stampSub: 'ARRIVAL / LLEGADA',
     },
   ];
 
@@ -85,28 +88,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
         <span>{currentPage + 1} / {pages.length}</span>
       </div>
 
-      <div className="passport-book" aria-label={isSpanish ? 'Pasaporte de viaje interactivo' : 'Interactive travel passport'}>
-        <aside className="passport-identity">
-          <div className="passport-cover-label">PASSPORT · PASAPORTE</div>
-          <div className="passport-emblem" aria-hidden="true">
-            <svg viewBox="0 0 120 140" role="presentation">
-              <path d="M18 112V55C18 31 36 13 60 13s42 18 42 42v57" />
-              <path d="M31 112V58c0-16 13-29 29-29s29 13 29 29v54" />
-              <path d="M15 112h90M27 126h66" />
-              <path d="M45 79h30M60 55v49" />
-              <path d="M42 48l18-19 18 19" />
-            </svg>
-          </div>
-          <p className="passport-script">Belén & Oriol</p>
-          <p className="passport-destination">SALAMANCA · ESPAÑA</p>
-          <p className="passport-date">04 · 09 · 2027</p>
-          <div className="passport-mosaic" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/></div>
-          <div className="passport-mrz" aria-hidden="true">
-            <span>P&lt;ESP&lt;&lt;BELEN&lt;ORIOL&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
-            <span>040927&lt;SALAMANCA&lt;BUENAMOR&lt;&lt;&lt;&lt;&lt;&lt;</span>
-          </div>
-        </aside>
-
+      <div className="passport-book passport-book-landscape" aria-label={isSpanish ? 'Pasaporte de viaje interactivo' : 'Interactive travel passport'}>
         <div className="passport-pages">
           {pages.map((page, index) => {
             const Icon = page.icon;
@@ -117,36 +99,55 @@ export function TransportPassport({ lang }: { lang: Language }) {
                 key={page.id}
                 className={`passport-sheet ${turned ? 'is-turned' : ''} ${current ? 'is-current' : ''}`}
                 style={{ zIndex: turned ? 40 + index : 30 - index }}
-                onClick={() => current && index < pages.length - 1 && setCurrentPage(index + 1)}
               >
                 <div className="passport-page-face passport-page-front">
-                  <div className="passport-page-header">
-                    <span>{page.pageLabel}</span>
-                    <Icon size={21} strokeWidth={1.4} />
+                  <div className="passport-security-lines passport-security-lines-a" aria-hidden="true" />
+                  <div className="passport-security-lines passport-security-lines-b" aria-hidden="true" />
+
+                  <div className="passport-page-toprow">
+                    <div className="passport-icon-seal"><Icon size={26} strokeWidth={1.7} /></div>
+                    <span className="passport-badge">{page.badge}</span>
                   </div>
+
                   <div className="passport-page-title">
-                    <span>{page.badge}</span>
                     <h3>{page.title}</h3>
                     <p>{page.subtitle}</p>
                   </div>
-                  <div className="passport-info-block">
-                    <h4>{page.card1Title}</h4>
-                    <strong>{page.card1Distance}</strong>
-                    <p>{page.card1Text}</p>
-                    {page.card1Link && <a href={page.card1Link.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>{page.card1Link.text} ↗</a>}
+
+                  <div className="passport-card-grid">
+                    <div className="passport-info-card">
+                      <h4>{page.card1Title}</h4>
+                      <strong>{page.card1Distance}</strong>
+                      <p>{page.card1Text}</p>
+                      {page.card1Link && <a href={page.card1Link.url} target="_blank" rel="noreferrer">{page.card1Link.text} ↗</a>}
+                    </div>
+                    <div className="passport-info-card">
+                      <h4>{page.card2Title}</h4>
+                      <strong>{page.card2Distance}</strong>
+                      <p>{page.card2Text}</p>
+                    </div>
                   </div>
-                  <div className="passport-rule" />
-                  <div className="passport-info-block">
-                    <h4>{page.card2Title}</h4>
-                    <strong>{page.card2Distance}</strong>
-                    <p>{page.card2Text}</p>
-                  </div>
+
+                  <div className="passport-tagline">✦ {page.tagline}</div>
                   <div className="passport-stamp"><b>{page.stampText}</b><span>{page.stampSub}</span></div>
-                  <button className="passport-turn-cue" onClick={(e) => { e.stopPropagation(); if (index < pages.length - 1) setCurrentPage(index + 1); }} disabled={index === pages.length - 1}>
+
+                  <div className="passport-page-footer">
+                    <span>B&amp;O · SALAMANCA</span>
+                    <span>{page.pageLabel}</span>
+                    <span>{page.num}</span>
+                  </div>
+
+                  <button
+                    className="passport-turn-cue"
+                    onClick={() => index < pages.length - 1 && setCurrentPage(index + 1)}
+                    disabled={index === pages.length - 1}
+                  >
                     {index === pages.length - 1 ? (isSpanish ? 'Fin' : 'End') : (isSpanish ? 'Pasar página' : 'Turn page')} ↗
                   </button>
                 </div>
+
                 <div className="passport-page-face passport-page-back" aria-hidden="true">
+                  <div className="passport-security-lines passport-security-lines-back" aria-hidden="true" />
                   <span className="passport-page-number">{page.num}</span>
                 </div>
               </div>
