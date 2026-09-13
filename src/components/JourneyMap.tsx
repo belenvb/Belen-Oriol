@@ -35,6 +35,20 @@ export function JourneyMap({ lang }: JourneyMapProps) {
       window.dispatchEvent(new CustomEvent('select_room_in_rsvp', { detail: { roomId } }));
     }
   };
+
+
+  const getRoomSubtext = (roomId: string) => {
+    const subtexts: Record<string, string> = {
+      estandar: 'Oldest rooms in the castle located in the dungeons. 11th century walls. 30 - 34 M2',
+      superior: 'Spacious accommodation with 15th-century stonework. 30-40 M2',
+      deluxe: 'Vaults or coffered ceilings. Views of the gardens or terrace. 30-43 M2',
+      suite_guardia: 'Oldest suite in the castle located in the dungeons. 11th century walls and overlooking the moat. 40-45 M2',
+      suite_medieval: 'The castle crown jewel: Mudejar brick domes, wooden beams or private access to the towers. 40-47 M2',
+    };
+
+    return subtexts[roomId] || '';
+  };
+
   return (
     <section id="journey" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#ece3d2] relative border-t border-[rgba(92,20,30,0.15)] overflow-hidden">
       <div className="max-w-5xl mx-auto relative z-10">
@@ -108,7 +122,21 @@ export function JourneyMap({ lang }: JourneyMapProps) {
           </div>
 
           <p className="room-payment">{lang === 'es' ? 'Cada huésped paga su habitación. Precios por habitación y noche, con desayuno incluido.' : 'Each guest pays for their own room. Prices per room, per night, including breakfast.'}</p>
-          <div className="room-list">{CASTLE_ROOMS.map(room => <div className="room-row" key={room.id}><div><h4>{lang === 'es' ? room.name : room.nameEn}</h4><p>{room.total} {lang === 'es' ? 'habitaciones en el cupo' : 'rooms in the allocation'}</p></div><strong>€{room.price}</strong><button onClick={()=>handleSelectRoomForRsvp(room.id)}>{lang === 'es' ? 'Solicitar' : 'Request'} ↗</button></div>)}</div>
+          <div className="room-list room-list-compact">
+            {CASTLE_ROOMS.map((room) => (
+              <div className="room-row room-row-detailed" key={room.id}>
+                <div className="room-row-copy">
+                  <h4>{lang === 'es' ? room.name : room.nameEn}</h4>
+                  <p>{getRoomSubtext(room.id)}</p>
+                  <small>{room.total} {lang === 'es' ? 'habitaciones en el cupo' : 'rooms in the allocation'}</small>
+                </div>
+                <strong>€{room.price}</strong>
+                <button onClick={() => handleSelectRoomForRsvp(room.id)}>
+                  {lang === 'es' ? 'Solicitar' : 'Request'} ↗
+                </button>
+              </div>
+            ))}
+          </div>
           <p className="room-note">{lang === 'es' ? 'La selección en el RSVP es una solicitud, sujeta a confirmación de disponibilidad.' : 'Your RSVP room selection is a request, subject to availability confirmation.'}</p>
 
           <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-xs text-[#6e5832] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
