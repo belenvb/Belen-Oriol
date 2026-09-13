@@ -582,7 +582,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                               : 'border-gray-200 bg-gray-50/50 text-[#554f47] hover:bg-gray-50'
                           }`}
                         >
-                          <div className="flex items-center gap-2.5">
+                          <div className="flex items-start gap-2.5">
                             <input
                               type="radio"
                               name="roomBooking"
@@ -608,7 +608,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                           return (
                             <label
                               key={room.id}
-                              className={`p-3 rounded-lg border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs transition-colors ${
+                              className={`p-2.5 rounded-lg border flex flex-col sm:flex-row sm:items-start justify-between gap-1.5 text-xs transition-colors ${
                                 remaining === 0
                                   ? 'border-gray-200 bg-gray-100 opacity-60 cursor-not-allowed text-gray-400'
                                   : isSelected
@@ -616,7 +616,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                                   : 'border-gray-200 bg-white hover:border-[#b89243]/60 cursor-pointer text-[#44403c]'
                               }`}
                             >
-                              <div className="flex items-center gap-2.5">
+                              <div className="flex items-start gap-2.5">
                                 <input
                                   type="radio"
                                   name="roomBooking"
@@ -633,6 +633,11 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                                   <span className="text-[#6e675f] text-[11px] block sm:inline sm:ml-2">
                                     {room.price} € / {lang === 'es' ? 'noche · Desayuno incl.' : 'night · Breakfast incl.'}
                                   </span>
+                                  {getRoomSubtext(room.id, room.nameEn || room.name) && (
+                                    <span className="room-option-subtext block mt-1 text-[10.5px] leading-snug text-[#6e675f] font-normal">
+                                      {getRoomSubtext(room.id, room.nameEn || room.name)}
+                                    </span>
+                                  )}
                                 </div>
                               </div>
 

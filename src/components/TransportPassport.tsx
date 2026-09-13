@@ -116,6 +116,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const [coverFace, setCoverFace] = useState<'front' | 'back'>('front');
   const [isClosingBack, setIsClosingBack] = useState(false);
   const [introSeen, setIntroSeen] = useState(false);
+  const [passportSequenceComplete, setPassportSequenceComplete] = useState(false);
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [pendingSpread, setPendingSpread] = useState<number | null>(null);
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
@@ -138,8 +139,8 @@ export function TransportPassport({ lang }: { lang: Language }) {
       card2Title: 'Valladolid (VLL)',
       card2Distance: isSpanish ? '115 km a Salamanca · ~1 h en coche / 45 min en tren' : '115 km / 71 miles to Salamanca · ~1 hr drive / 45 min train',
       card2Text: isSpanish ? 'Valladolid puede ser una alternativa cómoda para vuelos desde Barcelona y conexiones nacionales.' : 'Valladolid can be a convenient alternative for flights from Barcelona and domestic connections.',
-      tagline: isSpanish ? 'Dos aeropuertos posibles según origen y disponibilidad' : 'Two airport options depending on origin and availability',
-      stampText: `AEROPUERTO · ${numericDate}`,
+      tagline: isSpanish ? 'Dos aeropuertos posibles según origen' : 'Two airport options depending on origin',
+      stampText: `${isSpanish ? 'AEROPUERTO' : 'AIRPORT'} · ${numericDate}`,
       stampSub: 'ENTRY / ENTRADA',
     };
 
@@ -199,13 +200,15 @@ export function TransportPassport({ lang }: { lang: Language }) {
     const stage = passportStageRef.current;
     if (!stage) return undefined;
 
-    const handleNativeWheel = (event: globalThis.WheelEvent) => {
+    const handlePassportWheel = (event: globalThis.WheelEvent) => {
       if (Math.abs(event.deltaY) < 10 || flipDirection || isClosingBack) return;
 
       const rect = stage.getBoundingClientRect();
-      const stageIsInView = rect.top < window.innerHeight * 0.72 && rect.bottom > window.innerHeight * 0.28;
+      const sectionIsActive = rect.top < window.innerHeight * 0.78 && rect.bottom > window.innerHeight * 0.22;
 
-      if (!stageIsInView) return;
+      if (!sectionIsActive) return;
+
+      if (passportSequenceComplete && event.deltaY > 0) return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -222,17 +225,26 @@ export function TransportPassport({ lang }: { lang: Language }) {
       }
 
       if (event.deltaY > 0) {
-        if (spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
-        else closePassport('back');
+        if (spreadIndex < spreads.length - 1) {
+          requestSpreadChange(spreadIndex + 1);
+        } else {
+          closePassport('back');
+        }
       } else {
-        if (spreadIndex > 0) requestSpreadChange(spreadIndex - 1);
-        else closePassport('front');
+        if (spreadIndex > 0) {
+          requestSpreadChange(spreadIndex - 1);
+        } else {
+          closePassport('front');
+        }
       }
     };
 
-    stage.addEventListener('wheel', handleNativeWheel, { passive: false });
-    return () => stage.removeEventListener('wheel', handleNativeWheel);
-  }, [flipDirection, introSeen, isClosingBack, isOpen, spreadIndex, spreads.length]);
+    window.addEventListener('wheel', handlePassportWheel, { passive: false, capture: true });
+    return () => window.removeEventListener('wheel', handlePassportWheel, { capture: true });
+  }, [flipDirection, introSeen, isClosingBack, isOpen, passportSequenceComplete, spreadIndex, spreads.length]);
+
+
+
 
 
 
@@ -244,6 +256,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
     setPendingSpread(null);
     setFlipDirection(null);
+    setPassportSequenceComplete(false);
     setSpreadIndex(coverFace === 'back' ? spreads.length - 1 : 0);
     setIsOpen(true);
   };
@@ -262,6 +275,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
         setIsOpen(false);
         setIsClosingBack(false);
         setSpreadIndex(spreads.length - 1);
+        setPassportSequenceComplete(true);
       }, 980);
       return;
     }
@@ -269,6 +283,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
     setCoverFace('front');
     setIsOpen(false);
     setSpreadIndex(0);
+    setPassportSequenceComplete(false);
   };
 
   const requestSpreadChange = (nextSpread: number) => {
@@ -367,7 +382,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
           }`}
           aria-hidden="true"
         >
-          <span>{isSpanish ? 'Clic · desliza · rueda' : 'Click · swipe · scroll'}</span>
+          <span>{isSpanish ? 'Clic · desliza' : 'Click · swipe'}</span>
           <small>{isOpen ? (isSpanish ? 'para pasar página' : 'to turn page') : (isSpanish ? 'para abrir' : 'to open')}</small>
         </aside>
 
