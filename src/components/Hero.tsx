@@ -18,7 +18,7 @@ export function Hero({ lang, onNavigate }: HeroProps) {
       <div className="hero-copy">
         <p className="eyebrow">SAVE THE DATE</p>
         <h1>Belén <em>&</em> Oriol</h1>
-        <p>Castillo del Buen Amor · Salamanca</p>
+        <p className="hero-venue-line">Castillo del Buen Amor · Salamanca</p>
         <p className="hero-date-long">{lang === 'es' ? '04 septiembre 2027' : 'September 4, 2027'}</p>
       </div>
 
