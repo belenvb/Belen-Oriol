@@ -28,6 +28,8 @@ type PageData = {
 type Spread = { left?: PageData; right: PageData };
 type FlipDirection = 'forward' | 'backward' | null;
 
+const boLogoUrl = '/bo-logo.png';
+
 function PassportBlankPage({ isSpanish }: { isSpanish: boolean }) {
   return (
     <>
@@ -314,13 +316,15 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <button type="button" className="passport-front-cover" aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={openPassport}>
             <span className="passport-cover-border" aria-hidden="true" />
             <span className="passport-cover-country">SALAMANCA</span>
-            <span className="passport-cover-crest" aria-hidden="true">BO</span>
+            <span className="passport-cover-crest" aria-hidden="true">
+              <img src={boLogoUrl} alt="" className="passport-cover-logo" />
+            </span>
             <span className="passport-cover-type">{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</span>
             <span className="passport-cover-epass" aria-hidden="true">
-              <span className="passport-cover-epass-bar" />
-              <span className="passport-cover-epass-ring" />
+              <span className="passport-cover-epass-line passport-cover-epass-line-top" />
+              <span className="passport-cover-epass-chip" />
+              <span className="passport-cover-epass-line passport-cover-epass-line-bottom" />
             </span>
-            <span className="passport-cover-date">04.09.2027</span>
           </button>
         </div>
       </div>
@@ -331,7 +335,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
           {isSpanish ? 'Portada' : 'Cover'}
         </button>
 
-        <div>
+        <div className="passport-pagination">
           {spreads.map((spread, index) => (
             <button
               key={spread.right.id}
