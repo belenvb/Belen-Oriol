@@ -11,7 +11,6 @@ import { Hero } from './components/Hero';
 import { HorizontalTrencadis } from './components/HorizontalTrencadis';
 import { StorySection } from './components/StorySection';
 import { ScheduleSection } from './components/ScheduleSection';
-import { CastleGallery } from './components/CastleGallery';
 import { JourneyMap } from './components/JourneyMap';
 import { RegistrySection } from './components/RegistrySection';
 import { RsvpSection } from './components/RsvpSection';
@@ -67,29 +66,18 @@ export default function App() {
 
         <section className="parallax-photo-break photo-rainbow-break" aria-label={lang === 'es' ? 'Islandia' : 'Iceland'}>
           <div className="parallax-photo-fixed" />
-          <div className="photo-break-caption">{lang === 'es' ? 'Islandia · un arcoíris entre dos mundos' : 'Iceland · a rainbow between two worlds'}</div>
+
         </section>
 
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <ScheduleSection lang={lang} selectedDay={selectedDay} onSelectDay={setSelectedDay} hasPrebodaAccess={true} />
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
-          <CastleGallery lang={lang} />
-        </motion.div>
-
-        <section className="parallax-photo-break photo-temple-break" aria-label={lang === 'es' ? 'Viajes juntos' : 'Travels together'}>
-          <div className="parallax-photo-fixed" />
-        </section>
-        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <JourneyMap lang={lang} />
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <RegistrySection lang={lang} />
         </motion.div>
-
-        <section className="parallax-photo-break photo-basalt-break" aria-label={lang === 'es' ? 'Camino a la celebración' : 'Path to the celebration'}>
-          <div className="parallax-photo-fixed" />
-        </section>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <RsvpSection lang={lang} />
         </motion.div>

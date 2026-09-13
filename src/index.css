@@ -576,18 +576,18 @@ footer { padding:0!important; overflow:hidden; }
 }
 
 
-/* Remove unwanted parallax text captions */
+/* Final caption and hero typography tweaks */
+.photo-rainbow-break .photo-break-caption,
 .photo-temple-break .photo-break-caption,
 .photo-basalt-break .photo-break-caption {
   display: none !important;
 }
 
-/* Restore softer original venue typography in hero */
 .hero-venue-line {
   font-family: 'Cormorant Garamond', Georgia, serif !important;
   font-weight: 400 !important;
-  font-size: clamp(1.05rem, 1.8vw, 1.45rem) !important;
-  letter-spacing: .08em !important;
+  font-size: clamp(.92rem, 1.35vw, 1.15rem) !important;
+  letter-spacing: .075em !important;
   text-transform: none !important;
   color: #fff9ee !important;
 }
