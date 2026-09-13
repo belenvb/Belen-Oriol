@@ -574,3 +574,20 @@ footer { padding:0!important; overflow:hidden; }
   text-transform: uppercase !important;
   color: #e3c279 !important;
 }
+
+
+/* Remove unwanted parallax text captions */
+.photo-temple-break .photo-break-caption,
+.photo-basalt-break .photo-break-caption {
+  display: none !important;
+}
+
+/* Restore softer original venue typography in hero */
+.hero-venue-line {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 400 !important;
+  font-size: clamp(1.05rem, 1.8vw, 1.45rem) !important;
+  letter-spacing: .08em !important;
+  text-transform: none !important;
+  color: #fff9ee !important;
+}
