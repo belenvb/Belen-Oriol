@@ -1135,3 +1135,83 @@
     display: none;
   }
 }
+
+
+/* Fix instruction overlap and make closing stable */
+.passport-open-instruction {
+  display: none !important;
+}
+
+.passport-cover-open-hint {
+  position: relative;
+  z-index: 2;
+  margin-top: 12px;
+  color: rgba(228,190,114,.86);
+  font: 700 .54rem/1.25 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.passport-cover-open-hint-back {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  width: 80%;
+}
+
+/* No floating white artifact on the front cover */
+.passport-front-cover::before {
+  background: linear-gradient(90deg, rgba(62,8,18,.42), rgba(255,255,255,.03), rgba(0,0,0,.16)) !important;
+  opacity: .38 !important;
+  width: 8px !important;
+  left: 8px !important;
+  top: 28px !important;
+  bottom: 28px !important;
+}
+
+/* End close: do a quick leather fold into back cover, without rendering page 3 again */
+.passport-stage.is-closing-back .passport-spread,
+.passport-stage.is-closing-back .passport-cover-base,
+.passport-stage.is-closing-back .passport-page-stack,
+.passport-stage.is-closing-back .passport-gutter {
+  opacity: 0 !important;
+  transition: opacity .16s ease .24s !important;
+  pointer-events: none !important;
+}
+.passport-stage.is-closing-back .passport-front-cover {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+  transform-origin: left center !important;
+  animation: passportFoldToBack .72s cubic-bezier(.2,.78,.18,1) forwards !important;
+  transition: none !important;
+}
+@keyframes passportFoldToBack {
+  0% {
+    transform: translateX(-82%) rotateY(-168deg);
+    opacity: .22;
+  }
+  35% {
+    opacity: .9;
+  }
+  100% {
+    transform: translateX(0) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* Make wheel inside passport feel like page control, not page scroll */
+.passport-stage,
+.passport-spread {
+  overscroll-behavior: contain;
+}
+
+/* Hero copy addition */
+.hero-date-long {
+  margin-top: .8rem !important;
+  font: 600 clamp(.82rem,1.4vw,1.05rem)/1.2 'Plus Jakarta Sans', sans-serif !important;
+  letter-spacing: .16em !important;
+  text-transform: uppercase !important;
+  color: #e3c279 !important;
+}

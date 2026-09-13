@@ -216,7 +216,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
         setIsOpen(false);
         setIsClosingBack(false);
         setSpreadIndex(spreads.length - 1);
-      }, 1120);
+      }, 720);
       return;
     }
 
@@ -293,9 +293,10 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
 
   const handleStageWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (flipDirection || isClosingBack || Math.abs(event.deltaY) < 18) return;
+    if (Math.abs(event.deltaY) < 10 || flipDirection || isClosingBack) return;
 
     event.preventDefault();
+    event.stopPropagation();
 
     if (!isOpen) {
       openPassport();
@@ -358,13 +359,6 @@ export function TransportPassport({ lang }: { lang: Language }) {
           </aside>
         )}
 
-        {!isOpen && (
-          <aside className="passport-open-instruction" aria-hidden="true">
-            <span>{isSpanish ? 'Haz clic, desliza o usa la rueda' : 'Click, swipe or scroll'}</span>
-            <small>{isSpanish ? 'para abrir la guía' : 'to open the guide'}</small>
-          </aside>
-        )}
-
         <div className={`passport-book ${flipDirection ? `is-flipping is-${flipDirection}` : ''}`}>
           <div className="passport-cover-base" aria-hidden="true" />
           <div className="passport-page-stack passport-page-stack-left" aria-hidden="true" />
@@ -380,28 +374,19 @@ export function TransportPassport({ lang }: { lang: Language }) {
                 <span className="passport-cover-crest"><img src={boLogo} alt="" /></span>
                 <span className="passport-cover-type">{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</span>
                 <span className="passport-cover-epass" aria-hidden="true"><span className="passport-cover-epass-line passport-cover-epass-line-top" /><span className="passport-cover-epass-chip" /><span className="passport-cover-epass-line passport-cover-epass-line-bottom" /></span>
+                <span className="passport-cover-open-hint">{isSpanish ? 'Clic o rueda para abrir' : 'Click or scroll to open'}</span>
               </>
             ) : (
-              <span className="passport-back-crest" aria-hidden="true"><img src={boLogo} alt="" /></span>
+              <>
+                <span className="passport-back-crest" aria-hidden="true"><img src={boLogo} alt="" /></span>
+                <span className="passport-cover-open-hint passport-cover-open-hint-back">{isSpanish ? 'Clic o rueda para abrir' : 'Click or scroll to open'}</span>
+              </>
             )}
           </button>
 
           <div className="passport-spread" aria-hidden={!isOpen} onClick={handleSpreadClick} onWheel={handleSpreadWheel} onPointerDown={handleDragStart} onPointerUp={handleDragEnd} onPointerCancel={() => { dragStartRef.current = null; }}>
             <PageSurface page={baseLeftPage} side="left" isSpanish={isSpanish} compact blankCastle={!baseLeftPage && (spreadIndex === 1 || pendingSpread === 1)} />
             <PageSurface page={baseRightPage} side="right" isSpanish={isSpanish} blankCastle={false} />
-
-            {isClosingBack && (
-              <div className="passport-back-closing-sheet" aria-hidden="true">
-                <div className="passport-back-closing-front">
-                  <PassportPageFace page={pages.wedding} isSpanish={isSpanish} compact />
-                </div>
-                <div className="passport-back-closing-reverse">
-                  <span className="passport-back-closing-page-edge" />
-                  <span className="passport-back-closing-crest"><img src={boLogo} alt="" /></span>
-                </div>
-              </div>
-            )}
-
             {flipDirection && (
               <div className={`passport-turning-sheet passport-turning-sheet-${flipDirection}`} aria-hidden="true">
                 <div className="passport-turning-bend passport-turning-bend-a" />
