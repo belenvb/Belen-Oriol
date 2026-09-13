@@ -21,6 +21,7 @@ import { motion } from 'motion/react';
 import { accommodationsList, weddingInfo } from '../data/content';
 import { CASTLE_ROOMS, getCastleRoomBookings } from '../data/rooms';
 import { Language } from '../types';
+import { TransportPassport } from './TransportPassport';
 
 interface JourneyMapProps {
   lang: Language;
@@ -79,220 +80,15 @@ export function JourneyMap({ lang }: JourneyMapProps) {
           <div className="w-20 h-[1.5px] bg-[#b89243] mx-auto mt-5" />
         </motion.div>
 
-        {/* Consolidated Vintage Parchment Travel Guide: How to Get There */}
+        {/* Thematic Wedding Travel Passport (Dual-Page Interactive Guide) */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="bg-gradient-to-br from-[#f8f0e1] via-[#f4e8d3] to-[#ebdcc3] border-4 border-[#8c6d4f] p-6 sm:p-10 rounded-2xl shadow-[0_22px_60px_rgba(45,30,15,0.22)] relative mb-16 overflow-hidden"
+          className="mb-16"
         >
-          {/* Authentic Parchment Inner Borders & Compass */}
-          <div className="absolute inset-2 sm:inset-3 border border-[#8c6d4f]/50 pointer-events-none rounded-xl" />
-          <div className="absolute inset-3 sm:inset-4 border border-dashed border-[#8c6d4f]/30 pointer-events-none rounded-lg" />
-
-          {/* Compass Rose Accent in top right */}
-          <div className="absolute top-5 right-5 sm:top-7 sm:right-7 opacity-25 pointer-events-none text-[#5c141e]">
-            <Compass className="w-16 h-16 sm:w-20 sm:h-20 stroke-[1.2]" />
-          </div>
-
-          {/* Parchment Map Header */}
-          <div className="relative z-10 text-center mb-8 sm:mb-10">
-            <span className="font-cormorant italic text-sm sm:text-base text-[#8c6d3b] block tracking-widest uppercase">
-              {lang === 'es' ? 'Guía Práctica de Desplazamiento' : 'Practical Travel & Arrival Guide'}
-            </span>
-            <h3 className="font-cinzel text-2xl sm:text-3xl lg:text-4xl text-[#37080e] font-bold tracking-wide">
-              {lang === 'es' ? 'Cómo Llegar al Enlace' : 'How to Get to the Wedding'}
-            </h3>
-            <p className="font-cormorant italic text-base sm:text-lg text-[#5c141e] mt-1.5 max-w-2xl mx-auto leading-relaxed">
-              {lang === 'es'
-                ? 'Tanto si venís en coche desde diferentes puntos de España, en tren o en avión vía Madrid o Valladolid, aquí tenéis todos los detalles consolidados para vuestro viaje.'
-                : 'Whether you are driving from across Spain, arriving by train, or flying via Madrid or Valladolid, here is the complete guide for your journey.'}
-            </p>
-          </div>
-
-          {/* Consolidated 3 Travel Pillars */}
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Pillar 1: En Avión */}
-            <div className="flex flex-col justify-between p-5 sm:p-6 rounded-xl bg-white/80 border border-[#8c6d4f]/35 shadow-xs backdrop-blur-xs">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-11 h-11 rounded-full bg-[#f4e8d3] border-2 border-[#b89243] flex items-center justify-center text-[#5c141e] shadow-2xs">
-                    <Plane className="w-5 h-5" />
-                  </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-wider uppercase bg-[#5c141e]/10 text-[#5c141e] border border-[#5c141e]/20">
-                    {lang === 'es' ? 'En Avión' : 'By Air'}
-                  </span>
-                </div>
-
-                <h4 className="font-cinzel text-lg sm:text-xl font-bold text-[#37080e] mb-1">
-                  {lang === 'es' ? 'Vuelos & Aeropuertos' : 'Flights & Airports'}
-                </h4>
-
-                <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#8c6d3b] block mb-2.5">
-                  {lang === 'es' ? 'Madrid Barajas & Valladolid' : 'Madrid & Valladolid Airports'}
-                </span>
-
-                <div className="space-y-2.5 mb-3 text-xs text-[#554f47]">
-                  <div className="p-2.5 rounded-lg bg-[#faf4e6] border border-[#b89243]/25">
-                    <span className="font-semibold text-xs text-[#37080e] block mb-0.5">
-                      {lang === 'es' ? 'Madrid-Barajas (MAD):' : 'Madrid Airport (MAD):'}
-                    </span>
-                    <span className="text-[11px] text-[#554f47] leading-snug block">
-                      {lang === 'es'
-                        ? 'Ideal para vuelos internacionales o desde cualquier punto. Desde la T4 hay tren directo de Cercanías (C-1 / C-10) a Chamartín en 12-15 min.'
-                        : 'Ideal for international or domestic flights. From Terminal 4, direct Cercanías train to Madrid-Chamartín in 12-15 min.'}
-                    </span>
-                  </div>
-
-                  <div className="p-2.5 rounded-lg bg-[#faf4e6] border border-[#b89243]/25">
-                    <span className="font-semibold text-xs text-[#37080e] block mb-0.5">
-                      {lang === 'es' ? 'Barcelona ✈ Valladolid (VLL):' : 'Barcelona ✈ Valladolid (VLL):'}
-                    </span>
-                    <span className="text-[11px] text-[#554f47] leading-snug block">
-                      {lang === 'es'
-                        ? 'Vuelos directos Barcelona (BCN) – Valladolid (VLL) (Ryanair / Vueling). Desde Valladolid a Salamanca hay tren directo Renfe en ~45-50 min o autovía A-62 en ~1h.'
-                        : 'Direct flights Barcelona (BCN) to Valladolid (VLL). From Valladolid to Salamanca: direct train in ~45-50 min or A-62 motorway drive (~1h).'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-[#8c6d4f]/25 flex items-center gap-1.5 text-[11px] font-semibold text-[#5c141e]">
-                <span>✦</span>
-                <span>{lang === 'es' ? 'Conexiones vía Madrid o Valladolid' : 'Connections via Madrid or Valladolid'}</span>
-              </div>
-            </div>
-
-            {/* Pillar 2: En Tren o en Coche a Salamanca */}
-            <div className="flex flex-col justify-between p-5 sm:p-6 rounded-xl bg-white/80 border border-[#8c6d4f]/35 shadow-xs backdrop-blur-xs">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-11 h-11 rounded-full bg-[#f4e8d3] border-2 border-[#b89243] flex items-center justify-center text-[#5c141e] shadow-2xs">
-                      <Train className="w-5 h-5" />
-                    </div>
-                    <div className="w-8 h-8 rounded-full bg-[#f4e8d3]/70 border border-[#b89243] flex items-center justify-center text-[#5c141e] shadow-2xs">
-                      <Car className="w-4 h-4" />
-                    </div>
-                  </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-wider uppercase bg-[#b89243]/20 text-[#37080e] border border-[#b89243]/30">
-                    {lang === 'es' ? 'Tren o Coche' : 'Train or Car'}
-                  </span>
-                </div>
-
-                <h4 className="font-cinzel text-lg sm:text-xl font-bold text-[#37080e] mb-2.5">
-                  {lang === 'es' ? 'Llegada a Salamanca' : 'Arrival in Salamanca'}
-                </h4>
-
-                <div className="space-y-2.5 mb-3">
-                  <div className="p-2.5 rounded-lg bg-[#faf4e6] border border-[#b89243]/25">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="font-semibold text-xs text-[#37080e] block">
-                        {lang === 'es' ? 'Madrid – Salamanca en Tren:' : 'Madrid – Salamanca by Train:'}
-                      </span>
-                    </div>
-                    <span className="text-[11px] text-[#554f47] leading-snug block mt-0.5">
-                      {lang === 'es'
-                        ? 'Tren Alvia (Renfe) directo desde Madrid-Chamartín en 1h 35m con múltiples frecuencias diarias.'
-                        : 'Direct Alvia train from Madrid-Chamartín in 1h 35m with frequent departures.'}
-                    </span>
-                  </div>
-
-                  <div className="p-2.5 rounded-lg bg-[#faf4e6] border border-[#b89243]/25">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="font-semibold text-xs text-[#37080e] block">
-                        {lang === 'es' ? 'Barcelona – Salamanca:' : 'Barcelona – Salamanca:'}
-                      </span>
-                    </div>
-                    <span className="text-[11px] text-[#554f47] leading-snug block mt-0.5">
-                      {lang === 'es'
-                        ? 'En tren: Alvia directo o AVE con transbordo en Madrid (Atocha/Chamartín) en ~5h 30m. En coche: por AP-2/A-2 y A-62 (~8h / 800 km).'
-                        : 'By train: direct Alvia or AVE via Madrid (~5h 30m). By car: AP-2/A-2 & A-62 motorway drive (~8h).'}
-                    </span>
-                    <a
-                      href="https://www.renfe.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#5c141e] hover:text-[#b89243] transition-colors mt-2 underline underline-offset-2"
-                    >
-                      <span>{lang === 'es' ? 'Ver billetes y horarios en Renfe.com' : 'Check schedules & tickets on Renfe.com'}</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-
-                  <div className="p-2.5 rounded-lg bg-[#faf4e6] border border-[#b89243]/25">
-                    <span className="font-semibold text-xs text-[#37080e] block">
-                      {lang === 'es' ? 'En Coche Particular:' : 'By Car:'}
-                    </span>
-                    <span className="text-[11px] text-[#554f47] leading-snug block mt-0.5">
-                      {lang === 'es'
-                        ? 'Desde Madrid por autopista A-6 y autovía A-50 (~2h). O conexión directa por autovías A-62 y A-66 desde el resto de España.'
-                        : 'Direct motorway drive via A-6 & A-50 (~2h from Madrid); or direct A-62/A-66 highways across Spain.'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-[#8c6d4f]/25 flex items-center gap-1.5 text-[11px] font-semibold text-[#5c141e]">
-                <span>✦</span>
-                <span>{lang === 'es' ? 'Trenes Renfe y autovías directas' : 'Direct Renfe trains & motorways'}</span>
-              </div>
-            </div>
-
-            {/* Pillar 3: Castillo del Buen Amor & Autobús de Invitados */}
-            <div className="flex flex-col justify-between p-5 sm:p-6 rounded-xl bg-[#faf2e3] border-2 border-[#b89243] shadow-md">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-11 h-11 rounded-full bg-[#5c141e] border-2 border-[#dfc285] flex items-center justify-center text-[#dfc285] shadow-xs">
-                    <MapPin className="w-5 h-5 animate-bounce" />
-                  </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-wider uppercase bg-[#5c141e] text-[#dfc285] border border-[#dfc285]/40">
-                    {lang === 'es' ? 'Día de la Boda' : 'Wedding Day'}
-                  </span>
-                </div>
-
-                <h4 className="font-cinzel text-lg sm:text-xl font-bold text-[#37080e] mb-1">
-                  Castillo del Buen Amor
-                </h4>
-
-                <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-[#8c6d3b] block mb-2.5">
-                  {lang === 'es' ? 'Sede del Enlace & Celebración' : 'Venue & Celebration'}
-                </span>
-
-                <div className="space-y-2 mb-3">
-                  <div className="p-2.5 rounded-lg bg-white/90 border border-[#b89243]/35">
-                    <span className="font-semibold text-xs text-[#37080e] flex items-center gap-1.5">
-                      <Bus className="w-3.5 h-3.5 text-[#5c141e]" />
-                      {lang === 'es' ? 'Autobús para Invitados' : 'Guest Bus Service'}
-                    </span>
-                    <span className="text-[11px] text-[#554f47] leading-snug block mt-1">
-                      {lang === 'es'
-                        ? 'Servicio de autobuses el sábado entre Salamanca y el castillo para la ceremonia y banquete, con regresos escalonados durante la fiesta y la madrugada.'
-                        : 'Guest bus service between Salamanca and the castle on Saturday for ceremony & party, with staggered returns during late night.'}
-                    </span>
-                  </div>
-
-                  <div className="p-2.5 rounded-lg bg-white/90 border border-[#b89243]/35">
-                    <span className="font-semibold text-xs text-[#37080e] flex items-center gap-1.5">
-                      <Car className="w-3.5 h-3.5 text-[#5c141e]" />
-                      {lang === 'es' ? 'En Coche o Taxi (20 min)' : 'By Car or Taxi (20 min)'}
-                    </span>
-                    <span className="text-[11px] text-[#554f47] leading-snug block mt-1">
-                      {lang === 'es'
-                        ? 'A 20 km al norte de Salamanca por la A-66 / N-630. Los taxis desde Salamanca tardan ~20 minutos. El castillo cuenta con parking gratuito para invitados.'
-                        : '20 km north of Salamanca via A-66 / N-630. Taxis from Salamanca take ~20 minutes. Free on-site parking is available for all guests at the castle.'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-[#b89243]/40 flex items-center gap-1.5 text-[11px] font-semibold text-[#5c141e]">
-                <span>✦</span>
-                <span>{lang === 'es' ? 'Autobús de invitados + Parking gratuito' : 'Guest bus + Free guest parking'}</span>
-              </div>
-            </div>
-          </div>
+          <TransportPassport lang={lang} />
         </motion.div>
 
         {/* Castillo del Buen Amor - Special Wedding Room Rates */}

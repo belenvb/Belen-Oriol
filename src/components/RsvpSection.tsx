@@ -10,12 +10,11 @@ interface RsvpSectionProps {
 }
 
 export function RsvpSection({ lang }: RsvpSectionProps) {
-  const [guestCode, setGuestCode] = useState('');
-  const [isVerified, setIsVerified] = useState(false);
-  const [verificationError, setVerificationError] = useState('');
   const [roomBookings, setRoomBookings] = useState<Record<string, number>>({});
 
   const [formData, setFormData] = useState<Partial<GuestRsvp>>({
+    fullName: '',
+    email: '',
     attendance: 'yes',
     attendingDays: 'both',
     plusOneCount: 1,
@@ -30,6 +29,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
   const [submittedRsvp, setSubmittedRsvp] = useState<GuestRsvp | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
     setRoomBookings(getCastleRoomBookings());
@@ -43,8 +43,8 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     const handleRoomSelect = (e: Event) => {
       const customEvent = e as CustomEvent<{ roomId: string }>;
       if (customEvent.detail?.roomId) {
-        setIsVerified(true);
         setIsSubmitted(false);
+        setIsFormOpen(true);
         setFormData((prev) => ({ ...prev, roomBooking: customEvent.detail.roomId }));
       }
     };
@@ -56,7 +56,6 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
         const parsed = JSON.parse(saved);
         setSubmittedRsvp(parsed);
         setIsSubmitted(true);
-        setIsVerified(true);
         setFormData(parsed);
       } catch {
         // Safe fallback
@@ -69,25 +68,12 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     };
   }, []);
 
-  const handleVerifyCode = (e: FormEvent) => {
-    e.preventDefault();
-    if (!guestCode.trim()) {
-      setVerificationError(
-        lang === 'es' ? 'Por favor introduce tu código.' : 'Please enter your code.'
-      );
-      return;
-    }
-    // Accept standard wedding codes or email
-    setIsVerified(true);
-    setVerificationError('');
-  };
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!formData.fullName || !formData.email) return;
 
     const rsvpRecord: GuestRsvp = {
-      code: guestCode || 'OPEN-RSVP',
+      code: 'RSVP-WEB',
       fullName: formData.fullName,
       email: formData.email,
       attendance: formData.attendance || 'yes',
@@ -111,10 +97,12 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     localStorage.setItem('belen_oriol_rsvp_data', JSON.stringify(rsvpRecord));
     setSubmittedRsvp(rsvpRecord);
     setIsSubmitted(true);
+    setIsFormOpen(false);
   };
 
   const handleEdit = () => {
     setIsSubmitted(false);
+    setIsFormOpen(true);
   };
 
   return (
@@ -285,50 +273,66 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
               <span>{lang === 'es' ? 'Modificar Respuesta' : 'Edit My RSVP'}</span>
             </button>
           </div>
-        ) : (
-          /* RSVP Form */
-          <div className="bg-[#faf7f2] border border-[rgba(92,20,30,0.18)] rounded-xl p-6 sm:p-10 shadow-md relative">
-            {/* Step 1: Verification Code */}
-            {!isVerified ? (
-              <form onSubmit={handleVerifyCode} className="space-y-6">
-                <div>
-                  <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-2">
-                    {lang === 'es'
-                      ? 'Código de Invitación o Correo Electrónico *'
-                      : 'Invitation Code or Email Address *'}
-                  </label>
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <input
-                      type="text"
-                      value={guestCode}
-                      onChange={(e) => setGuestCode(e.target.value)}
-                      placeholder={lang === 'es' ? 'ej. BO-2027 o tu correo' : 'e.g. BO-2027 or your email'}
-                      className="flex-1 px-4 py-3 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                    />
-                    <button
-                      type="submit"
-                      className="px-6 py-3 bg-[#5c141e] hover:bg-[#7a1d2b] text-white text-xs font-semibold tracking-widest uppercase rounded transition-colors cursor-pointer shadow-xs"
-                    >
-                      {lang === 'es' ? 'Continuar' : 'Proceed'}
-                    </button>
-                  </div>
-                  {verificationError && (
-                    <span className="text-xs text-rose-700 mt-2 block">{verificationError}</span>
-                  )}
-                </div>
+        ) : !isFormOpen ? (
+          /* Initial State: Only show "Confirmar Asistencia" button */
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-[#faf7f2] border border-[rgba(92,20,30,0.2)] rounded-2xl p-8 sm:p-12 text-center shadow-lg relative overflow-hidden"
+          >
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#7a1d2b] to-[#3a0810] border-2 border-[#dfc285] flex items-center justify-center text-[#dfc285] shadow-md">
+              <Send className="w-6 h-6" />
+            </div>
 
-                <div className="p-4 bg-white/60 rounded border border-[rgba(92,20,30,0.08)] text-xs text-[#6e675f]">
-                  <p>
-                    {lang === 'es'
-                      ? 'Si no dispones de código, introduce tu nombre o correo para acceder directamente a la confirmación.'
-                      : 'If you do not have an invitation code, simply enter your name or email to complete your response.'}
-                  </p>
-                </div>
-              </form>
-            ) : (
-              /* Step 2: Detailed RSVP Fields */
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <h3 className="font-cinzel text-xl sm:text-2xl font-bold text-[#37080e] mb-2 uppercase tracking-wide">
+              {lang === 'es' ? 'Confirmación de Asistencia' : 'Wedding Attendance Confirmation'}
+            </h3>
+
+            <p className="font-cormorant italic text-base sm:text-lg text-[#6e675f] max-w-lg mx-auto mb-8">
+              {lang === 'es'
+                ? 'Pulsa en el botón a continuación para abrir el formulario e indicarnos si nos acompañarás, tus preferencias de menú, transporte y alojamiento.'
+                : 'Click the button below to open the form and let us know your attendance, dietary preferences, shuttle bus, and room booking.'}
+            </p>
+
+            <button
+              onClick={() => setIsFormOpen(true)}
+              className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5c141e] hover:bg-[#7a1d2b] text-white font-cinzel text-xs sm:text-sm font-bold tracking-[0.22em] uppercase transition-all duration-300 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-[#dfc285]" />
+              <span>{lang === 'es' ? 'Confirmar Asistencia' : 'Confirm Attendance'}</span>
+            </button>
+
+            <div className="mt-6 pt-4 border-t border-[#8c6d4f]/20 text-xs text-[#8c6d4f] font-mono">
+              <span>{lang === 'es' ? 'Fecha límite de confirmación: 15 de Julio de 2027 (15.07.2027)' : 'RSVP Deadline: July 15, 2027 (07.15.2027)'}</span>
+            </div>
+          </motion.div>
+        ) : (
+          /* RSVP Form when opened */
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-[#faf7f2] border border-[rgba(92,20,30,0.18)] rounded-xl p-6 sm:p-10 shadow-md relative"
+          >
+            <div className="flex items-center justify-between pb-4 mb-6 border-b border-[rgba(92,20,30,0.12)]">
+              <div>
+                <h3 className="font-cinzel text-lg font-bold text-[#37080e] uppercase">
+                  {lang === 'es' ? 'Formulario de Asistencia' : 'RSVP Form'}
+                </h3>
+                <span className="text-xs text-[#8c6d4f] font-mono">
+                  {lang === 'es' ? 'Por favor completa todos los campos' : 'Please complete all required fields'}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsFormOpen(false)}
+                className="text-xs text-[#8c6d4f] hover:text-[#5c141e] underline cursor-pointer font-sans"
+              >
+                {lang === 'es' ? 'Ocultar formulario' : 'Collapse form'}
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5 flex items-center gap-1.5">
                       <User className="w-3.5 h-3.5 text-[#b89243]" />
@@ -700,8 +704,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                   <span>{lang === 'es' ? 'Confirmar Asistencia' : 'Submit RSVP'}</span>
                 </button>
               </form>
-            )}
-          </div>
+          </motion.div>
         )}
       </div>
     </section>

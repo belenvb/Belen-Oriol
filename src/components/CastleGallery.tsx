@@ -126,13 +126,13 @@ export function CastleGallery({ lang }: CastleGalleryProps) {
             <div>
               <div className="flex items-center gap-2 text-[#5c141e] font-semibold text-xs uppercase tracking-widest mb-1.5">
                 <MapPin className="w-4 h-4 text-[#b89243]" />
-                <span>{lang === 'es' ? 'Ubicación del Enlace' : 'Wedding Location'}</span>
+                <span>{lang === 'es' ? 'Ubicación de la Boda' : 'Wedding Location'}</span>
               </div>
               <h3 className="font-cinzel text-2xl sm:text-3xl text-[#37080e] font-bold">
                 Castillo del Buen Amor
               </h3>
               <p className="font-sans text-sm text-[#554f47] mt-1 flex items-center gap-1.5">
-                <span>Ctra. N-630, Km. 317, 37799 Topas, Salamanca</span>
+                <span>Villanueva de Cañedo, 37799 Topas, Salamanca</span>
               </p>
             </div>
 
@@ -166,8 +166,8 @@ export function CastleGallery({ lang }: CastleGalleryProps) {
           <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#6e675f] pt-3 border-t border-[rgba(92,20,30,0.06)]">
             <span>
               {lang === 'es'
-                ? '✦ A solo 20 minutos de Salamanca capital por la A-66 (Km 314).'
-                : '✦ Only 20 minutes from central Salamanca via A-66 (Km 314).'}
+                ? '✦ A solo 25 minutos de Salamanca capital (20 km).'
+                : '✦ Only 25 minutes from central Salamanca (20 km / 12.5 miles).'}
             </span>
             <span className="text-[#5c141e] font-semibold">
               {lang === 'es' ? 'Aparcamiento privado gratuito en el recinto' : 'Free private parking on castle grounds'}

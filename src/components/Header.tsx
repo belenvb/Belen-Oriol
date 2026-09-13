@@ -10,7 +10,11 @@ interface HeaderProps {
   activeSection: string;
 }
 
-export function Header({ lang, onLanguageChange, activeSection }: HeaderProps) {
+export function Header({
+  lang,
+  onLanguageChange,
+  activeSection,
+}: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

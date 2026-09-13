@@ -12,7 +12,7 @@ export const weddingInfo = {
     city: 'Salamanca',
     province: 'Salamanca, España',
     country: 'España',
-    fullAddress: 'Carretera N-630, Km 317.6, 37799 Villanueva de Cañedo, Salamanca',
+    fullAddress: 'Villanueva de Cañedo, 37799 Topas, Salamanca, España',
     googleMapsUrl: 'https://maps.google.com/?q=El+Castillo+del+Buen+Amor+Salamanca',
     coordinates: { lat: 41.1558, lng: -5.6708 },
   },
@@ -50,7 +50,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       },
       shuttleInfo: {
         title: 'Servicio de autobús para invitados',
-        description: 'El servicio de autobús entre Salamanca y el Castillo del Buen Amor operará el sábado 4 para el enlace nupcial.',
+        description: 'El servicio de autobús entre Salamanca y el Castillo del Buen Amor operará el sábado 4 para la boda.',
       },
       calEvent: {
         title: 'Boda Belén & Oriol — Preboda Íntima (Solo Invitación)',
@@ -78,8 +78,8 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       dateKey: 'sept4',
       dayOfWeek: 'Sábado',
       fullDateString: 'Sábado, 04 de Septiembre de 2027',
-      title: 'El Gran Día · La Boda',
-      subtitle: 'La ceremonia nupcial, el banquete y la fiesta.',
+      title: 'Día de la Boda',
+      subtitle: 'La ceremonia, el banquete y la fiesta.',
       location: 'El Castillo del Buen Amor',
       dressCode: {
         title: 'Cocktail o Black Tie',
@@ -87,10 +87,10 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       },
       shuttleInfo: {
         title: 'Servicio de autobús para invitados entre Salamanca y el Castillo del Buen Amor',
-        description: 'Salida desde Salamanca para la ceremonia y regresos continuos durante la fiesta y madrugada.',
+        description: 'Salida desde Salamanca para la ceremonia y servicio de regreso al finalizar la fiesta.',
       },
       calEvent: {
-        title: 'Boda Belén & Oriol — Enlace Nupcial',
+        title: 'Boda Belén & Oriol — Ceremonia & Celebración',
         description: 'Ceremonia, cóctel, banquete y fiesta en El Castillo del Buen Amor, Salamanca.',
         location: 'El Castillo del Buen Amor, Salamanca',
         startTime: '20270904T173000',
@@ -191,7 +191,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       },
       shuttleInfo: {
         title: 'Guest bus service between Salamanca and Castillo del Buen Amor',
-        description: 'Departure from Salamanca for the ceremony, with multiple return buses during the party and late night.',
+        description: 'Departure from Salamanca for the ceremony, with return service after the party.',
       },
       calEvent: {
         title: 'Belén & Oriol Wedding Ceremony & Reception',
@@ -402,7 +402,7 @@ export const accommodationsList = [
     name: 'Hotel Alameda Palace 5*',
     badge: 'Salamanca Centro',
     note: 'Elegancia clásica a 5 minutos a pie de la Plaza Mayor. Parada del autobús de invitados a 200m.',
-    distance: '20 min en coche / autobús',
+    distance: '25 min en coche / autobús',
     url: 'https://maps.google.com/?q=Hotel+Alameda+Palace+Salamanca',
   },
   {

@@ -56,7 +56,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] text-[#2c241e] font-sans selection:bg-[#5c141e] selection:text-white relative">
+    <div className="w-full min-h-screen bg-[#faf7f2] text-[#2c241e] font-sans selection:bg-[#5c141e] selection:text-white relative overflow-x-hidden">
       {/* Fluid Reading & Scroll Progress Indicator (Gold-Burgundy Jewel Bar) */}
       <motion.div
         style={{ scaleX: scrollYProgress }}
@@ -87,7 +87,7 @@ export default function App() {
               key={item.id}
               onClick={() => scrollToSection(item.id)}
               title={lang === 'es' ? item.labelEs : item.labelEn}
-              className={`group flex items-center justify-end relative cursor-pointer p-1`}
+              className="group flex items-center justify-end relative cursor-pointer p-1"
             >
               {/* Tooltip on hover */}
               <span className="absolute right-7 px-2.5 py-1 rounded bg-[#37080e] text-white text-[10px] uppercase tracking-wider font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
@@ -106,8 +106,8 @@ export default function App() {
         })}
       </div>
 
-      <main className="relative">
-        {/* Cinematic Hero */}
+      <main className="w-full relative">
+        {/* Cinematic Full-Screen Hero */}
         <Hero
           lang={lang}
           onNavigate={scrollToSection}
@@ -127,6 +127,7 @@ export default function App() {
             lang={lang}
             selectedDay={selectedDay}
             onSelectDay={setSelectedDay}
+            hasPrebodaAccess={true}
           />
         </motion.div>
 

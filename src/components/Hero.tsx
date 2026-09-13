@@ -41,7 +41,7 @@ export function Hero({ lang, onNavigate }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative min-h-[100vh] flex flex-col justify-center items-center text-center overflow-hidden bg-gradient-to-b from-[#0e1e14] via-[#14281b] to-[#0a160e] text-[#f8f5ee] px-4 pt-28 pb-16 sm:pt-32 sm:pb-20"
+      className="relative w-full min-h-screen flex flex-col justify-center items-center text-center overflow-hidden bg-gradient-to-b from-[#0e1e14] via-[#14281b] to-[#0a160e] text-[#f8f5ee] px-4 pt-24 pb-16 sm:pt-28 sm:pb-20"
     >
       {/* Ambient forest green radial glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(31,61,42,0.65)_0%,rgba(14,30,20,0.95)_70%,#0a160e_100%)] pointer-events-none" />

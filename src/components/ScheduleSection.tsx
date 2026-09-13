@@ -28,6 +28,7 @@ interface ScheduleSectionProps {
   lang: Language;
   selectedDay: 'sept3' | 'sept4';
   onSelectDay: (day: 'sept3' | 'sept4') => void;
+  hasPrebodaAccess?: boolean;
 }
 
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
@@ -105,7 +106,12 @@ function ParchmentCornerFlourish({ position }: { position: 'tl' | 'tr' | 'bl' | 
   );
 }
 
-export function ScheduleSection({ lang, selectedDay, onSelectDay }: ScheduleSectionProps) {
+export function ScheduleSection({
+  lang,
+  selectedDay,
+  onSelectDay,
+  hasPrebodaAccess = true,
+}: ScheduleSectionProps) {
   const [viewMode, setViewMode] = useState<'tabbed' | 'both'>('tabbed');
   const currentSchedule = scheduleData[lang];
   const activeData = currentSchedule[selectedDay];
@@ -274,59 +280,65 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay }: ScheduleSect
           </p>
         </motion.div>
 
-        {/* Day Selector Tabs Styled as Parchment Ribbons */}
+        {/* Day Selector Tabs Styled with Saturday highlighted as the dark focal day */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch mb-8">
-          {/* Day 1: September 3 */}
-          <button
-            onClick={() => {
-              onSelectDay('sept3');
-              setViewMode('tabbed');
-            }}
-            className={`flex-1 p-4 sm:p-5 rounded-xl transition-all duration-300 text-left relative cursor-pointer shadow-sm border ${
-              selectedDay === 'sept3' && viewMode === 'tabbed'
-                ? 'bg-[#fcf8ef] border-[#b89243] ring-2 ring-[#b89243]/40 shadow-md'
-                : 'bg-[#faf2e3]/70 hover:bg-[#faf2e3] border-[#8c6d4f]/30'
-            }`}
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#5c141e] text-white flex items-center gap-1 shadow-xs">
-                <span>🔒</span>
-                <span>{lang === 'es' ? 'SOLO CON INVITACIÓN' : 'INVITATION ONLY'}</span>
-              </span>
-              <span className="font-cinzel text-xs font-bold text-[#8c6d3b]">03.09.2027</span>
-            </div>
-            <h3 className="font-playfair text-lg sm:text-xl font-bold text-[#37080e]">
-              {lang === 'es' ? 'Viernes 3 de Septiembre' : 'Friday, September 3'}
-            </h3>
-            <p className="font-cormorant italic text-sm text-[#8c6d4f] mt-0.5">
-              {lang === 'es'
-                ? 'Salamanca · Cóctel de Víspera (Exclusivo con Convocatoria)'
-                : 'Salamanca · Eve Gathering (Strictly by Invitation)'}
-            </p>
-          </button>
+          {/* Day 1: September 3 (Only visible for guests invited to Preboda) */}
+          {hasPrebodaAccess && (
+            <button
+              onClick={() => {
+                onSelectDay('sept3');
+                setViewMode('tabbed');
+              }}
+              className={`flex-1 p-4 sm:p-5 rounded-2xl transition-all duration-300 text-left relative cursor-pointer shadow-sm border ${
+                selectedDay === 'sept3' && viewMode === 'tabbed'
+                  ? 'bg-[#fcf8ef] border-[#b89243] ring-2 ring-[#b89243]/50 shadow-md'
+                  : 'bg-[#faf2e3]/75 hover:bg-[#faf2e3] border-[#8c6d4f]/30'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#5c141e] text-white flex items-center gap-1 shadow-xs">
+                  <span>✦</span>
+                  <span>{lang === 'es' ? 'CÓCTEL DE VÍSPERA' : 'EVE GATHERING'}</span>
+                </span>
+                <span className="font-cinzel text-xs font-bold text-[#8c6d3b]">
+                  {lang === 'es' ? '03.09.2027' : '09.03.2027'}
+                </span>
+              </div>
+              <h3 className="font-playfair text-lg sm:text-xl font-bold text-[#37080e]">
+                {lang === 'es' ? 'Viernes 3 de Septiembre' : 'Friday, September 3'}
+              </h3>
+              <p className="font-cormorant italic text-sm text-[#8c6d4f] mt-0.5">
+                {lang === 'es'
+                  ? 'Salamanca · Encuentro Preboda & Tapas'
+                  : 'Salamanca · Welcome Tapas & Cocktails'}
+              </p>
+            </button>
+          )}
 
-          {/* Day 2: September 4 */}
+          {/* Day 2: September 4 (Main Wedding Day: Dark background, bright typography) */}
           <button
             onClick={() => {
               onSelectDay('sept4');
               setViewMode('tabbed');
             }}
-            className={`flex-1 p-4 sm:p-5 rounded-xl transition-all duration-300 text-left relative cursor-pointer shadow-sm border ${
+            className={`flex-1 p-4 sm:p-5 rounded-2xl transition-all duration-300 text-left relative cursor-pointer shadow-lg ${
               selectedDay === 'sept4' && viewMode === 'tabbed'
-                ? 'bg-[#fcf8ef] border-[#5c141e] ring-2 ring-[#5c141e]/30 shadow-md'
-                : 'bg-[#faf2e3]/70 hover:bg-[#faf2e3] border-[#8c6d4f]/30'
+                ? 'bg-gradient-to-br from-[#3d0d14] via-[#2a060b] to-[#1a0205] border-2 border-[#dfc285] ring-2 ring-[#dfc285]/50 shadow-xl scale-[1.01]'
+                : 'bg-gradient-to-br from-[#33090f] to-[#1f0307] border border-[#dfc285]/40 opacity-90 hover:opacity-100'
             }`}
           >
             <div className="flex items-center justify-between mb-1.5">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#5c141e] text-white">
-                {lang === 'es' ? 'DÍA 2 · EL GRAN ENLACE' : 'DAY 2 · THE WEDDING'}
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#dfc285] text-[#37080e] shadow-xs">
+                {lang === 'es' ? 'DÍA DE LA BODA' : 'THE WEDDING DAY'}
               </span>
-              <span className="font-cinzel text-xs font-bold text-[#5c141e]">04.09.2027</span>
+              <span className="font-cinzel text-xs font-bold text-[#dfc285]">
+                {lang === 'es' ? '04.09.2027' : '09.04.2027'}
+              </span>
             </div>
-            <h3 className="font-playfair text-lg sm:text-xl font-bold text-[#37080e]">
+            <h3 className="font-playfair text-lg sm:text-xl font-bold text-[#fcf8ef]">
               {lang === 'es' ? 'Sábado 4 de Septiembre' : 'Saturday, September 4'}
             </h3>
-            <p className="font-cormorant italic text-sm text-[#8c6d4f] mt-0.5">
+            <p className="font-cormorant italic text-sm text-[#dfc285] mt-0.5">
               {lang === 'es'
                 ? 'El Castillo del Buen Amor · Banquete & Fiesta'
                 : 'Castillo del Buen Amor · Ceremony & Banquet'}
@@ -348,22 +360,24 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay }: ScheduleSect
           </div>
 
           <div className="flex items-center gap-2.5">
-            <button
-              onClick={() => setViewMode(viewMode === 'tabbed' ? 'both' : 'tabbed')}
-              className="text-xs uppercase tracking-wider text-[#5c141e] font-semibold border border-[#8c6d4f]/30 px-3 py-1.5 rounded-lg bg-[#faf2e3] hover:bg-white transition-colors cursor-pointer flex items-center gap-1.5"
-            >
-              {viewMode === 'tabbed' ? (
-                <>
-                  <Columns className="w-3.5 h-3.5 text-[#b89243]" />
-                  <span>{lang === 'es' ? 'Ver Ambas' : 'View Both'}</span>
-                </>
-              ) : (
-                <>
-                  <Layers className="w-3.5 h-3.5 text-[#b89243]" />
-                  <span>{lang === 'es' ? 'Por Día' : 'Single'}</span>
-                </>
-              )}
-            </button>
+            {hasPrebodaAccess && (
+              <button
+                onClick={() => setViewMode(viewMode === 'tabbed' ? 'both' : 'tabbed')}
+                className="text-xs uppercase tracking-wider text-[#5c141e] font-semibold border border-[#8c6d4f]/30 px-3 py-1.5 rounded-lg bg-[#faf2e3] hover:bg-white transition-colors cursor-pointer flex items-center gap-1.5"
+              >
+                {viewMode === 'tabbed' ? (
+                  <>
+                    <Columns className="w-3.5 h-3.5 text-[#b89243]" />
+                    <span>{lang === 'es' ? 'Ver Ambas' : 'View Both'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Layers className="w-3.5 h-3.5 text-[#b89243]" />
+                    <span>{lang === 'es' ? 'Por Día' : 'Single'}</span>
+                  </>
+                )}
+              </button>
+            )}
 
             <button
               onClick={() => handleCalendarExport(selectedDay)}
@@ -418,7 +432,7 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay }: ScheduleSect
                   Belén & Oriol
                 </span>
                 <span className="font-cormorant italic text-xs text-[#8c6d4f]">
-                  Salamanca · 4 de Septiembre de 2027
+                  {lang === 'es' ? 'Salamanca · 4 de Septiembre de 2027' : 'Salamanca · September 4, 2027'}
                 </span>
               </div>
             </div>

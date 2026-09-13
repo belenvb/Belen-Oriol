@@ -256,7 +256,7 @@ export function DatesHighlight({ lang, onSelectDay, onScrollToSchedule }: DatesH
                   <MapPin className="w-4 h-4 text-[#e5cb8f] shrink-0 mt-0.5" />
                   <div>
                     <strong className="block text-[#e5cb8f] uppercase tracking-wider text-[10px]">
-                      {lang === 'es' ? 'Lugar del Enlace' : 'Wedding Ceremony'}
+                      {lang === 'es' ? 'Lugar de la Ceremonia' : 'Wedding Ceremony'}
                     </strong>
                     <span className="text-white/85">{currentSchedule.sept4.location}</span>
                   </div>
