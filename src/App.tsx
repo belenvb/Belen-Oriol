@@ -60,8 +60,10 @@ export default function App() {
       <Header lang={lang} onLanguageChange={setLang} activeSection={activeSection} />
 
       <main className="w-full relative">
-        <div className="hero-pin">
-          <Hero lang={lang} onNavigate={scrollToSection} />
+        <div className="hero-scroll-stage">
+          <div className="hero-pin">
+            <Hero lang={lang} onNavigate={scrollToSection} />
+          </div>
         </div>
         <div className="page-content-stack">
         <HorizontalTrencadis />
