@@ -486,3 +486,82 @@ footer { padding:0!important; overflow:hidden; }
   width: 4px !important;
   animation-duration: 1.55s !important;
 }
+
+
+/* RSVP final readability fix */
+#rsvp .rsvp-section-shell::after,
+.rsvp-section-shell::after {
+  display:none !important;
+}
+#rsvp .rsvp-readable-card {
+  background-color: rgba(255, 250, 240, .96) !important;
+  color:#371017 !important;
+}
+#rsvp .rsvp-readable-card h1,
+#rsvp .rsvp-readable-card h2,
+#rsvp .rsvp-readable-card h3,
+#rsvp .rsvp-readable-card h4,
+#rsvp .rsvp-readable-card .text-\[\#37080e\],
+#rsvp .rsvp-readable-card .text-\[\#5c141e\] {
+  color:#371017 !important;
+}
+#rsvp .rsvp-readable-card p,
+#rsvp .rsvp-readable-card .font-cormorant,
+#rsvp .rsvp-readable-card .text-\[\#554f47\],
+#rsvp .rsvp-readable-card .text-\[\#6e675f\] {
+  color:#554f47 !important;
+}
+#rsvp .rsvp-readable-card > button,
+#rsvp .rsvp-readable-card > button span {
+  color:#fff7e7 !important;
+}
+#rsvp .rsvp-readable-card > button svg {
+  color:#dfc285 !important;
+  stroke:#dfc285 !important;
+}
+#rsvp .rsvp-readable-card .bg-\[\#5c141e\],
+#rsvp .rsvp-readable-card button.bg-\[\#5c141e\] {
+  background-color:#6d1020 !important;
+  color:#fff7e7 !important;
+}
+#rsvp .rsvp-readable-card .bg-\[\#5c141e\] *,
+#rsvp .rsvp-readable-card button.bg-\[\#5c141e\] * {
+  color:#fff7e7 !important;
+  stroke:#dfc285 !important;
+}
+
+/* Keep mobile fixed-photo feel */
+@media (max-width: 760px) {
+  .hero-fixed-photo img,
+  .hero-fixed-photo .hero-shade,
+  .parallax-photo-fixed {
+    position: fixed !important;
+    height: 100svh !important;
+    min-height: 100svh !important;
+  }
+}
+
+/* Stronger moving Discover light */
+.hero-discover i {
+  position:relative;
+  overflow:hidden;
+}
+.hero-discover i::after {
+  content:'';
+  position:absolute;
+  left:50%;
+  top:-32%;
+  width:4px;
+  height:26px;
+  border-radius:999px;
+  background:rgba(255,238,202,.98);
+  box-shadow:0 0 16px rgba(227,194,121,.98), 0 0 28px rgba(227,194,121,.62);
+  transform:translateX(-50%);
+  animation:discoverBeam 1.55s ease-in-out infinite;
+}
+@keyframes discoverBeam {
+  0% { top:-28%; opacity:0; }
+  18% { opacity:1; }
+  56% { top:44%; opacity:.98; }
+  100% { top:112%; opacity:0; }
+}
