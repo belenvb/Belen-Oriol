@@ -37,16 +37,41 @@ export function JourneyMap({ lang }: JourneyMapProps) {
   };
 
 
-  const getRoomSubtext = (roomId: string) => {
-    const subtexts: Record<string, string> = {
-      estandar: 'Oldest rooms in the castle located in the dungeons. 11th century walls. 30 - 34 M2',
-      superior: 'Spacious accommodation with 15th-century stonework. 30-40 M2',
-      deluxe: 'Vaults or coffered ceilings. Views of the gardens or terrace. 30-43 M2',
-      suite_guardia: 'Oldest suite in the castle located in the dungeons. 11th century walls and overlooking the moat. 40-45 M2',
-      suite_medieval: 'The castle crown jewel: Mudejar brick domes, wooden beams or private access to the towers. 40-47 M2',
+
+  const getRoomArea = (roomId: string) => {
+    const areas: Record<string, string> = {
+      estandar: '30 - 34 m²',
+      superior: '30 - 40 m²',
+      deluxe: '30 - 43 m²',
+      suite_guardia: '40 - 45 m²',
+      suite_medieval: '40 - 47 m²',
     };
 
-    return subtexts[roomId] || '';
+    return areas[roomId] || '';
+  };
+
+  const getHotelBadge = (hotel: any) => (lang === 'es' ? hotel.badge : hotel.badgeEn || hotel.badge);
+  const getHotelNote = (hotel: any) => (lang === 'es' ? hotel.note : hotel.noteEn || hotel.note);
+  const getHotelDistance = (hotel: any) => (lang === 'es' ? hotel.distance : hotel.distanceEn || hotel.distance);
+
+  const getRoomSubtext = (roomId: string) => {
+    const subtextsEs: Record<string, string> = {
+      estandar: 'Habitaciones más antiguas del castillo, ubicadas en las mazmorras. Muros del siglo XI.',
+      superior: 'Alojamiento amplio con cantería del siglo XV.',
+      deluxe: 'Bóvedas o techos artesonados. Vistas a los jardines o a la terraza.',
+      suite_guardia: 'Suite más antigua del castillo, ubicada en las mazmorras. Muros del siglo XI y vistas al foso.',
+      suite_medieval: 'La joya del castillo: cúpulas de ladrillo mudéjar, vigas de madera o acceso privado a las torres.',
+    };
+
+    const subtextsEn: Record<string, string> = {
+      estandar: 'Oldest rooms in the castle located in the dungeons. 11th century walls.',
+      superior: 'Spacious accommodation with 15th-century stonework.',
+      deluxe: 'Vaults or coffered ceilings. Views of the gardens or terrace.',
+      suite_guardia: 'Oldest suite in the castle located in the dungeons. 11th century walls and overlooking the moat.',
+      suite_medieval: 'The castle crown jewel: Mudejar brick domes, wooden beams or private access to the towers.',
+    };
+
+    return (lang === 'es' ? subtextsEs[roomId] : subtextsEn[roomId]) || '';
   };
 
   return (
@@ -99,8 +124,8 @@ export function JourneyMap({ lang }: JourneyMapProps) {
               </h3>
               <p className="font-sans text-xs sm:text-sm text-[#6e675f] mt-1">
                 {lang === 'es'
-                  ? 'Tarifas especiales concertadas con el Castillo del Buen Amor para nuestros invitados (desayuno incluido).'
-                  : 'Special negotiated rates at Castillo del Buen Amor for our guests (breakfast included).'}
+                  ? 'Tenemos un bloqueo de habitaciones con tarifas especiales concertadas con el Castillo del Buen Amor para nuestros invitados.'
+                  : 'We have a room block with special negotiated rates at Castillo del Buen Amor for our guests.'}
               </p>
             </div>
 
@@ -120,17 +145,25 @@ export function JourneyMap({ lang }: JourneyMapProps) {
               </span>
             </div>
           </div>
-
-          <p className="room-payment">{lang === 'es' ? 'Cada huésped paga su habitación. Precios por habitación y noche, con desayuno incluido.' : 'Each guest pays for their own room. Prices per room, per night, including breakfast.'}</p>
           <div className="room-list room-list-compact">
             {CASTLE_ROOMS.map((room) => (
               <div className="room-row room-row-detailed" key={room.id}>
                 <div className="room-row-copy">
-                  <h4>{lang === 'es' ? room.name : room.nameEn}</h4>
+                  <div className="room-row-title-line">
+                    <h4>{lang === 'es' ? room.name : room.nameEn}</h4>
+                    <span>{getRoomArea(room.id)}</span>
+                  </div>
                   <p>{getRoomSubtext(room.id)}</p>
-                  <small>{room.total} {lang === 'es' ? 'habitaciones en el cupo' : 'rooms in the allocation'}</small>
+                  <small>
+                    {lang === 'es'
+                      ? `${room.total} de ${room.total} habitaciones disponibles en el bloqueo`
+                      : `${room.total} of ${room.total} in the room block left`}
+                  </small>
                 </div>
-                <strong>€{room.price}</strong>
+                <div className="room-price-block">
+                  <strong>{room.price} €</strong>
+                  <span>{lang === 'es' ? '/ noche · Desayuno incluido' : '/ night · Breakfast included'}</span>
+                </div>
                 <button onClick={() => handleSelectRoomForRsvp(room.id)}>
                   {lang === 'es' ? 'Solicitar' : 'Request'} ↗
                 </button>
@@ -183,15 +216,15 @@ export function JourneyMap({ lang }: JourneyMapProps) {
                     </span>
                   </div>
                   <span className="inline-block text-[10px] tracking-wider uppercase font-semibold text-[#8c6d3b] bg-[#8c6d3b]/10 px-2 py-0.5 rounded mb-2">
-                    {hotel.badge}
+                    {getHotelBadge(hotel)}
                   </span>
                   <p className="text-xs text-[#6e675f] leading-relaxed mb-3">
-                    {hotel.note}
+                    {getHotelNote(hotel)}
                   </p>
                 </div>
 
                 <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                  <span className="text-[#5c141e] font-semibold text-[11px]">{hotel.distance}</span>
+                  <span className="text-[#5c141e] font-semibold text-[11px]">{getHotelDistance(hotel)}</span>
                   <a
                     href={hotel.url}
                     target="_blank"

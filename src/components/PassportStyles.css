@@ -1856,3 +1856,15 @@
     padding-right: 0 !important;
   }
 }
+
+
+/* Final back-cover closed placement */
+.passport-stage.is-closed .passport-front-cover.is-back-cover {
+  left: clamp(92px, 8vw, 136px) !important;
+  right: auto !important;
+  transform: translateX(0) rotateY(0deg) !important;
+}
+.passport-stage.is-closing-back .passport-front-cover {
+  left: clamp(92px, 8vw, 136px) !important;
+  right: auto !important;
+}

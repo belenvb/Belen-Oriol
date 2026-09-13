@@ -203,21 +203,8 @@ export function TransportPassport({ lang }: { lang: Language }) {
     const handlePassportWheel = (event: globalThis.WheelEvent) => {
       if (Math.abs(event.deltaY) < 10 || flipDirection || isClosingBack) return;
 
-      const rect = stage.getBoundingClientRect();
-      const sectionIsActive = rect.top < window.innerHeight * 0.78 && rect.bottom > window.innerHeight * 0.22;
-
-      if (!sectionIsActive) return;
-
-      if (passportSequenceComplete && event.deltaY > 0) return;
-
       event.preventDefault();
       event.stopPropagation();
-
-      if (!introSeen) {
-        stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setIntroSeen(true);
-        return;
-      }
 
       if (!isOpen) {
         openPassport();
@@ -225,23 +212,19 @@ export function TransportPassport({ lang }: { lang: Language }) {
       }
 
       if (event.deltaY > 0) {
-        if (spreadIndex < spreads.length - 1) {
-          requestSpreadChange(spreadIndex + 1);
-        } else {
-          closePassport('back');
-        }
+        if (spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
+        else closePassport('back');
       } else {
-        if (spreadIndex > 0) {
-          requestSpreadChange(spreadIndex - 1);
-        } else {
-          closePassport('front');
-        }
+        if (spreadIndex > 0) requestSpreadChange(spreadIndex - 1);
+        else closePassport('front');
       }
     };
 
-    window.addEventListener('wheel', handlePassportWheel, { passive: false, capture: true });
-    return () => window.removeEventListener('wheel', handlePassportWheel, { capture: true });
-  }, [flipDirection, introSeen, isClosingBack, isOpen, passportSequenceComplete, spreadIndex, spreads.length]);
+    stage.addEventListener('wheel', handlePassportWheel, { passive: false });
+    return () => stage.removeEventListener('wheel', handlePassportWheel);
+  }, [flipDirection, isClosingBack, isOpen, spreadIndex, spreads.length]);
+
+
 
 
 

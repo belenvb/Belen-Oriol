@@ -143,6 +143,10 @@ export function RegistrySection({ lang }: RegistrySectionProps) {
           <div className="w-20 h-[1.5px] bg-[#b89243] mx-auto mt-5" />
         </motion.div>
 
+        <figure className="registry-illustration-card">
+          <img src="/photos/wedding-illustration.webp" alt={lang === 'es' ? 'Ilustración de los novios' : 'Wedding illustration'} loading="lazy" />
+        </figure>
+
         {/* Step 1: Select Gift Destination */}
         <div className="mb-8">
           <span className="block font-cinzel text-xs font-bold text-[#8c6d3b] uppercase tracking-[0.2em] mb-3 text-center">

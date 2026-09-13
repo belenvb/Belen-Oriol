@@ -10,7 +10,7 @@ export function Footer({ lang }: FooterProps) {
   return (
     <footer className="bg-[#1f1917] text-[#f4ede2] text-center relative border-t border-[#b89243]/30">
       <div className="closing-photo closing-photo-fullbleed">
-        <img src="/photos/coast.webp" loading="lazy" alt={lang === 'es' ? 'Belén y Oriol junto al mar' : 'Belén and Oriol by the sea'} />
+        <img src="/photos/rainbow-parallax.webp" loading="lazy" alt={lang === 'es' ? 'Belén y Oriol junto al mar' : 'Belén and Oriol by the sea'} />
         <div>
           <p className="eyebrow">{numericDate}</p>
           <h2>Castillo del Buen Amor</h2>
