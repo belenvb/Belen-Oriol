@@ -121,7 +121,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
       subtitle: 'MADRID · VALLADOLID',
       card1Title: 'Madrid-Barajas (MAD)',
       card1Distance: isSpanish ? '220 km a Salamanca · ~2 h en coche / 1 h 35 min en tren' : '220 km / 137 miles to Salamanca · ~2 hr drive / 1 hr 35 min train',
-      card1Text: isSpanish ? 'Madrid es la opción con más vuelos internacionales. Desde la T4 se puede conectar con Chamartín y tomar el Alvia directo a Salamanca.' : 'Madrid is the airport with the widest international connections. From T4, connect to Chamartín and take the direct Alvia train to Salamanca.',
+      card1Text: isSpanish ? 'Madrid es el mejor aeropuerto internacional. Desde la T4, conecta con Chamartín y toma el tren directo a Salamanca.' : 'Madrid is the best international airport. From T4, connect to Chamartín and take the direct train to Salamanca.',
       card2Title: 'Valladolid (VLL)',
       card2Distance: isSpanish ? '115 km a Salamanca · ~1 h en coche / 45 min en tren' : '115 km / 71 miles to Salamanca · ~1 hr drive / 45 min train',
       card2Text: isSpanish ? 'Valladolid puede ser una alternativa cómoda para vuelos desde Barcelona y conexiones nacionales.' : 'Valladolid can be a convenient alternative for flights from Barcelona and domestic connections.',
@@ -236,14 +236,14 @@ export function TransportPassport({ lang }: { lang: Language }) {
     const nextZone = mobile ? event.clientY < rect.top + rect.height / 2 || event.clientX > rect.left + rect.width / 2 : event.clientX > rect.left + rect.width / 2;
     if (nextZone && spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
     if (!nextZone && spreadIndex > 0) requestSpreadChange(spreadIndex - 1);
+    if (!nextZone && spreadIndex === 0) closePassport();
   };
 
   const closePassport = () => {
     if (flipDirection) return;
-    setIsOpen(false);
-    setSpreadIndex(0);
     setPendingSpread(null);
     setFlipDirection(null);
+    setIsOpen(false);
   };
 
   const currentSpread = spreads[spreadIndex];

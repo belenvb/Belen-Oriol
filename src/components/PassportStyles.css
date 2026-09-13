@@ -88,6 +88,7 @@
 .passport-stage.is-closed .passport-spread {
   opacity: 0;
   pointer-events: none;
+  transform: scale(.985);
 }
 
 .passport-stage.is-open .passport-cover-base,
@@ -148,6 +149,7 @@
   position: relative;
   z-index: 3;
   display: grid;
+  overflow: hidden;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
   min-height: clamp(500px, 48vw, 660px);
@@ -211,6 +213,13 @@
   transform: translateX(-82%) rotateY(-168deg);
   opacity: 0;
   visibility: hidden;
+}
+
+.passport-stage.is-closed .passport-front-cover {
+  transform: translateX(0) rotateY(0deg);
+  opacity: 1;
+  visibility: visible;
+  transition: transform .92s cubic-bezier(.2,.78,.18,1), opacity .18s ease, visibility 0s linear 0s;
 }
 
 .passport-cover-guide,
@@ -341,18 +350,18 @@
 .passport-castle-caption { display: block; font: 700 .66rem 'Plus Jakarta Sans', sans-serif; letter-spacing: .18em; text-transform: uppercase; color: #997a44; }
 .passport-page-title h3 { margin: 8px 0 8px; font: 400 clamp(2.45rem, 4.1vw, 4.35rem)/.94 'Cormorant Garamond', serif; color: var(--ink); letter-spacing: -.035em; }
 .passport-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 1.8vw, 22px); }
-.passport-info-card { min-height: 168px; padding: clamp(16px, 2vw, 22px); border: 1px solid rgba(132, 103, 61, .22); border-radius: 13px; background: rgba(255, 252, 246, .72); box-shadow: 0 6px 16px rgba(57, 35, 18, .055), inset 0 1px 0 rgba(255,255,255,.72); }
+.passport-info-card { min-height: 144px; padding: clamp(16px, 2vw, 22px); border: 1px solid rgba(132, 103, 61, .22); border-radius: 13px; background: rgba(255, 252, 246, .72); box-shadow: 0 6px 16px rgba(57, 35, 18, .055), inset 0 1px 0 rgba(255,255,255,.72); }
 .passport-info-card h4 { margin: 0 0 8px; font: 750 clamp(.9rem, 1vw, 1.02rem)/1.2 'Plus Jakarta Sans', sans-serif; color: var(--ink); }
 .passport-info-card strong { display: block; margin-bottom: 10px; padding: 8px 10px; border-radius: 7px; background: color-mix(in srgb, var(--accent) 9%, transparent); font: 750 .65rem/1.45 'Plus Jakarta Sans', sans-serif; letter-spacing: .035em; color: var(--accent); }
-.passport-info-card p { margin: 0; font-size: .78rem; line-height: 1.68; color: #514b42; }
+.passport-info-card p { margin: 0; font-size: .74rem; line-height: 1.54; color: #514b42; }
 .passport-info-card a { display: inline-block; margin-top: 10px; font-size: .68rem; color: var(--accent); border-bottom: 1px solid currentColor; }
-.passport-tagline { margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(140,109,59,.2); font: 700 .68rem 'Plus Jakarta Sans', sans-serif; color: var(--accent); }
+.passport-tagline { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(140,109,59,.2); font: 700 .68rem 'Plus Jakarta Sans', sans-serif; color: var(--accent); }
 .passport-stamp { position: absolute; right: 42px; bottom: 86px; width: 116px; height: 116px; border: 2px solid color-mix(in srgb, var(--accent) 34%, transparent); border-radius: 50%; transform: rotate(-10deg); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: color-mix(in srgb, var(--accent) 50%, transparent); z-index: 1; }
 .passport-stamp::before { content: ''; position: absolute; inset: 8px; border: 1px dashed currentColor; border-radius: 50%; }
 .passport-stamp b,.passport-stamp span { position: relative; z-index: 1; }
 .passport-stamp b { font: 700 .48rem 'Plus Jakarta Sans', sans-serif; letter-spacing: .07em; }
 .passport-stamp span { font: .43rem 'Plus Jakarta Sans', sans-serif; margin-top: 4px; }
-.passport-machine-line { position: absolute; left: 42px; right: 42px; bottom: 46px; font: 500 .42rem/1.45 'Plus Jakarta Sans', sans-serif; letter-spacing: .18em; color: #ab9578; }
+.passport-machine-line { position: absolute; left: 42px; right: 42px; bottom: 40px; font: 500 .39rem/1.35 'Plus Jakarta Sans', sans-serif; letter-spacing: .18em; color: #ab9578; }
 .passport-page-footer { position: absolute; left: 42px; right: 42px; bottom: 14px; display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: end; padding-top: 11px; border-top: 1px solid rgba(140,109,59,.17); font: 600 .54rem 'Plus Jakarta Sans', sans-serif; letter-spacing: .15em; color: #715c43; z-index: 3; }
 .passport-page-footer span:last-child { font-size: .7rem; color: #4f3329; }
 
@@ -366,7 +375,7 @@
   position: absolute;
   top: 18px;
   right: 18px;
-  width: calc(50% - 9px);
+  width: calc(50% - 18px);
   min-height: clamp(500px, 48vw, 660px);
   transform-origin: left center;
   transform-style: preserve-3d;
@@ -376,6 +385,7 @@
 .passport-turning-sheet-previous {
   left: 18px;
   right: auto;
+  width: calc(50% - 18px);
   transform-origin: right center;
   animation-name: passportTurnPrevious;
 }
