@@ -79,13 +79,13 @@ export function Header({
                 isScrolled ? 'text-[#5c141e]' : 'text-[#dfc285]'
               }`}
             >
-              Salamanca · 4 September 2027
+              Salamanca · 04.09.2027
             </span>
           </div>
         </a>
 
         {/* Center: Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-3.5 xl:gap-6 2xl:gap-7 justify-center flex-1">
+        <nav className="hidden xl:flex items-center gap-3.5 xl:gap-6 2xl:gap-7 justify-center flex-1">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.substring(1);
             return (
@@ -124,7 +124,7 @@ export function Header({
                 : 'border-[#dfc285]/30 hover:border-[#dfc285] bg-black/20 text-[#dfc285]'
             }`}
             title={isPlayingAudio ? 'Silenciar música' : 'Reproducir música'}
-            aria-label="Reproducir música"
+            aria-label={lang === 'es' ? (isPlayingAudio ? 'Silenciar música' : 'Reproducir música') : (isPlayingAudio ? 'Mute music' : 'Play music')}
           >
             {isPlayingAudio ? (
               <Volume2 className="w-4 h-4 animate-pulse" />
@@ -170,12 +170,12 @@ export function Header({
           {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`lg:hidden p-2 rounded-lg focus:outline-none ${
+            className={`xl:hidden p-2 rounded-lg focus:outline-none ${
               isScrolled
                 ? 'text-[#5c141e] hover:bg-black/5'
                 : 'text-[#dfc285] hover:bg-white/10'
             }`}
-            aria-label="Abrir menú"
+            aria-expanded={isMobileMenuOpen} aria-label={lang === 'es' ? 'Menú' : 'Menu'}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -184,7 +184,7 @@ export function Header({
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#faf7f2]/98 backdrop-blur-xl border-b border-[#b89243]/30 px-6 py-6 shadow-xl animate-in slide-in-from-top-2 duration-200">
+        <div className="xl:hidden bg-[#faf7f2]/98 backdrop-blur-xl border-b border-[#b89243]/30 px-6 py-6 shadow-xl animate-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <button
@@ -202,3 +202,4 @@ export function Header({
     </header>
   );
 }
+

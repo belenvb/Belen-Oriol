@@ -10,6 +10,7 @@ interface FooterProps {
 export function Footer({ lang }: FooterProps) {
   return (
     <footer className="bg-[#1f1917] text-[#f4ede2] py-6 px-4 text-center relative border-t border-[#b89243]/30">
+      <div className="closing-photo"><img src="/photos/coast.webp" loading="lazy" alt={lang === 'es' ? 'Belén y Oriol junto al mar' : 'Belén and Oriol by the sea'} /><div><p className="eyebrow">04.09.2027</p><h2>{lang === 'es' ? 'Nos vemos en Salamanca.' : 'See you in Salamanca.'}</h2></div></div>
       <div className="max-w-4xl mx-auto flex flex-col items-center">
         {/* Compact Monogram */}
         <div className="mb-2">
@@ -28,4 +29,5 @@ export function Footer({ lang }: FooterProps) {
     </footer>
   );
 }
+
 

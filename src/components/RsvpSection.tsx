@@ -3,7 +3,7 @@ import { CheckCircle2, Heart, Send, Sparkles, User, Mail, Utensils, Bus, Music, 
 import { motion } from 'motion/react';
 import { GuestRsvp, Language } from '../types';
 import { CASTLE_ROOMS, getCastleRoomBookings, recordRoomBooking } from '../data/rooms';
-import { GaudiModernistDivider } from './GaudiAccents';
+
 
 interface RsvpSectionProps {
   lang: Language;
@@ -108,6 +108,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
   return (
     <section id="rsvp" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#fdfbf7] relative">
       <div className="max-w-3xl mx-auto">
+        <div className="original-seal"><img src="/photos/bo-original.webp" alt="BO" width="120" height="120" loading="lazy" /></div>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -127,7 +128,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
               ? 'Por favor confírmanos tu asistencia antes del 15 de Julio de 2027 para organizar cada detalle de tu estancia.'
               : 'Please confirm your attendance before July 15, 2027 to help us curate every aspect of your experience.'}
           </p>
-          <GaudiModernistDivider variant="mosaic" className="mt-4" />
+          
         </motion.div>
 
         {/* Prominent Castle Room Block & Headcount Notice before Dec 31 */}
@@ -568,8 +569,8 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
                       <p className="text-xs text-[#6e675f] mb-3 leading-relaxed">
                         {lang === 'es'
-                          ? 'Tarifas especiales de boda concertadas con el castillo (todas incluyen desayuno buffet). Disponibilidad en tiempo real según confirmaciones:'
-                          : 'Special wedding block rates at the castle (all include buffet breakfast). Live availability:'}
+                          ? 'Cada huésped paga su habitación. Tarifas por habitación y noche con desayuno. Solicitud sujeta a confirmación; se muestra el cupo total:'
+                          : 'Each guest pays for their own room. Rates per room per night with breakfast. Requests require confirmation; total allocation shown:'}
                       </p>
 
                       <div className="space-y-2">
@@ -601,7 +602,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                         {/* Castle Room Options */}
                         {CASTLE_ROOMS.map((room) => {
                           const booked = roomBookings[room.id] || 0;
-                          const remaining = Math.max(0, room.total - booked);
+                          const remaining = room.total;
                           const isSelected = formData.roomBooking === room.id;
 
                           return (
@@ -639,8 +640,8 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                                 {remaining > 0 ? (
                                   <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200">
                                     {lang === 'es'
-                                      ? `${remaining} de ${room.total} disponibles`
-                                      : `${remaining} of ${room.total} left`}
+                                      ? `${room.total} habitaciones en el cupo`
+                                      : `${room.total} rooms in allocation`}
                                   </span>
                                 ) : (
                                   <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-red-100 text-red-700">
@@ -710,3 +711,4 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     </section>
   );
 }
+

@@ -18,7 +18,7 @@ export const CASTLE_ROOMS: CastleRoomInfo[] = [
     id: 'estandar',
     name: 'Habitación Estándar',
     nameEn: 'Standard Room',
-    price: 127,
+    price: 128,
     total: 10,
     description: 'Agradable habitación en el castillo con todas las comodidades y vistas a la campiña o claustro.',
     descriptionEn: 'Pleasant castle room with historic charm overlooking the grounds or courtyard.',
@@ -42,7 +42,7 @@ export const CASTLE_ROOMS: CastleRoomInfo[] = [
     id: 'deluxe',
     name: 'Habitación Deluxe',
     nameEn: 'Deluxe Room',
-    price: 172,
+    price: 170,
     total: 10,
     description: 'Elegancia señorial, ventanales con arco ajimezado y detalles de madera noble tallada.',
     descriptionEn: 'Manorial elegance featuring mullioned windows and fine carved woodwork.',
@@ -116,3 +116,4 @@ export function recordRoomBooking(roomId: string): void {
     // Fallback
   }
 }
+

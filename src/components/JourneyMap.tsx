@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
   MapPin,
   Navigation,
@@ -19,7 +18,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { accommodationsList, weddingInfo } from '../data/content';
-import { CASTLE_ROOMS, getCastleRoomBookings } from '../data/rooms';
+import { CASTLE_ROOMS } from '../data/rooms';
 import { Language } from '../types';
 import { TransportPassport } from './TransportPassport';
 
@@ -28,24 +27,6 @@ interface JourneyMapProps {
 }
 
 export function JourneyMap({ lang }: JourneyMapProps) {
-  const [roomBookings, setRoomBookings] = useState<Record<string, number>>({});
-
-  useEffect(() => {
-    setRoomBookings(getCastleRoomBookings());
-
-    const handleUpdate = () => {
-      setRoomBookings(getCastleRoomBookings());
-    };
-
-    window.addEventListener('room_reservations_changed', handleUpdate);
-    window.addEventListener('storage', handleUpdate);
-
-    return () => {
-      window.removeEventListener('room_reservations_changed', handleUpdate);
-      window.removeEventListener('storage', handleUpdate);
-    };
-  }, []);
-
   const handleSelectRoomForRsvp = (roomId: string) => {
     const el = document.getElementById('rsvp');
     if (el) {
@@ -126,115 +107,9 @@ export function JourneyMap({ lang }: JourneyMapProps) {
             </div>
           </div>
 
-          {/* Room Categories Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            {CASTLE_ROOMS.map((room) => {
-              const booked = roomBookings[room.id] || 0;
-              const remaining = Math.max(0, room.total - booked);
-              const isLimited = room.total <= 3;
-
-              return (
-                <div
-                  key={room.id}
-                  className={`relative p-5 sm:p-6 rounded-xl flex flex-col justify-between transition-all duration-300 ${
-                    isLimited
-                      ? 'bg-gradient-to-b from-[#fbf6ec] to-[#f4ead8] border-2 border-[#b89243] shadow-md'
-                      : 'bg-white border border-[#b89243]/30 hover:border-[#b89243] shadow-2xs'
-                  }`}
-                >
-                  <div>
-                    {/* Header: Name & Badge */}
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h4 className="font-playfair text-lg sm:text-xl font-bold text-[#37080e]">
-                        {lang === 'es' ? room.name : room.nameEn}
-                      </h4>
-                      {room.badge && (
-                        <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#5c141e] text-[#fdfbf7]">
-                          {lang === 'es' ? room.badge : room.badgeEn}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Price and Breakfast Tag */}
-                    <div className="flex items-baseline gap-2 mb-3">
-                      <span className="font-cinzel text-2xl sm:text-3xl font-bold text-[#5c141e]">
-                        {room.price} €
-                      </span>
-                      <span className="text-xs text-[#6e675f]">
-                        {lang === 'es' ? '/ noche · Desayuno incluido' : '/ night · Breakfast included'}
-                      </span>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-xs text-[#554f47] leading-relaxed mb-4">
-                      {lang === 'es' ? room.description : room.descriptionEn}
-                    </p>
-
-                    {/* Room Key Highlights */}
-                    <ul className="space-y-1.5 mb-3 text-[11px] text-[#6e675f]">
-                      {(lang === 'es' ? room.features : room.featuresEn).map((feat, fIdx) => (
-                        <li key={fIdx} className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#b89243] shrink-0" />
-                          <span>{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Direct Castle Room Link */}
-                    <div className="mb-4">
-                      <a
-                        href={room.url || 'https://buenamor.net/alojamiento/habitaciones/'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] text-[#5c141e] hover:text-[#b89243] font-semibold underline transition-colors"
-                      >
-                        <span>{lang === 'es' ? 'Ver habitación en buenamor.net' : 'View room on castle website'}</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Availability Counter & Reservation Link */}
-                  <div className="pt-4 border-t border-[rgba(92,20,30,0.1)] flex items-center justify-between gap-2">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] tracking-wider uppercase font-semibold text-[#8c6d3b]">
-                        {lang === 'es' ? 'Disponibilidad' : 'Availability'}
-                      </span>
-                      <span className="text-xs font-bold text-[#37080e]">
-                        {remaining > 0 ? (
-                          lang === 'es' ? (
-                            <span>
-                              <strong className="text-[#5c141e]">{remaining}</strong> de {room.total} disponibles
-                            </span>
-                          ) : (
-                            <span>
-                              <strong className="text-[#5c141e]">{remaining}</strong> of {room.total} left
-                            </span>
-                          )
-                        ) : (
-                          <span className="text-red-700 font-bold">
-                            {lang === 'es' ? 'Completa' : 'Fully booked'}
-                          </span>
-                        )}
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={() => handleSelectRoomForRsvp(room.id)}
-                      disabled={remaining === 0}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer ${
-                        remaining > 0
-                          ? 'bg-[#5c141e] hover:bg-[#781927] text-white shadow-2xs active:scale-95'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      {lang === 'es' ? 'Reservar' : 'Reserve'}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <p className="room-payment">{lang === 'es' ? 'Cada huésped paga su habitación. Precios por habitación y noche, con desayuno incluido.' : 'Each guest pays for their own room. Prices per room, per night, including breakfast.'}</p>
+          <div className="room-list">{CASTLE_ROOMS.map(room => <div className="room-row" key={room.id}><div><h4>{lang === 'es' ? room.name : room.nameEn}</h4><p>{room.total} {lang === 'es' ? 'habitaciones en el cupo' : 'rooms in the allocation'}</p></div><strong>€{room.price}</strong><button onClick={()=>handleSelectRoomForRsvp(room.id)}>{lang === 'es' ? 'Solicitar' : 'Request'} ↗</button></div>)}</div>
+          <p className="room-note">{lang === 'es' ? 'La selección en el RSVP es una solicitud, sujeta a confirmación de disponibilidad.' : 'Your RSVP room selection is a request, subject to availability confirmation.'}</p>
 
           <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-xs text-[#6e5832] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span>
@@ -307,3 +182,4 @@ export function JourneyMap({ lang }: JourneyMapProps) {
     </section>
   );
 }
+

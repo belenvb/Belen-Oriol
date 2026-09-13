@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { Language } from '../types';
-import { GaudiModernistDivider } from './GaudiAccents';
+
 
 interface FaqSectionProps {
   lang: Language;
@@ -64,7 +64,7 @@ export function FaqSection({ lang }: FaqSectionProps) {
           <h2 className="font-cinzel text-3xl sm:text-4xl text-[#37080e] font-bold tracking-[0.03em] uppercase">
             {lang === 'es' ? 'Información para Invitados' : 'Guest Information'}
           </h2>
-          <GaudiModernistDivider variant="mosaic" className="mt-4" />
+          
         </div>
 
         <div className="space-y-4">
@@ -102,3 +102,4 @@ export function FaqSection({ lang }: FaqSectionProps) {
     </section>
   );
 }
+
