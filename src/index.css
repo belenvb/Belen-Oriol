@@ -565,3 +565,12 @@ footer { padding:0!important; overflow:hidden; }
   56% { top:44%; opacity:.98; }
   100% { top:112%; opacity:0; }
 }
+
+
+.hero-date-long {
+  margin-top: .8rem !important;
+  font: 600 clamp(.82rem,1.4vw,1.05rem)/1.2 'Plus Jakarta Sans', sans-serif !important;
+  letter-spacing: .16em !important;
+  text-transform: uppercase !important;
+  color: #e3c279 !important;
+}
