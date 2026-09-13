@@ -17,8 +17,8 @@
 /* Passport polish overrides */
 .passport-front-cover {
   justify-content: flex-start !important;
-  gap: clamp(28px, 4vw, 42px) !important;
-  padding: clamp(42px, 5vw, 64px) clamp(28px, 4vw, 42px) clamp(40px, 5vw, 56px) !important;
+  gap: clamp(20px, 3.2vw, 34px) !important;
+  padding: clamp(48px, 5.4vw, 68px) clamp(28px, 4vw, 42px) clamp(38px, 5vw, 52px) !important;
   overflow: hidden !important;
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
@@ -41,16 +41,20 @@
 
 .passport-cover-country {
   margin-top: 0 !important;
-  font: 700 clamp(2rem, 3.7vw, 3.25rem)/1 'Plus Jakarta Sans', sans-serif !important;
-  letter-spacing: 0.055em !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: clamp(1.72rem, 3.05vw, 2.55rem) !important;
+  font-weight: 600 !important;
+  line-height: 0.96 !important;
+  letter-spacing: 0.035em !important;
   text-transform: uppercase !important;
-  transform: scaleY(1.08) !important;
+  transform: scaleX(0.94) scaleY(1.03) !important;
+  transform-origin: center !important;
 }
 
 .passport-cover-crest {
-  width: min(68%, 255px) !important;
+  width: min(66%, 245px) !important;
   height: auto !important;
-  margin: clamp(18px, 3vw, 32px) auto clamp(20px, 3vw, 36px) !important;
+  margin: clamp(22px, 4vw, 44px) auto auto !important;
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
@@ -77,11 +81,14 @@
 
 .passport-cover-type {
   margin-top: auto !important;
-  margin-bottom: 12px !important;
-  font: 700 clamp(1.35rem, 2.2vw, 2.05rem)/1 'Plus Jakarta Sans', sans-serif !important;
-  letter-spacing: 0.08em !important;
+  margin-bottom: 4px !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: clamp(1.32rem, 2.05vw, 1.92rem) !important;
+  font-weight: 650 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.075em !important;
   text-transform: uppercase !important;
-  transform: scaleY(1.04) !important;
+  transform: scaleY(1.02) !important;
 }
 
 .passport-cover-date {
@@ -90,16 +97,16 @@
 
 .passport-cover-epass {
   position: relative !important;
-  width: 44px !important;
-  height: 31px !important;
-  margin: 0 auto !important;
+  width: 40px !important;
+  height: 26px !important;
+  margin: -2px auto 0 !important;
 }
 
 .passport-cover-epass-line {
   position: absolute !important;
   left: 0 !important;
   right: 0 !important;
-  height: 4px !important;
+  height: 3px !important;
   border-radius: 2px !important;
   background: rgba(223, 191, 128, 0.94) !important;
 }
@@ -116,12 +123,20 @@
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
-  width: 13px !important;
-  height: 13px !important;
+  width: 12px !important;
+  height: 12px !important;
   transform: translate(-50%, -50%) !important;
   border: 3px solid rgba(223, 191, 128, 0.94) !important;
   border-radius: 50% !important;
   background: var(--leather) !important;
+}
+
+.passport-spread {
+  cursor: pointer !important;
+}
+
+.passport-stage.is-open .passport-spread:active {
+  cursor: grabbing !important;
 }
 
 .passport-controls {
@@ -177,8 +192,8 @@
 
 @media (max-width: 760px) {
   .passport-front-cover {
-    gap: 32px !important;
-    padding: 44px 28px 40px !important;
+    gap: 24px !important;
+    padding: 48px 28px 38px !important;
   }
 
   .passport-stage.is-open .passport-front-cover {
@@ -187,15 +202,25 @@
   }
 
   .passport-cover-country {
-    font-size: clamp(1.85rem, 9vw, 2.55rem) !important;
+    font-size: clamp(1.58rem, 7.4vw, 2.18rem) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.03em !important;
   }
 
   .passport-cover-crest {
-    width: min(72%, 220px) !important;
+    width: min(70%, 210px) !important;
+    margin-top: 26px !important;
   }
 
   .passport-cover-type {
-    font-size: clamp(1.25rem, 6vw, 1.65rem) !important;
+    font-size: clamp(1.15rem, 5.3vw, 1.52rem) !important;
+    margin-bottom: 3px !important;
+  }
+
+  .passport-cover-epass {
+    width: 36px !important;
+    height: 24px !important;
+    margin-top: -3px !important;
   }
 
   .passport-controls {
