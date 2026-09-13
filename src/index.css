@@ -591,3 +591,30 @@ footer { padding:0!important; overflow:hidden; }
   text-transform: none !important;
   color: #fff9ee !important;
 }
+
+
+/* Final requested copy/layout cleanup */
+.photo-rainbow-break .photo-break-caption,
+.photo-temple-break .photo-break-caption,
+.photo-basalt-break .photo-break-caption {
+  display: none !important;
+}
+
+.hero-venue-line {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 400 !important;
+  font-size: clamp(.92rem, 1.35vw, 1.15rem) !important;
+  letter-spacing: .075em !important;
+  text-transform: none !important;
+  color: #fff9ee !important;
+}
+
+.room-option-subtext {
+  max-width: 440px;
+}
+
+@media (min-width: 640px) {
+  .room-option-subtext {
+    margin-left: 0;
+  }
+}
