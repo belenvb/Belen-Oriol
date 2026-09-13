@@ -33,6 +33,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
   const openRsvpForm = () => {
     setIsSubmitted(false);
+    setSubmittedRsvp(null);
     setIsFormOpen(true);
   };
 

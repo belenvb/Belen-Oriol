@@ -62,7 +62,6 @@ export function JourneyMap({ lang }: JourneyMapProps) {
       suite_guardia: 'Suite más antigua del castillo, ubicada en las mazmorras. Muros del siglo XI y vistas al foso.',
       suite_medieval: 'La joya del castillo: cúpulas de ladrillo mudéjar, vigas de madera o acceso privado a las torres.',
     };
-
     const subtextsEn: Record<string, string> = {
       estandar: 'Oldest rooms in the castle located in the dungeons. 11th century walls.',
       superior: 'Spacious accommodation with 15th-century stonework.',
@@ -70,7 +69,6 @@ export function JourneyMap({ lang }: JourneyMapProps) {
       suite_guardia: 'Oldest suite in the castle located in the dungeons. 11th century walls and overlooking the moat.',
       suite_medieval: 'The castle crown jewel: Mudejar brick domes, wooden beams or private access to the towers.',
     };
-
     return (lang === 'es' ? subtextsEs[roomId] : subtextsEn[roomId]) || '';
   };
 

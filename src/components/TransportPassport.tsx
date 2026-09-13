@@ -369,7 +369,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <small>{isOpen ? (isSpanish ? 'para pasar página' : 'to turn page') : (isSpanish ? 'para abrir' : 'to open')}</small>
         </aside>
 
-        {!isOpen && (
+        {!isOpen && coverFace === 'front' && (
           <aside className="passport-side-note">
             <span className="passport-side-note-kicker">03 / {isSpanish ? 'EL LUGAR' : 'THE PLACE'}</span>
             <h3>Castillo<br />del <em>Buen Amor.</em></h3>

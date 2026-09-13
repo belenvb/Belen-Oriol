@@ -1868,3 +1868,24 @@
   left: clamp(92px, 8vw, 136px) !important;
   right: auto !important;
 }
+
+
+/* Hide castle side info when closed on the back cover to avoid overlap */
+.passport-stage.is-closed .passport-front-cover.is-back-cover ~ * .passport-side-note,
+.passport-stage.is-closed .passport-side-note {
+  pointer-events: auto;
+}
+.passport-stage.is-closed:has(.passport-front-cover.is-back-cover) .passport-side-note {
+  display: none !important;
+}
+
+/* Force closed back cover to land on the left */
+.passport-stage.is-closed .passport-front-cover.is-back-cover {
+  left: clamp(92px, 8vw, 136px) !important;
+  right: auto !important;
+  transform: translateX(0) rotateY(0deg) !important;
+}
+.passport-stage.is-closing-back .passport-front-cover {
+  left: clamp(92px, 8vw, 136px) !important;
+  right: auto !important;
+}

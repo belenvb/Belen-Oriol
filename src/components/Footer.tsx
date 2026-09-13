@@ -12,6 +12,7 @@ export function Footer({ lang }: FooterProps) {
       <div className="closing-photo closing-photo-fullbleed">
         <img src="/photos/rainbow-parallax.webp" loading="lazy" alt={lang === 'es' ? 'Belén y Oriol junto al mar' : 'Belén and Oriol by the sea'} />
         <div>
+          <img className="footer-bo-mark" src="/photos/bo-original.webp" alt="BO" loading="lazy" />
           <p className="eyebrow">{numericDate}</p>
           <h2>Castillo del Buen Amor</h2>
         </div>
