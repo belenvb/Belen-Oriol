@@ -115,7 +115,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center max-w-xl mx-auto mb-12"
+          className="rsvp-hero-panel text-center w-full mx-auto mb-12"
         >
           <span className="text-[11px] tracking-[0.32em] uppercase text-[#5c141e] font-semibold block mb-2">
             {lang === 'es' ? 'Rogamos Confirmación' : 'Kindly Respond'}
@@ -136,7 +136,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#faf2e3] via-[#fcf8ef] to-[#faf2e3] border-2 border-[#b89243] shadow-md relative overflow-hidden"
+          className="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#faf2e3] via-[#fcf8ef] to-[#faf2e3] border-2 border-[#b89243] shadow-md relative overflow-hidden rsvp-readable-card"
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-[#5c141e] border-2 border-[#dfc285] flex items-center justify-center text-[#dfc285] shrink-0 shadow-sm">
@@ -164,7 +164,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
         {/* Confirmation Card if already submitted */}
         {isSubmitted && submittedRsvp ? (
-          <div className="bg-[#faf7f2] border-2 border-[#b89243] rounded-xl p-8 sm:p-12 shadow-lg text-center relative overflow-hidden animate-fade-in">
+          <div className="bg-[#faf7f2] border-2 border-[#b89243] rounded-xl p-8 sm:p-12 shadow-lg text-center relative overflow-hidden animate-fade-in rsvp-readable-card">
             <div className="w-16 h-16 rounded-full bg-[#5c141e]/10 border border-[#b89243] flex items-center justify-center mx-auto mb-5 text-[#5c141e]">
               <CheckCircle2 className="w-8 h-8 text-[#5c141e]" />
             </div>
@@ -279,7 +279,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#faf7f2] border border-[rgba(92,20,30,0.2)] rounded-2xl p-8 sm:p-12 text-center shadow-lg relative overflow-hidden"
+            className="bg-[#faf7f2] border border-[rgba(92,20,30,0.2)] rounded-2xl p-8 sm:p-12 text-center shadow-lg relative overflow-hidden rsvp-readable-card"
           >
             <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#7a1d2b] to-[#3a0810] border-2 border-[#dfc285] flex items-center justify-center text-[#dfc285] shadow-md">
               <Send className="w-6 h-6" />
@@ -312,7 +312,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#faf7f2] border border-[rgba(92,20,30,0.18)] rounded-xl p-6 sm:p-10 shadow-md relative"
+            className="bg-[#faf7f2] border border-[rgba(92,20,30,0.18)] rounded-xl p-6 sm:p-10 shadow-md relative rsvp-readable-card"
           >
             <div className="flex items-center justify-between pb-4 mb-6 border-b border-[rgba(92,20,30,0.12)]">
               <div>

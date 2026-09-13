@@ -479,3 +479,35 @@
   .passport-controls { grid-template-columns: 1fr; }
   .passport-controls-right { justify-content: flex-start; }
 }
+
+
+/* Final passport interaction refinements */
+.passport-wrap { max-width: 1160px; }
+.passport-stage { min-height: clamp(510px, 51vw, 690px); }
+.passport-book { min-height: clamp(470px, 45vw, 620px); }
+.passport-spread { min-height: clamp(470px, 45vw, 620px); }
+.passport-front-cover { width: min(410px, 38vw); height: clamp(472px, 45vw, 590px); }
+.passport-stage.is-closed .passport-book { overflow: visible; }
+.passport-front-cover.is-back-cover {
+  background:
+    radial-gradient(circle at 24% 18%, rgba(255,255,255,.10), transparent 26%),
+    linear-gradient(135deg, var(--leather-light), var(--leather) 46%, var(--leather-dark));
+  box-shadow:
+    0 30px 48px rgba(35,14,10,.22),
+    0 14px 24px rgba(35,14,10,.12),
+    inset 0 1px 1px rgba(255,255,255,.10),
+    inset -16px 0 22px rgba(0,0,0,.18),
+    inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.passport-front-cover.is-back-cover .passport-cover-guide,
+.passport-front-cover.is-back-cover .passport-cover-country,
+.passport-front-cover.is-back-cover .passport-cover-type,
+.passport-front-cover.is-back-cover .passport-cover-epass,
+.passport-front-cover.is-back-cover .passport-cover-crest { display:none; }
+.passport-back-crest { position:relative; z-index:1; width:min(20%,76px); margin:auto; opacity:.5; filter:grayscale(1) sepia(1) brightness(1.15) contrast(1.05); }
+.passport-back-crest img { width:100%; height:auto; object-fit:contain; display:block; }
+.passport-drag-hint { max-width: 220px; }
+@media (max-width: 1080px) {
+  .passport-wrap { max-width: 1100px; }
+  .passport-front-cover { width:min(392px, 38vw); }
+}

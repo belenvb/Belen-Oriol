@@ -1,4 +1,4 @@
-import type { MouseEvent, PointerEvent } from 'react';
+import type { MouseEvent, PointerEvent, WheelEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Plane, Train, MapPin, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { Language } from '../types';
@@ -104,6 +104,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const isSpanish = lang === 'es';
   const numericDate = isSpanish ? '04.09.2027' : '09.04.2027';
   const [isOpen, setIsOpen] = useState(false);
+  const [coverFace, setCoverFace] = useState<'front' | 'back'>('front');
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [pendingSpread, setPendingSpread] = useState<number | null>(null);
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
@@ -181,10 +182,24 @@ export function TransportPassport({ lang }: { lang: Language }) {
     };
   }, []);
 
+
+  const openPassport = () => {
+    setCoverFace('front');
+    setIsOpen(true);
+  };
+
+  const closePassport = (side: 'front' | 'back' = 'front') => {
+    if (flipDirection) return;
+    setPendingSpread(null);
+    setFlipDirection(null);
+    setCoverFace(side);
+    setIsOpen(false);
+  };
+
   const requestSpreadChange = (nextSpread: number) => {
     const safe = Math.max(0, Math.min(spreads.length - 1, nextSpread));
     if (!isOpen) {
-      setIsOpen(true);
+      openPassport();
       return;
     }
     if (safe === spreadIndex || flipDirection) return;
@@ -235,15 +250,23 @@ export function TransportPassport({ lang }: { lang: Language }) {
     const mobile = window.matchMedia('(max-width: 760px)').matches;
     const nextZone = mobile ? event.clientY < rect.top + rect.height / 2 || event.clientX > rect.left + rect.width / 2 : event.clientX > rect.left + rect.width / 2;
     if (nextZone && spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
+    if (nextZone && spreadIndex === spreads.length - 1) closePassport('back');
     if (!nextZone && spreadIndex > 0) requestSpreadChange(spreadIndex - 1);
-    if (!nextZone && spreadIndex === 0) closePassport();
+    if (!nextZone && spreadIndex === 0) closePassport('front');
   };
 
-  const closePassport = () => {
-    if (flipDirection) return;
-    setPendingSpread(null);
-    setFlipDirection(null);
-    setIsOpen(false);
+
+
+  const handleSpreadWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (!isOpen || flipDirection || Math.abs(event.deltaY) < 18) return;
+    event.preventDefault();
+    if (event.deltaY > 0) {
+      if (spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
+      else closePassport('back');
+    } else {
+      if (spreadIndex > 0) requestSpreadChange(spreadIndex - 1);
+      else closePassport('front');
+    }
   };
 
   const currentSpread = spreads[spreadIndex];
@@ -277,15 +300,21 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <div className="passport-page-stack passport-page-stack-right" aria-hidden="true" />
           <div className="passport-gutter" aria-hidden="true" />
 
-          <button type="button" className="passport-front-cover" aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={() => setIsOpen(true)}>
-            <span className="passport-cover-guide">TRAVEL GUIDE</span>
-            <span className="passport-cover-country">SALAMANCA</span>
-            <span className="passport-cover-crest"><img src={boLogo} alt="" /></span>
-            <span className="passport-cover-type">{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</span>
-            <span className="passport-cover-epass" aria-hidden="true"><span className="passport-cover-epass-line passport-cover-epass-line-top" /><span className="passport-cover-epass-chip" /><span className="passport-cover-epass-line passport-cover-epass-line-bottom" /></span>
+          <button type="button" className={`passport-front-cover ${coverFace === 'back' ? 'is-back-cover' : ''}`} aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={openPassport}>
+            {coverFace === 'front' ? (
+              <>
+                <span className="passport-cover-guide">TRAVEL GUIDE</span>
+                <span className="passport-cover-country">SALAMANCA</span>
+                <span className="passport-cover-crest"><img src={boLogo} alt="" /></span>
+                <span className="passport-cover-type">{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</span>
+                <span className="passport-cover-epass" aria-hidden="true"><span className="passport-cover-epass-line passport-cover-epass-line-top" /><span className="passport-cover-epass-chip" /><span className="passport-cover-epass-line passport-cover-epass-line-bottom" /></span>
+              </>
+            ) : (
+              <span className="passport-back-crest" aria-hidden="true"><img src={boLogo} alt="" /></span>
+            )}
           </button>
 
-          <div className="passport-spread" aria-hidden={!isOpen} onClick={handleSpreadClick} onPointerDown={handleDragStart} onPointerUp={handleDragEnd} onPointerCancel={() => { dragStartRef.current = null; }}>
+          <div className="passport-spread" aria-hidden={!isOpen} onClick={handleSpreadClick} onWheel={handleSpreadWheel} onPointerDown={handleDragStart} onPointerUp={handleDragEnd} onPointerCancel={() => { dragStartRef.current = null; }}>
             <PageSurface page={baseLeftPage} side="left" isSpanish={isSpanish} compact blankCastle={!baseLeftPage && (spreadIndex === 1 || pendingSpread === 1)} />
             <PageSurface page={baseRightPage} side="right" isSpanish={isSpanish} blankCastle={false} />
 
@@ -304,7 +333,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
             )}
 
             <div className={`passport-drag-hint ${showLeftHint ? 'is-left' : 'is-right'}`} aria-hidden="true">
-              {isSpanish ? 'Haz clic o desliza para pasar página' : 'Click or swipe to turn page'}
+              {isSpanish ? 'Haz clic, desliza o usa la rueda para pasar página' : 'Click, swipe or scroll to turn page'}
             </div>
           </div>
         </div>
