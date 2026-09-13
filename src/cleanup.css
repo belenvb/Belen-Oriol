@@ -1,10 +1,15 @@
 /* Final editorial cleanup: keep practical information, remove sentimental filler. */
 #registry > div > div:first-child > p.font-cormorant,
 #registry > div > div:first-child > p.font-sans,
-#registry button p.text-xs {
+#registry button p.text-xs,
+#rsvp .animate-fade-in > p.font-cormorant {
   display: none !important;
 }
 
 #registry > div > div:first-child {
   margin-bottom: 2.25rem !important;
+}
+
+#rsvp .original-seal {
+  display: none !important;
 }
