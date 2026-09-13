@@ -11,20 +11,23 @@ export function Hero({ lang, onNavigate }: HeroProps) {
 
   return (
     <section id="hero" className="editorial-hero">
-      <img
-        src="/photos/sunset.webp"
-        alt={lang === 'es' ? 'Belén y Oriol caminando de la mano por la playa al atardecer' : 'Belén and Oriol walking hand in hand on the beach at sunset'}
-        fetchPriority="high"
-      />
-      <div className="hero-shade" />
+      <div className="hero-fixed-photo" aria-hidden="true">
+        <img src="/photos/sunset.webp" alt="" fetchPriority="high" />
+        <div className="hero-shade" />
+      </div>
+
       <div className="hero-copy">
         <p className="eyebrow">Salamanca · {numericDate}</p>
         <h1>Belén <em>&</em> Oriol</h1>
         <p>Castillo del Buen Amor</p>
       </div>
+
       <div className="hero-bottom">
         <span>{footerDate}</span>
-        <button onClick={() => onNavigate('story')}>{lang === 'es' ? 'Ver detalles' : 'View details'} ↓</button>
+        <button className="hero-discover-button" onClick={() => onNavigate('story')}>
+          <span className="hero-light-symbol" aria-hidden="true" />
+          {lang === 'es' ? 'Desliza para descubrir' : 'Swipe to discover'}
+        </button>
       </div>
     </section>
   );
