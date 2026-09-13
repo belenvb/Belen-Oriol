@@ -618,3 +618,55 @@ footer { padding:0!important; overflow:hidden; }
     margin-left: 0;
   }
 }
+
+
+/* RSVP confirm button readability and room descriptions */
+#rsvp .rsvp-confirm-button,
+#rsvp .rsvp-confirm-button span,
+#rsvp .rsvp-confirm-button * {
+  color: #fff7e7 !important;
+}
+
+#rsvp .rsvp-confirm-button svg,
+#rsvp .rsvp-confirm-icon {
+  color: #dfc285 !important;
+  stroke: #dfc285 !important;
+}
+
+.room-list-compact {
+  gap: .55rem !important;
+}
+
+.room-row-detailed {
+  align-items: center;
+  gap: .75rem !important;
+  padding-top: .85rem !important;
+  padding-bottom: .85rem !important;
+}
+
+.room-row-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.room-row-copy h4 {
+  margin-bottom: .15rem !important;
+}
+
+.room-row-copy p {
+  margin: 0 !important;
+  color: #6e675f !important;
+  font-size: .76rem !important;
+  line-height: 1.35 !important;
+  max-width: 560px;
+}
+
+.room-row-copy small {
+  display: block;
+  margin-top: .25rem;
+  color: #8c6d3b;
+  font-size: .68rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
