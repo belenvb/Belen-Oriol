@@ -423,3 +423,66 @@ footer { padding:0!important; overflow:hidden; }
 @media (max-width: 760px) {
   .rsvp-hero-panel { padding: 1.8rem 1.15rem; border-radius: 1.7rem; }
 }
+
+
+/* Final RSVP cleanup */
+.rsvp-section-shell::after {
+  display: none !important;
+}
+#rsvp .rsvp-readable-card,
+#rsvp .rsvp-readable-card * {
+  color: #371017 !important;
+}
+#rsvp .rsvp-readable-card p,
+#rsvp .rsvp-readable-card .font-cormorant,
+#rsvp .rsvp-readable-card .text-\[\#554f47\],
+#rsvp .rsvp-readable-card .text-\[\#6e675f\] {
+  color: #554f47 !important;
+}
+#rsvp .rsvp-readable-card .bg-\[\#5c141e\],
+#rsvp .rsvp-readable-card button.bg-\[\#5c141e\],
+#rsvp .rsvp-readable-card button {
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-readable-card button:not(.bg-\[\#5c141e\]) {
+  color: #5c141e !important;
+}
+#rsvp .rsvp-readable-card .bg-\[\#5c141e\],
+#rsvp .rsvp-readable-card button.bg-\[\#5c141e\] {
+  background-color: #6d1020 !important;
+}
+#rsvp .rsvp-readable-card svg,
+#rsvp .rsvp-readable-card .text-\[\#dfc285\],
+#rsvp .rsvp-readable-card .text-\[\#dfc285\] svg {
+  color: #dfc285 !important;
+  stroke: #dfc285 !important;
+}
+#rsvp .rsvp-hero-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.045)) !important;
+  border-color: rgba(223,194,133,.34) !important;
+}
+#rsvp .rsvp-hero-panel span,
+#rsvp .rsvp-hero-panel h2 {
+  color: #f4d48a !important;
+}
+#rsvp .rsvp-hero-panel p {
+  color: rgba(255,248,232,.86) !important;
+}
+
+/* Keep the parallax/fixed photo effect on mobile too */
+@media (max-width: 760px) {
+  .hero-fixed-photo img,
+  .hero-fixed-photo .hero-shade,
+  .parallax-photo-fixed {
+    position: fixed !important;
+    height: 100svh !important;
+    min-height: 100svh !important;
+  }
+}
+
+/* Stronger moving light in the Discover beam */
+.hero-discover i::after {
+  height: 26px !important;
+  width: 4px !important;
+  animation-duration: 1.55s !important;
+}
