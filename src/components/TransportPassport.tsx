@@ -92,7 +92,7 @@ function PassportPageFace({ page, isSpanish, compact = false }: { page: PageData
             <p>{page.card2Text}</p>
           </div>
         </div>
-        <div className="passport-tagline">✦ {page.tagline}</div>
+        <div className="passport-tagline"><span>✦ {page.tagline}</span></div>
         <div className="passport-stamp"><b>{page.stampText}</b><span>{page.stampSub}</span></div>
         <div className="passport-machine-line" aria-hidden="true">P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;WEDDING&lt;&lt;SALAMANCA&lt;&lt;20270904&lt;&lt;&lt;</div>
         <div className="passport-page-footer"><span>{page.title}</span><span>[{page.num}/03]</span></div>
@@ -120,6 +120,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
   const timerRef = useRef<number | null>(null);
   const dragStartRef = useRef<{ x: number; y: number } | null>(null);
+  const passportStageRef = useRef<HTMLDivElement | null>(null);
   const dragTriggeredRef = useRef(false);
 
   const pages = useMemo(() => {
@@ -191,6 +192,36 @@ export function TransportPassport({ lang }: { lang: Language }) {
       if (timerRef.current) window.clearTimeout(timerRef.current);
     };
   }, []);
+
+
+  useEffect(() => {
+    const stage = passportStageRef.current;
+    if (!stage) return undefined;
+
+    const handleNativeWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) < 10 || flipDirection || isClosingBack) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (!isOpen) {
+        openPassport();
+        return;
+      }
+
+      if (event.deltaY > 0) {
+        if (spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
+        else closePassport('back');
+      } else {
+        if (spreadIndex > 0) requestSpreadChange(spreadIndex - 1);
+        else closePassport('front');
+      }
+    };
+
+    stage.addEventListener('wheel', handleNativeWheel, { passive: false });
+    return () => stage.removeEventListener('wheel', handleNativeWheel);
+  }, [flipDirection, isClosingBack, isOpen, spreadIndex, spreads.length]);
+
 
 
   const openPassport = () => {
@@ -287,29 +318,15 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
 
   const handleSpreadWheel = (event: WheelEvent<HTMLDivElement>) => {
-    handleStageWheel(event);
+    event.preventDefault();
+    event.stopPropagation();
   };
 
 
 
   const handleStageWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (Math.abs(event.deltaY) < 10 || flipDirection || isClosingBack) return;
-
     event.preventDefault();
     event.stopPropagation();
-
-    if (!isOpen) {
-      openPassport();
-      return;
-    }
-
-    if (event.deltaY > 0) {
-      if (spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
-      else closePassport('back');
-    } else {
-      if (spreadIndex > 0) requestSpreadChange(spreadIndex - 1);
-      else closePassport('front');
-    }
   };
 
   const currentSpread = spreads[spreadIndex];
@@ -327,8 +344,22 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   return (
     <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
-      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''}`} onWheel={handleStageWheel}>
+      <div ref={passportStageRef} className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''}`} onWheel={handleStageWheel}>
         <div className="passport-table-shadow" aria-hidden="true" />
+
+        {!isOpen && (
+          <aside className="passport-rotated-instruction passport-rotated-instruction-right" aria-hidden="true">
+            <span>{isSpanish ? 'Clic · desliza · rueda' : 'Click · swipe · scroll'}</span>
+            <small>{isSpanish ? 'para abrir' : 'to open'}</small>
+          </aside>
+        )}
+
+        {isOpen && (
+          <aside className={`passport-rotated-instruction ${spreadIndex === spreads.length - 1 ? 'passport-rotated-instruction-left' : 'passport-rotated-instruction-right'}`} aria-hidden="true">
+            <span>{isSpanish ? 'Clic · desliza · rueda' : 'Click · swipe · scroll'}</span>
+            <small>{isSpanish ? 'para pasar página' : 'to turn page'}</small>
+          </aside>
+        )}
 
         {!isOpen && (
           <aside className="passport-side-note">
@@ -374,12 +405,10 @@ export function TransportPassport({ lang }: { lang: Language }) {
                 <span className="passport-cover-crest"><img src={boLogo} alt="" /></span>
                 <span className="passport-cover-type">{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</span>
                 <span className="passport-cover-epass" aria-hidden="true"><span className="passport-cover-epass-line passport-cover-epass-line-top" /><span className="passport-cover-epass-chip" /><span className="passport-cover-epass-line passport-cover-epass-line-bottom" /></span>
-                <span className="passport-cover-open-hint">{isSpanish ? 'Clic o rueda para abrir' : 'Click or scroll to open'}</span>
               </>
             ) : (
               <>
                 <span className="passport-back-crest" aria-hidden="true"><img src={boLogo} alt="" /></span>
-                <span className="passport-cover-open-hint passport-cover-open-hint-back">{isSpanish ? 'Clic o rueda para abrir' : 'Click or scroll to open'}</span>
               </>
             )}
           </button>

@@ -29,7 +29,6 @@ export function Header({ lang, onLanguageChange, activeSection }: HeaderProps) {
   const navLinks = [
     { href: '#hero', es: 'Inicio', en: 'Home' },
     { href: '#schedule', es: 'Programa', en: 'Schedule' },
-    { href: '#castle', es: 'El Castillo', en: 'The Castle' },
     { href: '#journey', es: 'Viaje & Hoteles', en: 'Travel/Hotels' },
     { href: '#registry', es: 'Lista de Bodas', en: 'Registry' },
     { href: '#faq', es: 'Q&A', en: 'Q&A' },

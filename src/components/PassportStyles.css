@@ -1215,3 +1215,151 @@
   text-transform: uppercase !important;
   color: #e3c279 !important;
 }
+
+
+/* Final section scroll lock, rotated instructions, original vine, overlap fix */
+.passport-stage,
+.passport-spread {
+  overscroll-behavior: contain !important;
+  touch-action: pan-x pan-y;
+}
+
+.passport-cover-open-hint,
+.passport-open-instruction {
+  display: none !important;
+}
+
+.passport-rotated-instruction {
+  position: absolute;
+  z-index: 16;
+  top: 47%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #6b1420;
+  pointer-events: none;
+  transform-origin: center;
+}
+.passport-rotated-instruction-right {
+  right: max(0px, calc(50% - 590px));
+  transform: translateY(-50%) rotate(90deg);
+}
+.passport-rotated-instruction-left {
+  left: max(0px, calc(50% - 590px));
+  transform: translateY(-50%) rotate(-90deg);
+}
+.passport-rotated-instruction span {
+  font: 800 .62rem/1 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.passport-rotated-instruction small {
+  font: 500 .78rem/1 'Cormorant Garamond', serif;
+  color: #776553;
+}
+
+/* Restore the original softer, wavy branch ornament */
+.passport-side-note-vine {
+  position: relative;
+  width: min(330px, 82%);
+  height: 34px;
+  margin: 2px 0 26px;
+}
+.passport-side-note-vine::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 17px;
+  height: 12px;
+  border-top: 1.5px solid #b09567;
+  border-radius: 50%;
+  background: none !important;
+  transform: none !important;
+}
+.passport-side-note-vine span {
+  position: absolute;
+  width: 11px;
+  height: 7px;
+  border-radius: 12px 0 12px 0;
+  background: #7c9b78;
+}
+.passport-side-note-vine span:nth-child(1) { left: 21%; top: 9px; transform: rotate(-18deg); }
+.passport-side-note-vine span:nth-child(2) { left: 34%; top: 21px; transform: rotate(20deg); }
+.passport-side-note-vine span:nth-child(3) { left: 66%; top: 8px; transform: rotate(-14deg); }
+.passport-side-note-vine span:nth-child(4) { left: 80%; top: 21px; transform: rotate(20deg); }
+.passport-side-note-vine i {
+  position: absolute;
+  top: 15px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #8a1d2b;
+}
+.passport-side-note-vine i:nth-of-type(1) { left: 50%; }
+.passport-side-note-vine i:nth-of-type(2) { left: 53%; background: #b09567; }
+
+/* Fix overlap at the bottom of passport pages */
+.passport-tagline {
+  margin-top: 12px !important;
+  padding-top: 10px !important;
+  padding-right: 142px;
+  line-height: 1.35;
+}
+.passport-tagline span {
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background: rgba(245,237,221,.82);
+  padding: 2px 4px;
+}
+.passport-machine-line {
+  bottom: 35px !important;
+  opacity: .72;
+  font-size: .34rem !important;
+  letter-spacing: .14em !important;
+  max-width: calc(100% - 84px);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.passport-page-footer {
+  bottom: 8px !important;
+}
+
+/* Keep the cover clean */
+.passport-front-cover::before {
+  background: linear-gradient(90deg, rgba(62,8,18,.35), rgba(255,255,255,.025), rgba(0,0,0,.13)) !important;
+  opacity: .32 !important;
+}
+
+/* More reliable fold to back, no page flash */
+.passport-stage.is-closing-back .passport-spread,
+.passport-stage.is-closing-back .passport-cover-base,
+.passport-stage.is-closing-back .passport-page-stack,
+.passport-stage.is-closing-back .passport-gutter {
+  opacity: 0 !important;
+  transition: opacity .12s ease .18s !important;
+  pointer-events: none !important;
+}
+.passport-stage.is-closing-back .passport-front-cover {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+  transform-origin: left center !important;
+  animation: passportFoldToBack .72s cubic-bezier(.2,.78,.18,1) forwards !important;
+  transition: none !important;
+}
+@keyframes passportFoldToBack {
+  0% { transform: translateX(-82%) rotateY(-168deg); opacity: .26; }
+  35% { opacity: .9; }
+  100% { transform: translateX(0) rotateY(0deg); opacity: 1; }
+}
+
+@media (max-width: 760px) {
+  .passport-rotated-instruction {
+    display: none;
+  }
+  .passport-tagline {
+    padding-right: 0;
+  }
+}
