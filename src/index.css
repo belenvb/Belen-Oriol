@@ -670,3 +670,251 @@ footer { padding:0!important; overflow:hidden; }
   text-transform: uppercase;
   font-weight: 700;
 }
+
+
+/* Functional RSVP button fix */
+#rsvp .rsvp-entry-card,
+#rsvp .rsvp-readable-card {
+  position: relative;
+  z-index: 2;
+}
+#rsvp .rsvp-confirm-button {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto !important;
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-confirm-button span,
+#rsvp .rsvp-confirm-button * {
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-confirm-button svg {
+  stroke: #dfc285 !important;
+  color: #dfc285 !important;
+}
+
+/* Castle rooms: descriptions, area subheaders, price line */
+.room-payment {
+  display: none !important;
+}
+.room-list-compact {
+  gap: .5rem !important;
+}
+.room-row-detailed {
+  align-items: center;
+  gap: .75rem !important;
+  padding-top: .8rem !important;
+  padding-bottom: .8rem !important;
+}
+.room-row-copy {
+  min-width: 0;
+  flex: 1;
+}
+.room-row-title-line {
+  display: flex;
+  align-items: baseline;
+  gap: .65rem;
+  flex-wrap: wrap;
+}
+.room-row-title-line h4 {
+  margin: 0 !important;
+}
+.room-row-title-line span {
+  font: 700 .66rem/1 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #8c6d3b;
+}
+.room-row-copy p {
+  margin: .25rem 0 0 !important;
+  color: #6e675f !important;
+  font-size: .76rem !important;
+  line-height: 1.35 !important;
+  max-width: 600px;
+}
+.room-row-copy small {
+  display: block;
+  margin-top: .24rem;
+  color: #8c6d3b;
+  font-size: .67rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.room-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: .45rem;
+  white-space: nowrap;
+  color: #6b1420;
+}
+.room-price-block strong {
+  font: 700 clamp(1.7rem, 3.4vw, 3rem)/1 'Cormorant Garamond', serif;
+  color: #6b1420;
+}
+.room-price-block span {
+  font: 500 .82rem/1 'Plus Jakarta Sans', sans-serif;
+  color: #6e675f;
+}
+
+/* Story image full height */
+.story-section figure {
+  align-self: stretch !important;
+  min-height: clamp(520px, 82vh, 900px);
+  overflow: hidden;
+}
+.story-section figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Registry illustration */
+.registry-illustration-card {
+  width: min(360px, 72vw);
+  margin: -1rem auto 2.5rem;
+  opacity: .94;
+}
+.registry-illustration-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+}
+
+/* Passport wheel and final back-cover placement */
+.passport-stage,
+.passport-spread {
+  overscroll-behavior: contain !important;
+}
+.passport-stage.is-closed .passport-front-cover.is-back-cover {
+  left: clamp(92px, 8vw, 136px) !important;
+  right: auto !important;
+  transform: translateX(0) rotateY(0deg) !important;
+}
+.passport-stage.is-closing-back .passport-front-cover {
+  left: clamp(92px, 8vw, 136px) !important;
+  right: auto !important;
+}
+
+
+/* Fix RSVP open button and prevent blank-looking form */
+#rsvp .rsvp-confirm-button {
+  position: relative;
+  z-index: 30;
+  pointer-events: auto !important;
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-confirm-button span,
+#rsvp .rsvp-confirm-button * {
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-confirm-button svg {
+  color: #dfc285 !important;
+  stroke: #dfc285 !important;
+}
+
+/* Castle rooms formatting */
+.room-payment {
+  display: none !important;
+}
+.room-list-compact {
+  gap: .5rem !important;
+}
+.room-row-detailed {
+  align-items: center;
+  gap: .8rem !important;
+  padding-top: .8rem !important;
+  padding-bottom: .8rem !important;
+}
+.room-row-copy {
+  flex: 1;
+  min-width: 0;
+}
+.room-row-title-line {
+  display: flex;
+  align-items: baseline;
+  gap: .65rem;
+  flex-wrap: wrap;
+}
+.room-row-title-line h4 {
+  margin: 0 !important;
+}
+.room-row-title-line span {
+  font: 700 .66rem/1 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #8c6d3b;
+}
+.room-row-copy p {
+  margin: .24rem 0 0 !important;
+  color: #6e675f !important;
+  font-size: .76rem !important;
+  line-height: 1.35 !important;
+  max-width: 620px;
+}
+.room-row-copy small {
+  display: block;
+  margin-top: .24rem;
+  color: #8c6d3b;
+  font-size: .67rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.room-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: .42rem;
+  white-space: nowrap;
+}
+.room-price-block strong {
+  font: 700 clamp(1.65rem, 3.1vw, 2.85rem)/1 'Cormorant Garamond', serif;
+  color: #6b1420;
+}
+.room-price-block span {
+  font: 500 clamp(.62rem, .85vw, .78rem)/1 'Plus Jakarta Sans', sans-serif;
+  color: #77706a;
+}
+
+/* Schedule illustration */
+.schedule-illustration-card {
+  width: min(310px, 62vw);
+  margin: 0 auto 2rem;
+  opacity: .94;
+}
+.schedule-illustration-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+}
+
+/* Footer BO logo above text */
+.footer-bo-mark {
+  width: 38px;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto 14px;
+  opacity: .86;
+  filter: grayscale(1) brightness(1.9);
+}
+
+/* Story photo should fill the section vertically */
+.story-section figure {
+  align-self: stretch !important;
+  min-height: clamp(520px, 82vh, 900px);
+  overflow: hidden;
+}
+.story-section figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Remove old registry illustration placement if CSS remains */
+.registry-illustration-card {
+  display: none !important;
+}
