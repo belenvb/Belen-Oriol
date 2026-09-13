@@ -185,8 +185,16 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
 
   const openPassport = () => {
-    if (isClosingBack) return;
-    setCoverFace('front');
+    if (flipDirection || isClosingBack) return;
+
+    if (coverFace === 'back') {
+      setSpreadIndex(spreads.length - 1);
+    } else {
+      setSpreadIndex(0);
+    }
+
+    setPendingSpread(null);
+    setFlipDirection(null);
     setIsOpen(true);
   };
 
@@ -195,19 +203,20 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
     setPendingSpread(null);
     setFlipDirection(null);
-    setCoverFace(side);
 
     if (side === 'back' && isOpen) {
       setIsClosingBack(true);
       if (timerRef.current) window.clearTimeout(timerRef.current);
       timerRef.current = window.setTimeout(() => {
+        setCoverFace('back');
         setIsOpen(false);
         setIsClosingBack(false);
-        setSpreadIndex(0);
-      }, 980);
+        setSpreadIndex(spreads.length - 1);
+      }, 1020);
       return;
     }
 
+    setCoverFace('front');
     setIsOpen(false);
     setSpreadIndex(0);
   };
@@ -334,6 +343,13 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <div className="passport-spread" aria-hidden={!isOpen} onClick={handleSpreadClick} onWheel={handleSpreadWheel} onPointerDown={handleDragStart} onPointerUp={handleDragEnd} onPointerCancel={() => { dragStartRef.current = null; }}>
             <PageSurface page={baseLeftPage} side="left" isSpanish={isSpanish} compact blankCastle={!baseLeftPage && (spreadIndex === 1 || pendingSpread === 1)} />
             <PageSurface page={baseRightPage} side="right" isSpanish={isSpanish} blankCastle={false} />
+
+            {isClosingBack && (
+              <div className="passport-back-closing-sheet" aria-hidden="true">
+                <span className="passport-back-closing-page-edge" />
+                <span className="passport-back-closing-crest"><img src={boLogo} alt="" /></span>
+              </div>
+            )}
 
             {flipDirection && (
               <div className={`passport-turning-sheet passport-turning-sheet-${flipDirection}`} aria-hidden="true">
