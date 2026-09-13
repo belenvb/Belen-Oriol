@@ -4,7 +4,6 @@ import { Language } from '../types';
 import './PassportStyles.css';
 
 type IconType = typeof Plane;
-
 type CardLink = { url: string; text: string };
 
 type PageData = {
@@ -26,14 +25,10 @@ type PageData = {
   stampSub: string;
 };
 
-type Spread = {
-  left?: PageData;
-  right: PageData;
-};
-
+type Spread = { left?: PageData; right: PageData };
 type FlipDirection = 'forward' | 'backward' | null;
 
-function PassportBlankPage({ isSpanish }: { isSpanish: boolean }) {
+function BlankPassportPage({ isSpanish }: { isSpanish: boolean }) {
   return (
     <>
       <div className="passport-security-lines passport-security-lines-a" aria-hidden="true" />
@@ -42,13 +37,8 @@ function PassportBlankPage({ isSpanish }: { isSpanish: boolean }) {
       <div className="passport-page-inner passport-page-inner-blank">
         <div className="passport-blank-mark" aria-hidden="true">B&amp;O</div>
         <div className="passport-blank-stamp" aria-hidden="true">SALAMANCA<br />04.09.2027</div>
-        <div className="passport-machine-line" aria-hidden="true">
-          P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;SALAMANCA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-        </div>
-        <div className="passport-page-footer">
-          <span>{isSpanish ? 'Página reservada' : 'Reserved page'}</span>
-          <span>[--]</span>
-        </div>
+        <div className="passport-machine-line" aria-hidden="true">P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;SALAMANCA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+        <div className="passport-page-footer"><span>{isSpanish ? 'Página reservada' : 'Reserved page'}</span><span>[--]</span></div>
       </div>
     </>
   );
@@ -72,7 +62,6 @@ function PassportPageFace({
       <div className="passport-security-lines passport-security-lines-a" aria-hidden="true" />
       <div className="passport-security-lines passport-security-lines-b" aria-hidden="true" />
       <div className="passport-paper-grain" aria-hidden="true" />
-
       <div className="passport-page-inner">
         <div className="passport-page-toprow">
           <div className="passport-icon-seal"><Icon size={compact ? 18 : 24} strokeWidth={1.7} /></div>
@@ -91,17 +80,11 @@ function PassportPageFace({
             <strong>{page.card1Distance}</strong>
             <p>{page.card1Text}</p>
             {page.card1Link && (
-              <a
-                href={page.card1Link.url}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(event) => event.stopPropagation()}
-              >
+              <a href={page.card1Link.url} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>
                 {page.card1Link.text} ↗
               </a>
             )}
           </div>
-
           <div className="passport-info-card">
             <h4>{page.card2Title}</h4>
             <strong>{page.card2Distance}</strong>
@@ -111,19 +94,11 @@ function PassportPageFace({
 
         <div className="passport-tagline">✦ {page.tagline}</div>
         <div className="passport-stamp"><b>{page.stampText}</b><span>{page.stampSub}</span></div>
-        <div className="passport-machine-line" aria-hidden="true">
-          P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;SALAMANCA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-        </div>
+        <div className="passport-machine-line" aria-hidden="true">P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;SALAMANCA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
         <div className="passport-page-footer"><span>B&amp;O · SALAMANCA · 04.09.2027</span><span>[{page.num}/03]</span></div>
 
         {action && (
-          <button
-            className="passport-turn-cue"
-            onClick={(event) => {
-              event.stopPropagation();
-              action.onClick();
-            }}
-          >
+          <button className="passport-turn-cue" onClick={(event) => { event.stopPropagation(); action.onClick(); }}>
             {action.label} ↗
           </button>
         )}
@@ -147,7 +122,7 @@ function PageSurface({
 }) {
   return (
     <div className={`passport-page passport-page-${side} ${!page ? 'passport-page-empty' : ''}`}>
-      {page ? <PassportPageFace page={page} isSpanish={isSpanish} compact={compact} action={action} /> : <PassportBlankPage isSpanish={isSpanish} />}
+      {page ? <PassportPageFace page={page} isSpanish={isSpanish} compact={compact} action={action} /> : <BlankPassportPage isSpanish={isSpanish} />}
     </div>
   );
 }
@@ -168,22 +143,18 @@ export function TransportPassport({ lang }: { lang: Language }) {
       icon: Plane,
       badge: isSpanish ? 'EN AVIÓN' : 'BY AIR',
       title: isSpanish ? 'Vuelos' : 'Flights',
-      subtitle: 'MADRID · VALLADOLID · SALAMANCA',
+      subtitle: 'MADRID · VALLADOLID',
       card1Title: 'Madrid-Barajas (MAD)',
-      card1Distance: isSpanish
-        ? '220 km a Salamanca · ~2 h en coche / 1 h 35 min en tren'
-        : '220 km / 137 miles to Salamanca · ~2 hr drive / 1 hr 35 min train',
+      card1Distance: isSpanish ? '220 km a Salamanca · ~2 h en coche / 1 h 35 min en tren' : '220 km / 137 miles to Salamanca · ~2 hr drive / 1 hr 35 min train',
       card1Text: isSpanish
         ? 'Madrid es la opción con más vuelos internacionales. Desde la T4 se puede conectar con Chamartín y tomar el Alvia directo a Salamanca.'
         : 'Madrid is the airport with the widest international connections. From T4, connect to Chamartín and take the direct Alvia train to Salamanca.',
-      card2Title: isSpanish ? 'Valladolid (VLL) o Salamanca (SLM)' : 'Valladolid (VLL) or Salamanca (SLM)',
-      card2Distance: isSpanish
-        ? 'VLL: 115 km · SLM: 15 km aprox.'
-        : 'VLL: 115 km / 71 miles · SLM: approx. 15 km / 9 miles',
+      card2Title: 'Valladolid (VLL)',
+      card2Distance: isSpanish ? '115 km a Salamanca · ~1 h en coche / 45 min en tren' : '115 km / 71 miles to Salamanca · ~1 hr drive / 45 min train',
       card2Text: isSpanish
-        ? 'Valladolid puede ser una alternativa cómoda para vuelos desde Barcelona. Salamanca cuenta con aeropuerto cercano, aunque con menos conexiones.'
-        : 'Valladolid can be a convenient option for flights from Barcelona. Salamanca has a nearby airport, though with fewer connections.',
-      tagline: isSpanish ? 'Tres aeropuertos posibles según origen y disponibilidad' : 'Three airport options depending on origin and availability',
+        ? 'Valladolid puede ser una alternativa cómoda para vuelos desde Barcelona, con conexión sencilla por tren o coche hasta Salamanca.'
+        : 'Valladolid can be a convenient option for flights from Barcelona, with an easy train or car connection to Salamanca.',
+      tagline: isSpanish ? 'Conexiones vía Madrid o Valladolid' : 'Connections via Madrid or Valladolid',
       stampText: `AEROPUERTO · ${dateFormatted}`,
       stampSub: 'ENTRY / ENTRADA',
     };
@@ -195,8 +166,8 @@ export function TransportPassport({ lang }: { lang: Language }) {
       badge: isSpanish ? 'TREN O COCHE' : 'TRAIN / DRIVING',
       title: isSpanish ? 'Trenes' : 'Trains',
       subtitle: isSpanish ? 'ALVIA · COCHE · CONEXIONES' : 'ALVIA · CAR · CONNECTIONS',
-      card1Title: isSpanish ? 'Madrid → Salamanca en tren' : 'Madrid → Salamanca by train',
-      card1Distance: isSpanish ? '1 h 35 min · trayecto directo' : '1 hr 35 min · direct journey',
+      card1Title: isSpanish ? 'Madrid → Salamanca' : 'Madrid → Salamanca',
+      card1Distance: isSpanish ? '1 h 35 min · tren directo' : '1 hr 35 min · direct train',
       card1Text: isSpanish
         ? 'Renfe opera trenes Alvia directos desde Madrid-Chamartín a Salamanca con varias frecuencias diarias.'
         : 'Renfe operates direct Alvia services from Madrid-Chamartín to Salamanca several times a day.',
@@ -248,14 +219,13 @@ export function TransportPassport({ lang }: { lang: Language }) {
       setSpreadIndex(nextSpread);
       setPendingSpread(null);
       setFlipDirection(null);
-    }, 1260);
+    }, 1180);
   };
 
   const requestSpreadChange = (nextSpread: number) => {
     const safeSpread = Math.max(0, Math.min(spreads.length - 1, nextSpread));
     if (!isOpen) setIsOpen(true);
     if (safeSpread === spreadIndex || flipDirection) return;
-
     setPendingSpread(safeSpread);
     setFlipDirection(safeSpread > spreadIndex ? 'forward' : 'backward');
     closeFlip(safeSpread);
@@ -263,26 +233,18 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   const currentSpread = spreads[spreadIndex];
   const targetSpread = pendingSpread !== null ? spreads[pendingSpread] : currentSpread;
-
-  const baseLeftPage = flipDirection === 'backward' ? targetSpread.left : currentSpread.left;
+  const baseLeftPage = flipDirection === 'forward' ? targetSpread.left : currentSpread.left;
   const baseRightPage = flipDirection === 'forward' ? targetSpread.right : currentSpread.right;
   const turningFrontPage = flipDirection === 'backward' ? targetSpread.right : currentSpread.right;
   const turningBackPage = flipDirection === 'forward' ? targetSpread.right : currentSpread.right;
-
-  const spreadLabel = spreadIndex === 0
-    ? (isSpanish ? 'Vuelos + trenes' : 'Flights + trains')
-    : (isSpanish ? 'Día de la boda' : 'Wedding day');
+  const spreadLabel = spreadIndex === 0 ? (isSpanish ? 'Vuelos + trenes' : 'Flights + trains') : (isSpanish ? 'Día de la boda' : 'Wedding day');
 
   return (
     <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
-      <div className="passport-topline">
-        <span>{isSpanish ? 'Guía de viaje' : 'Travel guide'}</span>
-        <span>{spreadLabel}</span>
-      </div>
+      <div className="passport-topline"><span>{isSpanish ? 'Guía de viaje' : 'Travel guide'}</span><span>{spreadLabel}</span></div>
 
       <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'}`}>
         <div className="passport-table-shadow" aria-hidden="true" />
-
         <div className={`passport-book ${flipDirection ? `is-flipping is-${flipDirection}` : ''}`}>
           <div className="passport-cover-base" aria-hidden="true" />
           <div className="passport-page-stack passport-page-stack-left" aria-hidden="true" />
@@ -291,23 +253,14 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
           <div className="passport-spread" aria-hidden={!isOpen}>
             <PageSurface page={baseLeftPage} isSpanish={isSpanish} side="left" compact />
-            <PageSurface
-              page={baseRightPage}
-              isSpanish={isSpanish}
-              side="right"
-              action={
-                isOpen && spreadIndex < spreads.length - 1 && !flipDirection
-                  ? { label: isSpanish ? 'Pasar página' : 'Turn page', onClick: () => requestSpreadChange(spreadIndex + 1) }
-                  : undefined
-              }
-            />
+            <PageSurface page={baseRightPage} isSpanish={isSpanish} side="right" action={isOpen && spreadIndex < spreads.length - 1 && !flipDirection ? { label: isSpanish ? 'Pasar página' : 'Turn page', onClick: () => requestSpreadChange(spreadIndex + 1) } : undefined} />
 
             {flipDirection && (
               <div className={`passport-turning-sheet passport-turning-sheet-${flipDirection}`} aria-hidden="true">
                 <div className="passport-turning-bend passport-turning-bend-a" />
                 <div className="passport-turning-bend passport-turning-bend-b" />
                 <div className="passport-turning-face passport-turning-front">
-                  {turningFrontPage ? <PassportPageFace page={turningFrontPage} isSpanish={isSpanish} compact /> : <PassportBlankPage isSpanish={isSpanish} />}
+                  {turningFrontPage ? <PassportPageFace page={turningFrontPage} isSpanish={isSpanish} compact /> : <BlankPassportPage isSpanish={isSpanish} />}
                 </div>
                 <div className="passport-page-edge" />
                 <div className="passport-turning-face passport-turning-back">
@@ -317,48 +270,18 @@ export function TransportPassport({ lang }: { lang: Language }) {
             )}
           </div>
 
-          <button
-            type="button"
-            className="passport-front-cover"
-            aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'}
-            onClick={() => setIsOpen(true)}
-          >
+          <button type="button" className="passport-front-cover" aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={() => setIsOpen(true)}>
             <span className="passport-cover-border" aria-hidden="true" />
-            <span className="passport-cover-mark">
-              <small>{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</small>
-              <b>B &amp; O</b>
-              <em>SALAMANCA · 04.09.2027</em>
-              <i>{isSpanish ? 'Abrir' : 'Open'}</i>
-            </span>
+            <span className="passport-cover-shine" aria-hidden="true" />
+            <span className="passport-cover-copy"><small>{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</small><b>B &amp; O</b><em>SALAMANCA · 04.09.2027</em><strong>{isSpanish ? 'ABRIR' : 'OPEN'}</strong></span>
           </button>
         </div>
       </div>
 
       <div className="passport-controls">
-        <button
-          onClick={() => requestSpreadChange(spreadIndex - 1)}
-          disabled={!isOpen || spreadIndex === 0 || Boolean(flipDirection)}
-          aria-label={isSpanish ? 'Página anterior' : 'Previous page'}
-        >
-          <ChevronLeft size={17} />{isSpanish ? 'Anterior' : 'Previous'}
-        </button>
-        <div>
-          {spreads.map((spread, index) => (
-            <button
-              key={spread.right.id}
-              className={index === spreadIndex ? 'active' : ''}
-              onClick={() => requestSpreadChange(index)}
-              aria-label={`${isSpanish ? 'Página' : 'Page'} ${index + 1}`}
-            />
-          ))}
-        </div>
-        <button
-          onClick={() => requestSpreadChange(spreadIndex + 1)}
-          disabled={!isOpen || spreadIndex === spreads.length - 1 || Boolean(flipDirection)}
-          aria-label={isSpanish ? 'Página siguiente' : 'Next page'}
-        >
-          {isSpanish ? 'Siguiente' : 'Next'}<ChevronRight size={17} />
-        </button>
+        <button onClick={() => requestSpreadChange(spreadIndex - 1)} disabled={!isOpen || spreadIndex === 0 || Boolean(flipDirection)} aria-label={isSpanish ? 'Página anterior' : 'Previous page'}><ChevronLeft size={17} />{isSpanish ? 'Anterior' : 'Previous'}</button>
+        <div>{spreads.map((spread, index) => <button key={`${spread.right.id}-${index}`} className={index === spreadIndex ? 'active' : ''} onClick={() => requestSpreadChange(index)} aria-label={`${isSpanish ? 'Página' : 'Page'} ${index + 1}`} />)}</div>
+        <button onClick={() => requestSpreadChange(spreadIndex + 1)} disabled={!isOpen || spreadIndex === spreads.length - 1 || Boolean(flipDirection)} aria-label={isSpanish ? 'Página siguiente' : 'Next page'}>{isSpanish ? 'Siguiente' : 'Next'}<ChevronRight size={17} /></button>
       </div>
     </div>
   );
