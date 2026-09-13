@@ -65,7 +65,7 @@ export default function App() {
         <StorySection lang={lang} />
 
         <section className="rainbow-break" aria-label={lang === 'es' ? 'Islandia' : 'Iceland'}>
-          <img src="/photos/rainbow.svg" alt={lang === 'es' ? 'Belén y Oriol bajo un arcoíris en Islandia' : 'Belén and Oriol beneath a rainbow in Iceland'} loading="lazy" />
+          <img src="/photos/rainbow.jpg" alt={lang === 'es' ? 'Belén y Oriol bajo un arcoíris en Islandia' : 'Belén and Oriol beneath a rainbow in Iceland'} loading="lazy" />
         </section>
 
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
