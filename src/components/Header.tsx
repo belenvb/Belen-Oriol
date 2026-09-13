@@ -13,6 +13,7 @@ export function Header({ lang, onLanguageChange, activeSection }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const numericDate = lang === 'es' ? '04.09.2027' : '09.04.2027';
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -46,10 +47,9 @@ export function Header({ lang, onLanguageChange, activeSection }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         <a href="#hero" onClick={(e) => { e.preventDefault(); handleNavClick('#hero'); }} className="shrink-0 mr-2 xl:mr-6 focus:outline-none">
           <span className={`text-[10px] sm:text-[11px] tracking-[0.18em] xl:tracking-[0.22em] uppercase font-semibold transition-colors font-cinzel whitespace-nowrap ${isScrolled ? 'text-[#5c141e]' : 'text-[#dfc285]'}`}>
-            Salamanca · 04.09.2027
+            Salamanca · {numericDate}
           </span>
         </a>
-
         <nav className="hidden xl:flex items-center gap-3.5 xl:gap-6 2xl:gap-7 justify-center flex-1">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.substring(1);
@@ -61,23 +61,19 @@ export function Header({ lang, onLanguageChange, activeSection }: HeaderProps) {
             );
           })}
         </nav>
-
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-2 xl:ml-4">
           <button onClick={toggleAudio} className={`p-2 rounded-full border transition-all duration-300 cursor-pointer ${isPlayingAudio ? 'border-[#b89243] bg-[#b89243]/20 text-[#dfc285]' : isScrolled ? 'border-[#b89243]/30 hover:border-[#b89243] bg-white/70 text-[#5c141e]' : 'border-[#dfc285]/30 hover:border-[#dfc285] bg-black/20 text-[#dfc285]'}`} title={isPlayingAudio ? 'Silenciar música' : 'Reproducir música'} aria-label={lang === 'es' ? (isPlayingAudio ? 'Silenciar música' : 'Reproducir música') : (isPlayingAudio ? 'Mute music' : 'Play music')}>
             {isPlayingAudio ? <Volume2 className="w-4 h-4 animate-pulse" /> : <VolumeX className="w-4 h-4" />}
           </button>
-
           <div className={`flex items-center rounded-full p-0.5 border shadow-2xs ${isScrolled ? 'border-[#b89243]/30 bg-white/70' : 'border-[#dfc285]/30 bg-black/25'}`}>
             <button onClick={() => onLanguageChange('es')} className={`px-2.5 py-1 text-[10px] font-semibold tracking-wider rounded-full transition-all cursor-pointer ${lang === 'es' ? 'bg-[#b89243] text-[#0d1a12] font-bold shadow-xs' : isScrolled ? 'text-[#44403c] hover:text-[#5c141e]' : 'text-[#f8f5ee]/80 hover:text-[#dfc285]'}`}>ES</button>
             <button onClick={() => onLanguageChange('en')} className={`px-2.5 py-1 text-[10px] font-semibold tracking-wider rounded-full transition-all cursor-pointer ${lang === 'en' ? 'bg-[#b89243] text-[#0d1a12] font-bold shadow-xs' : isScrolled ? 'text-[#44403c] hover:text-[#5c141e]' : 'text-[#f8f5ee]/80 hover:text-[#dfc285]'}`}>EN</button>
           </div>
-
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className={`xl:hidden p-2 rounded-lg focus:outline-none ${isScrolled ? 'text-[#5c141e] hover:bg-black/5' : 'text-[#dfc285] hover:bg-white/10'}`} aria-expanded={isMobileMenuOpen} aria-label={lang === 'es' ? 'Menú' : 'Menu'}>
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
-
       {isMobileMenuOpen && (
         <div className="xl:hidden bg-[#faf7f2]/98 backdrop-blur-xl border-b border-[#b89243]/30 px-6 py-6 shadow-xl animate-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-4">

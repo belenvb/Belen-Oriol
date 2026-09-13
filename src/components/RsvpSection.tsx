@@ -106,8 +106,11 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
   };
 
   return (
-    <section id="rsvp" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#fdfbf7] relative">
-      <div className="max-w-3xl mx-auto">
+    <section id="rsvp" className="rsvp-section-shell py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative">
+      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/45 to-transparent pointer-events-none" />
+      <div className="absolute left-[-4rem] top-24 h-40 w-40 rounded-full bg-[#5c141e]/10 blur-3xl pointer-events-none" />
+      <div className="absolute right-[-3rem] top-10 h-44 w-44 rounded-full bg-[#b89243]/14 blur-3xl pointer-events-none" />
+      <div className="max-w-3xl mx-auto relative z-10">
         <div className="original-seal"><img src="/photos/bo-original.webp" alt="BO" width="120" height="120" loading="lazy" /></div>
         {/* Header */}
         <motion.div

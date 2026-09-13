@@ -29,7 +29,6 @@ type PageData = {
 
 type Spread = { left?: PageData; right: PageData };
 type FlipDirection = 'next' | 'previous' | null;
-const decorativeLine = 'B&O  WEDDING GUIDE  SALAMANCA  CASTILLO DEL BUEN AMOR  2027';
 
 function BlankCastlePage({ isSpanish }: { isSpanish: boolean }) {
   return (
@@ -40,10 +39,10 @@ function BlankCastlePage({ isSpanish }: { isSpanish: boolean }) {
       <div className="passport-page-inner passport-blank-page-inner">
         <span className="passport-page-overline">{isSpanish ? 'GUÍA DE VIAJE · PÁG. 03' : 'TRAVEL GUIDE · PG. 03'}</span>
         <div className="passport-castle-sketch-wrap">
-          <img className="passport-castle-sketch" src="/castle-sketch.svg" alt={isSpanish ? 'Ilustración del castillo' : 'Castle illustration'} />
+          <img className="passport-castle-sketch" src="/castle-sketch.png" alt={isSpanish ? 'Ilustración del castillo' : 'Castle illustration'} />
         </div>
         <p className="passport-castle-caption">Castillo del Buen Amor</p>
-        <div className="passport-machine-line" aria-hidden="true">{decorativeLine}</div>
+        <div className="passport-machine-line" aria-hidden="true">P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;WEDDING&lt;&lt;SALAMANCA&lt;&lt;20270904&lt;&lt;&lt;</div>
         <div className="passport-page-footer"><span>{isSpanish ? 'Ilustración del lugar' : 'Venue illustration'}</span><span>[--]</span></div>
       </div>
     </>
@@ -86,7 +85,7 @@ function PassportPageFace({ page, isSpanish, compact = false }: { page: PageData
         </div>
         <div className="passport-tagline">✦ {page.tagline}</div>
         <div className="passport-stamp"><b>{page.stampText}</b><span>{page.stampSub}</span></div>
-        <div className="passport-machine-line" aria-hidden="true">{decorativeLine}</div>
+        <div className="passport-machine-line" aria-hidden="true">P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;WEDDING&lt;&lt;SALAMANCA&lt;&lt;20270904&lt;&lt;&lt;</div>
         <div className="passport-page-footer"><span>{page.title}</span><span>[{page.num}/03]</span></div>
       </div>
     </>
@@ -253,9 +252,11 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const baseLeftPage = !flipDirection ? currentSpread.left : flipDirection === 'next' ? currentSpread.left : targetSpread.left;
   const baseRightPage = !flipDirection ? currentSpread.right : flipDirection === 'next' ? targetSpread.right : currentSpread.right;
 
+  const turningFrontBlank = flipDirection === 'next' ? false : false;
   const turningBackBlank = flipDirection === 'next';
   const turningFrontPage = currentSpread.right;
   const turningBackPage = flipDirection === 'next' ? undefined : targetSpread.right;
+
   const showLeftHint = isOpen && spreadIndex === spreads.length - 1 && !flipDirection;
 
   return (
@@ -276,7 +277,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <div className="passport-page-stack passport-page-stack-right" aria-hidden="true" />
           <div className="passport-gutter" aria-hidden="true" />
 
-          <button type="button" className="passport-front-cover" aria-label={isSpanish ? 'Abrir guía de viaje' : 'Open travel guide'} onClick={() => setIsOpen(true)}>
+          <button type="button" className="passport-front-cover" aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={() => setIsOpen(true)}>
             <span className="passport-cover-guide">TRAVEL GUIDE</span>
             <span className="passport-cover-country">SALAMANCA</span>
             <span className="passport-cover-crest"><img src={boLogo} alt="" /></span>
@@ -286,13 +287,15 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
           <div className="passport-spread" aria-hidden={!isOpen} onClick={handleSpreadClick} onPointerDown={handleDragStart} onPointerUp={handleDragEnd} onPointerCancel={() => { dragStartRef.current = null; }}>
             <PageSurface page={baseLeftPage} side="left" isSpanish={isSpanish} compact blankCastle={!baseLeftPage && (spreadIndex === 1 || pendingSpread === 1)} />
-            <PageSurface page={baseRightPage} side="right" isSpanish={isSpanish} />
+            <PageSurface page={baseRightPage} side="right" isSpanish={isSpanish} blankCastle={false} />
 
             {flipDirection && (
               <div className={`passport-turning-sheet passport-turning-sheet-${flipDirection}`} aria-hidden="true">
                 <div className="passport-turning-bend passport-turning-bend-a" />
                 <div className="passport-turning-bend passport-turning-bend-b" />
-                <div className="passport-turning-face passport-turning-front"><PassportPageFace page={turningFrontPage} isSpanish={isSpanish} compact /></div>
+                <div className="passport-turning-face passport-turning-front">
+                  {turningFrontBlank ? <BlankCastlePage isSpanish={isSpanish} /> : <PassportPageFace page={turningFrontPage} isSpanish={isSpanish} compact />}
+                </div>
                 <div className="passport-page-edge" />
                 <div className="passport-turning-face passport-turning-back">
                   {turningBackBlank ? <BlankCastlePage isSpanish={isSpanish} /> : turningBackPage ? <PassportPageFace page={turningBackPage} isSpanish={isSpanish} compact /> : <BlankCastlePage isSpanish={isSpanish} />}

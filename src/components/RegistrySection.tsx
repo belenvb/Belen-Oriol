@@ -107,8 +107,11 @@ export function RegistrySection({ lang }: RegistrySectionProps) {
   return (
     <section
       id="registry"
-      className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#faf7f2] relative overflow-hidden"
+      className="registry-section-shell py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
     >
+      <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#5c141e]/[0.06] to-transparent pointer-events-none" />
+      <div className="absolute -left-12 top-20 h-48 w-48 rounded-full bg-[#b89243]/10 blur-3xl pointer-events-none" />
+      <div className="absolute -right-12 bottom-16 h-56 w-56 rounded-full bg-[#5c141e]/10 blur-3xl pointer-events-none" />
       <div className="max-w-3xl mx-auto relative z-10">
         {/* Section Header */}
         <motion.div

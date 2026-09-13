@@ -6,12 +6,13 @@ interface FooterProps {
 }
 
 export function Footer({ lang }: FooterProps) {
+  const numericDate = lang === 'es' ? '04.09.2027' : '09.04.2027';
   return (
     <footer className="bg-[#1f1917] text-[#f4ede2] text-center relative border-t border-[#b89243]/30">
       <div className="closing-photo closing-photo-fullbleed">
         <img src="/photos/coast.webp" loading="lazy" alt={lang === 'es' ? 'Belén y Oriol junto al mar' : 'Belén and Oriol by the sea'} />
         <div>
-          <p className="eyebrow">04.09.2027</p>
+          <p className="eyebrow">{numericDate}</p>
           <h2>Castillo del Buen Amor</h2>
         </div>
       </div>
