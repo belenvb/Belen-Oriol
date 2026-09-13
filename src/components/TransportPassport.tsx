@@ -39,7 +39,7 @@ function BlankCastlePage({ isSpanish }: { isSpanish: boolean }) {
       <div className="passport-page-inner passport-blank-page-inner">
         <span className="passport-page-overline">{isSpanish ? 'GUÍA DE VIAJE · PÁG. 03' : 'TRAVEL GUIDE · PG. 03'}</span>
         <div className="passport-castle-sketch-wrap">
-          <img className="passport-castle-sketch" src="/castle-sketch.png" alt={isSpanish ? 'Ilustración del castillo' : 'Castle illustration'} />
+          <img className="passport-castle-sketch" src="/castle-sketch-transparent.png" alt={isSpanish ? 'Ilustración del castillo' : 'Castle illustration'} />
         </div>
         <p className="passport-castle-caption">Castillo del Buen Amor</p>
         <div className="passport-machine-line" aria-hidden="true">P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;WEDDING&lt;&lt;SALAMANCA&lt;&lt;20270904&lt;&lt;&lt;</div>

@@ -357,9 +357,10 @@
 .passport-page-footer span:last-child { font-size: .7rem; color: #4f3329; }
 
 .passport-blank-page-inner { display: flex; flex-direction: column; }
-.passport-castle-sketch-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 8px 8px; }
-.passport-castle-sketch { width: min(92%, 480px); max-height: 320px; object-fit: contain; opacity: .94; filter: sepia(.45) saturate(.72) contrast(1.02); mix-blend-mode: multiply; }
-.passport-castle-caption { text-align: center; margin: 0 auto 86px; }
+.passport-castle-sketch-wrap { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; padding: 10px 4px 0; }
+.passport-castle-sketch-wrap::before { content: ""; position: absolute; inset: 8% 10% 18%; background: radial-gradient(circle at 50% 50%, rgba(173,145,104,.08), transparent 68%); pointer-events: none; }
+.passport-castle-sketch { position: relative; z-index: 1; width: min(88%, 430px); max-height: 280px; object-fit: contain; opacity: .88; filter: sepia(.52) saturate(.55) contrast(1.08) brightness(.98); mix-blend-mode: multiply; }
+.passport-castle-caption { text-align: center; margin: 2px auto 86px; }
 
 .passport-turning-sheet {
   position: absolute;
@@ -373,7 +374,24 @@
   animation: passportTurnNext .92s cubic-bezier(.2,.68,.16,1) forwards;
 }
 .passport-turning-sheet-previous {
+  left: 18px;
+  right: auto;
+  transform-origin: right center;
   animation-name: passportTurnPrevious;
+}
+.passport-turning-sheet-previous .passport-page-edge {
+  left: -1px;
+  right: auto;
+}
+.passport-turning-sheet-previous .passport-turning-bend-a {
+  left: auto;
+  right: 0;
+  background: linear-gradient(270deg, rgba(0,0,0,.18), transparent);
+}
+.passport-turning-sheet-previous .passport-turning-bend-b {
+  right: auto;
+  left: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,.14), transparent);
 }
 .passport-turning-face { position: absolute; inset: 0; backface-visibility: hidden; }
 .passport-turning-front { transform: rotateY(0deg); }
