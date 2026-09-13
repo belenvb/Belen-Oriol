@@ -367,3 +367,59 @@ footer { padding:0!important; overflow:hidden; }
     bottom:32px;
   }
 }
+
+
+/* Hero discover beam refinement */
+.hero-discover i {
+  position: relative;
+  overflow: hidden;
+}
+.hero-discover i::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -28%;
+  width: 3px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255, 238, 202, 0.96);
+  box-shadow: 0 0 14px rgba(227,194,121,.95), 0 0 24px rgba(227,194,121,.55);
+  transform: translateX(-50%);
+  animation: discoverBeam 1.9s ease-in-out infinite;
+}
+@keyframes discoverBeam {
+  0% { top: -22%; opacity: 0; }
+  18% { opacity: 1; }
+  55% { top: 42%; opacity: .95; }
+  100% { top: 112%; opacity: 0; }
+}
+
+/* RSVP readability and layout */
+.rsvp-hero-panel {
+  max-width: none !important;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  border-radius: 2.3rem;
+  border: 1px solid rgba(239,202,124,.22);
+  background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.07));
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px rgba(255,255,255,.12);
+}
+.rsvp-section-shell::after { inset: 30px; }
+.rsvp-readable-card,
+.rsvp-readable-card * { color: initial; }
+.rsvp-readable-card h3,
+.rsvp-readable-card .text-\[\#37080e\],
+.rsvp-readable-card .text-\[\#5c141e\] { color: #371017 !important; }
+.rsvp-readable-card p,
+.rsvp-readable-card .text-\[\#554f47\],
+.rsvp-readable-card .text-\[\#6e675f\],
+.rsvp-readable-card .font-cormorant { color: #554f47 !important; }
+.rsvp-readable-card .bg-\[\#5c141e\],
+.rsvp-readable-card button.bg-\[\#5c141e\] { color: #fff7e7 !important; background-color:#6d1020 !important; }
+.rsvp-section-shell .max-w-3xl { max-width: 960px; }
+.photo-basalt-break .photo-break-caption { display:none; }
+
+@media (max-width: 760px) {
+  .rsvp-hero-panel { padding: 1.8rem 1.15rem; border-radius: 1.7rem; }
+}

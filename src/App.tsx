@@ -90,7 +90,6 @@ export default function App() {
 
         <section className="parallax-photo-break photo-basalt-break" aria-label={lang === 'es' ? 'Camino a la celebración' : 'Path to the celebration'}>
           <div className="parallax-photo-fixed" />
-          <div className="photo-break-caption">{lang === 'es' ? 'El viaje también es parte de la historia' : 'The journey is part of the story'}</div>
         </section>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <RsvpSection lang={lang} />
