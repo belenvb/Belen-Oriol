@@ -42,6 +42,15 @@ function BlankCastlePage({ isSpanish }: { isSpanish: boolean }) {
           <img className="passport-castle-sketch" src="/castle-sketch-transparent.png" alt={isSpanish ? 'Ilustración del castillo' : 'Castle illustration'} />
         </div>
         <p className="passport-castle-caption">Castillo del Buen Amor</p>
+        <a
+          className="passport-castle-map-link"
+          href="https://www.google.com/maps/search/?api=1&query=Castillo%20del%20Buen%20Amor%2C%20Villanueva%20de%20Ca%C3%B1edo%2C%20Salamanca"
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {isSpanish ? 'Cómo llegar en Google Maps ↗' : 'Open in Google Maps ↗'}
+        </a>
         <div className="passport-machine-line" aria-hidden="true">P&lt;ESPBELEN&lt;&lt;ORIOL&lt;&lt;WEDDING&lt;&lt;SALAMANCA&lt;&lt;20270904&lt;&lt;&lt;</div>
         <div className="passport-page-footer"><span>{isSpanish ? 'Ilustración del lugar' : 'Venue illustration'}</span><span>[--]</span></div>
       </div>
@@ -313,9 +322,28 @@ export function TransportPassport({ lang }: { lang: Language }) {
         <div className="passport-table-shadow" aria-hidden="true" />
 
         {!isOpen && (
-          <aside className="passport-side-note" aria-hidden="true">
-            <span className="passport-side-note-label">{isSpanish ? 'Ubicación' : 'Location'}</span>
-            <img src="/spain-map-sketch.svg" alt="" className="passport-side-note-map" />
+          <aside className="passport-side-note">
+            <span className="passport-side-note-kicker">03 / {isSpanish ? 'EL LUGAR' : 'THE PLACE'}</span>
+            <h3>Castillo<br />del <em>Buen Amor.</em></h3>
+            <div className="passport-side-note-arches" aria-hidden="true">
+              <span /><span /><span />
+            </div>
+            <p className="passport-side-note-lead">
+              {isSpanish ? 'Castillo del siglo XV · Villanueva de Cañedo, Salamanca' : '15th-century castle · Villanueva de Cañedo, Salamanca'}
+            </p>
+            <p>
+              {isSpanish ? 'La ceremonia, el banquete y la fiesta tendrán lugar en el castillo.' : 'The ceremony, dinner and party will take place at the castle.'}
+            </p>
+            <address>
+              Villanueva de Cañedo<br />
+              37799 Topas, Salamanca
+            </address>
+            <a href="https://www.google.com/maps/search/?api=1&query=Castillo%20del%20Buen%20Amor%2C%20Villanueva%20de%20Ca%C3%B1edo%2C%20Salamanca" target="_blank" rel="noreferrer">
+              {isSpanish ? 'Cómo llegar ↗' : 'How to get there ↗'}
+            </a>
+            <small>
+              {isSpanish ? 'A unos 25 minutos de Salamanca · aparcamiento privado · autobús para invitados' : 'About 25 minutes from Salamanca · private parking · guest shuttle'}
+            </small>
           </aside>
         )}
 
@@ -373,15 +401,15 @@ export function TransportPassport({ lang }: { lang: Language }) {
       </div>
 
       <div className="passport-controls">
-        <button onClick={closePassport} disabled={!isOpen || Boolean(flipDirection)} aria-label={isSpanish ? 'Volver a la portada' : 'Back to cover'}><BookOpen size={16} />{isSpanish ? 'Portada' : 'Cover'}</button>
+        <button onClick={() => closePassport('front')} disabled={!isOpen || Boolean(flipDirection) || isClosingBack} aria-label={isSpanish ? 'Volver a la portada' : 'Back to cover'}><BookOpen size={16} />{isSpanish ? 'Portada' : 'Cover'}</button>
         <div className="passport-pagination">
           {spreads.map((spread, index) => (
             <button key={spread.right.id} className={index === spreadIndex && isOpen ? 'active' : ''} onClick={() => requestSpreadChange(index)} aria-label={`${isSpanish ? 'Página' : 'Page'} ${index + 1}`} />
           ))}
         </div>
         <div className="passport-controls-right">
-          <button onClick={() => requestSpreadChange(spreadIndex - 1)} disabled={!isOpen || spreadIndex === 0 || Boolean(flipDirection)} aria-label={isSpanish ? 'Página anterior' : 'Previous page'}><ChevronLeft size={17} />{isSpanish ? 'Anterior' : 'Previous'}</button>
-          <button onClick={() => requestSpreadChange(spreadIndex + 1)} disabled={!isOpen || spreadIndex === spreads.length - 1 || Boolean(flipDirection)} aria-label={isSpanish ? 'Página siguiente' : 'Next page'}>{isSpanish ? 'Siguiente' : 'Next'}<ChevronRight size={17} /></button>
+          <button onClick={() => requestSpreadChange(spreadIndex - 1)} disabled={!isOpen || spreadIndex === 0 || Boolean(flipDirection) || isClosingBack} aria-label={isSpanish ? 'Página anterior' : 'Previous page'}><ChevronLeft size={17} />{isSpanish ? 'Anterior' : 'Previous'}</button>
+          <button onClick={() => (spreadIndex === spreads.length - 1 ? closePassport('back') : requestSpreadChange(spreadIndex + 1))} disabled={!isOpen || Boolean(flipDirection) || isClosingBack} aria-label={isSpanish ? 'Página siguiente' : 'Next page'}>{isSpanish ? 'Siguiente' : 'Next'}<ChevronRight size={17} /></button>
         </div>
       </div>
     </div>
