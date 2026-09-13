@@ -28,11 +28,9 @@ export default function App() {
 
   const sectionList = ['hero', 'schedule', 'castle', 'journey', 'registry', 'rsvp', 'faq'];
 
-  // Track scroll position to update active navigation
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 250;
-
       for (const sectionId of sectionList) {
         const el = document.getElementById(sectionId);
         if (el) {
@@ -53,91 +51,43 @@ export default function App() {
   const scrollToSection = (sectionId: string) => {
     const targetId = sectionId === 'dates' ? 'schedule' : sectionId;
     const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <div className="w-full min-h-screen bg-[#faf7f2] text-[#2c241e] font-sans selection:bg-[#5c141e] selection:text-white relative overflow-x-hidden">
-      <motion.div
-        style={{ scaleX: scrollYProgress }}
-        className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#dfc285] via-[#b89243] to-[#5c141e] origin-left z-[60] pointer-events-none"
-      />
-      <Header
-        lang={lang}
-        onLanguageChange={setLang}
-        activeSection={activeSection}
-      />
+      <motion.div style={{ scaleX: scrollYProgress }} className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#dfc285] via-[#b89243] to-[#5c141e] origin-left z-[60] pointer-events-none" />
+      <Header lang={lang} onLanguageChange={setLang} activeSection={activeSection} />
 
       <main className="w-full relative">
-        <Hero
-          lang={lang}
-          onNavigate={scrollToSection}
-        />
-        
-
+        <Hero lang={lang} onNavigate={scrollToSection} />
         <HorizontalTrencadis />
         <StorySection lang={lang} />
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.08 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <ScheduleSection
-            lang={lang}
-            selectedDay={selectedDay}
-            onSelectDay={setSelectedDay}
-            hasPrebodaAccess={true}
-          />
+
+        <section className="rainbow-break" aria-label={lang === 'es' ? 'Islandia' : 'Iceland'}>
+          <img src="/photos/rainbow.svg" alt={lang === 'es' ? 'Belén y Oriol bajo un arcoíris en Islandia' : 'Belén and Oriol beneath a rainbow in Iceland'} loading="lazy" />
+        </section>
+
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
+          <ScheduleSection lang={lang} selectedDay={selectedDay} onSelectDay={setSelectedDay} hasPrebodaAccess={true} />
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.08 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <CastleGallery lang={lang} />
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.08 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <JourneyMap lang={lang} />
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.08 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <RegistrySection lang={lang} />
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.08 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <RsvpSection lang={lang} />
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.08 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <FaqSection lang={lang} />
         </motion.div>
       </main>
-      <Footer
-        lang={lang}
-        onNavigate={scrollToSection}
-      />
+      <Footer lang={lang} onNavigate={scrollToSection} />
     </div>
   );
 }
-
