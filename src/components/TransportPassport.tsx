@@ -88,8 +88,14 @@ export function TransportPassport({ lang }: { lang: Language }) {
       <div className="passport-book" aria-label={isSpanish ? 'Pasaporte de viaje interactivo' : 'Interactive travel passport'}>
         <aside className="passport-identity">
           <div className="passport-cover-label">PASSPORT · PASAPORTE</div>
-          <div className="passport-design-seal">
-            <img src="/bo_monogram.png" alt="BO" />
+          <div className="passport-emblem" aria-hidden="true">
+            <svg viewBox="0 0 120 140" role="presentation">
+              <path d="M18 112V55C18 31 36 13 60 13s42 18 42 42v57" />
+              <path d="M31 112V58c0-16 13-29 29-29s29 13 29 29v54" />
+              <path d="M15 112h90M27 126h66" />
+              <path d="M45 79h30M60 55v49" />
+              <path d="M42 48l18-19 18 19" />
+            </svg>
           </div>
           <p className="passport-script">Belén & Oriol</p>
           <p className="passport-destination">SALAMANCA · ESPAÑA</p>
@@ -137,13 +143,11 @@ export function TransportPassport({ lang }: { lang: Language }) {
                   </div>
                   <div className="passport-stamp"><b>{page.stampText}</b><span>{page.stampSub}</span></div>
                   <button className="passport-turn-cue" onClick={(e) => { e.stopPropagation(); if (index < pages.length - 1) setCurrentPage(index + 1); }} disabled={index === pages.length - 1}>
-                    {index === pages.length - 1 ? (isSpanish ? 'Fin del viaje' : 'Journey complete') : (isSpanish ? 'Pasar página' : 'Turn page')} ↗
+                    {index === pages.length - 1 ? (isSpanish ? 'Fin' : 'End') : (isSpanish ? 'Pasar página' : 'Turn page')} ↗
                   </button>
                 </div>
-                <div className="passport-page-face passport-page-back">
-                  <div className="passport-back-mark">BO</div>
-                  <p>{isSpanish ? 'Dos caminos, una misma aventura.' : 'Two paths, one adventure.'}</p>
-                  <span>{page.num}</span>
+                <div className="passport-page-face passport-page-back" aria-hidden="true">
+                  <span className="passport-page-number">{page.num}</span>
                 </div>
               </div>
             );
