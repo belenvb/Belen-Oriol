@@ -1,5 +1,4 @@
 import { Language } from '../types';
-import { Heart } from 'lucide-react';
 
 interface FooterProps {
   lang: Language;
@@ -13,18 +12,13 @@ export function Footer({ lang }: FooterProps) {
         <img src="/photos/coast.webp" loading="lazy" alt={lang === 'es' ? 'Belén y Oriol junto al mar' : 'Belén and Oriol by the sea'} />
         <div>
           <p className="eyebrow">04.09.2027</p>
-          <h2>{lang === 'es' ? 'Nos vemos en Salamanca.' : 'See you in Salamanca.'}</h2>
+          <h2>Castillo del Buen Amor</h2>
         </div>
       </div>
 
       <div className="footer-signature max-w-4xl mx-auto flex flex-col items-center px-4 pb-7">
-        <img src="/bo_monogram.png" alt="BO" className="footer-bo-art" />
-        <p className="font-cormorant text-sm sm:text-base text-[#dfc285] italic tracking-wide mb-2">
-          El Castillo del Buen Amor · Salamanca · {lang === 'es' ? '3 & 4 de Septiembre de 2027' : 'September 3 & 4, 2027'}
-        </p>
-        <p className="text-[9.5px] tracking-[0.2em] uppercase text-white/45 flex items-center justify-center gap-1.5">
-          <span>{lang === 'es' ? 'Con todo nuestro amor para nuestra familia y amigos' : 'With all our love for our family and friends'}</span>
-          <Heart className="w-2.5 h-2.5 text-[#dfc285] fill-[#dfc285]/40" />
+        <p className="font-cormorant text-sm sm:text-base text-[#dfc285] tracking-wide mb-2">
+          Salamanca · {lang === 'es' ? '3 & 4 de septiembre de 2027' : 'September 3 & 4, 2027'}
         </p>
       </div>
     </footer>
