@@ -105,6 +105,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const numericDate = isSpanish ? '04.09.2027' : '09.04.2027';
   const [isOpen, setIsOpen] = useState(false);
   const [coverFace, setCoverFace] = useState<'front' | 'back'>('front');
+  const [isClosingBack, setIsClosingBack] = useState(false);
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [pendingSpread, setPendingSpread] = useState<number | null>(null);
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
@@ -184,16 +185,31 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
 
   const openPassport = () => {
+    if (isClosingBack) return;
     setCoverFace('front');
     setIsOpen(true);
   };
 
   const closePassport = (side: 'front' | 'back' = 'front') => {
-    if (flipDirection) return;
+    if (flipDirection || isClosingBack) return;
+
     setPendingSpread(null);
     setFlipDirection(null);
     setCoverFace(side);
+
+    if (side === 'back' && isOpen) {
+      setIsClosingBack(true);
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        setIsOpen(false);
+        setIsClosingBack(false);
+        setSpreadIndex(0);
+      }, 980);
+      return;
+    }
+
     setIsOpen(false);
+    setSpreadIndex(0);
   };
 
   const requestSpreadChange = (nextSpread: number) => {
@@ -284,7 +300,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   return (
     <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
-      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'}`}>
+      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''}`}>
         <div className="passport-table-shadow" aria-hidden="true" />
 
         {!isOpen && (
@@ -301,6 +317,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <div className="passport-gutter" aria-hidden="true" />
 
           <button type="button" className={`passport-front-cover ${coverFace === 'back' ? 'is-back-cover' : ''}`} aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={openPassport}>
+            <span className="passport-cover-page-edge" aria-hidden="true" />
             {coverFace === 'front' ? (
               <>
                 <span className="passport-cover-guide">TRAVEL GUIDE</span>
