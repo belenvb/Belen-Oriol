@@ -44,7 +44,7 @@ function BlankCastlePage({ isSpanish }: { isSpanish: boolean }) {
         <p className="passport-castle-caption">Castillo del Buen Amor</p>
         <a
           className="passport-castle-map-link"
-          href="https://www.google.com/maps/search/?api=1&query=Castillo%20del%20Buen%20Amor%2C%20Villanueva%20de%20Ca%C3%B1edo%2C%20Salamanca"
+          href="https://www.google.com/maps/search/?api=1&query=Castillo+del+Buen+Amor+Villanueva+de+Canedo+Salamanca"
           target="_blank"
           rel="noreferrer"
           onClick={(event) => event.stopPropagation()}
@@ -196,14 +196,9 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const openPassport = () => {
     if (flipDirection || isClosingBack) return;
 
-    if (coverFace === 'back') {
-      setSpreadIndex(spreads.length - 1);
-    } else {
-      setSpreadIndex(0);
-    }
-
     setPendingSpread(null);
     setFlipDirection(null);
+    setSpreadIndex(coverFace === 'back' ? spreads.length - 1 : 0);
     setIsOpen(true);
   };
 
@@ -221,7 +216,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
         setIsOpen(false);
         setIsClosingBack(false);
         setSpreadIndex(spreads.length - 1);
-      }, 1020);
+      }, 1120);
       return;
     }
 
@@ -292,8 +287,21 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
 
   const handleSpreadWheel = (event: WheelEvent<HTMLDivElement>) => {
-    if (!isOpen || flipDirection || Math.abs(event.deltaY) < 18) return;
+    handleStageWheel(event);
+  };
+
+
+
+  const handleStageWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (flipDirection || isClosingBack || Math.abs(event.deltaY) < 18) return;
+
     event.preventDefault();
+
+    if (!isOpen) {
+      openPassport();
+      return;
+    }
+
     if (event.deltaY > 0) {
       if (spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
       else closePassport('back');
@@ -318,7 +326,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   return (
     <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
-      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''}`}>
+      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''}`} onWheel={handleStageWheel}>
         <div className="passport-table-shadow" aria-hidden="true" />
 
         {!isOpen && (
@@ -328,8 +336,11 @@ export function TransportPassport({ lang }: { lang: Language }) {
             <div className="passport-side-note-arches" aria-hidden="true">
               <span /><span /><span />
             </div>
+            <div className="passport-side-note-vine" aria-hidden="true">
+              <span /><span /><span /><span /><i /><i />
+            </div>
             <p className="passport-side-note-lead">
-              {isSpanish ? 'Castillo del siglo XV · Villanueva de Cañedo, Salamanca' : '15th-century castle · Villanueva de Cañedo, Salamanca'}
+              {isSpanish ? 'Castillo del siglo XI · Villanueva de Cañedo, Salamanca' : '11th-century castle · Villanueva de Cañedo, Salamanca'}
             </p>
             <p>
               {isSpanish ? 'La ceremonia, el banquete y la fiesta tendrán lugar en el castillo.' : 'The ceremony, dinner and party will take place at the castle.'}
@@ -338,12 +349,19 @@ export function TransportPassport({ lang }: { lang: Language }) {
               Villanueva de Cañedo<br />
               37799 Topas, Salamanca
             </address>
-            <a href="https://www.google.com/maps/search/?api=1&query=Castillo%20del%20Buen%20Amor%2C%20Villanueva%20de%20Ca%C3%B1edo%2C%20Salamanca" target="_blank" rel="noreferrer">
+            <a href="https://www.google.com/maps/search/?api=1&query=Castillo+del+Buen+Amor+Villanueva+de+Canedo+Salamanca" target="_blank" rel="noreferrer">
               {isSpanish ? 'Cómo llegar ↗' : 'How to get there ↗'}
             </a>
             <small>
               {isSpanish ? 'A unos 25 minutos de Salamanca · aparcamiento privado · autobús para invitados' : 'About 25 minutes from Salamanca · private parking · guest shuttle'}
             </small>
+          </aside>
+        )}
+
+        {!isOpen && (
+          <aside className="passport-open-instruction" aria-hidden="true">
+            <span>{isSpanish ? 'Haz clic, desliza o usa la rueda' : 'Click, swipe or scroll'}</span>
+            <small>{isSpanish ? 'para abrir la guía' : 'to open the guide'}</small>
           </aside>
         )}
 
@@ -374,8 +392,13 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
             {isClosingBack && (
               <div className="passport-back-closing-sheet" aria-hidden="true">
-                <span className="passport-back-closing-page-edge" />
-                <span className="passport-back-closing-crest"><img src={boLogo} alt="" /></span>
+                <div className="passport-back-closing-front">
+                  <PassportPageFace page={pages.wedding} isSpanish={isSpanish} compact />
+                </div>
+                <div className="passport-back-closing-reverse">
+                  <span className="passport-back-closing-page-edge" />
+                  <span className="passport-back-closing-crest"><img src={boLogo} alt="" /></span>
+                </div>
               </div>
             )}
 
