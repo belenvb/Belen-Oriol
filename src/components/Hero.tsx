@@ -7,10 +7,9 @@ interface HeroProps {
 
 export function Hero({ lang, onNavigate }: HeroProps) {
   const numericDate = lang === 'es' ? '04.09.2027' : '09.04.2027';
-  const footerDate = lang === 'es' ? '03—04 · 09 · 2027' : '09 · 03—04 · 2027';
 
   return (
-    <section id="hero" className="editorial-hero">
+    <section id="hero" className="editorial-hero parallax-photo-section">
       <div className="hero-fixed-photo" aria-hidden="true">
         <img src="/photos/sunset.webp" alt="" fetchPriority="high" />
         <div className="hero-shade" />
@@ -22,13 +21,10 @@ export function Hero({ lang, onNavigate }: HeroProps) {
         <p>Castillo del Buen Amor</p>
       </div>
 
-      <div className="hero-bottom">
-        <span>{footerDate}</span>
-        <button className="hero-discover-button" onClick={() => onNavigate('story')}>
-          <span className="hero-light-symbol" aria-hidden="true" />
-          {lang === 'es' ? 'Desliza para descubrir' : 'Swipe to discover'}
-        </button>
-      </div>
+      <button className="hero-discover" onClick={() => onNavigate('story')}>
+        <span>{lang === 'es' ? 'Descubrir' : 'Discover'}</span>
+        <i aria-hidden="true" />
+      </button>
     </section>
   );
 }
