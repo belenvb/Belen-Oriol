@@ -58,7 +58,7 @@ export function Header({
           : 'bg-[#0e1e14]/75 backdrop-blur-md py-4 border-b border-[#dfc285]/20 text-[#f8f5ee]'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         {/* Left: Monogram and Names */}
         <a
           href="#hero"
@@ -66,16 +66,16 @@ export function Header({
             e.preventDefault();
             handleNavClick('#hero');
           }}
-          className="flex items-center gap-3 group focus:outline-none"
+          className="flex items-center gap-3 shrink-0 mr-2 xl:mr-6 group focus:outline-none"
         >
           <Monogram
-            size={42}
+            size={40}
             variant={isScrolled ? 'burgundy' : 'gold'}
-            className="transition-transform duration-300 group-hover:scale-105"
+            className="transition-transform duration-300 group-hover:scale-105 shrink-0"
           />
           <div className="flex flex-col justify-center">
             <span
-              className={`text-[10px] sm:text-[11px] tracking-[0.22em] uppercase font-semibold transition-colors font-cinzel ${
+              className={`text-[10px] sm:text-[11px] tracking-[0.18em] xl:tracking-[0.22em] uppercase font-semibold transition-colors font-cinzel whitespace-nowrap ${
                 isScrolled ? 'text-[#5c141e]' : 'text-[#dfc285]'
               }`}
             >
@@ -85,14 +85,14 @@ export function Header({
         </a>
 
         {/* Center: Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
+        <nav className="hidden lg:flex items-center gap-3.5 xl:gap-6 2xl:gap-7 justify-center flex-1">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.substring(1);
             return (
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className={`text-[11px] tracking-[0.2em] uppercase font-medium transition-all duration-200 relative py-1 focus:outline-none cursor-pointer ${
+                className={`text-[10.5px] xl:text-[11px] tracking-[0.13em] xl:tracking-[0.18em] uppercase font-medium transition-all duration-200 relative py-1 focus:outline-none cursor-pointer whitespace-nowrap ${
                   isActive
                     ? isScrolled
                       ? 'text-[#5c141e] font-bold'
@@ -112,7 +112,7 @@ export function Header({
         </nav>
 
         {/* Right: Audio synth and Language Toggle */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-2 xl:ml-4">
           {/* Audio Synthesizer */}
           <button
             onClick={toggleAudio}

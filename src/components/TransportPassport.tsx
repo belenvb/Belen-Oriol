@@ -161,9 +161,9 @@ export function TransportPassport({ lang }: TransportPassportProps) {
         leatherBorder: 'border-[#1a0407]',
         stitchColor: 'border-[#dfc285]/50',
         tabActiveBg: 'bg-[#380b13] text-[#dfc285] border-[#dfc285]',
-        passportCode: 'ESP-BO-040927',
-        countryName: 'REINO DE ESPAÑA',
-        countrySub: 'PASAPORTE NUPCIAL · GUÍA OFICIAL DE VIAJE',
+        passportCode: 'BO-040927',
+        countryName: 'GUÍA DE VIAJE',
+        countrySub: 'BELÉN & ORIOL · SALAMANCA',
         accentColor: 'text-[#5c141e]',
         badgeBg: 'bg-[#5c141e]/10 text-[#5c141e]',
         stampBorder: 'border-[#74182a]/75',
@@ -176,9 +176,9 @@ export function TransportPassport({ lang }: TransportPassportProps) {
         leatherBorder: 'border-[#030912]',
         stitchColor: 'border-[#dfc285]/55',
         tabActiveBg: 'bg-[#0e223d] text-[#dfc285] border-[#dfc285]',
-        passportCode: 'USA-BO-090427',
-        countryName: 'UNITED STATES OF AMERICA',
-        countrySub: 'WEDDING PASSPORT · OFFICIAL TRAVEL GUIDE',
+        passportCode: 'BO-090427',
+        countryName: 'TRAVEL GUIDE',
+        countrySub: 'BELÉN & ORIOL · SALAMANCA',
         accentColor: 'text-[#0e2e5c]',
         badgeBg: 'bg-[#0e2e5c]/10 text-[#0e2e5c]',
         stampBorder: 'border-[#0e2e5c]/75',
@@ -305,14 +305,14 @@ export function TransportPassport({ lang }: TransportPassportProps) {
                   <div
                     className={`hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded border border-dashed text-[10px] font-mono font-bold tracking-wider uppercase ${coverTheme.stampBorder} ${coverTheme.stampText} bg-white/50`}
                   >
-                    <span>✓ {isSpanish ? 'PÁG.' : 'PG.'} {previousPageData.num} {isSpanish ? 'LEVANTADA' : 'LIFTED'}</span>
+                    <span>✓ {isSpanish ? 'PÁG.' : 'PG.'} {previousPageData.num}</span>
                   </div>
                   <button
                     onClick={handlePrevPage}
                     className="text-[11px] font-mono text-[#8c6d4f] hover:text-[#37080e] underline cursor-pointer flex items-center gap-1"
                   >
                     <RotateCw className="w-3 h-3" />
-                    <span className="hidden sm:inline">{isSpanish ? 'Bajar página' : 'Flip down'}</span>
+                    <span className="hidden sm:inline">{isSpanish ? 'Página anterior' : 'Previous page'}</span>
                   </button>
                 </div>
               ) : (
@@ -544,18 +544,18 @@ export function TransportPassport({ lang }: TransportPassportProps) {
                     <span>· {dateFormatted}</span>
                   </div>
 
-                  {/* Turn / Lift Page Button with Physical Page Curl Visual */}
+                  {/* Turn / Next Page Button with Page Lift Visual */}
                   <div className="flex items-center gap-2.5">
                     <button
                       onClick={handleNextPage}
                       className={`group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#dfc285]/35 hover:bg-[#dfc285]/55 border border-[#b89243]/60 text-xs font-sans font-bold cursor-pointer transition-all shadow-2xs hover:shadow-xs active:scale-95 ${coverTheme.accentColor}`}
                       title={
                         isSpanish
-                          ? 'Levantar la página para pasar a la siguiente hoja'
-                          : 'Lift the page to turn to the next sheet'
+                          ? 'Pasar a la siguiente página'
+                          : 'Go to next page'
                       }
                     >
-                      <span>{isSpanish ? 'Levantar página' : 'Lift page'}</span>
+                      <span>{isSpanish ? 'Siguiente página' : 'Next page'}</span>
                       <ArrowUpRight className="w-3.5 h-3.5 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
                     </button>
 
