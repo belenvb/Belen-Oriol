@@ -11,7 +11,6 @@ import { Hero } from './components/Hero';
 import { HorizontalTrencadis } from './components/HorizontalTrencadis';
 import { StorySection } from './components/StorySection';
 import { ScheduleSection } from './components/ScheduleSection';
-import { CastleGallery } from './components/CastleGallery';
 import { JourneyMap } from './components/JourneyMap';
 import { RegistrySection } from './components/RegistrySection';
 import { RsvpSection } from './components/RsvpSection';
@@ -72,9 +71,6 @@ export default function App() {
 
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <ScheduleSection lang={lang} selectedDay={selectedDay} onSelectDay={setSelectedDay} hasPrebodaAccess={true} />
-        </motion.div>
-        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
-          <CastleGallery lang={lang} />
         </motion.div>
 
         <section className="parallax-photo-break photo-temple-break" aria-label={lang === 'es' ? 'Viajes juntos' : 'Travels together'}>
