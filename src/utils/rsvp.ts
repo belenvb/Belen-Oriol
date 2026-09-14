@@ -11,6 +11,13 @@ export type RsvpPerson = {
   allergiesNote: string;
 };
 
+export type RoomAvailability = {
+  id: GuestRsvp['roomBooking'];
+  total: number;
+  reserved: number;
+  remaining: number;
+};
+
 export type RsvpSubmission = GuestRsvp & {
   submissionId: string;
   guests: RsvpPerson[];
@@ -28,6 +35,7 @@ export type InvitationLookup = {
     fullName: string;
     email?: string;
   }[];
+  roomAvailability?: RoomAvailability[];
 };
 
 type RsvpReceipt = {
@@ -41,6 +49,7 @@ type RsvpReceipt = {
     fullName?: string;
     email?: string;
   }[];
+  roomAvailability?: RoomAvailability[];
   error?: string;
 };
 
@@ -91,6 +100,14 @@ export async function lookupInvitation(invitationCode: string): Promise<Invitati
           email: typeof guest.email === 'string' ? guest.email : '',
         }))
       : undefined,
+    roomAvailability: Array.isArray(result.roomAvailability)
+      ? result.roomAvailability.map((room) => ({
+          id: room.id,
+          total: Number(room.total) || 0,
+          reserved: Number(room.reserved) || 0,
+          remaining: Math.max(0, Number(room.remaining) || 0),
+        }))
+      : undefined,
   };
 }
 
@@ -99,7 +116,7 @@ export async function sendRsvp(record: RsvpSubmission, invitationCode: string): 
     ...record,
     invitationCode: invitationCode.trim(),
     clientSubmittedAt: record.clientSubmittedAt || record.submittedAt || new Date().toISOString(),
-    formVersion: record.formVersion || 'rsvp-per-guest-v2',
+    formVersion: record.formVersion || 'rsvp-per-guest-v3-rooms',
   };
 
   try {
