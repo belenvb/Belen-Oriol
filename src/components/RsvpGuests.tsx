@@ -114,6 +114,26 @@ export function RsvpGuests({
     { id: 'other', labelEs: 'Otro menú especial', labelEn: 'Other Special', icon: '✨' },
   ];
 
+  const prefilledNames = guests
+    .map((guest) => guest.fullName.trim())
+    .filter(Boolean);
+
+  const formatNameList = (names: string[]) => {
+    if (names.length === 0) return '';
+    if (names.length === 1) return names[0];
+    if (names.length === 2) return `${names[0]} ${es ? 'y' : 'and'} ${names[1]}`;
+
+    return `${names.slice(0, -1).join(', ')} ${es ? 'y' : 'and'} ${names[names.length - 1]}`;
+  };
+
+  const invitationSummary = prefilledNames.length > 0
+    ? es
+      ? `Tu invitación incluye a ${formatNameList(prefilledNames)}.`
+      : `Your invitation includes ${formatNameList(prefilledNames)}.`
+    : es
+    ? `Tu invitación incluye hasta ${maxGuests} ${maxGuests === 1 ? 'persona' : 'personas'}, incluyendo titular.`
+    : `Your invitation includes up to ${maxGuests} ${maxGuests === 1 ? 'guest' : 'guests'}, including the invitation holder.`;
+
   return (
     <div className="space-y-7">
       {/* Maximum guests banner */}
@@ -121,9 +141,7 @@ export function RsvpGuests({
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-[#b89243] shrink-0" />
           <span className="text-xs sm:text-sm font-semibold text-[#371017]">
-            {es
-              ? `Tu invitación autoriza hasta ${maxGuests} ${maxGuests === 1 ? 'persona' : 'personas'} (incluyendo titular)`
-              : `Your invitation permits up to ${maxGuests} ${maxGuests === 1 ? 'guest' : 'guests'} (including holder)`}
+            {invitationSummary}
           </span>
         </div>
         <span className="text-xs font-mono text-[#5c141e] font-bold shrink-0 ml-2">

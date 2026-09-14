@@ -421,9 +421,9 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
               <button
                 onClick={handleEdit}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-semibold tracking-wider uppercase border border-[#5c141e] text-[#5c141e] hover:bg-[#5c141e]/10 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-semibold tracking-wider uppercase border border-[#dfc285] bg-[#5c141e] text-white hover:bg-[#7a1d2b] hover:border-[#f2d99a] transition-colors cursor-pointer shadow-md"
               >
-                <Edit3 className="w-3.5 h-3.5" />
+                <Edit3 className="w-3.5 h-3.5 text-[#dfc285]" />
                 <span>{es ? 'Modificar respuesta' : 'Edit RSVP'}</span>
               </button>
             </motion.div>
