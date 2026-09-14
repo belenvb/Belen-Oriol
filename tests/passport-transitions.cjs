@@ -23,10 +23,12 @@ function render(lang='es') { cursor=0; return moduleShim.exports.TransportPasspo
 function nodes(tree, predicate) { if(!tree)return [];if(Array.isArray(tree))return tree.flatMap(t=>nodes(t,predicate));if(typeof tree!=='object')return [];return [...(predicate(tree)?[tree]:[]),...nodes(tree.props.children,predicate)]; }
 function cls(tree, text) { return nodes(tree,n=>n.props.className?.split(' ').includes(text))[0]; }
 function click(tree,label) { const button=nodes(tree,n=>n.props['aria-label']===label)[0]; assert(button, label); assert(!button.props.disabled,label+' enabled');button.props.onClick(); }
+function endOpening(tree) { if (!cls(tree,'is-opening')) return; const target={}; cls(tree,'passport-front-cover').props.onAnimationEnd({target,currentTarget:target}); }
 function endTurn(tree) { const leaf=cls(tree,'passport-turning-sheet');assert(leaf,'real turning leaf mounted');const target={};leaf.props.onAnimationEnd({target,currentTarget:target}); }
 for(const lang of ['es','en']) {
  states=[];let tree=render(lang);
  click(tree,lang==='es'?'Abrir pasaporte':'Open passport');tree=render(lang);
+ endOpening(tree);tree=render(lang);
  assert(cls(tree,'is-open'));
  const spread = cls(tree, 'passport-spread');
  spread.props.onPointerDown({target:new ElementShim(),clientX:100,clientY:100});
@@ -37,17 +39,22 @@ for(const lang of ['es','en']) {
  assert(cls(tree,'is-flipping'));endTurn(tree);tree=render(lang);
  assert(!cls(tree,'is-flipping'));
  click(tree,lang==='es'?'Página siguiente':'Next page');tree=render(lang);
+ assert(cls(tree,'is-closing-back'),'closing stays active for the leaf animation');
+ endTurn(tree);tree=render(lang);
  assert(cls(tree,'is-closed'));assert(cls(tree,'is-back-cover'));
  click(tree,lang==='es'?'Volver a la portada':'Back to cover');tree=render(lang);
  assert(cls(tree,'is-closed'));assert(!cls(tree,'is-back-cover'),'cover control works from the end');
  click(tree,lang==='es'?'Abrir pasaporte':'Open passport');tree=render(lang);
+ endOpening(tree);tree=render(lang);
  click(tree,lang==='es'?'Página siguiente':'Next page');tree=render(lang);endTurn(tree);tree=render(lang);
  click(tree,lang==='es'?'Página siguiente':'Next page');tree=render(lang);
+ endTurn(tree);tree=render(lang);
  click(tree,lang==='es'?'Abrir pasaporte':'Open passport');tree=render(lang);
+ endOpening(tree);tree=render(lang);
  click(tree,lang==='es'?'Página anterior':'Previous page');tree=render(lang);
  assert(cls(tree,'passport-turning-front').props.children.props.page.id === 'trains', 'reverse turn reveals the train page on its original face');
  endTurn(tree);tree=render(lang);
  assert(cls(tree,'is-open'));assert(!cls(tree,'is-flipping'));
 }
 assert(!source.includes('preventDefault'), 'passport must never cancel document scrolling');
-console.log('PASS: ES/EN open, turn, direct closing, reopen, reverse, cover return and vertical gestures.');
+console.log('PASS: ES/EN open, turn, animated opening and closing, reopen, reverse, cover return and vertical gestures.');

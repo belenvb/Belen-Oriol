@@ -271,3 +271,35 @@
 #story .story-atlantic { transform:none; }
 #story .story-film.is-still .story-landmarks { opacity:0; }
 #story .story-film.is-still .story-atlantic { opacity:1; animation:none; }
+#rsvp .rsvp-readable-card h3.room-count-heading { font-family:'Plus Jakarta Sans',sans-serif!important; font-size:clamp(15px,1.5vw,18px)!important; font-weight:600!important; letter-spacing:0!important; text-transform:none!important; line-height:1.5!important; }
+/* Deeper torn edge, without clipping text or controls. */
+#faq::before,#faq::after { height:48px; }
+#faq::before { top:-47px; }
+#faq::after { bottom:-47px; }
+/* Overlap the artwork beneath the navigation rather than exposing a strip. */
+#schedule .schedule-art img { top:32px; height:calc(100svh - 32px); }
+/* Copy and film share the first row and the same continuous paper background. */
+#story.story-section { max-width:none; background:#f2eadb; grid-template-areas:'copy journey' 'photo journey'; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:28px 6%; padding:64px max(6%,calc((100% - 1100px)/2)); align-items:start; }
+#story .story-copy h2 { font-size:clamp(36px,4vw,60px)!important; }
+#story .story-copy>p:not(.eyebrow) { font-size:13px; line-height:1.8; }
+#story .story-journey { width:100%; max-width:460px; margin:0 auto; align-self:start; }
+#story .story-film { background:#f2eadb; border:0; box-shadow:none; border-radius:0; }
+#story .story-night { width:min(100%,240px); height:290px; justify-self:start; }
+#story .story-night img { object-position:center 35%; }
+/* A slower cover opening with the paper already underneath it. */
+#journey .passport-stage.is-opening .passport-front-cover { visibility:visible!important; opacity:1!important; transition:none!important; animation:passportOpenCover 1150ms cubic-bezier(.42,0,.25,1) both!important; right:16px!important; left:auto!important; transform-origin:left center!important; }
+@keyframes passportOpenCover { 0% { transform:rotateY(0deg); opacity:1; } 75% { opacity:1; } 100% { transform:rotateY(-170deg); opacity:0; } }
+#journey .passport-stage.is-closing-back .passport-final-leaf { animation-duration:1150ms!important; }
+#journey .passport-stage.is-closing-back .passport-page { visibility:visible!important; }
+#journey .passport-stage.is-closing-back .passport-page-right { animation:passportClosingPaper 1150ms linear both!important; }
+@keyframes passportClosingPaper { 0%,49% { visibility:visible; opacity:1; } 50%,100% { visibility:hidden; opacity:0; } }
+@media(max-width:900px) {
+ #story.story-section { grid-template-columns:1fr; grid-template-areas:'copy' 'journey' 'photo'; padding:48px 7%; }
+ #story .story-night { justify-self:center; width:min(100%,300px); height:380px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ #journey .passport-stage.is-opening .passport-front-cover,
+ #journey .passport-stage.is-closing-back .passport-final-leaf,
+ #journey .passport-stage.is-closing-back .passport-page-right { animation-duration:1ms!important; }
+ #schedule .schedule-art img { top:0; height:100%; }
+}

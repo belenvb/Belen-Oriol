@@ -57,7 +57,7 @@ export function StoryJourney({ lang }: { lang: Language }) {
 
             <path
               className="ocean-route"
-              d="M386 318 C344 106 146 106 113 294"
+              d="M386 318 C388 176 309 168 318 282"
               fill="none"
               stroke="#752a34"
               strokeWidth="1.5"
@@ -80,7 +80,7 @@ export function StoryJourney({ lang }: { lang: Language }) {
                   begin="9s"
                   fill="freeze"
                   rotate="auto"
-                  path="M386 318 C344 106 146 106 113 294"
+                  path="M386 318 C388 176 309 168 318 282"
                 />
                 <path
                   d="M12 0 -10 -8 -6 -1 -12 3 -9 5 -3 3 -5 10Z"

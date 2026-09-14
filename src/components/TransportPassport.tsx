@@ -113,6 +113,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const isSpanish = lang === 'es';
   const numericDate = isSpanish ? '04.09.2027' : '09.04.2027';
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
   const [coverFace, setCoverFace] = useState<'front' | 'back'>('front');
   const [isClosingBack, setIsClosingBack] = useState(false);
   const [spreadIndex, setSpreadIndex] = useState(0);
@@ -186,23 +187,23 @@ export function TransportPassport({ lang }: { lang: Language }) {
   ], [pages]);
 
   const openPassport = () => {
-    if (flipDirection || isClosingBack) return;
+    if (flipDirection || isClosingBack || isOpening) return;
 
     setPendingSpread(null);
     setFlipDirection(null);
     setSpreadIndex(coverFace === 'back' ? spreads.length - 1 : 0);
+    setIsOpening(coverFace === 'front');
     setIsOpen(true);
   };
 
   const closePassport = (side: 'front' | 'back' = 'front') => {
-    if (flipDirection || isClosingBack) return;
+    if (flipDirection || isClosingBack || isOpening) return;
 
     setPendingSpread(null);
     setFlipDirection(null);
 
     if (side === 'back' && isOpen) {
-      setCoverFace('back');
-      setIsOpen(false);
+      setIsClosingBack(true);
       return;
     }
 
@@ -213,7 +214,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   const requestSpreadChange = (nextSpread: number) => {
     const safe = Math.max(0, Math.min(spreads.length - 1, nextSpread));
-    if (flipDirection || isClosingBack) return;
+    if (flipDirection || isClosingBack || isOpening) return;
     if (!isOpen) {
       setSpreadIndex(safe);
       setIsOpen(true);
@@ -226,7 +227,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   };
 
   const handleDragStart = (event: PointerEvent<HTMLDivElement>) => {
-    if (!isOpen || flipDirection || isClosingBack) return;
+    if (!isOpen || flipDirection || isClosingBack || isOpening) return;
     if (event.target instanceof Element && event.target.closest('a, button')) return;
     dragTriggeredRef.current = false;
     dragStartRef.current = { x: event.clientX, y: event.clientY };
@@ -255,7 +256,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   };
 
   const handleSpreadClick = (event: MouseEvent<HTMLDivElement>) => {
-    if (!isOpen || flipDirection || isClosingBack) return;
+    if (!isOpen || flipDirection || isClosingBack || isOpening) return;
     if (dragTriggeredRef.current) {
       dragTriggeredRef.current = false;
       return;
@@ -274,7 +275,9 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
 
   const finishTurn = () => {
-    if (isClosingBack) {
+    if (isOpening) {
+      setIsOpening(false);
+    } else if (isClosingBack) {
       setCoverFace('back');
       setIsOpen(false);
       setIsClosingBack(false);
@@ -287,10 +290,10 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   // Fallback for interrupted animation events (resize or motion preferences).
   useEffect(() => {
-    if (!flipDirection && !isClosingBack) return;
-    const timer = window.setTimeout(finishTurn, 780);
+    if (!flipDirection && !isClosingBack && !isOpening) return;
+    const timer = window.setTimeout(finishTurn, isOpening || isClosingBack ? 1300 : 780);
     return () => window.clearTimeout(timer);
-  }, [flipDirection, isClosingBack, pendingSpread]);
+  }, [flipDirection, isClosingBack, isOpening, pendingSpread]);
 
   const currentSpread = spreads[spreadIndex];
   const targetSpread = pendingSpread !== null ? spreads[pendingSpread] : currentSpread;
@@ -306,7 +309,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   return (
     <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
-      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''} ${!isOpen && coverFace === 'front' ? 'has-cover-intro' : ''} ${!isOpen && coverFace === 'back' ? 'has-back-cover' : ''}`}>
+      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''} ${isOpening ? 'is-opening' : ''} ${!isOpen && coverFace === 'front' ? 'has-cover-intro' : ''} ${!isOpen && coverFace === 'back' ? 'has-back-cover' : ''}`}>
         <div className="passport-table-shadow" aria-hidden="true" />
         <aside
           className={`passport-rotated-instruction ${
@@ -350,7 +353,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <div className="passport-page-stack passport-page-stack-right" aria-hidden="true" />
           <div className="passport-gutter" aria-hidden="true" />
 
-          <button type="button" className={`passport-front-cover ${coverFace === 'back' ? 'is-back-cover' : ''}`} aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={openPassport}>
+          <button type="button" className={`passport-front-cover ${coverFace === 'back' ? 'is-back-cover' : ''}`} aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={openPassport} onAnimationEnd={(event) => { if (event.target === event.currentTarget && isOpening) setIsOpening(false); }}>
             <span className="passport-cover-page-edge" aria-hidden="true" />
             {coverFace === 'front' ? (
               <>
@@ -388,15 +391,15 @@ export function TransportPassport({ lang }: { lang: Language }) {
       </div>
 
       <div className="passport-controls">
-        <button onClick={() => closePassport('front')} disabled={(!isOpen && coverFace === 'front') || Boolean(flipDirection) || isClosingBack} aria-label={isSpanish ? 'Volver a la portada' : 'Back to cover'}><BookOpen size={16} />{isSpanish ? 'Portada' : 'Cover'}</button>
+        <button onClick={() => closePassport('front')} disabled={(!isOpen && coverFace === 'front') || Boolean(flipDirection) || isClosingBack || isOpening} aria-label={isSpanish ? 'Volver a la portada' : 'Back to cover'}><BookOpen size={16} />{isSpanish ? 'Portada' : 'Cover'}</button>
         <div className="passport-pagination">
           {spreads.map((spread, index) => (
             <button key={spread.right.id} className={index === spreadIndex && isOpen ? 'active' : ''} onClick={() => requestSpreadChange(index)} aria-label={`${isSpanish ? 'Página' : 'Page'} ${index + 1}`} />
           ))}
         </div>
         <div className="passport-controls-right">
-          <button onClick={() => requestSpreadChange(spreadIndex - 1)} disabled={!isOpen || spreadIndex === 0 || Boolean(flipDirection) || isClosingBack} aria-label={isSpanish ? 'Página anterior' : 'Previous page'}><ChevronLeft size={17} />{isSpanish ? 'Anterior' : 'Previous'}</button>
-          <button onClick={() => (spreadIndex === spreads.length - 1 ? closePassport('back') : requestSpreadChange(spreadIndex + 1))} disabled={!isOpen || Boolean(flipDirection) || isClosingBack} aria-label={isSpanish ? 'Página siguiente' : 'Next page'}>{isSpanish ? 'Siguiente' : 'Next'}<ChevronRight size={17} /></button>
+          <button onClick={() => requestSpreadChange(spreadIndex - 1)} disabled={!isOpen || spreadIndex === 0 || Boolean(flipDirection) || isClosingBack || isOpening} aria-label={isSpanish ? 'Página anterior' : 'Previous page'}><ChevronLeft size={17} />{isSpanish ? 'Anterior' : 'Previous'}</button>
+          <button onClick={() => (spreadIndex === spreads.length - 1 ? closePassport('back') : requestSpreadChange(spreadIndex + 1))} disabled={!isOpen || Boolean(flipDirection) || isClosingBack || isOpening} aria-label={isSpanish ? 'Página siguiente' : 'Next page'}>{isSpanish ? 'Siguiente' : 'Next'}<ChevronRight size={17} /></button>
         </div>
       </div>
     </div>

@@ -354,7 +354,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                   {es ? 'AVISO IMPORTANTE · ANTES DEL 31 DE DICIEMBRE' : 'IMPORTANT NOTICE · BEFORE DECEMBER 31'}
                 </span>
               </div>
-              <h3 className="font-playfair text-base sm:text-lg font-bold text-[#37080e]">
+              <h3 className="room-count-heading font-sans text-base sm:text-lg font-semibold text-[#37080e]">
                 {es ? 'Conteo inicial para el bloqueo de habitaciones del castillo' : 'Initial headcount for the castle room block'}
               </h3>
               <p className="font-sans text-xs sm:text-sm text-[#554f47] leading-relaxed mt-1">
