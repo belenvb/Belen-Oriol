@@ -1043,45 +1043,6 @@ body::before {
 /* === Editorial schedule/footer/passport/story polish 2026-09-14 === */
 
 /* PROGRAM / SCHEDULE: full-height fixed left image, text scrolls on the right */
-#schedule.weekend-cinematic {
-  width: 100%;
-  max-width: none;
-  min-height: 100vh;
-  padding: 0 !important;
-  display: grid;
-  grid-template-columns: minmax(360px, 44vw) minmax(0, 1fr);
-  gap: 0 !important;
-  align-items: stretch;
-  background:
-    linear-gradient(115deg, rgba(14, 34, 27, .97), rgba(38, 52, 40, .96) 52%, rgba(19, 31, 26, .98));
-  color: #f6f1e6;
-  overflow: clip;
-}
-
-#schedule .schedule-art {
-  position: relative;
-  min-height: 100vh;
-  margin: 0 !important;
-  overflow: hidden;
-  clip-path: inset(0);
-  background-image:
-    linear-gradient(90deg, rgba(15, 28, 23, .08), rgba(15, 28, 23, .46)),
-    url('/photos/wedding-illustration.webp');
-  background-size: cover;
-  background-position: left center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
-
-#schedule .schedule-art img {
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  object-fit: cover;
-  object-position: left center;
-  opacity: 0;
-  pointer-events: none;
-}
 
 #schedule .schedule-content {
   position: relative;
@@ -1134,13 +1095,6 @@ body::before {
 }
 
 /* PASSPORT: breathing room to the right + sharper burgundy leather texture */
-#journey .passport-wrap {
-  transform: translateX(clamp(22px, 4vw, 68px));
-}
-
-#journey .passport-stage {
-  padding-left: clamp(28px, 5vw, 82px);
-}
 
 .passport-front-cover,
 .passport-cover-base {
@@ -1359,20 +1313,6 @@ body::before {
 }
 
 @media (max-width: 900px) {
-  #schedule.weekend-cinematic {
-    grid-template-columns: 1fr;
-  }
-
-  #schedule .schedule-art {
-    min-height: 58vh;
-    background-size: cover;
-    background-position: center;
-    background-attachment: scroll;
-  }
-
-  #schedule .schedule-art img {
-    min-height: 58vh;
-  }
 
   #schedule .schedule-content {
     min-height: auto;
@@ -1382,14 +1322,6 @@ body::before {
   .wedding-footer .closing-photo-fullbleed {
     background-attachment: scroll;
     min-height: 460px;
-  }
-
-  #journey .passport-wrap {
-    transform: none;
-  }
-
-  #journey .passport-stage {
-    padding-left: 16px;
   }
 
   .story-section {
@@ -1424,168 +1356,16 @@ body::before {
 
 /* The previous fixed background could disappear depending on browser/viewport.
    This keeps the real image visible and makes it behave like a pinned hero panel. */
-#schedule.weekend-cinematic {
-  grid-template-columns: minmax(420px, 50vw) minmax(0, 1fr) !important;
-}
-
-#schedule .schedule-art {
-  display: block !important;
-  position: relative !important;
-  min-height: 100vh !important;
-  height: auto !important;
-  margin: 0 !important;
-  overflow: visible !important;
-  clip-path: none !important;
-  background:
-    linear-gradient(90deg, rgba(15, 28, 23, .05), rgba(15, 28, 23, .32)) !important;
-}
-
-#schedule .schedule-art img {
-  display: block !important;
-  position: sticky !important;
-  top: 0 !important;
-  width: 100% !important;
-  height: 100vh !important;
-  min-height: 100vh !important;
-  object-fit: cover !important;
-  object-position: left center !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: none !important;
-  filter: saturate(.94) contrast(1.02);
-}
-
-#schedule .schedule-art::after {
-  content: '' !important;
-  position: sticky !important;
-  display: block !important;
-  top: 0 !important;
-  height: 100vh !important;
-  margin-top: -100vh !important;
-  pointer-events: none !important;
-  background:
-    linear-gradient(90deg, rgba(18, 31, 25, .03), rgba(18, 31, 25, .36)),
-    radial-gradient(circle at 20% 15%, rgba(255,255,255,.10), transparent 34%);
-}
 
 /* Push the passport clearly away from the left copy on desktop. */
-#journey .passport-wrap {
-  width: min(760px, 45vw) !important;
-  max-width: 760px !important;
-  margin-left: auto !important;
-  margin-right: clamp(-110px, -6vw, -44px) !important;
-  transform: translateX(clamp(64px, 7vw, 124px)) !important;
-}
-
-#journey .passport-stage {
-  padding-left: clamp(76px, 8vw, 136px) !important;
-  padding-right: 0 !important;
-}
-
-#journey .passport-front-cover {
-  right: clamp(0px, 1.5vw, 28px) !important;
-}
-
-#journey .passport-table-shadow {
-  left: 34% !important;
-  right: -8% !important;
-}
 
 /* Keep the passport readable if the viewport is narrower. */
-@media (max-width: 1120px) {
-  #journey .passport-wrap {
-    width: min(720px, 50vw) !important;
-    margin-right: -40px !important;
-    transform: translateX(44px) !important;
-  }
-
-  #journey .passport-stage {
-    padding-left: 56px !important;
-  }
-}
-
-@media (max-width: 900px) {
-  #schedule.weekend-cinematic {
-    grid-template-columns: 1fr !important;
-  }
-
-  #schedule .schedule-art {
-    min-height: 58vh !important;
-    overflow: hidden !important;
-  }
-
-  #schedule .schedule-art img {
-    position: relative !important;
-    height: 58vh !important;
-    min-height: 58vh !important;
-    object-position: center !important;
-  }
-
-  #schedule .schedule-art::after {
-    position: absolute !important;
-    inset: 0 !important;
-    height: auto !important;
-    margin-top: 0 !important;
-  }
-
-  #journey .passport-wrap {
-    width: 100% !important;
-    max-width: none !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    transform: none !important;
-  }
-
-  #journey .passport-stage {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-  }
-}
 
 
 /* === Schedule full-left image, no overlap passport, Boston/Lancaster fix 2026-09-14 === */
 
 /* Schedule: image fills the whole left column from top to bottom.
    The real image is sticky, so it behaves like the hero while right-side text scrolls. */
-#schedule.weekend-cinematic {
-  grid-template-columns: minmax(480px, 50vw) minmax(0, 1fr) !important;
-  align-items: stretch !important;
-  overflow: visible !important;
-}
-
-#schedule .schedule-art {
-  align-self: stretch !important;
-  height: auto !important;
-  min-height: 100% !important;
-  background: #e9deca !important;
-  overflow: visible !important;
-}
-
-#schedule .schedule-art img {
-  position: sticky !important;
-  top: 0 !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100vh !important;
-  min-height: 100vh !important;
-  object-fit: cover !important;
-  object-position: center center !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-#schedule .schedule-art::after {
-  content: "" !important;
-  position: sticky !important;
-  top: 0 !important;
-  display: block !important;
-  height: 100vh !important;
-  margin-top: -100vh !important;
-  pointer-events: none !important;
-  background:
-    linear-gradient(90deg, rgba(29, 42, 34, .02), rgba(29, 42, 34, .34)),
-    linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.14));
-}
 
 /* Journey section: preserve a real two-column layout so the castle copy never slides under the passport. */
 #journey > .max-w-5xl,
@@ -1603,31 +1383,8 @@ body::before {
 }
 
 /* In case the current section is using a generic first grid around the passport. */
-#journey .passport-wrap {
-  width: min(720px, 100%) !important;
-  max-width: 720px !important;
-  margin-left: auto !important;
-  margin-right: 0 !important;
-  transform: none !important;
-  justify-self: end !important;
-}
-
-#journey .passport-stage {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-}
-
-#journey .passport-front-cover {
-  right: 0 !important;
-}
 
 /* Safety net: the venue text remains above the background but below no passport overlays. */
-#journey .passport-wrap,
-#journey .passport-stage,
-#journey .passport-book {
-  position: relative !important;
-  z-index: 1 !important;
-}
 
 #journey .castle-editorial-copy,
 #journey .venue-copy,
@@ -1654,41 +1411,10 @@ body::before {
     gap: 44px !important;
   }
 
-  #journey .passport-wrap {
-    justify-self: center !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    width: min(720px, 100%) !important;
-  }
-
   #journey .castle-editorial-copy,
   #journey .venue-copy,
   #journey .journey-copy {
     max-width: 680px !important;
-  }
-}
-
-@media (max-width: 900px) {
-  #schedule.weekend-cinematic {
-    grid-template-columns: 1fr !important;
-    overflow: hidden !important;
-  }
-
-  #schedule .schedule-art {
-    min-height: 62vh !important;
-  }
-
-  #schedule .schedule-art img {
-    position: relative !important;
-    height: 62vh !important;
-    min-height: 62vh !important;
-  }
-
-  #schedule .schedule-art::after {
-    position: absolute !important;
-    inset: 0 !important;
-    height: auto !important;
-    margin-top: 0 !important;
   }
 }
 
