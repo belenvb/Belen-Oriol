@@ -6,13 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
 __MACOSX/
 ._*
-
-# Windows
+.AppleDouble
+.LSOverride
 Thumbs.db
 Desktop.ini
