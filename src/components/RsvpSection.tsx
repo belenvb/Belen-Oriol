@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { CheckCircle2, Heart, Send, Sparkles, User, Mail, Utensils, Bus, Music, Edit3, BedDouble, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
-import { sendRsvp, RsvpSubmission } from '../utils/rsvp';
+import { sendRsvp, lookupInvitation, RsvpSubmission, RsvpPerson } from '../utils/rsvp';
 import { GuestRsvp, Language } from '../types';
+import { RsvpGuests, emptyPerson } from './RsvpGuests';
 import { CASTLE_ROOMS } from '../data/rooms';
 
 
@@ -11,6 +12,23 @@ interface RsvpSectionProps {
 }
 
 export function RsvpSection({ lang }: RsvpSectionProps) {
+  const [invitationCode, setInvitationCode] = useState('');
+  const [invitation, setInvitation] = useState<{ maxGuests: number } | null>(null);
+  const [checkingCode, setCheckingCode] = useState(false);
+  const [codeError, setCodeError] = useState('');
+  const [guests, setGuests] = useState<RsvpPerson[]>([emptyPerson()]);
+  const updateGuests = (people: RsvpPerson[]) => {
+    setGuests(people);
+    setFormData(prev => ({ ...prev, fullName: people[0].fullName, email: people[0].email, attendance: people.some(p => p.attendance === 'yes') ? 'yes' : 'no' }));
+  };
+  const checkCode = async (e: FormEvent) => {
+    e.preventDefault();
+    if (checkingCode) return;
+    setCheckingCode(true); setCodeError('');
+    try { setInvitation(await lookupInvitation(invitationCode)); }
+    catch { setCodeError(lang === 'es' ? 'No se ha podido validar el código. Compruébalo o contacta con Belén y Oriol.' : 'We could not validate this code. Check it or contact Belén and Oriol.'); }
+    finally { setCheckingCode(false); }
+  };
   const [isSending, setIsSending] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const sending = useRef(false);
@@ -54,21 +72,6 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     };
     window.addEventListener('select_room_in_rsvp', handleRoomSelect);
 
-    let saved: string | null = null;
-    try { saved = localStorage.getItem('belen_oriol_rsvp_receipt_v1'); } catch { /* Storage may be unavailable. */ }
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.confirmed === true && parsed.record?.fullName && parsed.record?.submissionId) {
-          setSubmittedRsvp(parsed.record);
-          setIsSubmitted(true);
-          setFormData(parsed.record);
-        }
-      } catch {
-        // Safe fallback
-      }
-    }
-
     return () => {
       window.removeEventListener('select_room_in_rsvp', handleRoomSelect);
     };
@@ -80,7 +83,8 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (sending.current || !formData.fullName?.trim() || !formData.email?.trim()) return;
+    if (sending.current || !invitation || !formData.fullName?.trim() || !formData.email?.trim()) return;
+    if (guests.length > invitation.maxGuests) return;
     setSubmitError('');
 
     const rsvpRecord: GuestRsvp = {
@@ -89,10 +93,10 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
       email: formData.email.trim(),
       attendance: formData.attendance || 'yes',
       attendingDays: formData.attendingDays || 'both',
-      plusOneCount: Number(formData.plusOneCount) || 1,
-      plusOneNames: formData.plusOneNames || '',
-      dietaryPreference: formData.dietaryPreference || 'none',
-      allergiesNote: formData.allergiesNote || '',
+      plusOneCount: guests.filter(p => p.attendance === 'yes').length,
+      plusOneNames: guests.slice(1).map(p => p.fullName.trim()).join(', '),
+      dietaryPreference: guests[0].dietaryPreference,
+      allergiesNote: guests[0].allergiesNote,
       shuttleBooking: Boolean(formData.shuttleBooking),
       shuttlePickupLocation: formData.shuttlePickupLocation,
       roomBooking: formData.roomBooking || 'none',
@@ -112,26 +116,24 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
       rsvpRecord.roomBooking = 'none';
       rsvpRecord.songRequest = '';
     }
-    const fingerprint = JSON.stringify({ ...rsvpRecord, submittedAt: undefined });
+    const people = guests.map(p => ({ ...p, fullName: p.fullName.trim(), email: p.email.trim() }));
+    const fingerprint = JSON.stringify({ ...rsvpRecord, guests: people, submittedAt: undefined });
     if (!pending.current || pending.current.fingerprint !== fingerprint) {
-      pending.current = { fingerprint, record: { ...rsvpRecord, submissionId: crypto.randomUUID() } };
+      pending.current = { fingerprint, record: { ...rsvpRecord, guests: people, submissionId: crypto.randomUUID() } };
     }
     sending.current = true;
     setIsSending(true);
     try {
       const record = pending.current.record;
-      await sendRsvp(record);
-      try {
-        localStorage.setItem('belen_oriol_rsvp_receipt_v1', JSON.stringify({ confirmed: true, record }));
-      } catch { /* A confirmed server receipt remains valid without local storage. */ }
+      await sendRsvp(record, invitationCode);
       setSubmittedRsvp(record);
       setIsSubmitted(true);
       setIsFormOpen(false);
       pending.current = null;
     } catch {
       setSubmitError(lang === 'es'
-        ? 'No hemos podido confirmar el registro. Tu respuesta sigue en el formulario. Comprueba la conexión y vuelve a intentarlo.'
-        : 'We could not confirm your submission. Your answers are still in the form. Check your connection and try again.');
+        ? 'No hemos podido confirmar el registro. Tu respuesta sigue en el formulario. Comprueba el email del titular, el código y el máximo autorizado antes de intentarlo de nuevo.'
+        : 'We could not confirm your submission. Your answers are still in the form. Check the invitation holder email, code and allowed guest count before trying again.');
     } finally {
       sending.current = false;
       setIsSending(false);
@@ -374,87 +376,16 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
               </button>
             </div>
 
+            {!invitation ? <form onSubmit={checkCode} className="space-y-4" aria-busy={checkingCode}>
+              <label className="block text-sm text-[#5c141e]">{lang === 'es' ? 'Código privado de tu invitación' : 'Your private invitation code'}
+                <input required autoComplete="off" maxLength={80} value={invitationCode} onChange={e => setInvitationCode(e.target.value)} className="block w-full mt-2 px-4 py-3 border border-[#5c141e]/25 rounded bg-white" />
+              </label>
+              {codeError && <p role="alert" className="text-sm text-red-800">{codeError}</p>}
+              <button disabled={checkingCode} className="px-5 py-3 bg-[#5c141e] text-white rounded disabled:opacity-50">{checkingCode ? (lang === 'es' ? 'Comprobando…' : 'Checking…') : (lang === 'es' ? 'Abrir mi invitación' : 'Open my invitation')}</button>
+            </form> : <>
+            <button type="button" disabled={isSending} className="text-sm underline text-[#5c141e] mb-5" onClick={() => { setInvitation(null); setInvitationCode(''); updateGuests([emptyPerson()]); pending.current = null; }}>{lang === 'es' ? 'Usar otro código / actualizar invitación' : 'Use another code / refresh invitation'}</button>
             <form ref={formRef} id="rsvp-questionnaire" onSubmit={handleSubmit} className="space-y-6" aria-busy={isSending}><fieldset disabled={isSending} className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5 flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-[#b89243]" />
-                      <span>{lang === 'es' ? 'Nombre y Apellidos *' : 'Full Name *'}</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.fullName || ''}
-                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      placeholder="ej. Laura Sánchez Blázquez"
-                      className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5 flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-[#b89243]" />
-                      <span>{lang === 'es' ? 'Correo Electrónico *' : 'Email Address *'}</span>
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={formData.email || ''}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="laura@ejemplo.com"
-                      className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                    />
-                  </div>
-                </div>
-
-                {/* Attendance Radio */}
-                <div>
-                  <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-2.5">
-                    {lang === 'es' ? '¿Nos acompañarás en la boda? *' : 'Will you attend? *'}
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label
-                      className={`p-3.5 rounded-lg border flex items-center gap-3 cursor-pointer transition-colors ${
-                        formData.attendance === 'yes'
-                          ? 'border-[#5c141e] bg-[#5c141e]/5 text-[#5c141e] font-semibold'
-                          : 'border-[rgba(92,20,30,0.15)] bg-white text-[#44403c]'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="attendance"
-                        value="yes"
-                        checked={formData.attendance === 'yes'}
-                        onChange={() => setFormData({ ...formData, attendance: 'yes' })}
-                        className="text-[#5c141e] focus:ring-[#5c141e]"
-                      />
-                      <span className="text-sm">
-                        {lang === 'es' ? '¡Sí, asistiré con mucha ilusión!' : 'Yes, joyfully accepting!'}
-                      </span>
-                    </label>
-
-                    <label
-                      className={`p-3.5 rounded-lg border flex items-center gap-3 cursor-pointer transition-colors ${
-                        formData.attendance === 'no'
-                          ? 'border-[#5c141e] bg-[#5c141e]/5 text-[#5c141e] font-semibold'
-                          : 'border-[rgba(92,20,30,0.15)] bg-white text-[#44403c]'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="attendance"
-                        value="no"
-                        checked={formData.attendance === 'no'}
-                        onChange={() => setFormData({ ...formData, attendance: 'no' })}
-                        className="text-[#5c141e] focus:ring-[#5c141e]"
-                      />
-                      <span className="text-sm">
-                        {lang === 'es' ? 'Lamentablemente no podré' : 'Regretfully declining'}
-                      </span>
-                    </label>
-                  </div>
-                </div>
-
+              <RsvpGuests lang={lang} guests={guests} maxGuests={invitation.maxGuests} onChange={updateGuests} />
                 {formData.attendance === 'yes' && (
                   <div className="space-y-6 pt-2 border-t border-[rgba(92,20,30,0.1)]">
                     {/* Days attending */}
@@ -495,77 +426,6 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                             : '✦ Note: Due to venue capacity, the Friday evening is an intimate gathering strictly for guests who received an invitation.'}
                         </p>
                       )}
-                    </div>
-
-                    {/* Number of Guests */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div>
-                        <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5">
-                          {lang === 'es' ? 'Número Total de Invitados' : 'Total Guests Count'}
-                        </label>
-                        <input
-                          type="number"
-                          min="1"
-                          max="6"
-                          value={formData.plusOneCount || 1}
-                          onChange={(e) =>
-                            setFormData({ ...formData, plusOneCount: parseInt(e.target.value) || 1 })
-                          }
-                          className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5">
-                          {lang === 'es' ? 'Nombre del Acompañante (+1)' : 'Plus-One Full Name'}
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.plusOneNames || ''}
-                          onChange={(e) => setFormData({ ...formData, plusOneNames: e.target.value })}
-                          placeholder={lang === 'es' ? 'Nombre de tu pareja / acompañante' : 'Name of guest'}
-                          className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Dietary / Allergies */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                      <div>
-                        <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5 flex items-center gap-1.5">
-                          <Utensils className="w-3.5 h-3.5 text-[#b89243]" />
-                          <span>{lang === 'es' ? 'Preferencia de Menú' : 'Dietary Needs'}</span>
-                        </label>
-                        <select
-                          value={formData.dietaryPreference}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              dietaryPreference: e.target.value as 'none' | 'vegetarian' | 'vegan' | 'celiac' | 'other',
-                            })
-                          }
-                          className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                        >
-                          <option value="none">{lang === 'es' ? 'Menú Tradicional' : 'Traditional Menu'}</option>
-                          <option value="celiac">{lang === 'es' ? 'Menú Celíaco (Sin Gluten)' : 'Gluten-Free / Celiac'}</option>
-                          <option value="vegetarian">{lang === 'es' ? 'Menú Vegetariano' : 'Vegetarian'}</option>
-                          <option value="vegan">{lang === 'es' ? 'Menú Vegano' : 'Vegan'}</option>
-                          <option value="other">{lang === 'es' ? 'Otras Intolerancias' : 'Other Dietary'}</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5">
-                          {lang === 'es' ? 'Detalle de Alergias' : 'Allergies Details'}
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.allergiesNote || ''}
-                          onChange={(e) => setFormData({ ...formData, allergiesNote: e.target.value })}
-                          placeholder="ej. Alergia a frutos secos, marisco..."
-                          className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                        />
-                      </div>
                     </div>
 
                     {/* Shuttle bus checkbox */}
@@ -752,7 +612,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                   <Send className="w-4 h-4 text-[#e5cb8f]" />
                   <span>{isSending ? (lang === 'es' ? 'Enviando…' : 'Sending…') : (lang === 'es' ? 'Enviar respuesta' : 'Submit RSVP')}</span>
                 </button>
-              </fieldset></form>
+              </fieldset></form></>}
           </motion.div>
         )}
       </div>

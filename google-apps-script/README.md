@@ -1,11 +1,15 @@
-# RSVP → Google Sheets
+# Invitaciones y RSVP
 
-El formulario usa el receptor publicado en Google Apps Script. Se puede sustituir su URL mediante `VITE_RSVP_ENDPOINT` al compilar con Vite.
+Rellenar `Invitaciones`: titular/familia, email y máximo total de personas (incluye titular, de 1 a 20). El disparador simple `onEdit` genera un código aleatorio y activa la fila al completar los campos. Compartir el código privadamente con esa familia; no se envían emails.
 
-`Code.gs` contiene el receptor para la hoja RSVP. Guarda las respuestas en la pestaña `Respuestas web`, creada con el primer envío válido. La aplicación web se ejecuta como la propietaria y permite acceso a Anyone; no devuelve datos de invitados.
+La web consulta el máximo al abrir la invitación y el servidor lo vuelve a validar al enviar. Cambiar `Activa` a `No` bloquea una invitación. No hace falta desplegar de nuevo para cambiar filas. No renombrar las columnas. Códigos duplicados o filas inválidas se rechazan.
 
-Los cambios en Code.gs requieren publicar una nueva versión en Apps Script (Deploy → Manage deployments → Edit → New version). Subir este archivo a GitHub no actualiza el receptor por sí solo.
+El email del titular debe coincidir con la fila. El acceso usa código privado, no email solo. No se devuelven emails ni respuestas anteriores al navegador. Las alergias, email opcional y asistencia de cada persona se guardan en `Respuestas por invitado`; el resumen sigue en `Respuestas web`. Las nuevas modificaciones generan nuevos registros: usar el último envío del titular, no sumar el historial.
 
-El formulario solo muestra éxito tras recibir confirmación del receptor. Un reintento con el mismo ID no añade otra fila. Editar una respuesta genera un nuevo registro. Las habitaciones se guardan como solicitudes, sin gestionar inventario compartido.
+## Publicación
 
-Validación: TypeScript y build comprobados. Pendiente verificar un envío desde la web desplegada y su aparición en la hoja.
+El proyecto Apps Script vinculado necesita `Code.gs` e `Invitations.gs` (también se pueden concatenar en Code.gs). Ejecutar `setupInvitations` una vez. Guardar y publicar una nueva versión desde Manage deployments, conservando la misma URL y ejecución como propietaria. El receptor admite peticiones sin inicio de sesión, pero la hoja debe ser privada para los organizadores.
+
+`VITE_RSVP_ENDPOINT` permite sustituir la URL pública del receptor al compilar. No incluir códigos privados en variables Vite ni en el repositorio.
+
+Pruebas: `node google-apps-script/invitations.test.cjs`, TypeScript y Vite build.

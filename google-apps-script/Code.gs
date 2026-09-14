@@ -4,8 +4,11 @@ const RSVP_TAB = 'Respuestas web';
 function doPost(e) {
   let lock;
   try {
-    if (!e || !e.postData || e.postData.contents.length > 20000) throw Error('Invalid payload');
+    if (!e || !e.postData || e.postData.contents.length > 50000) throw Error('Invalid payload');
     const data = JSON.parse(e.postData.contents);
+    const invitation = findInvitation(data.invitationCode);
+    if (data.action === 'lookup') return jsonReply({ ok: true, maxGuests: invitation.maxGuests });
+    const people = validatePeople(data, invitation);
     const text = (key, max = 1000) => {
       if (data[key] == null) return '';
       if (typeof data[key] !== 'string' || data[key].length > max) throw Error('Invalid field');
@@ -18,7 +21,7 @@ function doPost(e) {
     if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw Error('Invalid contact');
     if (!['yes', 'no'].includes(data.attendance)) throw Error('Invalid attendance');
     const yes = data.attendance === 'yes';
-    if (yes && (!Number.isInteger(data.plusOneCount) || data.plusOneCount < 1 || data.plusOneCount > 6)) throw Error('Invalid guests');
+    if (yes && (!Number.isInteger(data.plusOneCount) || data.plusOneCount < 1 || data.plusOneCount > invitation.maxGuests)) throw Error('Invalid guests');
     if (yes && !['both', 'sept3_only', 'sept4_only'].includes(data.attendingDays)) throw Error('Invalid days');
     if (!['none', 'estandar', 'superior', 'deluxe', 'suite_guardia', 'suite_medieval'].includes(data.roomBooking)) throw Error('Invalid room');
     if (!['none', 'vegetarian', 'vegan', 'celiac', 'other'].includes(data.dietaryPreference)) throw Error('Invalid menu');
@@ -51,6 +54,8 @@ function doPost(e) {
       sheet.getRange(sheet.getLastRow(), 2).setNumberFormat('dd/MM/yyyy HH:mm:ss');
       SpreadsheetApp.flush();
     }
+    savePeople(book, id, email, people);
+    SpreadsheetApp.flush();
     return jsonReply({ ok: true, submissionId: id });
   } catch (error) {
     return jsonReply({ ok: false, error: 'Unable to record response' });
