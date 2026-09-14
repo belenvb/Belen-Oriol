@@ -105,8 +105,8 @@
 .wedding-footer .footer-signature { position:absolute; z-index:2; inset:auto 0 0; padding:16px 24px max(16px,env(safe-area-inset-bottom)); background:linear-gradient(180deg,#201b192b,#201b198c); border-top:1px solid #f6eadb30; backdrop-filter:blur(5px); }
 .wedding-footer .closing-photo { min-height:0; height:auto; }
 .wedding-footer .closing-photo>img { height:auto; width:100%; object-fit:contain; }
-#schedule .schedule-art { clip-path:none; overflow:visible; min-height:0; height:auto; max-height:none; align-self:stretch; background:#e9dfcf; }
-#schedule .schedule-art img { position:sticky; top:80px; width:100%; height:auto; max-height:calc(100svh - 90px); object-fit:contain; object-position:top center; }
+#schedule .schedule-art { position:relative; clip-path:inset(0); overflow:hidden; min-height:100svh; height:auto; max-height:none; align-self:stretch; margin:0; background:#e9dfcf; }
+#schedule .schedule-art img { position:fixed; inset:0 auto auto 0; width:50vw; height:100svh; max-height:none; object-fit:cover; object-position:center; }
 #schedule .schedule-content { text-align:left; }
 #schedule .day-tabs { justify-content:flex-start; }
 #schedule .event-list { max-width:470px; margin:32px auto 0; }
@@ -165,7 +165,8 @@
 .story-film.is-still .story-map { display:none; }
 .story-film.is-still .story-landmarks { opacity:1; }
 @media(max-width:760px) {
- #schedule .schedule-art img { position:static; width:100%; height:auto; max-height:none; }
+ #schedule .schedule-art { height:75svh; min-height:0; }
+ #schedule .schedule-art img { position:fixed; width:100vw; height:100svh; max-height:none; }
  #schedule .schedule-content { padding:34px 7%; }
  #schedule .schedule-event { grid-template-columns:28px minmax(0,1fr) 28px; gap:7px; }
  .castle-rooms-panel { padding:18px 16px; }
@@ -186,3 +187,23 @@
 
 .story-flight-svg { opacity:0; animation:showFlight 13s linear both; }
 @keyframes showFlight { 0%,69% { opacity:0; } 70%,100% { opacity:1; } }
+
+/* The venue introduction and closed cover participate in layout, never overlap. */
+.passport-wrap .passport-stage.has-cover-intro { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:center; gap:clamp(28px,4vw,56px); padding:16px 0 64px!important; }
+.passport-wrap .passport-stage.has-cover-intro .passport-side-note { position:static!important; inset:auto!important; width:auto!important; max-width:100%!important; display:flex!important; align-items:flex-start; transform:none!important; margin:0!important; padding:0!important; min-width:0; }
+.passport-wrap .passport-stage.has-cover-intro .passport-side-note h3 { font-size:clamp(36px,4.2vw,64px)!important; line-height:1.08!important; max-width:100%; overflow-wrap:normal; }
+.passport-wrap .passport-stage.has-cover-intro .passport-side-note p,
+.passport-wrap .passport-stage.has-cover-intro .passport-side-note small,
+.passport-wrap .passport-stage.has-cover-intro .passport-side-note address { max-width:100%; overflow-wrap:break-word; }
+.passport-wrap .passport-stage.has-cover-intro .passport-side-note-vine { width:100%!important; max-width:100%; }
+.passport-wrap .passport-stage.has-cover-intro .passport-book { width:100%!important; min-width:0; min-height:0!important; }
+.passport-wrap .passport-stage.has-cover-intro .passport-front-cover { position:relative!important; inset:auto!important; transform:none!important; width:100%!important; max-width:100%; margin:0; }
+.footer-signature-mark .footer-bo-gold { display:block; width:100%; height:100%; background:#dfc285; mask-size:contain; mask-repeat:no-repeat; mask-position:center; -webkit-mask-size:contain; -webkit-mask-repeat:no-repeat; -webkit-mask-position:center; }
+@media(max-width:900px) {
+ .passport-wrap .passport-stage.has-cover-intro { grid-template-columns:minmax(0,1fr); gap:28px; }
+ .passport-wrap .passport-stage.has-cover-intro .passport-side-note { max-width:480px!important; width:100%!important; margin-inline:auto!important; }
+ .passport-wrap .passport-stage.has-cover-intro .passport-book { width:min(100%,420px)!important; margin-inline:auto; }
+}
+@media(prefers-reduced-motion:reduce) {
+ #schedule .schedule-art img { position:absolute; width:100%; height:100%; }
+}

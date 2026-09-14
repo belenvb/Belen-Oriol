@@ -24,11 +24,11 @@ export function Footer({ lang }: FooterProps) {
       <div className="footer-signature">
         {/* Small, transparent BO Monogram */}
         <div className="footer-signature-mark">
-          <img
-            className="footer-bo-mark"
-            src={boLogo}
-            alt="Belén & Oriol monogram"
-            loading="lazy"
+          <span
+            className="footer-bo-gold"
+            role="img"
+            aria-label="Belén & Oriol"
+            style={{ maskImage: `url(${boLogo})`, WebkitMaskImage: `url(${boLogo})` }}
           />
         </div>
 

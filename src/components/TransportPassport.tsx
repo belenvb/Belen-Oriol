@@ -305,7 +305,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   return (
     <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
-      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''}`}>
+      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''} ${!isOpen && coverFace === 'front' ? 'has-cover-intro' : ''}`}>
         <div className="passport-table-shadow" aria-hidden="true" />
         <aside
           className={`passport-rotated-instruction ${
