@@ -78,8 +78,8 @@ export function RegistrySection({ lang }: RegistrySectionProps) {
       : 'Our Home';
 
   const suggestedConcept = guestName.trim()
-    ? `Boda B&O [${destinationLabel}] - ${guestName.trim()}`
-    : `Boda B&O [${destinationLabel}] - [Tu Nombre]`;
+    ? `B&O ${destinationLabel} - ${guestName.trim()}`
+    : `B&O ${destinationLabel} - ${lang === 'es' ? 'Tu nombre' : 'Your name'}`;
 
   const handleSubmitNote = (e: FormEvent) => {
     e.preventDefault();

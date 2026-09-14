@@ -110,7 +110,7 @@ export function JourneyMap({ lang }: JourneyMapProps) {
         </motion.div>
 
         {/* Castillo del Buen Amor - Special Wedding Room Rates */}
-        <div className="castle-residence">
+        <div className="bg-[#fdfbf7] p-6 sm:p-10 rounded-2xl border-2 border-[#b89243] shadow-lg mb-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[rgba(92,20,30,0.12)] pb-6 mb-8">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#5c141e]/10 text-[#5c141e] text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-2">
@@ -143,7 +143,7 @@ export function JourneyMap({ lang }: JourneyMapProps) {
               </span>
             </div>
           </div>
-          <div className="room-list residence-collection">
+          <div className="room-list room-list-compact">
             {CASTLE_ROOMS.map((room) => (
               <div className="room-row room-row-detailed" key={room.id}>
                 <div className="room-row-copy">
@@ -154,8 +154,8 @@ export function JourneyMap({ lang }: JourneyMapProps) {
                   <p>{getRoomSubtext(room.id)}</p>
                   <small>
                     {lang === 'es'
-                      ? `${room.total} habitaciones en el cupo reservado`
-                      : `${room.total} rooms in our reserved allocation`}
+                      ? `${room.total} de ${room.total} habitaciones disponibles en el bloqueo`
+                      : `${room.total} of ${room.total} in the room block left`}
                   </small>
                 </div>
                 <div className="room-price-block">
@@ -170,11 +170,11 @@ export function JourneyMap({ lang }: JourneyMapProps) {
           </div>
           <p className="room-note">{lang === 'es' ? 'La selección en el RSVP es una solicitud, sujeta a confirmación de disponibilidad.' : 'Your RSVP room selection is a request, subject to availability confirmation.'}</p>
 
-          <div className="residence-booking-note">
+          <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-xs text-[#6e5832] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span>
               {lang === 'es'
-                ? 'Las habitaciones del castillo se asignan por orden de confirmación en el formulario de RSVP. El bloqueo de habitaciones solo está disponible hasta el 31 de diciembre; a partir de esa fecha no podemos garantizar disponibilidad.'
-                : 'Castle rooms are allocated in order of confirmation in the RSVP form. Room block is only reserved until December 31st; after this date, availability cannot be guaranteed.'}
+                ? '📌 Las habitaciones del castillo se asignan por orden de confirmación en el formulario de RSVP. El bloqueo de habitaciones solo está disponible hasta el 31 de diciembre; a partir de esa fecha no podemos garantizar disponibilidad.'
+                : '📌 Castle rooms are allocated in order of confirmation in the RSVP form. Room block is only reserved until December 31st; after this date, availability cannot be guaranteed.'}
             </span>
             <button
               onClick={() => handleSelectRoomForRsvp('estandar')}
@@ -186,7 +186,7 @@ export function JourneyMap({ lang }: JourneyMapProps) {
         </div>
 
         {/* Accommodation Guide: Other Hotels in Salamanca */}
-        <div className="city-residences">
+        <div className="bg-[#fdfbf7] p-8 sm:p-10 rounded-2xl border border-[#b89243]/40 shadow-xs">
           <div className="flex items-center gap-3 mb-6">
             <Hotel className="w-6 h-6 text-[#5c141e]" />
             <div>
@@ -201,11 +201,11 @@ export function JourneyMap({ lang }: JourneyMapProps) {
             </div>
           </div>
 
-          <div className="city-hotel-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {accommodationsList.map((hotel, index) => (
               <div
                 key={index}
-                className="city-hotel-card"
+                className="p-5 rounded-xl bg-white border border-[rgba(92,20,30,0.12)] hover:border-[#b89243] transition-colors flex flex-col justify-between shadow-2xs"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">

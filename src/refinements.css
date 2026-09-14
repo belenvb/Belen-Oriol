@@ -1,26 +1,3 @@
-/* Hospitality: quiet typography, generous spacing and no promotional badges. */
-.castle-residence { padding:clamp(28px,5vw,64px); background:#faf7f0; border:1px solid #b6a58a66; margin:48px 0; }
-.castle-residence>div:first-child { align-items:start; gap:32px; }
-.castle-residence>div:first-child>div:last-child { background:none; border:0; border-left:1px solid #b6a58a80; border-radius:0; padding:0 0 0 24px; box-shadow:none; }
-.castle-residence h3,.city-residences h3 { font-family:'Cormorant Garamond',serif; font-weight:400; text-transform:none; font-size:clamp(28px,3vw,42px); }
-.castle-residence>div:first-child>div:first-child>div { background:none; padding:0; font-weight:400; letter-spacing:.18em; }
-.residence-collection .room-row { grid-template-columns:minmax(0,1fr) 140px; gap:16px 32px; padding:32px 0; border-top:1px solid #b6a58a55; }
-.residence-collection .room-row-title-line { display:block; }
-.residence-collection .room-row-title-line h4 { font:400 clamp(27px,3vw,36px)/1.2 'Cormorant Garamond',serif; margin-bottom:8px; }
-.residence-collection .room-row-title-line span { font-size:11px; letter-spacing:.12em; color:#796b59; }
-.residence-collection .room-row-copy p { font-size:13px; line-height:1.8; max-width:44ch; margin:12px 0; }
-.residence-collection .room-row-copy small { font-size:10px; letter-spacing:.06em; color:#807868; }
-.residence-collection .room-price-block { text-align:right; }
-.residence-collection .room-price-block strong { display:block; font:400 38px/1.2 'Cormorant Garamond',serif; }
-.residence-collection .room-price-block span { display:block; font-size:10px; line-height:1.7; color:#796b59; }
-.residence-collection .room-row button { grid-column:2; justify-self:end; padding:0; border:0; border-bottom:1px solid #9e8761; background:none; border-radius:0; font-size:11px; letter-spacing:.1em; min-height:32px; }
-.residence-booking-note { border-top:1px solid #b6a58a55; margin-top:24px; padding-top:24px; font-size:11px; line-height:1.8; color:#796b59; display:grid; gap:16px; }
-.residence-booking-note button { justify-self:start; }
-.city-residences { padding:24px 0 0; }
-.city-hotel-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 40px; }
-.city-hotel-card { padding:28px 0; border-top:1px solid #b6a58a66; display:flex; flex-direction:column; justify-content:space-between; gap:16px; }
-.city-hotel-card>div:first-child>span { background:none; padding:0; border-radius:0; font-weight:400; }
-.city-hotel-card .font-playfair { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:400; }
 .footer-signature { display:flex; align-items:center; justify-content:center; gap:24px; padding:22px 24px; }
 .footer-signature-mark { width:36px; height:40px; display:flex; align-items:center; }
 .footer-signature-mark img { max-height:40px!important; width:100%!important; object-fit:contain; }
@@ -37,7 +14,12 @@
 .event-list .event-emblem { display:flex; flex-direction:column; align-items:center; gap:10px; color:#b89967; flex:0 0 34px; padding-top:8px; }
 .event-emblem small { font:400 9px/1 sans-serif; letter-spacing:.15em; opacity:.7; }
 /* Preserve the actual page geometry and 3D context throughout each turn. */
-.passport-wrap .passport-spread { overflow:visible!important; transform-style:preserve-3d; }
+.passport-wrap .passport-book { transform-style:flat; isolation:isolate; }
+.passport-wrap .passport-spread { overflow:visible!important; transform-style:flat; perspective:2400px; z-index:3; }
+.passport-wrap .passport-page { z-index:0; opacity:1; }
+.passport-wrap .passport-turning-sheet { z-index:10; }
+.passport-wrap .passport-stage,.passport-wrap .passport-spread { overscroll-behavior:auto!important; touch-action:pan-y pinch-zoom!important; }
+.passport-wrap .passport-stage { scroll-margin-top:100px; }
 .passport-wrap .passport-turning-sheet { top:16px; right:16px; left:auto; width:calc(50% - 23px); height:calc(100% - 32px); min-height:0!important; border-radius:7px 14px 14px 7px; animation:refinedTurnNext 920ms cubic-bezier(.42,0,.28,1) both; }
 .passport-wrap .passport-turning-sheet-previous { left:16px; right:auto; transform-origin:right center; animation-name:refinedTurnPrevious; }
 .passport-wrap .passport-turning-face { min-height:0!important; height:100%; border-radius:inherit; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
@@ -46,19 +28,15 @@
 @keyframes refinedTurnPrevious { from { transform:rotateY(0deg); } to { transform:translateX(14px) rotateY(180deg); } }
 .passport-wrap .passport-stage.is-closing-back .passport-spread { opacity:1!important; transition:none!important; }
 .passport-wrap .passport-stage.is-closing-back .passport-front-cover { visibility:hidden!important; opacity:0!important; animation:none!important; transition:none!important; }
-.passport-wrap .passport-stage.is-closing-back .passport-page-right { opacity:0; }
-.passport-wrap .passport-leather-reverse { display:grid; place-items:center; background:repeating-linear-gradient(32deg,#ffffff04 0 1px,transparent 1px 3px),linear-gradient(105deg,var(--leather-dark),var(--leather) 55%,var(--leather-dark)); box-shadow:inset 0 0 0 1px #ffffff18,inset 0 0 0 8px #00000018; }
+.passport-wrap .passport-stage.is-closing-back .passport-page-right { opacity:1; }
+.passport-wrap .passport-leather-reverse { display:grid; place-items:center; }
 .passport-wrap .passport-leather-reverse::before,.passport-wrap .passport-leather-reverse::after { content:none; }
-.passport-deboss { display:block; width:100px; height:130px; margin:auto; mask-repeat:no-repeat; mask-position:center; mask-size:contain; -webkit-mask-repeat:no-repeat; -webkit-mask-position:center; -webkit-mask-size:contain; background:linear-gradient(135deg,#0009 15%,var(--leather-dark) 45%,var(--leather-light) 70%,#e4be7270); filter:drop-shadow(1px 1px 0 #ffffff40) drop-shadow(-1px -1px 0 #0009); }
+.passport-deboss { display:block; width:100px; height:130px; margin:auto; mask-repeat:no-repeat; mask-position:center; mask-size:contain; -webkit-mask-repeat:no-repeat; -webkit-mask-position:center; -webkit-mask-size:contain; background-color:var(--leather-dark); background-image:var(--leather-grain); opacity:.72; filter:drop-shadow(-.65px -.65px .35px #0008); mix-blend-mode:multiply; }
 .passport-wrap .passport-stage.is-closed .passport-front-cover.is-back-cover { left:16px!important; right:auto!important; width:calc(50% - 23px)!important; height:calc(100% - 32px)!important; top:16px; transform:none!important; transition:none!important; }
 .passport-wrap .passport-stage { padding-bottom:58px!important; }
 .passport-wrap .passport-rotated-instruction { top:auto!important; bottom:10px!important; left:50%!important; right:auto!important; transform:translateX(-50%)!important; padding:10px 14px; background:#f7f1e6; border:1px solid #b6a58a66; border-radius:2px; max-width:100%; }
 .passport-wrap .passport-rotated-instruction span,.passport-wrap .passport-rotated-instruction small { color:#493b32!important; font-weight:400!important; letter-spacing:.09em!important; }
 @media(max-width:760px) {
- .city-hotel-grid { grid-template-columns:1fr; }
- .residence-collection .room-row { grid-template-columns:1fr; }
- .residence-collection .room-price-block { text-align:left; }
- .residence-collection .room-row button { grid-column:1; justify-self:start; }
  .passport-wrap .passport-turning-sheet { width:auto; left:16px; right:16px; }
  .passport-wrap .passport-turning-sheet { transform-origin:center; animation-name:refinedMobileTurn; }
  .passport-wrap .passport-turning-sheet-previous { animation-name:refinedMobilePrevious; }
@@ -69,4 +47,32 @@
 @keyframes refinedMobilePrevious { from { transform:rotateY(0); } to { transform:rotateY(180deg); } }
 @media(prefers-reduced-motion:reduce) { .passport-wrap .passport-turning-sheet { animation-duration:1ms; } .passport-wrap .passport-front-cover { transition-duration:1ms; } }
 
-.passport-wrap .passport-front-cover.is-back-cover { border-radius:14px 7px 7px 14px; background:repeating-linear-gradient(32deg,#ffffff04 0 1px,transparent 1px 3px),linear-gradient(105deg,var(--leather-dark),var(--leather) 55%,var(--leather-dark)); }
+
+
+/* Matte leather: grain continues through the recessed monogram. */
+.passport-wrap { --leather-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.22' filter='url(%23grain)'/%3E%3C/svg%3E"); }
+.passport-wrap .passport-front-cover.is-back-cover,.passport-wrap .passport-leather-reverse { background-color:var(--leather); background-image:var(--leather-grain); background-blend-mode:multiply; box-shadow:inset 2px 0 5px #0003,0 12px 24px #23150d18; border-radius:14px 7px 7px 14px; }
+.passport-wrap .passport-front-cover.is-back-cover::before,.passport-wrap .passport-front-cover.is-back-cover::after { content:none!important; }
+/* Full-height illustration on the left; dates and the programme on the right. */
+#schedule.weekend-cinematic { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); padding:0; gap:0; align-items:stretch; }
+.schedule-art { position:relative; min-height:680px; margin:0; overflow:hidden; background:#d5cab6; }
+.schedule-art img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; }
+.schedule-content { min-width:0; padding:clamp(48px,6vw,96px) clamp(28px,5vw,80px); }
+.schedule-content .weekend-heading { position:static; }
+.schedule-content .weekend-heading h2 { font-size:clamp(42px,5vw,76px); }
+.schedule-content .event-list { list-style:none; margin:40px 0 24px; padding:0; }
+.schedule-content .event-list li { display:block; border:0; padding:0!important; }
+.schedule-event { display:flex; align-items:start; gap:22px; padding:22px 0; }
+.schedule-content .event-emblem { display:flex; flex:0 0 30px; padding-top:6px; color:#c9af7c; }
+.schedule-olive { width:100%; padding:6px 0; }
+.schedule-olive svg { max-width:none; width:100%; height:26px; opacity:.85; }
+.schedule-olive svg path[fill] { fill:#aeb79c; }
+.schedule-olive svg path[stroke] { stroke:#bba887; }
+.schedule-olive svg circle { fill:#c9af7c; }
+@media(max-width:760px) {
+ #schedule.weekend-cinematic { grid-template-columns:1fr; }
+ .schedule-art { min-height:0; height:65svh; max-height:640px; }
+ .schedule-content { padding:48px 7%; }
+ .passport-wrap .passport-rotated-instruction { gap:6px!important; }
+ .passport-wrap .passport-rotated-instruction span,.passport-wrap .passport-rotated-instruction small { font-size:.52rem!important; letter-spacing:.03em!important; }
+}

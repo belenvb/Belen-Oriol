@@ -1,5 +1,5 @@
 import type { MouseEvent, PointerEvent } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Plane, Train, MapPin, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { Language } from '../types';
 import boLogo from '../assets/images/bo-logo.png';
@@ -119,9 +119,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const [pendingSpread, setPendingSpread] = useState<number | null>(null);
   const [flipDirection, setFlipDirection] = useState<FlipDirection>(null);
   const dragStartRef = useRef<{ x: number; y: number } | null>(null);
-  const passportStageRef = useRef<HTMLDivElement | null>(null);
   const dragTriggeredRef = useRef(false);
-  const lastWheelRef = useRef(0);
 
   const pages = useMemo(() => {
     const flights: PageData = {
@@ -187,46 +185,6 @@ export function TransportPassport({ lang }: { lang: Language }) {
     { left: undefined, right: pages.wedding },
   ], [pages]);
 
-  useEffect(() => {
-    const stage = passportStageRef.current;
-    if (!stage) return undefined;
-
-    const handlePassportWheel = (event: globalThis.WheelEvent) => {
-      const now = performance.now();
-      const continuingGesture = now - lastWheelRef.current < 240;
-      lastWheelRef.current = now;
-      if (!isOpen && ((coverFace === 'back' && event.deltaY > 0) || (coverFace === 'front' && event.deltaY < 0))) return;
-      event.preventDefault();
-      if (Math.abs(event.deltaY) < 10 || continuingGesture || flipDirection || isClosingBack) return;
-
-      if (!isOpen) {
-        openPassport();
-        return;
-      }
-
-      if (event.deltaY > 0) {
-        if (spreadIndex < spreads.length - 1) requestSpreadChange(spreadIndex + 1);
-        else closePassport('back');
-      } else {
-        if (spreadIndex > 0) requestSpreadChange(spreadIndex - 1);
-        else closePassport('front');
-      }
-    };
-
-    stage.addEventListener('wheel', handlePassportWheel, { passive: false });
-    return () => stage.removeEventListener('wheel', handlePassportWheel);
-  }, [flipDirection, isClosingBack, isOpen, spreadIndex, spreads.length, coverFace]);
-
-
-
-
-
-
-
-
-
-
-
   const openPassport = () => {
     if (flipDirection || isClosingBack) return;
 
@@ -254,8 +212,10 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   const requestSpreadChange = (nextSpread: number) => {
     const safe = Math.max(0, Math.min(spreads.length - 1, nextSpread));
+    if (flipDirection || isClosingBack) return;
     if (!isOpen) {
-      openPassport();
+      setSpreadIndex(safe);
+      setIsOpen(true);
       return;
     }
     if (safe === spreadIndex || flipDirection || isClosingBack) return;
@@ -266,9 +226,10 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   const handleDragStart = (event: PointerEvent<HTMLDivElement>) => {
     if (!isOpen || flipDirection || isClosingBack) return;
+    if (event.target instanceof Element && event.target.closest('a, button')) return;
     dragTriggeredRef.current = false;
     dragStartRef.current = { x: event.clientX, y: event.clientY };
-    event.currentTarget.setPointerCapture(event.pointerId);
+
   };
 
   const handleDragEnd = (event: PointerEvent<HTMLDivElement>) => {
@@ -277,9 +238,11 @@ export function TransportPassport({ lang }: { lang: Language }) {
     if (!start || !isOpen || flipDirection) return;
     const dx = event.clientX - start.x;
     const dy = event.clientY - start.y;
-    const mobile = window.matchMedia('(max-width: 760px)').matches;
-    const shouldGoNext = mobile ? dy < -38 || dx < -48 : dx < -52;
-    const shouldGoPrevious = mobile ? dy > 38 || dx > 48 : dx > 52;
+    // Vertical gestures always belong to the document, even mid-turn.
+    const horizontalSwipe = Math.abs(dx) > 52 && Math.abs(dx) > Math.abs(dy) * 1.5;
+    if (Math.abs(dx) > 12 || Math.abs(dy) > 12) dragTriggeredRef.current = true;
+    const shouldGoNext = horizontalSwipe && dx < 0;
+    const shouldGoPrevious = horizontalSwipe && dx > 0;
     if (shouldGoNext) {
       dragTriggeredRef.current = true;
       if (spreadIndex === spreads.length - 1) closePassport('back');
@@ -335,7 +298,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
   return (
     <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
-      <div ref={passportStageRef} className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''}`}>
+      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''}`}>
         <div className="passport-table-shadow" aria-hidden="true" />
         <aside
           className={`passport-rotated-instruction ${
@@ -343,7 +306,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
           }`}
           aria-hidden="true"
         >
-          <span>{isSpanish ? 'Clic · desliza' : 'Click · swipe'}</span>
+          <span>{isSpanish ? 'Clic · desliza en horizontal' : 'Click · swipe horizontally'}</span>
           <small>{isOpen ? (isSpanish ? 'para pasar página' : 'to turn page') : (isSpanish ? 'para abrir' : 'to open')}</small>
         </aside>
 
@@ -417,7 +380,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
       </div>
 
       <div className="passport-controls">
-        <button onClick={() => closePassport('front')} disabled={!isOpen || Boolean(flipDirection) || isClosingBack} aria-label={isSpanish ? 'Volver a la portada' : 'Back to cover'}><BookOpen size={16} />{isSpanish ? 'Portada' : 'Cover'}</button>
+        <button onClick={() => closePassport('front')} disabled={(!isOpen && coverFace === 'front') || Boolean(flipDirection) || isClosingBack} aria-label={isSpanish ? 'Volver a la portada' : 'Back to cover'}><BookOpen size={16} />{isSpanish ? 'Portada' : 'Cover'}</button>
         <div className="passport-pagination">
           {spreads.map((spread, index) => (
             <button key={spread.right.id} className={index === spreadIndex && isOpen ? 'active' : ''} onClick={() => requestSpreadChange(index)} aria-label={`${isSpanish ? 'Página' : 'Page'} ${index + 1}`} />
