@@ -803,28 +803,35 @@ footer { padding:0!important; overflow:hidden; }
 .rsvp-section-shell.rsvp-trencadis-dark {
   position: relative;
   overflow: hidden;
+  clip-path: inset(0);
   background:
-    radial-gradient(circle at 16% 8%, rgba(223,194,133,.22), transparent 28%),
-    radial-gradient(circle at 84% 28%, rgba(129,28,43,.32), transparent 30%),
-    linear-gradient(135deg, rgba(12,28,25,.96), rgba(48,10,18,.97) 48%, rgba(19,37,32,.98));
+    radial-gradient(circle at 16% 8%, rgba(223,194,133,.20), transparent 28%),
+    radial-gradient(circle at 84% 28%, rgba(129,28,43,.30), transparent 30%),
+    linear-gradient(135deg, rgba(10,27,24,.98), rgba(48,10,18,.98) 48%, rgba(15,34,29,.99));
   isolation: isolate;
 }
 
 #rsvp.rsvp-trencadis-dark::before,
 .rsvp-section-shell.rsvp-trencadis-dark::before {
   content: '';
-  position: absolute;
+  position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100svh;
   background-image:
-    linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(255,255,255,.045) 1px, transparent 1px),
-    url('/trencadis-glass-dark.svg');
-  background-size: 72px 72px, 72px 72px, 520px auto;
-  background-position: center, center, center;
-  opacity: .28;
+    url('/trencadis-glass-dark.svg'),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    radial-gradient(circle at 20% 18%, rgba(223,194,133,.16), transparent 18%),
+    radial-gradient(circle at 76% 68%, rgba(92,20,30,.22), transparent 20%);
+  background-size: 260px auto, 32px 32px, 32px 32px, 180px 180px, 220px 220px;
+  background-position: center, center, center, 0 0, 80px 60px;
+  background-repeat: repeat;
+  opacity: .36;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 0;
+  will-change: transform;
 }
 
 #rsvp.rsvp-trencadis-dark::after,
@@ -864,4 +871,55 @@ footer { padding:0!important; overflow:hidden; }
 
 .rsvp-trencadis-dark select {
   min-width: 4.75rem;
+}
+
+/* Final RSVP / schedule / footer polish */
+.rsvp-room-note-internal { display: none !important; }
+
+.footer-bo-mark {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.28));
+}
+
+.weekend-section {
+  align-items: start;
+  gap: clamp(2rem, 6vw, 4.5rem);
+  padding-top: clamp(82px, 8vw, 104px);
+  padding-bottom: clamp(82px, 8vw, 104px);
+}
+
+.schedule-illustration-card {
+  width: min(245px, 48vw) !important;
+  margin: 0 0 1.35rem auto !important;
+}
+
+.event-list li {
+  padding: 18px 0 !important;
+}
+
+.event-list h3 {
+  font-size: clamp(1.55rem, 2.5vw, 1.95rem) !important;
+}
+
+.weekend-details {
+  gap: 14px !important;
+  padding-top: 18px !important;
+}
+
+@media (max-width: 900px) {
+  .schedule-illustration-card {
+    width: min(220px, 58vw) !important;
+    margin: 0 auto 1.5rem !important;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  #rsvp.rsvp-trencadis-dark::before,
+  .rsvp-section-shell.rsvp-trencadis-dark::before {
+    position: absolute;
+    height: 100%;
+    background-attachment: scroll;
+  }
 }
