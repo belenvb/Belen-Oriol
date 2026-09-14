@@ -1,5 +1,5 @@
 import type { MouseEvent, PointerEvent } from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Plane, Train, MapPin, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { Language } from '../types';
 import boLogo from '../assets/images/bo-logo.png';
@@ -284,6 +284,13 @@ export function TransportPassport({ lang }: { lang: Language }) {
     }
   };
 
+  // Fallback for interrupted animation events (resize or motion preferences).
+  useEffect(() => {
+    if (!flipDirection && !isClosingBack) return;
+    const timer = window.setTimeout(finishTurn, 780);
+    return () => window.clearTimeout(timer);
+  }, [flipDirection, isClosingBack, pendingSpread]);
+
   const currentSpread = spreads[spreadIndex];
   const targetSpread = pendingSpread !== null ? spreads[pendingSpread] : currentSpread;
 
@@ -350,7 +357,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
                 <span className="passport-cover-country">SALAMANCA</span>
                 <span className="passport-cover-crest"><img src={boLogo} alt="BO" /></span>
                 <span className="passport-cover-type">{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</span>
-                <span className="passport-cover-epass" aria-hidden="true"><span className="passport-cover-epass-line passport-cover-epass-line-top" /><span className="passport-cover-epass-chip" /><span className="passport-cover-epass-line passport-cover-epass-line-bottom" /></span>
+                <svg className="passport-cover-epass biometric-mark" viewBox="0 0 60 38" aria-hidden="true"><path fill="currentColor" fillRule="evenodd" d="M2 2h56v34H2V2Zm4 4v26h48V6H6Zm24 5a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 3a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"/><path d="M4 19h18m16 0h18" fill="none" stroke="currentColor" strokeWidth="3"/></svg>
               </>
             ) : (
               <>
@@ -394,3 +401,4 @@ export function TransportPassport({ lang }: { lang: Language }) {
     </div>
   );
 }
+

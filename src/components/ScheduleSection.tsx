@@ -1,10 +1,10 @@
-import { GlassWater, Utensils, Sparkles, Bus, Music, Heart, Wine, Crown, PartyPopper, Coffee } from 'lucide-react';
+import { GlassWater, Utensils, Sparkles, Bus, Music, Heart, Wine, Crown, PartyPopper, Coffee, Shirt } from 'lucide-react';
 import { scheduleData } from '../data/content';
 import { Language } from '../types';
 import { generateGoogleCalendarUrl } from '../utils/calendar';
 import { HandDrawnBotanicalVine } from './BotanicalVine';
 
-const eventIcons = { GlassWater, Utensils, Sparkles, Bus, Music, Heart, Wine, Crown, PartyPopper, Coffee };
+const eventIcons = { GlassWater, Utensils, Sparkles, Bus, Music, Heart, Wine, Crown, PartyPopper, Coffee, Shirt };
 interface ScheduleSectionProps {
   lang: Language;
   selectedDay: 'sept3' | 'sept4';
@@ -42,6 +42,10 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAcce
             {es ? 'Añadir al calendario' : 'Add to calendar'} ↗
           </a>
         </div>
+        <div className="weekend-details">
+          <p><Shirt className="detail-emblem" size={24} aria-hidden="true"/><strong>{day.dressCode.title}</strong><br />{day.dressCode.description}</p>
+          {selectedDay === 'sept4' && <p><Bus className="detail-emblem" size={24} aria-hidden="true"/><strong>{day.shuttleInfo.title}</strong><br />{day.shuttleInfo.description}</p>}
+        </div>
         <ol className="event-list">
           {day.events.map((event, index) => {
             const Icon = eventIcons[event.iconName as keyof typeof eventIcons] || Sparkles;
@@ -60,11 +64,9 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAcce
             );
           })}
         </ol>
-        <div className="weekend-details">
-          <p><strong>{day.dressCode.title}</strong><br />{day.dressCode.description}</p>
-          {selectedDay === 'sept4' && <p><strong>{day.shuttleInfo.title}</strong><br />{day.shuttleInfo.description}</p>}
-        </div>
+
       </div>
     </section>
   );
 }
+

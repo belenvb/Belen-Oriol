@@ -9,7 +9,7 @@ interface FooterProps {
 export function Footer({ lang }: FooterProps) {
   const numericDate = lang === 'es' ? '04.09.2027' : '09.04.2027';
   return (
-    <footer className="bg-[#1a1413] text-[#f4ede2] text-center relative border-t border-[#b89243]/30">
+    <footer className="wedding-footer text-[#f4ede2] text-center relative">
       {/* Full-bleed closing rainbow photo with no text overlay */}
       <div className="closing-photo closing-photo-fullbleed relative overflow-hidden">
         <img
@@ -40,3 +40,4 @@ export function Footer({ lang }: FooterProps) {
     </footer>
   );
 }
+

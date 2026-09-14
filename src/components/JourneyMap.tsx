@@ -110,7 +110,7 @@ export function JourneyMap({ lang }: JourneyMapProps) {
         </motion.div>
 
         {/* Castillo del Buen Amor - Special Wedding Room Rates */}
-        <div className="bg-[#fdfbf7] p-6 sm:p-10 rounded-2xl border-2 border-[#b89243] shadow-lg mb-10">
+        <div className="castle-rooms-panel bg-[#fdfbf7] mb-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[rgba(92,20,30,0.12)] pb-6 mb-8">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#5c141e]/10 text-[#5c141e] text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-2">
@@ -241,4 +241,5 @@ export function JourneyMap({ lang }: JourneyMapProps) {
     </section>
   );
 }
+
 
