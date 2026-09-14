@@ -192,8 +192,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
     setPendingSpread(null);
     setFlipDirection(null);
     setSpreadIndex(coverFace === 'back' ? spreads.length - 1 : 0);
-    setIsOpening(coverFace === 'front');
-    setIsOpen(true);
+    setIsOpening(true);
   };
 
   const closePassport = (side: 'front' | 'back' = 'front') => {
@@ -277,6 +276,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const finishTurn = () => {
     if (isOpening) {
       setIsOpening(false);
+      setIsOpen(true);
     } else if (isClosingBack) {
       setCoverFace('back');
       setIsOpen(false);
@@ -291,7 +291,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
   // Fallback for interrupted animation events (resize or motion preferences).
   useEffect(() => {
     if (!flipDirection && !isClosingBack && !isOpening) return;
-    const timer = window.setTimeout(finishTurn, isOpening || isClosingBack ? 1300 : 780);
+    const timer = window.setTimeout(finishTurn, isOpening || isClosingBack ? 440 : 780);
     return () => window.clearTimeout(timer);
   }, [flipDirection, isClosingBack, isOpening, pendingSpread]);
 
@@ -308,7 +308,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
 
 
   return (
-    <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
+    <div className={`passport-wrap passport-coherent ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
       <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''} ${isOpening ? 'is-opening' : ''} ${!isOpen && coverFace === 'front' ? 'has-cover-intro' : ''} ${!isOpen && coverFace === 'back' ? 'has-back-cover' : ''}`}>
         <div className="passport-table-shadow" aria-hidden="true" />
         <aside
@@ -353,7 +353,7 @@ export function TransportPassport({ lang }: { lang: Language }) {
           <div className="passport-page-stack passport-page-stack-right" aria-hidden="true" />
           <div className="passport-gutter" aria-hidden="true" />
 
-          <button type="button" className={`passport-front-cover ${coverFace === 'back' ? 'is-back-cover' : ''}`} aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={openPassport} onAnimationEnd={(event) => { if (event.target === event.currentTarget && isOpening) setIsOpening(false); }}>
+          {!isOpen && <button type="button" className={`passport-front-cover ${coverFace === 'back' ? 'is-back-cover' : ''}`} aria-label={isSpanish ? 'Abrir pasaporte' : 'Open passport'} onClick={openPassport} onAnimationEnd={(event) => { if (event.target === event.currentTarget && isOpening) finishTurn(); }}>
             <span className="passport-cover-page-edge" aria-hidden="true" />
             {coverFace === 'front' ? (
               <>
@@ -368,25 +368,25 @@ export function TransportPassport({ lang }: { lang: Language }) {
                 <span className="passport-deboss" style={{ maskImage: `url(${boLogo})`, WebkitMaskImage: `url(${boLogo})` }} aria-hidden="true" />
               </>
             )}
-          </button>
+          </button>}
 
-          <div className="passport-spread" aria-hidden={!isOpen} onClick={handleSpreadClick} onPointerDown={handleDragStart} onPointerUp={handleDragEnd} onPointerCancel={() => { dragStartRef.current = null; }}>
+          {isOpen && <div className="passport-spread" onAnimationEnd={(event) => { if (event.target === event.currentTarget && isClosingBack) finishTurn(); }} aria-hidden={!isOpen} onClick={handleSpreadClick} onPointerDown={handleDragStart} onPointerUp={handleDragEnd} onPointerCancel={() => { dragStartRef.current = null; }}>
             <PageSurface page={baseLeftPage} side="left" isSpanish={isSpanish} compact blankCastle={!baseLeftPage && (spreadIndex === 1 || pendingSpread === 1)} />
             <PageSurface page={baseRightPage} side="right" isSpanish={isSpanish} blankCastle={false} />
-            {(flipDirection || isClosingBack) && (
-              <div className={`passport-turning-sheet passport-turning-sheet-${flipDirection || 'next'} ${isClosingBack ? 'passport-final-leaf' : ''}`} aria-hidden="true" onAnimationEnd={(event) => { if (event.target === event.currentTarget) finishTurn(); }}>
+            {flipDirection && (
+              <div className={`passport-turning-sheet passport-turning-sheet-${flipDirection}`} aria-hidden="true" onAnimationEnd={(event) => { if (event.target === event.currentTarget) finishTurn(); }}>
                 <div className="passport-turning-bend passport-turning-bend-a" />
                 <div className="passport-turning-bend passport-turning-bend-b" />
                 <div className="passport-turning-face passport-turning-front">
                   {turningFrontBlank || !turningFrontPage ? <BlankCastlePage isSpanish={isSpanish} /> : <PassportPageFace page={turningFrontPage} isSpanish={isSpanish} compact />}
                 </div>
                 <div className="passport-page-edge" />
-                <div className={`passport-turning-face passport-turning-back ${isClosingBack ? 'passport-leather-reverse' : ''}`}>
-                  {isClosingBack ? <span className="passport-deboss" style={{ maskImage: `url(${boLogo})`, WebkitMaskImage: `url(${boLogo})` }} /> : turningBackBlank ? <BlankCastlePage isSpanish={isSpanish} /> : turningBackPage ? <PassportPageFace page={turningBackPage} isSpanish={isSpanish} compact /> : <BlankCastlePage isSpanish={isSpanish} />}
+                <div className="passport-turning-face passport-turning-back">
+                  {turningBackBlank ? <BlankCastlePage isSpanish={isSpanish} /> : turningBackPage ? <PassportPageFace page={turningBackPage} isSpanish={isSpanish} compact /> : <BlankCastlePage isSpanish={isSpanish} />}
                 </div>
               </div>
             )}
-          </div>
+          </div>}
         </div>
       </div>
 
@@ -405,4 +405,5 @@ export function TransportPassport({ lang }: { lang: Language }) {
     </div>
   );
 }
+
 

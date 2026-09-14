@@ -1,8 +1,19 @@
 import { useRef, useState } from 'react';
-import { useInView, useReducedMotion } from 'motion/react';
+import { motion, useInView, useReducedMotion } from 'motion/react';
 import { RotateCcw } from 'lucide-react';
 import { LancasterCarriage } from './LancasterCarriage';
 import type { Language } from '../types';
+
+// Cubic flight route, shared by the drawn line and the moving plane.
+const flight = Array.from({ length: 61 }, (_, index) => {
+  const t = index / 60, u = 1 - t;
+  const x = u*u*u*403 + 3*u*u*t*382 + 3*u*t*t*226 + t*t*t*198;
+  const y = u*u*u*219 + 3*u*u*t*65 + 3*u*t*t*74 + t*t*t*175;
+  const dx = 3*u*u*(382-403) + 6*u*t*(226-382) + 3*t*t*(198-226);
+  const dy = 3*u*u*(65-219) + 6*u*t*(74-65) + 3*t*t*(175-74);
+  const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+  return { x, y, angle: angle > 0 ? angle - 360 : angle };
+});
 
 export function StoryJourney({ lang }: { lang: Language }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -43,13 +54,13 @@ export function StoryJourney({ lang }: { lang: Language }) {
 
         <div className="story-atlantic" aria-hidden="true">
           <svg viewBox="0 0 500 570">
-            <g className="story-spain-outline">
+            <g className="story-spain-outline" transform="translate(125 -10) scale(.72)">
               <path d="M338 260 356 250 378 258 394 254 420 264 446 270 458 292 444 315 423 323 410 346 391 360 367 354 352 334 333 326 323 306 329 285Z" />
               <path d="M333 306 313 313 305 329 312 350 301 368 315 382 336 374 323 352Z" fill="#f6eddc" />
               <circle cx="386" cy="318" r="4" fill="#752a34" stroke="none" />
             </g>
 
-            <g className="story-us-outline">
+            <g className="story-us-outline" transform="translate(-5 -5) scale(.64)">
               <path d="M46 252 80 235 118 238 150 226 184 235 225 231 258 246 283 266 297 292 286 320 255 327 230 314 205 331 172 328 145 345 112 337 86 348 59 331 64 304 42 289 52 270Z" />
               <path d="M258 246 287 244 314 262 332 286 326 305 297 292 283 266Z" fill="#eadcc4" />
               <circle className="story-east-coast-dot" cx="318" cy="282" r="4" stroke="none" />
@@ -57,38 +68,31 @@ export function StoryJourney({ lang }: { lang: Language }) {
 
             <path
               className="ocean-route"
-              d="M386 318 C388 176 309 168 318 282"
+              d="M403 219 C382 65 226 74 198 175"
               fill="none"
               stroke="#752a34"
               strokeWidth="1.5"
               strokeDasharray="4 5"
             />
 
-            <text x="360" y="242">España</text>
-            <text x="74" y="222">United States</text>
-            <text x="300" y="258">Lancaster</text>
-            <text x="302" y="303">Boston · 2024</text>
-            <LancasterCarriage />
+            <text x="371" y="145">España</text>
+            <text x="28" y="126">{es ? 'Estados Unidos' : 'United States'}</text>
+            <text x="151" y="257">Lancaster</text>
+            <text x="151" y="280">Boston · 2024</text>
+            <g transform="translate(0 -28)"><LancasterCarriage /></g>
             <text x="250" y="544" textAnchor="middle" className="map-country">
               {es ? 'AL OTRO LADO DEL ATLÁNTICO' : 'ACROSS THE ATLANTIC'}
             </text>
 
             {visible && !reduce && (
-              <g className="story-flight-svg">
-                <animateMotion
-                  dur="4s"
-                  begin="9s"
-                  fill="freeze"
-                  rotate="auto"
-                  path="M386 318 C388 176 309 168 318 282"
-                />
+              <motion.g className="story-plane-animated" initial={{ x:403, y:219, opacity:0 }} animate={{ x:flight.map(p=>p.x), y:flight.map(p=>p.y), rotate:flight.map(p=>p.angle), opacity:1 }} transition={{ delay:9, duration:4, ease:'linear' }}>
                 <path
                   d="M12 0 -10 -8 -6 -1 -12 3 -9 5 -3 3 -5 10Z"
                   fill="#f2eadb"
                   stroke="#702735"
                   strokeWidth="1.3"
                 />
-              </g>
+              </motion.g>
             )}
           </svg>
         </div>
@@ -106,3 +110,4 @@ export function StoryJourney({ lang }: { lang: Language }) {
     </div>
   );
 }
+

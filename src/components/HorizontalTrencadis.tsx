@@ -172,13 +172,13 @@ export function HorizontalTrencadis({ className = '' }: HorizontalTrencadisProps
       className={`relative w-full overflow-hidden select-none my-0 py-0 z-20 ${className}`}
     >
       {/* Top Architectural Border */}
-      <div className="relative w-full h-[1.5px] bg-[#2d221f]" />
+      <div className="relative w-full h-[1.5px] bg-[#a19e96]" />
 
       {/* Main Gaudí Trencadís Mosaic Bed (Stable, matte, zero-flash ceramic bed) */}
-      <div className="relative h-9 sm:h-11 md:h-12 w-full overflow-hidden bg-[#161211]">
-        <div className="absolute inset-0 bg-[#161211]" />
+      <div className="relative h-9 sm:h-11 md:h-12 w-full overflow-hidden bg-[#b5b1a7]">
+        <div className="absolute inset-0 bg-[#b5b1a7]" />
 
-        {/* Stable authentic SVG ceramic mosaic with dark mortar lines */}
+        {/* Stable authentic SVG ceramic mosaic with warm grey mortar joints */}
         <svg
           viewBox="0 0 1600 44"
           className="relative z-10 w-full h-full"
@@ -190,7 +190,7 @@ export function HorizontalTrencadis({ className = '' }: HorizontalTrencadisProps
               points={shard.points}
               fill={shard.fill}
               fillOpacity={shard.opacity}
-              stroke="#140f0e"
+              stroke="#b5b1a7"
               strokeWidth="1.6"
               strokeLinejoin="round"
             />
@@ -199,7 +199,8 @@ export function HorizontalTrencadis({ className = '' }: HorizontalTrencadisProps
       </div>
 
       {/* Bottom Architectural Border */}
-      <div className="relative w-full h-[1.5px] bg-[#2d221f]" />
+      <div className="relative w-full h-[1.5px] bg-[#a19e96]" />
     </div>
   );
 }
+

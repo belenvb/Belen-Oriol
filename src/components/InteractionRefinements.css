@@ -1,0 +1,85 @@
+/* A cover and an open spread are mutually exclusive React states. */
+#journey .passport-coherent .passport-stage .passport-front-cover {
+  transition:none!important;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+#journey .passport-coherent .passport-stage.is-opening .passport-front-cover {
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transform-origin:left center!important;
+  animation:coverDepart 360ms ease-in both!important;
+}
+#journey .passport-coherent .passport-stage.is-open .passport-spread {
+  visibility:visible!important;
+  opacity:1!important;
+  transition:none!important;
+  animation:paperArrive 180ms ease-out both;
+}
+#journey .passport-coherent .passport-stage.is-closing-back .passport-spread {
+  animation:paperDepart 360ms ease-in both!important;
+  transform-origin:center;
+  pointer-events:none;
+}
+#journey .passport-coherent .passport-stage.is-closing-back .passport-page,
+#journey .passport-coherent .passport-stage.is-closing-back .passport-page-right {
+  visibility:visible!important;
+  opacity:1!important;
+  animation:none!important;
+}
+#journey .passport-coherent .passport-stage.is-closing-back .passport-cover-base,
+#journey .passport-coherent .passport-stage.is-closing-back .passport-page-stack,
+#journey .passport-coherent .passport-stage.is-closing-back .passport-gutter {
+  opacity:0!important;
+  visibility:hidden!important;
+  transition:none!important;
+}
+@keyframes coverDepart { from { transform:rotateY(0); opacity:1; } to { transform:rotateY(-82deg); opacity:0; } }
+@keyframes paperArrive { from { opacity:0; } to { opacity:1; } }
+@keyframes paperDepart { from { transform:scaleX(1); opacity:1; } to { transform:scaleX(.92); opacity:0; } }
+
+/* Keep the photo full height on the right and the film beneath the story. */
+#story.story-section {
+  grid-template-areas:'copy photo' 'journey photo';
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  align-items:start;
+}
+#story .story-copy { grid-area:copy; }
+#story .story-journey { grid-area:journey; width:100%; max-width:440px; margin:0; }
+#story .story-night { grid-area:photo; width:100%; height:100%; min-height:0!important; align-self:stretch!important; }
+#story .story-night img { height:100%!important; width:100%; max-height:none!important; object-fit:cover; object-position:center; }
+#story .story-atlantic text:not(.map-country) { font:italic 17px 'Cormorant Garamond',Georgia,serif; letter-spacing:.3px; text-transform:none; }
+#story .story-atlantic .map-country { font-size:8px; letter-spacing:1.2px; }
+#story .story-film.is-playing .story-map { animation:mapChapter 13s ease-in-out both; }
+#story .story-film.is-playing .story-landmarks { animation:landmarkChapter 13s ease-in-out both; }
+#story .story-film.is-playing .story-atlantic { animation:atlanticChapter 13s ease-in-out both; }
+@keyframes mapChapter { 0%,13% { opacity:1;transform:scale(1); } 22%,100% { opacity:0;transform:scale(1.8); } }
+@keyframes landmarkChapter { 0%,23% { opacity:0;transform:scale(.94); } 31%,51% { opacity:1;transform:scale(1); } 59%,100% { opacity:0;transform:scale(1.02); } }
+@keyframes atlanticChapter { 0%,61% { opacity:0; } 69%,100% { opacity:1; } }
+
+/* Small fibres and a pale exposed edge at the same scale as the paper. */
+#faq { background:#f2ecdf; }
+#faq::before,#faq::after {
+  height:38px;
+  clip-path:none;
+  background:transparent url('/torn-paper-edge.svg') center / 100% 100% no-repeat;
+  filter:drop-shadow(0 -1px 1px #75674f12);
+}
+#faq::before { top:-37px; }
+#faq::after { bottom:-37px; transform:rotate(180deg); }
+@media(max-width:900px) {
+  #story.story-section { grid-template-columns:1fr; grid-template-areas:'copy' 'journey' 'photo'; }
+  #story .story-journey { margin-inline:auto; }
+  #story .story-night { width:min(100%,430px); height:auto; justify-self:center; }
+  #story .story-night img { height:auto!important; object-fit:contain; }
+  #faq::before,#faq::after { background-size:1100px 100%; }
+}
+@media(prefers-reduced-motion:reduce) {
+  #journey .passport-coherent .passport-stage.is-opening .passport-front-cover,
+  #journey .passport-coherent .passport-stage.is-open .passport-spread,
+  #journey .passport-coherent .passport-stage.is-closing-back .passport-spread { animation-duration:1ms!important; }
+  #story .story-film * { animation:none!important; }
+}
