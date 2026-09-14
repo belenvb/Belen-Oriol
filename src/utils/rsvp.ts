@@ -6,7 +6,7 @@ export type RsvpPerson = {
   attendance: 'yes' | 'no';
   attendingFriday?: boolean;
   attendingSaturday?: boolean;
-  attendingDays?: 'both' | 'sept3_only' | 'sept4_only';
+  attendingDays?: 'both' | 'sept3_only' | 'sept4_only' | string[];
   dietaryPreference: 'none' | 'vegetarian' | 'vegan' | 'celiac' | 'other';
   allergiesNote: string;
 };
@@ -19,11 +19,15 @@ export type RsvpSubmission = GuestRsvp & {
   clientSubmittedAt?: string;
 };
 
-type InvitationLookup = {
+export type InvitationLookup = {
   maxGuests: number;
   invitedToPreboda?: boolean;
   invitedToWedding?: boolean;
   language?: Language;
+  guests?: {
+    fullName: string;
+    email?: string;
+  }[];
 };
 
 type RsvpReceipt = {
@@ -33,6 +37,10 @@ type RsvpReceipt = {
   invitedToPreboda?: boolean;
   invitedToWedding?: boolean;
   language?: Language;
+  guests?: {
+    fullName?: string;
+    email?: string;
+  }[];
   error?: string;
 };
 
@@ -77,6 +85,12 @@ export async function lookupInvitation(invitationCode: string): Promise<Invitati
     invitedToPreboda: result.invitedToPreboda !== false,
     invitedToWedding: result.invitedToWedding !== false,
     language: result.language,
+    guests: Array.isArray(result.guests)
+      ? result.guests.map((guest) => ({
+          fullName: typeof guest.fullName === 'string' ? guest.fullName : '',
+          email: typeof guest.email === 'string' ? guest.email : '',
+        }))
+      : undefined,
   };
 }
 
@@ -91,15 +105,15 @@ export async function sendRsvp(record: RsvpSubmission, invitationCode: string): 
   try {
     const receipt = await request(payload);
     if (receipt.submissionId !== record.submissionId) throw new Error('RSVP_NOT_CONFIRMED');
-  } catch (error) {
+  } catch (err) {
     try {
       const stored = JSON.parse(localStorage.getItem('bo_wedding_rsvp_failed_submissions') || '[]');
       stored.push({ ...payload, savedLocallyAt: new Date().toISOString() });
       localStorage.setItem('bo_wedding_rsvp_failed_submissions', JSON.stringify(stored.slice(-10)));
     } catch {
-      // local backup is best-effort only; the UI must still show a remote submission error.
+      // Local backup is best-effort only. The UI must still show the remote submission error.
     }
 
-    throw error instanceof Error ? error : new Error('RSVP_NOT_CONFIRMED');
+    throw err instanceof Error ? err : new Error('RSVP_NOT_CONFIRMED');
   }
 }
