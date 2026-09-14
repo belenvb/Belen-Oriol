@@ -1541,3 +1541,153 @@ body::before {
     padding-right: 16px !important;
   }
 }
+
+
+/* === Schedule full-left image, no overlap passport, Boston/Lancaster fix 2026-09-14 === */
+
+/* Schedule: image fills the whole left column from top to bottom.
+   The real image is sticky, so it behaves like the hero while right-side text scrolls. */
+#schedule.weekend-cinematic {
+  grid-template-columns: minmax(480px, 50vw) minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  overflow: visible !important;
+}
+
+#schedule .schedule-art {
+  align-self: stretch !important;
+  height: auto !important;
+  min-height: 100% !important;
+  background: #e9deca !important;
+  overflow: visible !important;
+}
+
+#schedule .schedule-art img {
+  position: sticky !important;
+  top: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#schedule .schedule-art::after {
+  content: "" !important;
+  position: sticky !important;
+  top: 0 !important;
+  display: block !important;
+  height: 100vh !important;
+  margin-top: -100vh !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(90deg, rgba(29, 42, 34, .02), rgba(29, 42, 34, .34)),
+    linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.14));
+}
+
+/* Journey section: preserve a real two-column layout so the castle copy never slides under the passport. */
+#journey > .max-w-5xl,
+#journey .max-w-5xl {
+  max-width: 1320px !important;
+}
+
+#journey .journey-venue-grid,
+#journey .venue-passport-grid,
+#journey .castle-passport-grid {
+  display: grid !important;
+  grid-template-columns: minmax(420px, .9fr) minmax(520px, 1.1fr) !important;
+  gap: clamp(56px, 7vw, 112px) !important;
+  align-items: center !important;
+}
+
+/* In case the current section is using a generic first grid around the passport. */
+#journey .passport-wrap {
+  width: min(720px, 100%) !important;
+  max-width: 720px !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  transform: none !important;
+  justify-self: end !important;
+}
+
+#journey .passport-stage {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+#journey .passport-front-cover {
+  right: 0 !important;
+}
+
+/* Safety net: the venue text remains above the background but below no passport overlays. */
+#journey .passport-wrap,
+#journey .passport-stage,
+#journey .passport-book {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+#journey .castle-editorial-copy,
+#journey .venue-copy,
+#journey .journey-copy {
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 500px !important;
+}
+
+/* Story map: east-coast placement for Lancaster/Boston, not Texas. */
+.story-atlantic .story-us-outline {
+  transform-origin: center;
+}
+
+.story-atlantic .story-east-coast-dot {
+  fill: #752a34;
+}
+
+@media (max-width: 1100px) {
+  #journey .journey-venue-grid,
+  #journey .venue-passport-grid,
+  #journey .castle-passport-grid {
+    grid-template-columns: 1fr !important;
+    gap: 44px !important;
+  }
+
+  #journey .passport-wrap {
+    justify-self: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: min(720px, 100%) !important;
+  }
+
+  #journey .castle-editorial-copy,
+  #journey .venue-copy,
+  #journey .journey-copy {
+    max-width: 680px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  #schedule.weekend-cinematic {
+    grid-template-columns: 1fr !important;
+    overflow: hidden !important;
+  }
+
+  #schedule .schedule-art {
+    min-height: 62vh !important;
+  }
+
+  #schedule .schedule-art img {
+    position: relative !important;
+    height: 62vh !important;
+    min-height: 62vh !important;
+  }
+
+  #schedule .schedule-art::after {
+    position: absolute !important;
+    inset: 0 !important;
+    height: auto !important;
+    margin-top: 0 !important;
+  }
+}
