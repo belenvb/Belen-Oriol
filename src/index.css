@@ -1415,3 +1415,372 @@ body::before {
     font-size: clamp(2.8rem, 15vw, 4.8rem) !important;
   }
 }
+
+/* === Room block mockup redesign only 2026-09-14 ===
+   Keeps the original travel header, original passport placement, and original hotels.
+   Only replaces the castle room block with the proposed mockup-style room cards. */
+
+.castle-rooms-mockup-panel {
+  position: relative;
+  margin: 0 0 2.5rem;
+  display: grid;
+  grid-template-columns: minmax(260px, .56fr) minmax(0, 1.44fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+  padding: clamp(2.4rem, 5vw, 4.6rem);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(184,146,67,.10), transparent 18rem),
+    radial-gradient(circle at 88% 82%, rgba(92,20,30,.045), transparent 20rem),
+    #f6efe3;
+  border: 1px solid rgba(92, 20, 30, .13);
+  box-shadow: 0 24px 80px rgba(67, 46, 30, .10);
+  overflow: hidden;
+}
+
+.castle-rooms-mockup-panel::before {
+  content: '';
+  position: absolute;
+  inset: 22px;
+  border: 1px solid rgba(184, 146, 67, .20);
+  pointer-events: none;
+}
+
+.castle-rooms-mockup-copy,
+.castle-rooms-mockup-grid,
+.castle-rooms-mockup-note {
+  position: relative;
+  z-index: 1;
+}
+
+.castle-rooms-mockup-kicker {
+  margin: 0 0 .9rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .66rem;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: #5c141e;
+  font-weight: 800;
+}
+
+.castle-rooms-mockup-copy h3 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.9rem, 5.2vw, 5.4rem);
+  line-height: .92;
+  letter-spacing: -.045em;
+  color: #5c141e;
+}
+
+.castle-rooms-mockup-rule {
+  position: relative;
+  width: 150px;
+  height: 1px;
+  margin: 1.45rem 0 1.55rem;
+  background: linear-gradient(90deg, rgba(184,146,67,.68), rgba(184,146,67,.12));
+}
+
+.castle-rooms-mockup-rule::after {
+  content: '';
+  position: absolute;
+  left: 54px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  background: #b89243;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.castle-rooms-mockup-copy p {
+  max-width: 410px;
+  margin: 0;
+  font-size: .88rem;
+  line-height: 1.82;
+  color: #5f574f;
+}
+
+.castle-rooms-mockup-copy em {
+  display: block;
+  max-width: 390px;
+  margin-top: 1.25rem;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.18rem;
+  line-height: 1.35;
+  color: #6f6149;
+}
+
+.castle-rooms-mockup-copy button {
+  cursor: pointer;
+  min-height: 48px;
+  margin-top: 1.85rem;
+  padding: 0 1.5rem;
+  border: 1px solid rgba(92,20,30,.42);
+  background: rgba(255,255,255,.28);
+  color: #3a211b;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .66rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-weight: 800;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.castle-rooms-mockup-copy button:hover {
+  background: #5c141e;
+  color: #fff7e7;
+  border-color: #5c141e;
+}
+
+.castle-rooms-mockup-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(115px, 1fr));
+  gap: .9rem;
+}
+
+.castle-room-mockup-card {
+  min-width: 0;
+  background: rgba(255,255,255,.42);
+  border: 1px solid rgba(92,20,30,.12);
+  box-shadow: inset 0 1px rgba(255,255,255,.55);
+  text-align: center;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.castle-room-mockup-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(184,146,67,.58);
+  background: rgba(255,255,255,.66);
+}
+
+.castle-room-mockup-image {
+  height: clamp(112px, 11vw, 162px);
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(92,20,30,.10), rgba(184,146,67,.12)),
+    #e8decd;
+  border-bottom: 1px solid rgba(92,20,30,.10);
+}
+
+.castle-room-mockup-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: saturate(.86) contrast(1.04) brightness(.96);
+}
+
+.castle-room-mockup-body {
+  padding: 1.05rem .85rem 1.2rem;
+}
+
+.castle-room-mockup-body h4 {
+  min-height: 2.85rem;
+  margin: 0 0 .8rem;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 1.7vw, 1.72rem);
+  line-height: 1;
+  color: #311916;
+}
+
+.castle-room-mockup-body strong {
+  display: block;
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2.15rem, 3.2vw, 3.35rem);
+  font-weight: 400;
+  line-height: .86;
+  letter-spacing: -.04em;
+  color: #5c141e;
+}
+
+.castle-room-mockup-body span {
+  display: block;
+  margin-top: .35rem;
+  font-size: .72rem;
+  color: #5d554d;
+}
+
+.castle-room-mockup-body small {
+  display: block;
+  min-height: 2.2rem;
+  margin-top: .9rem;
+  font-size: .66rem;
+  line-height: 1.45;
+  color: #746b62;
+}
+
+.castle-room-mockup-body button {
+  cursor: pointer;
+  margin-top: .95rem;
+  padding: 0 0 .4rem;
+  border: 0;
+  border-bottom: 1px solid rgba(92,20,30,.42);
+  background: transparent;
+  color: #5c141e;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .58rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.castle-room-mockup-body button:hover {
+  color: #8c6d3b;
+  border-color: #b89243;
+}
+
+.castle-rooms-mockup-note {
+  grid-column: 1 / -1;
+  margin: .85rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(92,20,30,.10);
+  text-align: center;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: #6a5e52;
+}
+
+@media (max-width: 1180px) {
+  .castle-rooms-mockup-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .castle-rooms-mockup-copy {
+    max-width: 720px;
+  }
+
+  .castle-rooms-mockup-grid {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .castle-rooms-mockup-panel {
+    padding: 1.6rem;
+    margin-left: -.25rem;
+    margin-right: -.25rem;
+  }
+
+  .castle-rooms-mockup-panel::before {
+    inset: 12px;
+  }
+
+  .castle-rooms-mockup-grid {
+    grid-template-columns: 1fr;
+    gap: .85rem;
+  }
+
+  .castle-room-mockup-card {
+    display: grid;
+    grid-template-columns: 118px 1fr;
+    text-align: left;
+  }
+
+  .castle-room-mockup-image {
+    height: 100%;
+    min-height: 168px;
+    border-bottom: 0;
+    border-right: 1px solid rgba(92,20,30,.10);
+  }
+
+  .castle-room-mockup-body h4,
+  .castle-room-mockup-body small {
+    min-height: 0;
+  }
+
+  .castle-rooms-mockup-note {
+    text-align: left;
+    font-size: .98rem;
+  }
+}
+
+
+/* === Room block badge + breakfast prominence 2026-09-14 === */
+
+.castle-room-block-badge {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  max-width: 520px;
+  margin-top: 1.35rem;
+  padding: 1rem 1.05rem;
+  background:
+    linear-gradient(135deg, rgba(184,146,67,.16), rgba(255,255,255,.42)),
+    rgba(255,255,255,.38);
+  border: 1px solid rgba(184,146,67,.48);
+  box-shadow: inset 0 1px rgba(255,255,255,.55);
+}
+
+.castle-room-block-badge strong {
+  display: block;
+  margin: 0 0 .35rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .68rem;
+  line-height: 1.35;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #5c141e;
+}
+
+.castle-room-block-badge span {
+  display: block;
+  font-size: .74rem;
+  line-height: 1.55;
+  color: #655d55;
+}
+
+.castle-room-block-badge small {
+  display: inline-grid;
+  place-items: center;
+  min-height: 42px;
+  padding: .55rem .75rem;
+  border-radius: 999px;
+  background: #5c141e;
+  color: #fff7e7;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .58rem;
+  line-height: 1.25;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .castle-room-block-badge {
+    grid-template-columns: 1fr;
+  }
+
+  .castle-room-block-badge small {
+    justify-self: start;
+    white-space: normal;
+  }
+}
+
+
+/* === Breakfast included in price line 2026-09-14 === */
+
+.castle-room-mockup-body span {
+  max-width: 125px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.35;
+  color: #5f574f;
+}
+
+.castle-room-price-line span,
+.room-price-block span {
+  line-height: 1.35;
+}
+
+@media (max-width: 760px) {
+  .castle-room-mockup-body span {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none;
+  }
+}
