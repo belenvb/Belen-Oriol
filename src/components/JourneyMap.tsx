@@ -110,80 +110,106 @@ export function JourneyMap({ lang }: JourneyMapProps) {
         </motion.div>
 
         {/* Castillo del Buen Amor - Special Wedding Room Rates */}
-        <div className="castle-rooms-panel bg-[#fdfbf7] mb-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[rgba(92,20,30,0.12)] pb-6 mb-8">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#5c141e]/10 text-[#5c141e] text-[10px] sm:text-xs font-bold tracking-widest uppercase mb-2">
-                <BedDouble className="w-3.5 h-3.5 text-[#b89243]" />
-                <span>{lang === 'es' ? 'Alojamiento en el Castillo' : 'Castle Lodging'}</span>
-              </div>
-              <h3 className="font-cinzel text-2xl sm:text-3xl text-[#37080e] font-bold">
-                {lang === 'es' ? 'Habitaciones en el Castillo' : 'Rooms at the Castle'}
-              </h3>
-              <p className="font-sans text-xs sm:text-sm text-[#6e675f] mt-1">
-                {lang === 'es'
-                  ? 'Tenemos un bloqueo de habitaciones con tarifas especiales concertadas con el Castillo del Buen Amor para nuestros invitados.'
-                  : 'We have a room block with special negotiated rates at Castillo del Buen Amor for our guests.'}
-              </p>
-            </div>
+        <motion.div
+          className="castle-rooms-mockup-panel"
+          initial={{ opacity: 0, y: 26 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="castle-rooms-mockup-copy">
+            <p className="castle-rooms-mockup-kicker">
+              {lang === 'es' ? 'Alojamiento' : 'Accommodation'}
+            </p>
 
-            {/* Room block guarantee badge */}
-            <div className="flex flex-col sm:items-end gap-1 bg-[#f5ecdc] p-3.5 rounded-xl border border-[#b89243]/40 max-w-sm">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#5c141e] uppercase tracking-wider">
-                <Calendar className="w-4 h-4 text-[#b89243]" />
-                <span>{lang === 'es' ? 'Bloqueo hasta el 31 de Diciembre' : 'Room block until December 31st'}</span>
-              </div>
-              <span className="text-[11px] text-[#6e5832] sm:text-right leading-snug">
-                {lang === 'es'
-                  ? 'El bloqueo de habitaciones solo está disponible hasta el 31 de diciembre; a partir de esa fecha no podemos garantizar disponibilidad.'
-                  : 'Room block is only reserved until December 31st; after this date, availability cannot be guaranteed.'}
-              </span>
-              <span className="text-[10px] font-semibold text-[#8c6d3b] sm:text-right mt-0.5">
-                {lang === 'es' ? '✦ Desayuno incluido' : '✦ Breakfast included'}
-              </span>
-            </div>
-          </div>
-          <div className="room-list room-list-compact">
-            {CASTLE_ROOMS.map((room) => (
-              <div className="room-row room-row-detailed" key={room.id}>
-                <div className="room-row-copy">
-                  <div className="room-row-title-line">
-                    <h4>{lang === 'es' ? room.name : room.nameEn}</h4>
-                    <span>{getRoomArea(room.id)}</span>
-                  </div>
-                  <p>{getRoomSubtext(room.id)}</p>
-                  <small>
-                    {lang === 'es'
-                      ? `${room.total} de ${room.total} habitaciones disponibles en el bloqueo`
-                      : `${room.total} of ${room.total} in the room block left`}
-                  </small>
-                </div>
-                <div className="room-price-block">
-                  <strong>{room.price} €</strong>
-                  <span>{lang === 'es' ? '/ noche · Desayuno incluido' : '/ night · Breakfast included'}</span>
-                </div>
-                <button onClick={() => handleSelectRoomForRsvp(room.id)}>
-                  {lang === 'es' ? 'Solicitar' : 'Request'} ↗
-                </button>
-              </div>
-            ))}
-          </div>
-          <p className="room-note">{lang === 'es' ? 'La selección en el RSVP es una solicitud, sujeta a confirmación de disponibilidad.' : 'Your RSVP room selection is a request, subject to availability confirmation.'}</p>
+            <h3>
+              {lang === 'es' ? 'Habitaciones en el castillo' : 'Rooms at the castle'}
+            </h3>
 
-          <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-xs text-[#6e5832] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <span>
+            <div className="castle-rooms-mockup-rule" />
+
+            <p>
               {lang === 'es'
-                ? 'Las habitaciones se asignan por orden de confirmación en el RSVP. Cada huésped paga su habitación.'
-                : 'Rooms are allocated in RSVP confirmation order. Each guest pays for their own room.'}
-            </span>
-            <button
-              onClick={() => handleSelectRoomForRsvp('estandar')}
-              className="text-[#5c141e] font-bold underline hover:text-[#37080e] shrink-0 cursor-pointer"
-            >
-              {lang === 'es' ? 'Ir al RSVP para indicar habitación →' : 'Go to RSVP to select room →'}
+                ? 'Hemos reservado un número limitado de habitaciones en el Castillo del Buen Amor para nuestros invitados. Te recomendamos hacer tu solicitud lo antes posible.'
+                : 'We have reserved a limited number of rooms at Castillo del Buen Amor for our guests. We recommend submitting your request as early as possible.'}
+            </p>
+
+            <em>
+              {lang === 'es'
+                ? 'Disponibilidad limitada · Solicitud sujeta a confirmación'
+                : 'Limited availability · Requests subject to confirmation'}
+            </em>
+
+            <div className="castle-room-block-badge">
+              <div>
+                <strong>{lang === 'es' ? 'Bloqueo de habitaciones hasta el 31 de diciembre' : 'Room block held until December 31st'}</strong>
+                <span>
+                  {lang === 'es'
+                    ? 'A partir de esa fecha no podemos garantizar disponibilidad.'
+                    : 'After that date, availability cannot be guaranteed.'}
+                </span>
+              </div>
+              <small>{lang === 'es' ? 'Bloqueo limitado' : 'Limited block'}</small>
+            </div>
+
+            <button type="button" onClick={() => handleSelectRoomForRsvp('estandar')}>
+              {lang === 'es' ? 'Ver detalles y cómo reservar' : 'View details and how to request'} ↗
             </button>
           </div>
-        </div>
+
+          <div className="castle-rooms-mockup-grid">
+            {CASTLE_ROOMS.map((room) => {
+              const roomImages: Record<string, string> = {
+                estandar: '/photos/castle-room-standard.webp',
+                superior: '/photos/castle-room-superior.webp',
+                deluxe: '/photos/castle-room-deluxe.webp',
+                suite_guardia: '/photos/castle-room-guardia.webp',
+                suite_medieval: '/photos/castle-room-medieval.webp',
+              };
+
+              return (
+                <article className="castle-room-mockup-card" key={room.id}>
+                  <div className="castle-room-mockup-image">
+                    <img
+                      src={roomImages[room.id]}
+                      alt={lang === 'es' ? room.name : room.nameEn}
+                      loading="lazy"
+                      onError={(event) => {
+                        event.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+
+                  <div className="castle-room-mockup-body">
+                    <h4>
+                      {lang === 'es'
+                        ? room.name.replace('Habitación ', '')
+                        : room.nameEn.replace(' Room', '')}
+                    </h4>
+
+                    <strong>€{room.price}</strong>
+
+                    <span>{lang === 'es' ? '/ noche · Desayuno incluido' : '/ night · Breakfast included'}</span>
+
+                    <small>
+                      {getRoomArea(room.id)} · {room.total} {lang === 'es' ? 'habitaciones' : 'rooms'}
+                    </small>
+
+                    <button type="button" onClick={() => handleSelectRoomForRsvp(room.id)}>
+                      {lang === 'es' ? 'Solicitar' : 'Request'} ↗
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          <p className="castle-rooms-mockup-note">
+            {lang === 'es'
+              ? 'Las habitaciones del castillo se asignan por orden de confirmación en el formulario de RSVP. La selección de habitación es una solicitud y queda sujeta a confirmación.'
+              : 'Castle rooms are allocated in order of confirmation in the RSVP form. Room selection is a request and remains subject to confirmation.'}
+          </p>
+        </motion.div>
 
         {/* Accommodation Guide: Other Hotels in Salamanca */}
         <div className="bg-[#fdfbf7] p-8 sm:p-10 rounded-2xl border border-[#b89243]/40 shadow-xs">
@@ -241,6 +267,4 @@ export function JourneyMap({ lang }: JourneyMapProps) {
     </section>
   );
 }
-
-
 
