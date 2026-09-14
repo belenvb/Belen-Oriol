@@ -1691,3 +1691,102 @@ body::before {
     margin-top: 0 !important;
   }
 }
+
+
+/* === Traditional section header font correction 2026-09-14 ===
+   Restores the more traditional editorial serif feeling for the main
+   section headers instead of the newer decorative/uppercase treatment. */
+#journey h2,
+#registry h2,
+#rsvp h2,
+#faq h2,
+#castle h2,
+.story-copy h2,
+.weekend-heading h2,
+.rsvp-hero-panel h2,
+.rsvp-readable-card h2,
+.castle-rooms-panel h3,
+.footer-signature-date {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.035em !important;
+  text-transform: none !important;
+}
+
+/* Specific scale/shape for large page section titles */
+#journey h2,
+#registry h2,
+#rsvp h2,
+#faq h2,
+#castle h2,
+.weekend-heading h2,
+.story-copy h2 {
+  font-size: clamp(3.2rem, 6vw, 6.4rem) !important;
+  line-height: 0.98 !important;
+}
+
+/* Keep the small eyebrow labels clean and understated, not decorative. */
+#journey .eyebrow,
+#registry .eyebrow,
+#rsvp .eyebrow,
+#faq .eyebrow,
+#castle .eyebrow,
+.story-section .eyebrow,
+.weekend-section .eyebrow,
+.rsvp-hero-panel .eyebrow,
+.rsvp-readable-card .eyebrow {
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+}
+
+/* Undo overly rigid Cinzel-looking uppercase headers inside card sections. */
+#journey .font-cinzel,
+#registry .font-cinzel,
+#rsvp .font-cinzel,
+#faq .font-cinzel {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: none !important;
+}
+
+/* But keep tiny badges/readability labels sans-serif. */
+#journey .inline-flex span,
+#registry .inline-flex span,
+#rsvp .inline-flex span,
+#faq .inline-flex span,
+#journey .text-\[10px\],
+#registry .text-\[10px\],
+#rsvp .text-\[10px\],
+#faq .text-\[10px\],
+#journey .text-xs,
+#registry .text-xs,
+#rsvp .text-xs,
+#faq .text-xs {
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: inherit;
+}
+
+/* Room names can stay elegant serif but less decorative. */
+.room-row h4,
+.room-row-title-line h4,
+.room-price-block strong {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em !important;
+  text-transform: none !important;
+}
+
+@media (max-width: 760px) {
+  #journey h2,
+  #registry h2,
+  #rsvp h2,
+  #faq h2,
+  #castle h2,
+  .weekend-heading h2,
+  .story-copy h2 {
+    font-size: clamp(2.8rem, 15vw, 4.8rem) !important;
+  }
+}
