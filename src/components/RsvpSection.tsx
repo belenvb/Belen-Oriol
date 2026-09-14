@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { CheckCircle2, Heart, Send, Sparkles, BedDouble, Bus, Music, Edit3, Key, Check, Users, ShieldCheck, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sendRsvp, lookupInvitation, RsvpSubmission, RsvpPerson } from '../utils/rsvp';
+import { sendRsvp, lookupInvitation, RsvpSubmission, RsvpPerson, InvitationLookup } from '../utils/rsvp';
 import { GuestRsvp, Language } from '../types';
 import { RsvpGuests, emptyPerson } from './RsvpGuests';
 import { CASTLE_ROOMS } from '../data/rooms';
@@ -13,7 +13,7 @@ interface RsvpSectionProps {
 export function RsvpSection({ lang }: RsvpSectionProps) {
   const es = lang === 'es';
   const [invitationCode, setInvitationCode] = useState('');
-  const [invitation, setInvitation] = useState<{ maxGuests: number; guestName?: string; invitedToPreboda?: boolean; invitedToWedding?: boolean; language?: Language } | null>(null);
+  const [invitation, setInvitation] = useState<InvitationLookup | null>(null);
   const [checkingCode, setCheckingCode] = useState(false);
   const [codeError, setCodeError] = useState('');
   const [guests, setGuests] = useState<RsvpPerson[]>([emptyPerson()]);
@@ -77,8 +77,31 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     try {
       const inv = await lookupInvitation(invitationCode);
       setInvitation(inv);
-      if (inv.guestName && !guests[0].fullName) {
-        updateGuests([{ ...guests[0], fullName: inv.guestName }]);
+
+      if (inv.guests?.length) {
+        const prefilledGuests = inv.guests.map((guest) => {
+          const attendingFriday = inv.invitedToPreboda !== false;
+          const attendingSaturday = inv.invitedToWedding !== false;
+
+          return {
+            ...emptyPerson(),
+            fullName: guest.fullName || '',
+            email: guest.email || '',
+            attendance: attendingFriday || attendingSaturday ? 'yes' : 'no',
+            attendingFriday,
+            attendingSaturday,
+            attendingDays:
+              attendingFriday && attendingSaturday
+                ? 'both'
+                : attendingFriday
+                ? 'sept3_only'
+                : attendingSaturday
+                ? 'sept4_only'
+                : undefined,
+          } as RsvpPerson;
+        });
+
+        updateGuests(prefilledGuests.length ? prefilledGuests : [emptyPerson()]);
       }
     } catch {
       setCodeError(
@@ -163,9 +186,6 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
       ...rsvpRecord,
       submissionId,
       guests: people,
-      language: lang,
-      formVersion: 'rsvp-per-guest-v2',
-      clientSubmittedAt: rsvpRecord.submittedAt,
     };
 
     sending.current = true;
