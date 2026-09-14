@@ -73,6 +73,9 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  // Derive shared options from the current guests, never a copied form flag.
+  const hasAttendingGuests = guests.some((person) => person.attendance === 'yes');
+
   const selectedRoomCount = getRoomCount(roomQuantities);
   const hasCastleRoom = selectedRoomCount > 0;
 
@@ -540,7 +543,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                         onChange={updateGuests}
                       />
 
-                      {formData.attendance === 'yes' && (
+                      {hasAttendingGuests && (
                         <div className="space-y-6 pt-6 border-t-2 border-[#5c141e]/15 animate-fade-in">
                           <div className="text-left">
                             <h4 className="font-cinzel text-base font-bold text-[#37080e] uppercase tracking-wider mb-1">
@@ -556,7 +559,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                               <input
                                 type="checkbox"
                                 checked={Boolean(formData.shuttleBooking)}
-                                onChange={(e) => setFormData({ ...formData, shuttleBooking: e.target.checked })}
+                                onChange={(e) => setFormData((prev) => ({ ...prev, shuttleBooking: e.target.checked }))}
                                 className="mt-1 w-4 h-4 rounded text-[#5c141e] focus:ring-[#5c141e] border-gray-300"
                               />
                               <div className="text-xs">
@@ -693,7 +696,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                             <input
                               type="text"
                               value={formData.songRequest || ''}
-                              onChange={(e) => setFormData({ ...formData, songRequest: e.target.value })}
+                              onChange={(e) => setFormData((prev) => ({ ...prev, songRequest: e.target.value }))}
                               placeholder={es ? 'Artista - Título de la canción' : 'Artist - Song title'}
                               className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#5c141e]/20 rounded-lg text-sm text-[#2c241e] placeholder:text-[#9c9489] focus:bg-white focus:outline-none focus:border-[#5c141e] transition-all"
                             />
