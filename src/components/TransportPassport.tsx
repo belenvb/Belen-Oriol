@@ -405,10 +405,10 @@ export function TransportPassport({ lang }: { lang: Language }) {
             <span className="passport-cover-page-edge" aria-hidden="true" />
             {coverFace === 'front' ? (
               <>
-                <span className="passport-cover-guide">TRAVEL GUIDE</span>
+                <span className="passport-cover-guide">{isSpanish ? 'GUÍA DE VIAJE' : 'TRAVEL GUIDE'}</span>
                 <span className="passport-cover-country">SALAMANCA</span>
-                <span className="passport-cover-crest"><img src={boLogo} alt="" /></span>
-                <span className="passport-cover-type">{isSpanish ? 'PASAPORTE' : 'PASSPORT'}</span>
+                <span className="passport-cover-crest"><img src={boLogo} alt="BO" /></span>
+                <span className="passport-cover-type">{isSpanish ? 'GUÍA DE VIAJE' : 'TRAVEL GUIDE'}</span>
                 <span className="passport-cover-epass" aria-hidden="true"><span className="passport-cover-epass-line passport-cover-epass-line-top" /><span className="passport-cover-epass-chip" /><span className="passport-cover-epass-line passport-cover-epass-line-bottom" /></span>
               </>
             ) : (

@@ -1,34 +1,23 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
-import { CheckCircle2, Heart, Send, Sparkles, User, Mail, Utensils, Bus, Music, Edit3, BedDouble, Calendar } from 'lucide-react';
-import { motion } from 'motion/react';
+import { CheckCircle2, Heart, Send, Sparkles, BedDouble, Bus, Music, Edit3, Key, Check, Users, ShieldCheck, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { sendRsvp, lookupInvitation, RsvpSubmission, RsvpPerson } from '../utils/rsvp';
 import { GuestRsvp, Language } from '../types';
 import { RsvpGuests, emptyPerson } from './RsvpGuests';
 import { CASTLE_ROOMS } from '../data/rooms';
-
 
 interface RsvpSectionProps {
   lang: Language;
 }
 
 export function RsvpSection({ lang }: RsvpSectionProps) {
+  const es = lang === 'es';
   const [invitationCode, setInvitationCode] = useState('');
-  const [invitation, setInvitation] = useState<{ maxGuests: number } | null>(null);
+  const [invitation, setInvitation] = useState<{ maxGuests: number; guestName?: string; invitedToPreboda?: boolean } | null>(null);
   const [checkingCode, setCheckingCode] = useState(false);
   const [codeError, setCodeError] = useState('');
   const [guests, setGuests] = useState<RsvpPerson[]>([emptyPerson()]);
-  const updateGuests = (people: RsvpPerson[]) => {
-    setGuests(people);
-    setFormData(prev => ({ ...prev, fullName: people[0].fullName, email: people[0].email, attendance: people.some(p => p.attendance === 'yes') ? 'yes' : 'no' }));
-  };
-  const checkCode = async (e: FormEvent) => {
-    e.preventDefault();
-    if (checkingCode) return;
-    setCheckingCode(true); setCodeError('');
-    try { setInvitation(await lookupInvitation(invitationCode)); }
-    catch { setCodeError(lang === 'es' ? 'No se ha podido validar el código. Compruébalo o contacta con Belén y Oriol.' : 'We could not validate this code. Check it or contact Belén and Oriol.'); }
-    finally { setCheckingCode(false); }
-  };
+  
   const [isSending, setIsSending] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const sending = useRef(false);
@@ -44,15 +33,63 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     dietaryPreference: 'none',
     allergiesNote: '',
     shuttleBooking: true,
-    shuttlePickupLocation: 'Plaza de España, Salamanca',
+    shuttlePickupLocation: 'Salamanca',
     roomBooking: 'none',
     songRequest: '',
     blessingMessage: '',
   });
 
-  const [submittedRsvp, setSubmittedRsvp] = useState<GuestRsvp | null>(null);
+  const [submittedRsvp, setSubmittedRsvp] = useState<RsvpSubmission | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const updateGuests = (people: RsvpPerson[]) => {
+    setGuests(people);
+    const anyAttending = people.some((p) => p.attendance === 'yes');
+    
+    // Compute collective attendingDays from individual guests
+    let days: 'both' | 'sept3_only' | 'sept4_only' = 'both';
+    const attendingPeople = people.filter((p) => p.attendance === 'yes');
+    const hasFriday = attendingPeople.some((p) => p.attendingFriday);
+    const hasSaturday = attendingPeople.some((p) => p.attendingSaturday);
+
+    if (hasFriday && hasSaturday) days = 'both';
+    else if (hasFriday) days = 'sept3_only';
+    else if (hasSaturday) days = 'sept4_only';
+
+    setFormData((prev) => ({
+      ...prev,
+      fullName: people[0]?.fullName || '',
+      email: people[0]?.email || '',
+      attendance: anyAttending ? 'yes' : 'no',
+      attendingDays: days,
+      plusOneCount: attendingPeople.length,
+      dietaryPreference: people[0]?.dietaryPreference || 'none',
+      allergiesNote: people[0]?.allergiesNote || '',
+    }));
+  };
+
+  const checkCode = async (e: FormEvent) => {
+    e.preventDefault();
+    if (checkingCode || !invitationCode.trim()) return;
+    setCheckingCode(true);
+    setCodeError('');
+    try {
+      const inv = await lookupInvitation(invitationCode);
+      setInvitation(inv);
+      if (inv.guestName && !guests[0].fullName) {
+        updateGuests([{ ...guests[0], fullName: inv.guestName }]);
+      }
+    } catch {
+      setCodeError(
+        es
+          ? 'No se ha podido validar el código. Por favor compruébalo o contacta con Belén y Oriol.'
+          : 'We could not validate this code. Please check it or contact Belén & Oriol.'
+      );
+    } finally {
+      setCheckingCode(false);
+    }
+  };
 
   const openRsvpForm = () => {
     setIsSubmitted(false);
@@ -67,7 +104,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
       if (customEvent.detail?.roomId) {
         setIsSubmitted(false);
         setIsFormOpen(true);
-        setFormData((prev) => ({ ...prev, roomBooking: customEvent.detail.roomId }));
+        setFormData((prev) => ({ ...prev, roomBooking: customEvent.detail.roomId as GuestRsvp['roomBooking'] }));
       }
     };
     window.addEventListener('select_room_in_rsvp', handleRoomSelect);
@@ -77,63 +114,71 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     };
   }, []);
 
-  useEffect(() => {
-    if (isFormOpen) formRef.current?.querySelector<HTMLInputElement>('input')?.focus();
-  }, [isFormOpen]);
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (sending.current || !invitation || !formData.fullName?.trim() || !formData.email?.trim()) return;
     if (guests.length > invitation.maxGuests) return;
     setSubmitError('');
 
+    const attendingGuests = guests.filter((p) => p.attendance === 'yes');
+    const isAnyAttending = attendingGuests.length > 0;
+
+    // Determine collective attendingDays
+    const hasFri = attendingGuests.some((p) => p.attendingFriday);
+    const hasSat = attendingGuests.some((p) => p.attendingSaturday);
+    let collectiveDays: 'both' | 'sept3_only' | 'sept4_only' = 'both';
+    if (hasFri && hasSat) collectiveDays = 'both';
+    else if (hasFri) collectiveDays = 'sept3_only';
+    else if (hasSat) collectiveDays = 'sept4_only';
+
     const rsvpRecord: GuestRsvp = {
-      code: 'RSVP-WEB',
+      code: invitationCode.trim().toUpperCase() || 'RSVP-WEB',
       fullName: formData.fullName.trim(),
       email: formData.email.trim(),
-      attendance: formData.attendance || 'yes',
-      attendingDays: formData.attendingDays || 'both',
-      plusOneCount: guests.filter(p => p.attendance === 'yes').length,
-      plusOneNames: guests.slice(1).map(p => p.fullName.trim()).join(', '),
+      attendance: isAnyAttending ? 'yes' : 'no',
+      attendingDays: isAnyAttending ? collectiveDays : undefined,
+      plusOneCount: attendingGuests.length,
+      plusOneNames: guests
+        .slice(1)
+        .map((p) => `${p.fullName.trim()} (${p.attendance === 'yes' ? (es ? 'Asiste' : 'Attending') : (es ? 'No asiste' : 'Declined')})`)
+        .join(', '),
       dietaryPreference: guests[0].dietaryPreference,
       allergiesNote: guests[0].allergiesNote,
-      shuttleBooking: Boolean(formData.shuttleBooking),
-      shuttlePickupLocation: formData.shuttlePickupLocation,
-      roomBooking: formData.roomBooking || 'none',
-      songRequest: formData.songRequest || '',
+      shuttleBooking: isAnyAttending ? Boolean(formData.shuttleBooking) : false,
+      shuttlePickupLocation: isAnyAttending && formData.shuttleBooking ? formData.shuttlePickupLocation : '',
+      roomBooking: isAnyAttending ? formData.roomBooking || 'none' : 'none',
+      songRequest: isAnyAttending ? formData.songRequest || '' : '',
       blessingMessage: formData.blessingMessage || '',
       submittedAt: new Date().toISOString(),
     };
 
-    if (rsvpRecord.attendance === 'no') {
-      rsvpRecord.plusOneCount = 0;
-      rsvpRecord.plusOneNames = '';
-      rsvpRecord.attendingDays = undefined;
-      rsvpRecord.dietaryPreference = 'none';
-      rsvpRecord.allergiesNote = '';
-      rsvpRecord.shuttleBooking = false;
-      rsvpRecord.shuttlePickupLocation = '';
-      rsvpRecord.roomBooking = 'none';
-      rsvpRecord.songRequest = '';
-    }
-    const people = guests.map(p => ({ ...p, fullName: p.fullName.trim(), email: p.email.trim() }));
-    const fingerprint = JSON.stringify({ ...rsvpRecord, guests: people, submittedAt: undefined });
-    if (!pending.current || pending.current.fingerprint !== fingerprint) {
-      pending.current = { fingerprint, record: { ...rsvpRecord, guests: people, submissionId: crypto.randomUUID() } };
-    }
+    const people = guests.map((p) => ({
+      ...p,
+      fullName: p.fullName.trim(),
+      email: p.email.trim(),
+    }));
+
+    const submissionId = crypto.randomUUID();
+    const submissionPayload: RsvpSubmission = {
+      ...rsvpRecord,
+      submissionId,
+      guests: people,
+    };
+
     sending.current = true;
     setIsSending(true);
     try {
-      const record = pending.current.record;
-      await sendRsvp(record, invitationCode);
-      setSubmittedRsvp(record);
+      await sendRsvp(submissionPayload, invitationCode);
+      setSubmittedRsvp(submissionPayload);
       setIsSubmitted(true);
       setIsFormOpen(false);
       pending.current = null;
     } catch {
-      setSubmitError(lang === 'es'
-        ? 'No hemos podido confirmar el registro. Tu respuesta sigue en el formulario. Comprueba el email del titular, el código y el máximo autorizado antes de intentarlo de nuevo.'
-        : 'We could not confirm your submission. Your answers are still in the form. Check the invitation holder email, code and allowed guest count before trying again.');
+      setSubmitError(
+        es
+          ? 'No hemos podido confirmar el registro de forma remota. Tu respuesta se ha conservado en este formulario para reintentar.'
+          : 'Could not confirm submission remotely. Your response is safely preserved in this form to retry.'
+      );
     } finally {
       sending.current = false;
       setIsSending(false);
@@ -146,37 +191,35 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
   };
 
   return (
-    <section id="rsvp" className="rsvp-section-shell py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative">
+    <section id="rsvp" className="rsvp-section-shell py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative bg-[#ede7da]/60">
       <div className="max-w-3xl mx-auto relative z-10">
-        <div className="original-seal"><img src="/photos/bo-original.webp" alt="BO" width="120" height="120" loading="lazy" /></div>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="rsvp-hero-panel text-center w-full mx-auto mb-12"
+          className="text-center w-full mx-auto mb-10"
         >
-          <span className="text-[11px] tracking-[0.32em] uppercase text-[#5c141e] font-semibold block mb-2">
-            {lang === 'es' ? 'Rogamos Confirmación' : 'Kindly Respond'}
+          <span className="text-[11px] tracking-[0.32em] uppercase text-[#5c141e] font-bold block mb-2">
+            {es ? 'Rogamos Confirmación' : 'Kindly Respond'}
           </span>
           <h2 className="font-cinzel text-3xl sm:text-5xl text-[#37080e] font-bold tracking-[0.03em] uppercase leading-tight">
             RSVP
           </h2>
-          <p className="font-cormorant text-xl text-[#6e675f] italic mt-3">
-            {lang === 'es'
-              ? 'Por favor confírmanos tu asistencia antes del 15 de Julio de 2027 para organizar cada detalle de tu estancia.'
-              : 'Please confirm your attendance before July 15, 2027 to help us curate every aspect of your experience.'}
+          <p className="font-cormorant text-lg sm:text-xl text-[#6e675f] italic mt-3 max-w-xl mx-auto">
+            {es
+              ? 'Por favor confírmanos tu asistencia antes del 15 de julio de 2027 para organizar cada detalle con el mayor cariño.'
+              : 'Please confirm your attendance before July 15, 2027 to help us curate every aspect of your celebration.'}
           </p>
-          
         </motion.div>
 
-        {/* Prominent Castle Room Block & Headcount Notice before Dec 31 */}
+        {/* Room Block Notice */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#faf2e3] via-[#fcf8ef] to-[#faf2e3] border-2 border-[#b89243] shadow-md relative overflow-hidden rsvp-readable-card"
+          className="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[#faf2e3] via-[#fcf8ef] to-[#faf2e3] border-2 border-[#b89243]/60 shadow-md relative overflow-hidden"
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-[#5c141e] border-2 border-[#dfc285] flex items-center justify-center text-[#dfc285] shrink-0 shadow-sm">
@@ -185,32 +228,34 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-cinzel font-bold tracking-widest uppercase bg-[#5c141e] text-white">
-                  {lang === 'es' ? 'AVISO IMPORTANTE · ANTES DEL 31 DE DICIEMBRE' : 'IMPORTANT NOTICE · BEFORE DECEMBER 31'}
+                  {es ? 'AVISO IMPORTANTE · ANTES DEL 31 DE DICIEMBRE' : 'IMPORTANT NOTICE · BEFORE DECEMBER 31'}
                 </span>
               </div>
               <h3 className="font-playfair text-base sm:text-lg font-bold text-[#37080e]">
-                {lang === 'es'
-                  ? 'Conteo Inicial para el Bloqueo de Habitaciones del Castillo'
-                  : 'Initial Headcount for the Castle Room Block'}
+                {es ? 'Bloqueo de Habitaciones en el Castillo del Buen Amor' : 'Castle Room Block Allocation'}
               </h3>
               <p className="font-sans text-xs sm:text-sm text-[#554f47] leading-relaxed mt-1">
-                {lang === 'es'
-                  ? 'Para poder gestionar con el Castillo del Buen Amor el bloqueo de habitaciones exclusivas para los invitados, necesitamos un conteo inicial antes del 31 de diciembre. Si tienes intención de acompañarnos y/o alojarte en el castillo, por favor envíanos tu confirmación preliminar lo antes posible.'
-                  : 'In order to arrange and reserve the exclusive room block at Castillo del Buen Amor for our guests, we kindly request an initial headcount before December 31st. If you plan to join us and/or stay at the castle, please submit your preliminary response as early as possible.'}
+                {es
+                  ? 'Para gestionar con el castillo el bloqueo exclusivo de habitaciones, necesitamos un conteo preliminar antes del 31 de diciembre. Si deseas alojarte en el castillo, indícalo al confirmar.'
+                  : 'To coordinate the exclusive room block at the castle, we kindly ask for an early headcount before December 31st.'}
               </p>
             </div>
           </div>
         </motion.div>
 
-        {/* Confirmation Card if already submitted */}
+        {/* State 1: Submitted Confirmation Screen */}
         {isSubmitted && submittedRsvp ? (
-          <div className="bg-[#faf7f2] border-2 border-[#b89243] rounded-xl p-8 sm:p-12 shadow-lg text-center relative overflow-hidden animate-fade-in rsvp-readable-card">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#faf7f2] border-2 border-[#b89243] rounded-2xl p-8 sm:p-12 shadow-xl text-center relative overflow-hidden"
+          >
             <div className="w-16 h-16 rounded-full bg-[#5c141e]/10 border border-[#b89243] flex items-center justify-center mx-auto mb-5 text-[#5c141e]">
-              <CheckCircle2 className="w-8 h-8 text-[#5c141e]" />
+              <CheckCircle2 className="w-9 h-9 text-[#5c141e]" />
             </div>
 
             <span className="text-[11px] tracking-[0.25em] uppercase font-bold text-[#b89243] block mb-1">
-              {lang === 'es' ? '¡Respuesta Registrada con Éxito!' : 'RSVP Successfully Received!'}
+              {es ? '¡Respuesta Registrada con Éxito!' : 'RSVP Successfully Received!'}
             </span>
 
             <h3 className="font-cinzel text-2xl sm:text-3xl text-[#37080e] font-bold mb-4">
@@ -219,405 +264,443 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
             <p className="font-cormorant text-lg text-[#44403c] italic max-w-md mx-auto mb-8">
               {submittedRsvp.attendance === 'yes'
-                ? lang === 'es'
+                ? es
                   ? '¡Qué inmensa alegría contar con vosotros en El Castillo del Buen Amor! Nos vemos en Salamanca.'
                   : 'We are thrilled to celebrate this momentous chapter with you in Salamanca!'
-                : lang === 'es'
+                : es
                 ? 'Lamentamos mucho que no puedas acompañarnos, te tendremos muy presente en nuestro corazón.'
                 : 'We will miss your presence deeply, but you will remain in our hearts!'}
             </p>
 
-            <div className="bg-white p-5 rounded-lg border border-[rgba(92,20,30,0.1)] text-left text-xs space-y-2 mb-8 max-w-md mx-auto">
-              <div className="flex justify-between border-b border-gray-100 pb-2">
+            {/* Detailed Guest Breakdown Summary */}
+            <div className="bg-white p-6 rounded-xl border border-[#5c141e]/15 text-left text-xs space-y-4 mb-8 max-w-lg mx-auto shadow-xs">
+              <div className="flex justify-between items-center border-b border-gray-100 pb-3">
                 <span className="text-[#8c6d3b] uppercase font-bold tracking-wider">
-                  {lang === 'es' ? 'Asistencia:' : 'Attendance:'}
+                  {es ? 'Estado General:' : 'Overall Status:'}
                 </span>
-                <span className="font-semibold text-[#5c141e]">
+                <span className="font-bold text-[#5c141e] text-sm">
                   {submittedRsvp.attendance === 'yes'
-                    ? lang === 'es'
-                      ? 'Sí, Asistiré'
-                      : 'Joyfully Attending'
-                    : lang === 'es'
-                    ? 'No podré asistir'
-                    : 'Regretfully Declining'}
+                    ? es
+                      ? `✓ Asisten ${submittedRsvp.plusOneCount} persona(s)`
+                      : `✓ Attending (${submittedRsvp.plusOneCount} guests)`
+                    : es
+                    ? '✕ No asiste'
+                    : '✕ Not attending'}
                 </span>
               </div>
 
-              {submittedRsvp.attendance === 'yes' && (
-                <>
-                  <div className="flex justify-between border-b border-gray-100 pb-2">
-                    <span className="text-[#8c6d3b] uppercase font-bold tracking-wider">
-                      {lang === 'es' ? 'Jornadas:' : 'Days:'}
-                    </span>
-                    <span className="font-semibold">
-                      {submittedRsvp.attendingDays === 'both'
-                        ? lang === 'es'
-                          ? 'Viernes 3 & Sábado 4 Sep'
-                          : 'Friday 3 & Saturday 4 Sep'
-                        : submittedRsvp.attendingDays === 'sept3_only'
-                        ? lang === 'es'
-                          ? 'Solo Viernes 3 (Bienvenida)'
-                          : 'Friday 3 Only'
-                        : lang === 'es'
-                        ? 'Solo Sábado 4 (La Boda)'
-                        : 'Saturday 4 Only'}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between border-b border-gray-100 pb-2">
-                    <span className="text-[#8c6d3b] uppercase font-bold tracking-wider">
-                      {lang === 'es' ? 'Plazas de Autobús:' : 'Shuttle Bus:'}
-                    </span>
-                    <span>
-                      {submittedRsvp.shuttleBooking
-                        ? lang === 'es'
-                          ? 'Sí, solicitada'
-                          : 'Yes, requested'
-                        : lang === 'es'
-                        ? 'No necesario'
-                        : 'Not needed'}
-                    </span>
-                  </div>
-
-                  {submittedRsvp.dietaryPreference && submittedRsvp.dietaryPreference !== 'none' && (
-                    <div className="flex justify-between border-b border-gray-100 pb-2">
-                      <span className="text-[#8c6d3b] uppercase font-bold tracking-wider">
-                        {lang === 'es' ? 'Menú Especial:' : 'Dietary:'}
-                      </span>
-                      <span className="capitalize">{submittedRsvp.dietaryPreference}</span>
+              {/* Per-guest summary */}
+              {submittedRsvp.guests && submittedRsvp.guests.length > 0 && (
+                <div className="space-y-3 pt-1">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#5c141e] block">
+                    {es ? 'Detalle por Invitado:' : 'Guests Breakdown:'}
+                  </span>
+                  {submittedRsvp.guests.map((g, idx) => (
+                    <div key={idx} className="p-3 bg-[#faf7f2] rounded-lg border border-[#5c141e]/10 text-xs space-y-1">
+                      <div className="flex justify-between font-bold text-[#37080e]">
+                        <span>{idx + 1}. {g.fullName}</span>
+                        <span className={g.attendance === 'yes' ? 'text-[#5c141e]' : 'text-gray-500'}>
+                          {g.attendance === 'yes' ? (es ? 'Asiste' : 'Attending') : (es ? 'No asiste' : 'Declined')}
+                        </span>
+                      </div>
+                      {g.attendance === 'yes' && (
+                        <>
+                          <div className="text-[#6e675f]">
+                            <span className="font-semibold text-[#8c6d3b]">{es ? 'Jornadas: ' : 'Days: '}</span>
+                            {g.attendingFriday && g.attendingSaturday
+                              ? es ? 'Viernes 3 (Preboda) y Sábado 4 (La Boda)' : 'Friday 3 & Saturday 4'
+                              : g.attendingFriday
+                              ? es ? 'Solo Viernes 3 (Preboda)' : 'Friday 3 only'
+                              : es ? 'Solo Sábado 4 (La Boda)' : 'Saturday 4 only'}
+                          </div>
+                          {g.dietaryPreference && g.dietaryPreference !== 'none' && (
+                            <div className="text-[#6e675f]">
+                              <span className="font-semibold text-[#8c6d3b]">{es ? 'Menú: ' : 'Menu: '}</span>
+                              <span className="capitalize">{g.dietaryPreference}</span>
+                              {g.allergiesNote && ` (${g.allergiesNote})`}
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
-                  )}
+                  ))}
+                </div>
+              )}
 
-                  <div className="flex justify-between border-b border-gray-100 pb-2">
+              {submittedRsvp.attendance === 'yes' && (
+                <div className="pt-2 border-t border-gray-100 space-y-2">
+                  <div className="flex justify-between">
                     <span className="text-[#8c6d3b] uppercase font-bold tracking-wider">
-                      {lang === 'es' ? 'Habitación en el Castillo:' : 'Castle Room:'}
+                      {es ? 'Autobús (Salamanca - Castillo):' : 'Shuttle Bus:'}
                     </span>
-                    <span className="font-semibold text-right">
+                    <span className="font-semibold text-[#37080e]">
+                      {submittedRsvp.shuttleBooking ? (es ? 'Sí, reservado' : 'Yes, reserved') : (es ? 'No necesario' : 'Not needed')}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-[#8c6d3b] uppercase font-bold tracking-wider">
+                      {es ? 'Alojamiento Castillo:' : 'Castle Room:'}
+                    </span>
+                    <span className="font-semibold text-[#37080e] text-right">
                       {(() => {
                         const room = CASTLE_ROOMS.find((r) => r.id === submittedRsvp.roomBooking);
-                        if (!room) {
-                          return lang === 'es' ? 'No reservada (alojamiento en Salamanca)' : 'Not booked (staying elsewhere)';
-                        }
-                        return `${lang === 'es' ? room.name : room.nameEn} (${room.price} € · ${lang === 'es' ? 'Desayuno incl.' : 'Breakfast incl.'})`;
+                        if (!room) return es ? 'Alojamiento en Salamanca' : 'Staying in Salamanca';
+                        return `${es ? room.name : room.nameEn} (${room.price} €)`;
                       })()}
                     </span>
                   </div>
-                </>
+                </div>
               )}
             </div>
 
             <button
               onClick={handleEdit}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-semibold tracking-wider uppercase border border-[#5c141e] text-[#5c141e] hover:bg-[#5c141e]/10 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold tracking-wider uppercase border border-[#5c141e] text-[#5c141e] hover:bg-[#5c141e] hover:text-white transition-all cursor-pointer shadow-xs"
             >
               <Edit3 className="w-3.5 h-3.5" />
-              <span>{lang === 'es' ? 'Modificar Respuesta' : 'Edit My RSVP'}</span>
+              <span>{es ? 'Modificar Respuesta' : 'Edit My RSVP'}</span>
             </button>
-          </div>
+          </motion.div>
         ) : !isFormOpen ? (
-          /* Initial State: Only show "Confirmar Asistencia" button */
+          /* State 2: Closed Banner / Action Button */
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#faf7f2] border border-[rgba(92,20,30,0.2)] rounded-2xl p-8 sm:p-12 text-center shadow-lg relative overflow-hidden rsvp-readable-card"
+            className="bg-[#faf7f2] border-2 border-[#b89243]/30 rounded-2xl p-8 sm:p-12 text-center shadow-lg relative overflow-hidden"
           >
-            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#7a1d2b] to-[#3a0810] border-2 border-[#dfc285] flex items-center justify-center text-[#dfc285] shadow-md">
-              <Send className="w-6 h-6" />
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#7a1d2b] to-[#3a0810] border-2 border-[#dfc285] flex items-center justify-center text-[#dfc285] shadow-md">
+              <Send className="w-7 h-7" />
             </div>
 
-            <h3 className="font-cinzel text-xl sm:text-2xl font-bold text-[#37080e] mb-2 uppercase tracking-wide">
-              {lang === 'es' ? 'Confirmación de Asistencia' : 'Wedding Attendance Confirmation'}
+            <h3 className="font-cinzel text-2xl sm:text-3xl font-bold text-[#37080e] mb-2 uppercase tracking-wide">
+              {es ? 'Confirmar Asistencia' : 'Confirm Attendance'}
             </h3>
 
             <p className="font-cormorant italic text-base sm:text-lg text-[#6e675f] max-w-lg mx-auto mb-8">
-              {lang === 'es'
-                ? 'Pulsa en el botón a continuación para abrir el formulario e indicarnos si nos acompañarás, tus preferencias de menú, transporte y alojamiento.'
-                : 'Click the button below to open the form and let us know your attendance, dietary preferences, shuttle bus, and room booking.'}
+              {es
+                ? 'Introduce tu código de invitación para indicar la asistencia y preferencias de cada miembro de tu grupo.'
+                : 'Enter your invitation code to confirm attendance and preferences for each member of your party.'}
             </p>
 
             <button
               type="button"
-              aria-controls="rsvp-questionnaire"
-              aria-expanded={isFormOpen}
               onClick={openRsvpForm}
-              className="rsvp-confirm-button inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5c141e] hover:bg-[#7a1d2b] text-white font-cinzel text-xs sm:text-sm font-bold tracking-[0.22em] uppercase transition-all duration-300 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer"
+              className="inline-flex items-center justify-center gap-3 px-9 py-4 rounded-full bg-[#5c141e] hover:bg-[#7a1d2b] text-white font-cinzel text-xs sm:text-sm font-bold tracking-[0.22em] uppercase transition-all duration-300 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer"
             >
               <Sparkles className="w-4 h-4 text-[#dfc285]" />
-              <span>{lang === 'es' ? 'Confirmar Asistencia' : 'Confirm Attendance'}</span>
+              <span>{es ? 'Abrir Formulario de RSVP' : 'Open RSVP Form'}</span>
             </button>
 
             <div className="mt-6 pt-4 border-t border-[#8c6d4f]/20 text-xs text-[#8c6d4f] font-mono">
-              <span>{lang === 'es' ? 'Fecha límite de confirmación: 15 de Julio de 2027 (15.07.2027)' : 'RSVP Deadline: July 15, 2027 (07.15.2027)'}</span>
+              <span>{es ? 'Fecha límite: 15 de julio de 2027 (15.07.2027)' : 'Deadline: July 15, 2027 (07.15.2027)'}</span>
             </div>
           </motion.div>
         ) : (
-          /* RSVP Form when opened */
+          /* State 3: Open Form */
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#faf7f2] border border-[rgba(92,20,30,0.18)] rounded-xl p-6 sm:p-10 shadow-md relative rsvp-readable-card"
+            className="bg-[#faf7f2] border-2 border-[#b89243]/40 rounded-2xl p-6 sm:p-10 shadow-xl relative"
           >
-            <div className="flex items-center justify-between pb-4 mb-6 border-b border-[rgba(92,20,30,0.12)]">
+            {/* Top Toolbar */}
+            <div className="flex items-center justify-between pb-4 mb-8 border-b border-[#5c141e]/15">
               <div>
-                <h3 className="font-cinzel text-lg font-bold text-[#37080e] uppercase">
-                  {lang === 'es' ? 'Formulario de Asistencia' : 'RSVP Form'}
+                <h3 className="font-cinzel text-lg sm:text-xl font-bold text-[#37080e] uppercase tracking-wide">
+                  {es ? 'Formulario de Confirmación' : 'RSVP Form'}
                 </h3>
-                <span className="text-xs text-[#8c6d4f] font-mono">
-                  {lang === 'es' ? 'Por favor completa todos los campos' : 'Please complete all required fields'}
+                <span className="text-xs text-[#8c6d4f] font-sans">
+                  {invitation
+                    ? es
+                      ? `Invitación validada · Hasta ${invitation.maxGuests} personas`
+                      : `Invitation verified · Up to ${invitation.maxGuests} guests`
+                    : es
+                    ? 'Paso 1: Valida el código de tu invitación'
+                    : 'Step 1: Verify your invitation code'}
                 </span>
               </div>
               <button
                 type="button"
                 disabled={isSending}
                 onClick={() => setIsFormOpen(false)}
-                className="text-xs text-[#8c6d4f] hover:text-[#5c141e] underline cursor-pointer font-sans"
+                className="p-2 text-[#8c6d4f] hover:text-[#5c141e] hover:bg-[#5c141e]/5 rounded-full transition-colors cursor-pointer"
+                title={es ? 'Cerrar' : 'Close'}
               >
-                {lang === 'es' ? 'Ocultar formulario' : 'Collapse form'}
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            {!invitation ? <form onSubmit={checkCode} className="space-y-4" aria-busy={checkingCode}>
-              <label className="block text-sm text-[#5c141e]">{lang === 'es' ? 'Código privado de tu invitación' : 'Your private invitation code'}
-                <input required autoComplete="off" maxLength={80} value={invitationCode} onChange={e => setInvitationCode(e.target.value)} className="block w-full mt-2 px-4 py-3 border border-[#5c141e]/25 rounded bg-white" />
-              </label>
-              {codeError && <p role="alert" className="text-sm text-red-800">{codeError}</p>}
-              <button disabled={checkingCode} className="px-5 py-3 bg-[#5c141e] text-white rounded disabled:opacity-50">{checkingCode ? (lang === 'es' ? 'Comprobando…' : 'Checking…') : (lang === 'es' ? 'Abrir mi invitación' : 'Open my invitation')}</button>
-            </form> : <>
-            <button type="button" disabled={isSending} className="text-sm underline text-[#5c141e] mb-5" onClick={() => { setInvitation(null); setInvitationCode(''); updateGuests([emptyPerson()]); pending.current = null; }}>{lang === 'es' ? 'Usar otro código / actualizar invitación' : 'Use another code / refresh invitation'}</button>
-            <form ref={formRef} id="rsvp-questionnaire" onSubmit={handleSubmit} className="space-y-6" aria-busy={isSending}><fieldset disabled={isSending} className="space-y-6">
-              <RsvpGuests lang={lang} guests={guests} maxGuests={invitation.maxGuests} onChange={updateGuests} />
-                {formData.attendance === 'yes' && (
-                  <div className="space-y-6 pt-2 border-t border-[rgba(92,20,30,0.1)]">
-                    {/* Days attending */}
-                    <div>
-                      <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-2">
-                        {lang === 'es' ? 'Jornadas de Asistencia *' : 'Events Attending *'}
-                      </label>
-                      <select
-                        value={formData.attendingDays}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            attendingDays: e.target.value as 'both' | 'sept3_only' | 'sept4_only',
-                          })
-                        }
-                        className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                      >
-                        <option value="both">
-                          {lang === 'es'
-                            ? 'Ambos Días — Viernes 3 (Preboda íntima · Solo Invitación) y Sábado 4 (La Boda)'
-                            : 'Both Days — Friday Sep 3 (Intimate · Invite Only) & Saturday Sep 4 (Wedding)'}
-                        </option>
-                        <option value="sept4_only">
-                          {lang === 'es'
-                            ? 'Solo Sábado 4 de Septiembre (El Gran Día · La Boda)'
-                            : 'Saturday Sep 4 Only (The Wedding Day)'}
-                        </option>
-                        <option value="sept3_only">
-                          {lang === 'es'
-                            ? 'Solo Viernes 3 de Septiembre (Preboda íntima · Solo Invitación)'
-                            : 'Friday Sep 3 Only (Intimate Gathering · Invite Only)'}
-                        </option>
-                      </select>
-                      {(formData.attendingDays === 'both' || formData.attendingDays === 'sept3_only') && (
-                        <p className="text-[11px] text-[#8c6d3b] font-medium mt-1.5 italic">
-                          {lang === 'es'
-                            ? '✦ Nota: Por motivos de aforo, el encuentro del viernes es un encuentro íntimo y exclusivo para quienes hayáis recibido la invitación correspondiente.'
-                            : '✦ Note: Due to venue capacity, the Friday evening is an intimate gathering strictly for guests who received an invitation.'}
-                        </p>
-                      )}
-                    </div>
+            {/* STEP 1: Code Verification */}
+            {!invitation ? (
+              <form onSubmit={checkCode} className="space-y-6 max-w-md mx-auto py-4 text-center" aria-busy={checkingCode}>
+                <div className="w-12 h-12 rounded-full bg-[#5c141e]/10 border border-[#b89243] flex items-center justify-center mx-auto text-[#5c141e]">
+                  <Key className="w-5 h-5" />
+                </div>
 
-                    {/* Shuttle bus checkbox */}
-                    <div className="p-4 bg-white rounded-lg border border-[rgba(92,20,30,0.12)]">
-                      <label className="flex items-start gap-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={Boolean(formData.shuttleBooking)}
-                          onChange={(e) => setFormData({ ...formData, shuttleBooking: e.target.checked })}
-                          className="mt-0.5 rounded text-[#5c141e] focus:ring-[#5c141e]"
-                        />
-                        <div className="text-xs">
-                          <span className="font-bold text-[#37080e] flex items-center gap-1.5 uppercase tracking-wider">
-                            <Bus className="w-3.5 h-3.5 text-[#b89243]" />
-                            {lang === 'es'
-                              ? 'Deseo reservar plaza en el servicio de autobús para invitados (Salamanca - Castillo)'
-                              : 'Reserve seats on the guest bus service (Salamanca - Castle)'}
-                          </span>
-                          <span className="text-[#6e675f] block mt-0.5">
-                            {lang === 'es'
-                              ? 'Salida desde Salamanca con regreso al finalizar la fiesta.'
-                              : 'Departing from Salamanca with return shuttle service throughout the evening.'}
-                          </span>
-                        </div>
-                      </label>
-                    </div>
-
-                    {/* Room Booking at Castillo del Buen Amor */}
-                    <div className="p-4 sm:p-5 bg-white rounded-xl border-2 border-[#b89243]/40 shadow-xs">
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] flex items-center gap-1.5">
-                          <BedDouble className="w-4 h-4 text-[#b89243]" />
-                          <span>
-                            {lang === 'es'
-                              ? 'Alojamiento en El Castillo del Buen Amor'
-                              : 'Castle Room Reservation'}
-                          </span>
-                        </label>
-                        <span className="text-[10px] font-bold text-[#b89243] uppercase tracking-wider bg-[#b89243]/10 px-2 py-0.5 rounded">
-                          {lang === 'es' ? 'Precios hasta 31 Dic' : 'Rates until Dec 31'}
-                        </span>
-                      </div>
-
-                      <p className="text-xs text-[#6e675f] mb-3 leading-relaxed">
-                        {lang === 'es'
-                          ? 'Cada huésped paga su habitación. Tarifas por habitación y noche con desayuno. Solicitud sujeta a confirmación; se muestra el cupo total:'
-                          : 'Each guest pays for their own room. Rates per room per night with breakfast. Requests require confirmation; total allocation shown:'}
-                      </p>
-
-                      <div className="space-y-2">
-                        {/* Option None */}
-                        <label
-                          className={`p-3 rounded-lg border flex items-center justify-between text-xs cursor-pointer transition-colors ${
-                            formData.roomBooking === 'none' || !formData.roomBooking
-                              ? 'border-[#5c141e] bg-[#5c141e]/5 font-semibold text-[#5c141e]'
-                              : 'border-gray-200 bg-gray-50/50 text-[#554f47] hover:bg-gray-50'
-                          }`}
-                        >
-                          <div className="flex items-start gap-2.5">
-                            <input
-                              type="radio"
-                              name="roomBooking"
-                              value="none"
-                              checked={formData.roomBooking === 'none' || !formData.roomBooking}
-                              onChange={() => setFormData({ ...formData, roomBooking: 'none' })}
-                              className="text-[#5c141e] focus:ring-[#5c141e]"
-                            />
-                            <span>
-                              {lang === 'es'
-                                ? 'No deseo habitación en el castillo (me alojo en Salamanca)'
-                                : 'No castle room needed (staying in Salamanca or nearby)'}
-                            </span>
-                          </div>
-                        </label>
-
-                        {/* Castle Room Options */}
-                        {CASTLE_ROOMS.map((room) => {
-                          const remaining = room.total;
-                          const isSelected = formData.roomBooking === room.id;
-
-                          return (
-                            <label
-                              key={room.id}
-                              className={`p-2.5 rounded-lg border flex flex-col sm:flex-row sm:items-start justify-between gap-1.5 text-xs transition-colors ${
-                                remaining === 0
-                                  ? 'border-gray-200 bg-gray-100 opacity-60 cursor-not-allowed text-gray-400'
-                                  : isSelected
-                                  ? 'border-[#5c141e] bg-[#5c141e]/5 font-semibold text-[#37080e] cursor-pointer shadow-xs'
-                                  : 'border-gray-200 bg-white hover:border-[#b89243]/60 cursor-pointer text-[#44403c]'
-                              }`}
-                            >
-                              <div className="flex items-start gap-2.5">
-                                <input
-                                  type="radio"
-                                  name="roomBooking"
-                                  value={room.id}
-                                  disabled={remaining === 0}
-                                  checked={isSelected}
-                                  onChange={() => setFormData({ ...formData, roomBooking: room.id })}
-                                  className="text-[#5c141e] focus:ring-[#5c141e]"
-                                />
-                                <div>
-                                  <span className="font-bold text-[#37080e]">
-                                    {lang === 'es' ? room.name : room.nameEn}
-                                  </span>
-                                  <span className="text-[#6e675f] text-[11px] block sm:inline sm:ml-2">
-                                    {room.price} € / {lang === 'es' ? 'noche · Desayuno incl.' : 'night · Breakfast incl.'}
-                                  </span>
-                                  {(lang === 'es' ? room.description : room.descriptionEn) && (
-                                    <span className="room-option-subtext block mt-1 text-[10.5px] leading-snug text-[#6e675f] font-normal">
-                                      {(lang === 'es' ? room.description : room.descriptionEn)}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div className="flex items-center gap-2 self-end sm:self-center">
-                                {remaining > 0 ? (
-                                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200">
-                                    {lang === 'es'
-                                      ? `${room.total} habitaciones en el cupo`
-                                      : `${room.total} rooms in allocation`}
-                                  </span>
-                                ) : (
-                                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-red-100 text-red-700">
-                                    {lang === 'es' ? 'Agotada' : 'Sold out'}
-                                  </span>
-                                )}
-                              </div>
-                            </label>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Song Request */}
-                    <div>
-                      <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5 flex items-center gap-1.5">
-                        <Music className="w-3.5 h-3.5 text-[#b89243]" />
-                        <span>
-                          {lang === 'es' ? '¿Qué canción no puede faltar en la fiesta?' : 'Your DJ Song Request'}
-                        </span>
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.songRequest || ''}
-                        onChange={(e) => setFormData({ ...formData, songRequest: e.target.value })}
-                        placeholder="Artista - Título de la canción"
-                        className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Blessing Message */}
                 <div>
-                  <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5 flex items-center gap-1.5">
-                    <Heart className="w-3.5 h-3.5 text-[#b89243]" />
-                    <span>
-                      {lang === 'es'
-                        ? 'Unas palabras para Belén & Oriol'
-                        : 'A heartfelt note for the couple'}
-                    </span>
+                  <label className="block font-cinzel text-sm sm:text-base font-bold text-[#37080e] uppercase mb-2">
+                    {es ? 'Introduce el código de tu invitación' : 'Enter your invitation code'}
                   </label>
-                  <textarea
-                    rows={3}
-                    value={formData.blessingMessage || ''}
-                    onChange={(e) => setFormData({ ...formData, blessingMessage: e.target.value })}
-                    placeholder={
-                      lang === 'es'
-                        ? '¡Estamos deseando veros y celebrar con vosotros en el Castillo!'
-                        : 'Looking forward to celebrating with you at the castle!'
-                    }
-                    className="w-full px-4 py-2.5 bg-white border border-[rgba(92,20,30,0.2)] rounded text-sm focus:outline-none focus:border-[#5c141e]"
+                  <p className="text-xs text-[#6e675f] mb-4">
+                    {es
+                      ? 'Lo encontrarás en la tarjeta o mensaje que recibiste de Belén y Oriol (ej. BO2027, o tu código personal).'
+                      : 'You can find it on your card or message from Belén & Oriol (e.g. BO2027 or your personalized code).'}
+                  </p>
+                  <input
+                    required
+                    autoComplete="off"
+                    maxLength={80}
+                    placeholder="Ej. BO2027"
+                    value={invitationCode}
+                    onChange={(e) => setInvitationCode(e.target.value.toUpperCase())}
+                    className="w-full text-center px-4 py-3.5 border-2 border-[#b89243]/50 rounded-xl bg-white text-base font-mono font-bold tracking-widest text-[#37080e] placeholder:text-[#b89243]/40 focus:outline-none focus:border-[#5c141e] focus:ring-1 focus:ring-[#5c141e] uppercase"
                   />
                 </div>
 
-                {submitError && <p role="alert" className="text-sm text-red-800">{submitError}</p>}
+                {codeError && (
+                  <p role="alert" className="text-xs text-red-700 bg-red-50 p-3 rounded-lg border border-red-200">
+                    {codeError}
+                  </p>
+                )}
+
                 <button
-                  disabled={isSending}
                   type="submit"
-                  className="w-full py-4 bg-[#5c141e] hover:bg-[#7a1d2b] text-white text-xs font-bold tracking-[0.25em] uppercase rounded transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={checkingCode}
+                  className="w-full py-3.5 px-6 bg-[#5c141e] hover:bg-[#7a1d2b] text-white font-cinzel text-xs font-bold tracking-[0.2em] uppercase rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4 text-[#e5cb8f]" />
-                  <span>{isSending ? (lang === 'es' ? 'Enviando…' : 'Sending…') : (lang === 'es' ? 'Enviar respuesta' : 'Submit RSVP')}</span>
+                  <ShieldCheck className="w-4 h-4 text-[#dfc285]" />
+                  <span>{checkingCode ? (es ? 'Comprobando…' : 'Verifying…') : (es ? 'Continuar al formulario' : 'Verify & Continue')}</span>
                 </button>
-              </fieldset></form></>}
+              </form>
+            ) : (
+              /* STEP 2: Main Questionnaire */
+              <>
+                <div className="flex items-center justify-between bg-[#f5efe3] p-3 sm:p-4 rounded-xl border border-[#b89243]/30 mb-6 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-[#5c141e]">Código: {invitationCode}</span>
+                    <span className="text-[#8c6d4f]">· {invitation.maxGuests} {invitation.maxGuests === 1 ? 'plaza' : 'plazas'}</span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isSending}
+                    onClick={() => {
+                      setInvitation(null);
+                      setInvitationCode('');
+                      updateGuests([emptyPerson()]);
+                    }}
+                    className="text-[#5c141e] underline hover:text-[#7a1d2b] cursor-pointer"
+                  >
+                    {es ? 'Cambiar código' : 'Change code'}
+                  </button>
+                </div>
+
+                <form ref={formRef} id="rsvp-questionnaire" onSubmit={handleSubmit} className="space-y-8" aria-busy={isSending}>
+                  <fieldset disabled={isSending} className="space-y-8">
+                    {/* Per-Guest Cards Component with Day selection and Menus */}
+                    <RsvpGuests
+                      lang={lang}
+                      guests={guests}
+                      maxGuests={invitation.maxGuests}
+                      invitedToPreboda={invitation.invitedToPreboda !== false}
+                      onChange={updateGuests}
+                    />
+
+                    {/* Shared Logistics (Only shown if at least one guest is attending) */}
+                    {formData.attendance === 'yes' && (
+                      <div className="space-y-6 pt-6 border-t-2 border-[#5c141e]/15 animate-fade-in">
+                        <div className="text-left">
+                          <h4 className="font-cinzel text-base font-bold text-[#37080e] uppercase tracking-wider mb-1">
+                            {es ? 'Transporte & Alojamiento' : 'Shuttle & Accommodation'}
+                          </h4>
+                          <p className="text-xs text-[#6e675f]">
+                            {es ? 'Opciones de traslado y estancia para el grupo' : 'Travel and lodging preferences for your party'}
+                          </p>
+                        </div>
+
+                        {/* Shuttle Bus Option */}
+                        <div className="p-4 sm:p-5 bg-white rounded-xl border border-[#b89243]/30 shadow-xs">
+                          <label className="flex items-start gap-3.5 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={Boolean(formData.shuttleBooking)}
+                              onChange={(e) => setFormData({ ...formData, shuttleBooking: e.target.checked })}
+                              className="mt-1 w-4 h-4 rounded text-[#5c141e] focus:ring-[#5c141e] border-gray-300"
+                            />
+                            <div className="text-xs">
+                              <span className="font-bold text-[#37080e] flex items-center gap-1.5 uppercase tracking-wider text-xs sm:text-sm">
+                                <Bus className="w-4 h-4 text-[#b89243]" />
+                                {es
+                                  ? 'Autobús para invitados (Ida y/o Regreso Salamanca ⇆ Castillo)'
+                                  : 'Guest Shuttle Bus (Round trip / Return Salamanca ⇆ Castle)'}
+                              </span>
+                              <span className="text-[#6e675f] block mt-1 leading-relaxed">
+                                {es
+                                  ? 'Servicio gratuito de autobús de ida desde Salamanca al castillo para la ceremonia, y regreso en varios turnos durante la noche para quienes se alojen en Salamanca o alrededores.'
+                                  : 'Complimentary shuttle service from Salamanca to the castle for the wedding, and return bus shuttles throughout the night back to Salamanca.'}
+                              </span>
+                            </div>
+                          </label>
+                        </div>
+
+                        {/* Room Booking Option at Castillo del Buen Amor */}
+                        <div className="p-5 bg-white rounded-xl border-2 border-[#b89243]/40 shadow-xs">
+                          <div className="flex items-center justify-between gap-2 mb-2">
+                            <label className="block text-xs font-bold tracking-wider uppercase text-[#5c141e] flex items-center gap-1.5">
+                              <BedDouble className="w-4 h-4 text-[#b89243]" />
+                              <span>{es ? 'Alojamiento en El Castillo del Buen Amor' : 'Castle Room Reservation'}</span>
+                            </label>
+                            <span className="text-[10px] font-bold text-[#b89243] uppercase tracking-wider bg-[#b89243]/10 px-2 py-0.5 rounded">
+                              {es ? 'Precios hasta 31 Dic' : 'Rates until Dec 31'}
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-[#6e675f] mb-4 leading-relaxed">
+                            {es
+                              ? 'Cada huésped abona su habitación al hotel. Precios por habitación y noche con desayuno incluido. Si prefieres alojarte en Salamanca, selecciona la primera opción:'
+                              : 'Each guest settles their room directly with the hotel. Rates per night with breakfast included:'}
+                          </p>
+
+                          <div className="space-y-2.5">
+                            {/* Option None */}
+                            <label
+                              className={`p-3 rounded-xl border-2 flex items-center justify-between text-xs cursor-pointer transition-all ${
+                                formData.roomBooking === 'none' || !formData.roomBooking
+                                  ? 'border-[#5c141e] bg-[#5c141e]/5 font-bold text-[#37080e]'
+                                  : 'border-gray-200 bg-[#faf7f2] text-[#554f47] hover:bg-white hover:border-[#b89243]/50'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2.5">
+                                <input
+                                  type="radio"
+                                  name="roomBooking"
+                                  value="none"
+                                  checked={formData.roomBooking === 'none' || !formData.roomBooking}
+                                  onChange={() => setFormData({ ...formData, roomBooking: 'none' })}
+                                  className="text-[#5c141e] focus:ring-[#5c141e]"
+                                />
+                                <div>
+                                  <span className="font-semibold text-[#37080e] block">
+                                    {es
+                                      ? 'No deseo habitación en el castillo (me alojo en Salamanca o regreso en autobús)'
+                                      : 'No castle room needed (staying in Salamanca / using return shuttle)'}
+                                  </span>
+                                  <span className="text-[11px] text-[#6e675f] font-normal block mt-0.5">
+                                    {es
+                                      ? 'Alojamiento por mi cuenta en la ciudad y regreso en el autobús de la boda'
+                                      : 'Staying in the city and taking the wedding return shuttle'}
+                                  </span>
+                                </div>
+                              </div>
+                            </label>
+
+                            {/* Castle Room Options */}
+                            {CASTLE_ROOMS.map((room) => {
+                              const remaining = room.total;
+                              const isSelected = formData.roomBooking === room.id;
+
+                              return (
+                                <label
+                                  key={room.id}
+                                  className={`p-3 rounded-xl border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs transition-all ${
+                                    remaining === 0
+                                      ? 'border-gray-200 bg-gray-100 opacity-60 cursor-not-allowed text-gray-400'
+                                      : isSelected
+                                      ? 'border-[#5c141e] bg-[#5c141e]/5 font-semibold text-[#37080e] cursor-pointer shadow-xs'
+                                      : 'border-gray-200 bg-white hover:border-[#b89243]/60 cursor-pointer text-[#44403c]'
+                                  }`}
+                                >
+                                  <div className="flex items-start gap-2.5">
+                                    <input
+                                      type="radio"
+                                      name="roomBooking"
+                                      value={room.id}
+                                      disabled={remaining === 0}
+                                      checked={isSelected}
+                                      onChange={() => setFormData({ ...formData, roomBooking: room.id as GuestRsvp['roomBooking'] })}
+                                      className="mt-0.5 text-[#5c141e] focus:ring-[#5c141e]"
+                                    />
+                                    <div>
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        <span className="font-bold text-[#37080e]">{es ? room.name : room.nameEn}</span>
+                                        <span className="text-[#8c6d4f] font-semibold text-[11px]">
+                                          {room.price} € / {es ? 'noche' : 'night'}
+                                        </span>
+                                      </div>
+                                      {(es ? room.description : room.descriptionEn) && (
+                                        <span className="text-[10.5px] text-[#6e675f] block mt-0.5 font-normal">
+                                          {es ? room.description : room.descriptionEn}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200 self-start sm:self-center">
+                                    {es ? `${room.total} hab. cupo` : `${room.total} available`}
+                                  </span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Song Request */}
+                        <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#5c141e]/15">
+                          <label className="block text-xs font-bold uppercase tracking-wider text-[#5c141e] mb-1.5 flex items-center gap-1.5">
+                            <Music className="w-4 h-4 text-[#b89243]" />
+                            <span>{es ? '¿Qué canción no puede faltar en la fiesta?' : 'DJ Song Request'}</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.songRequest || ''}
+                            onChange={(e) => setFormData({ ...formData, songRequest: e.target.value })}
+                            placeholder="Artista - Título de la canción"
+                            className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#5c141e]/20 rounded-lg text-sm text-[#2c241e] placeholder:text-[#9c9489] focus:bg-white focus:outline-none focus:border-[#5c141e] transition-all"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Blessing Message */}
+                    <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#5c141e]/15">
+                      <label className="block text-xs font-bold uppercase tracking-wider text-[#5c141e] mb-1.5 flex items-center gap-1.5">
+                        <Heart className="w-4 h-4 text-[#b89243]" />
+                        <span>{es ? 'Unas palabras o dedicatoria para Belén & Oriol' : 'A note for Belén & Oriol'}</span>
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.blessingMessage || ''}
+                        onChange={(e) => setFormData({ ...formData, blessingMessage: e.target.value })}
+                        placeholder={
+                          es
+                            ? '¡Estamos deseando veros y celebrar con vosotros en el Castillo!'
+                            : 'Looking forward to celebrating with you at the castle!'
+                        }
+                        className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#5c141e]/20 rounded-lg text-sm text-[#2c241e] placeholder:text-[#9c9489] focus:bg-white focus:outline-none focus:border-[#5c141e] transition-all"
+                      />
+                    </div>
+
+                    {submitError && (
+                      <p role="alert" className="text-xs text-red-800 bg-red-50 p-3 rounded-lg border border-red-200">
+                        {submitError}
+                      </p>
+                    )}
+
+                    {/* Submit button */}
+                    <button
+                      disabled={isSending}
+                      type="submit"
+                      className="w-full py-4 bg-[#5c141e] hover:bg-[#7a1d2b] text-white text-xs sm:text-sm font-cinzel font-bold tracking-[0.25em] uppercase rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.01] flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
+                    >
+                      <Send className="w-4 h-4 text-[#dfc285]" />
+                      <span>{isSending ? (es ? 'Enviando confirmación…' : 'Submitting RSVP…') : (es ? 'Confirmar y Enviar Respuesta' : 'Confirm & Submit RSVP')}</span>
+                    </button>
+                  </fieldset>
+                </form>
+              </>
+            )}
           </motion.div>
         )}
       </div>
     </section>
   );
 }
-
-

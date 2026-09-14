@@ -8,19 +8,32 @@ interface FooterProps {
 export function Footer({ lang }: FooterProps) {
   const numericDate = lang === 'es' ? '04.09.2027' : '09.04.2027';
   return (
-    <footer className="bg-[#1f1917] text-[#f4ede2] text-center relative border-t border-[#b89243]/30">
-      <div className="closing-photo closing-photo-fullbleed">
-        <img src="/photos/rainbow-parallax.webp" loading="lazy" alt={lang === 'es' ? 'Belén y Oriol junto al mar' : 'Belén and Oriol by the sea'} />
-        <div>
-          <img className="footer-bo-mark" src="/photos/bo-original.webp" alt="BO" loading="lazy" />
-          <p className="eyebrow">{numericDate}</p>
-          <h2>Castillo del Buen Amor</h2>
-        </div>
+    <footer className="bg-[#1a1413] text-[#f4ede2] text-center relative border-t border-[#b89243]/30">
+      {/* Full-bleed closing rainbow photo with no text overlay */}
+      <div className="closing-photo closing-photo-fullbleed relative overflow-hidden">
+        <img
+          src="/photos/rainbow-parallax.webp"
+          loading="lazy"
+          alt={lang === 'es' ? 'Belén y Oriol' : 'Belén & Oriol'}
+          className="w-full h-full object-cover object-center block"
+        />
       </div>
 
-      <div className="footer-signature max-w-4xl mx-auto flex flex-col items-center px-4 pb-7">
-        <p className="font-cormorant text-sm sm:text-base text-[#dfc285] tracking-wide mb-2">
-          Salamanca · {lang === 'es' ? '3 & 4 de septiembre de 2027' : 'September 3 & 4, 2027'}
+      {/* Elegant, minimalist Footer */}
+      <div className="py-10 sm:py-14 px-6 max-w-xl mx-auto flex flex-col items-center justify-center text-center">
+        {/* Small, transparent BO Monogram */}
+        <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 flex items-center justify-center">
+          <img
+            className="w-full h-full object-contain filter brightness-110 drop-shadow-sm"
+            src="/bo_monogram.png"
+            alt="BO Monogram"
+            loading="lazy"
+          />
+        </div>
+
+        {/* Date */}
+        <p className="font-cinzel text-xs sm:text-sm text-[#dfc285] tracking-[0.3em] uppercase font-bold">
+          {numericDate}
         </p>
       </div>
     </footer>

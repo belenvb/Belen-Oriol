@@ -166,8 +166,6 @@ button,a { -webkit-tap-highlight-color:transparent; }
 .castle-botanical { max-width:260px; opacity:.75; margin-top:28px!important; }
 
 #journey { background:var(--paper); }
-#journey [class*="shadow"],#registry [class*="shadow"],#rsvp [class*="shadow"],#faq [class*="shadow"] { box-shadow:none; }
-#journey [class*="rounded-2xl"],#registry [class*="rounded-2xl"],#rsvp [class*="rounded-2xl"] { border-radius:0; border-width:0; }
 #journey>div>div { background:transparent; }
 .room-payment { font:400 1.5rem/1.4 'Cormorant Garamond',serif; color:var(--burgundy); margin:24px 0; max-width:700px; }
 .room-row { display:grid; grid-template-columns:1fr auto auto; gap:30px; align-items:center; padding:25px 0; border-top:1px solid var(--line); }
@@ -183,11 +181,9 @@ button,a { -webkit-tap-highlight-color:transparent; }
 #registry > div > div:first-child > p.font-cormorant { display:none; }
 
 footer { padding:0!important; overflow:hidden; }
-.closing-photo { position:relative; height:80svh; min-height:480px; margin-bottom:0; }
+.closing-photo { position:relative; height:min(70vw,680px); min-height:380px; margin-bottom:0; }
 .closing-photo-fullbleed { width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw); }
 .closing-photo>img { width:100%; height:100%; object-fit:cover; object-position:50% 40%; display:block; }
-.closing-photo>div { position:absolute; inset:0; background:linear-gradient(transparent 30%,#102219b8); display:flex; flex-direction:column; justify-content:flex-end; align-items:center; padding:60px 6%; }
-.closing-photo h2 { max-width:900px; font:400 clamp(3.5rem,7vw,7rem)/1 'Cormorant Garamond',serif; margin-top:20px; }
 .footer-signature { padding-top:28px; }
 .footer-bo-art { width:74px; height:74px; object-fit:contain; margin-bottom:10px; filter:saturate(.95) brightness(1.1); }
 
@@ -244,114 +240,7 @@ footer { padding:0!important; overflow:hidden; }
 
 .rsvp-section-shell {
   position: relative;
-  background:
-    radial-gradient(circle at 15% 18%, rgba(92,20,30,.12), transparent 24%),
-    radial-gradient(circle at 82% 22%, rgba(184,146,67,.18), transparent 18%),
-    linear-gradient(135deg, rgba(255,255,255,.72), rgba(255,255,255,.42)),
-    linear-gradient(180deg, #f8f1ea, #f3ede7);
-  overflow: hidden;
-}
-
-.rsvp-section-shell::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: .24;
-  background-image:
-    linear-gradient(135deg, rgba(92,20,30,.35) 0 8%, transparent 8% 100%),
-    linear-gradient(225deg, rgba(184,146,67,.45) 0 8%, transparent 8% 100%),
-    linear-gradient(315deg, rgba(57,112,135,.30) 0 8%, transparent 8% 100%),
-    linear-gradient(45deg, rgba(255,255,255,.55) 0 8%, transparent 8% 100%);
-  background-size: 74px 74px;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
-
-.rsvp-section-shell::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 180px;
-  background: linear-gradient(180deg, transparent, rgba(255,255,255,.38));
-  pointer-events: none;
-}
-
-
-
-
-/* Dark Gaudí glass treatment for RSVP */
-.rsvp-section-shell {
-  position:relative;
-  isolation:isolate;
-  overflow:hidden;
-  background:
-    linear-gradient(180deg,rgba(20,6,10,.86),rgba(20,6,10,.88)),
-    url('/trencadis-glass-dark.svg') center/cover fixed !important;
-  color:#f8f1e7;
-  padding-top:6rem !important;
-}
-.rsvp-section-shell::before {
-  content:'';
-  position:absolute;
-  inset:0;
-  z-index:0;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(245,210,128,.20), transparent 28%),
-    radial-gradient(circle at 82% 18%, rgba(118,28,50,.32), transparent 26%),
-    linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.26));
-  pointer-events:none;
-}
-.rsvp-section-shell::after {
-  content:'';
-  position:absolute;
-  inset:24px;
-  z-index:0;
-  border:1px solid rgba(239,202,124,.26);
-  border-radius:36px;
-  box-shadow:inset 0 1px rgba(255,255,255,.18), inset 0 -1px rgba(0,0,0,.28);
-  pointer-events:none;
-}
-.rsvp-section-shell > div {
-  position:relative;
-  z-index:1;
-}
-.rsvp-section-shell .text-\[\#37080e\],
-.rsvp-section-shell .text-\[\#5c141e\] {
-  color:#f5d58c !important;
-}
-.rsvp-section-shell .text-\[\#6e675f\],
-.rsvp-section-shell .text-\[\#554f47\],
-.rsvp-section-shell .font-cormorant {
-  color:rgba(255,248,232,.82) !important;
-}
-.rsvp-section-shell .bg-\[\#fdfbf7\],
-.rsvp-section-shell .bg-white,
-.rsvp-section-shell form,
-.rsvp-section-shell .rounded-2xl {
-  background-color:rgba(255,250,240,.93) !important;
-  color:#371017 !important;
-  backdrop-filter:blur(10px);
-  box-shadow:0 24px 60px rgba(0,0,0,.22);
-}
-.rsvp-section-shell .bg-\[\#fdfbf7\] *,
-.rsvp-section-shell .bg-white *,
-.rsvp-section-shell form *,
-.rsvp-section-shell .rounded-2xl * {
-  color:inherit;
-}
-.rsvp-section-shell input,
-.rsvp-section-shell textarea,
-.rsvp-section-shell select {
-  color:#371017 !important;
-  background-color:rgba(255,255,255,.92) !important;
-}
-.rsvp-section-shell button {
-  color:inherit;
-}
-.rsvp-section-shell button.bg-\[\#5c141e\],
-.rsvp-section-shell .bg-\[\#5c141e\] {
-  background-color:#6d1020 !important;
-  color:#fff7e7 !important;
+  background: #ede7da;
 }
 
 
@@ -457,17 +346,7 @@ footer { padding:0!important; overflow:hidden; }
   color: #dfc285 !important;
   stroke: #dfc285 !important;
 }
-#rsvp .rsvp-hero-panel {
-  background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.045)) !important;
-  border-color: rgba(223,194,133,.34) !important;
-}
-#rsvp .rsvp-hero-panel span,
-#rsvp .rsvp-hero-panel h2 {
-  color: #f4d48a !important;
-}
-#rsvp .rsvp-hero-panel p {
-  color: rgba(255,248,232,.86) !important;
-}
+
 
 /* Keep the parallax/fixed photo effect on mobile too */
 @media (max-width: 760px) {
