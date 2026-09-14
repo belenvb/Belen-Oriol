@@ -6,54 +6,38 @@ interface FooterProps {
   onNavigate?: (sectionId: string) => void;
 }
 
-export function Footer({ lang, onNavigate }: FooterProps) {
-  const es = lang === 'es';
-  const numericDate = es ? '04 · 09 · 2027' : '09 · 04 · 2027';
-
+export function Footer({ lang }: FooterProps) {
+  const numericDate = lang === 'es' ? '04.09.2027' : '09.04.2027';
   return (
-    <footer className="wedding-footer-cinematic" aria-label={es ? 'Cierre' : 'Closing'}>
-      <section className="footer-parallax-panel">
-        <div className="footer-fixed-photo" aria-hidden="true">
-          <img
-            src="/photos/rainbow-parallax.webp"
-            alt=""
-            loading="lazy"
-          />
-          <div className="footer-photo-shade" />
-        </div>
-
-        <div className="footer-closing-copy">
-          <p className="footer-script">
-            {es ? 'Gracias por ser parte de esta historia' : 'Thank you for being part of our story'}
-          </p>
-        </div>
-      </section>
-
-      <section className="footer-signature-panel">
+    <footer className="wedding-footer text-[#f4ede2] text-center relative">
+      {/* Full-bleed closing rainbow photo with no text overlay */}
+      <div className="closing-photo closing-photo-fullbleed relative overflow-hidden">
         <img
-          className="footer-bo-logo"
-          src={boLogo}
-          alt="Belén & Oriol"
+          src="/photos/rainbow-parallax.webp"
           loading="lazy"
+          alt={lang === 'es' ? 'Belén y Oriol' : 'Belén & Oriol'}
+          className="w-full h-full object-cover object-center block"
         />
+      </div>
 
-        <p className="footer-date">{numericDate}</p>
+      {/* Elegant, minimalist Footer */}
+      <div className="footer-signature">
+        {/* Small, transparent BO Monogram */}
+        <div className="footer-signature-mark">
+          <span
+            className="footer-bo-gold"
+            role="img"
+            aria-label="Belén & Oriol"
+            style={{ maskImage: `url(${boLogo})`, WebkitMaskImage: `url(${boLogo})` }}
+          />
+        </div>
 
-        <p className="footer-location">
-          Castillo del Buen Amor<br />
-          Salamanca
+        {/* Date */}
+        <p className="footer-signature-date">
+          {numericDate}
         </p>
-
-        <nav className="footer-nav" aria-label={es ? 'Enlaces finales' : 'Footer links'}>
-          <button type="button" onClick={() => onNavigate?.('rsvp')}>
-            RSVP
-          </button>
-          <span aria-hidden="true">|</span>
-          <button type="button" onClick={() => onNavigate?.('faq')}>
-            {es ? 'Preguntas frecuentes' : 'FAQ'}
-          </button>
-        </nav>
-      </section>
+      </div>
     </footer>
   );
 }
+
