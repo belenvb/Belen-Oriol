@@ -1415,3 +1415,195 @@ body::before {
     font-size: clamp(2.8rem, 15vw, 4.8rem) !important;
   }
 }
+
+/* === Cinematic final footer replacement from uploaded originals 2026-09-14 === */
+
+.wedding-footer-cinematic {
+  position: relative;
+  overflow: hidden;
+  padding: 0 !important;
+  background: #14211b;
+  color: #f8efe0;
+  text-align: center;
+}
+
+/* Large final image panel */
+.footer-parallax-panel {
+  position: relative;
+  min-height: min(86vh, 780px);
+  overflow: hidden;
+  isolation: isolate;
+  background: #14211b;
+}
+
+/* Fixed image effect, similar to hero */
+.footer-fixed-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  clip-path: inset(0);
+}
+
+.footer-fixed-photo img,
+.footer-photo-shade {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100svh;
+}
+
+.footer-fixed-photo img {
+  object-fit: cover;
+  object-position: center 42%;
+  filter: saturate(0.92) contrast(1.04) brightness(0.78);
+}
+
+.footer-photo-shade {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 33, 27, 0.08) 0%,
+      rgba(20, 33, 27, 0.28) 44%,
+      rgba(20, 33, 27, 0.82) 100%
+    ),
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(223, 194, 133, 0.08),
+      transparent 48%
+    );
+}
+
+/* Script line over the photo */
+.footer-closing-copy {
+  position: relative;
+  z-index: 2;
+  min-height: min(86vh, 780px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: clamp(80px, 10vw, 150px) clamp(28px, 8vw, 120px);
+}
+
+.footer-script {
+  max-width: 580px;
+  margin: 0;
+  font-family: "Great Vibes", cursive;
+  font-size: clamp(2.6rem, 6vw, 6.8rem);
+  line-height: 0.95;
+  color: rgba(255, 248, 235, 0.94);
+  text-shadow: 0 12px 32px rgba(0, 0, 0, 0.42);
+  transform: rotate(-2deg);
+}
+
+/* Final signature block */
+.footer-signature-panel {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: clamp(42px, 6vw, 76px) 24px clamp(48px, 7vw, 86px);
+  background:
+    linear-gradient(180deg, rgba(20, 33, 27, 0.94), #14211b 42%, #101a15 100%);
+  border-top: 1px solid rgba(223, 194, 133, 0.28);
+}
+
+.footer-bo-logo {
+  width: clamp(58px, 7vw, 92px);
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 18px;
+  opacity: 0.94;
+  filter:
+    drop-shadow(0 8px 18px rgba(0, 0, 0, 0.32))
+    saturate(0.92)
+    brightness(1.08);
+}
+
+.footer-date {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.5rem, 2.4vw, 2.3rem);
+  letter-spacing: 0.18em;
+  color: #f3dfb2;
+}
+
+.footer-location {
+  margin: 14px 0 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.68rem;
+  line-height: 1.8;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(248, 239, 224, 0.82);
+}
+
+.footer-nav {
+  margin-top: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(248, 239, 224, 0.7);
+}
+
+.footer-nav button {
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 6px 0;
+  border-bottom: 1px solid transparent;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.footer-nav button:hover {
+  color: #f3dfb2;
+  border-color: rgba(243, 223, 178, 0.7);
+}
+
+/* Neutralize older footer classes from the original file so they don't conflict */
+.wedding-footer,
+footer {
+  padding: 0;
+}
+
+.wedding-footer .closing-photo,
+.closing-photo-fullbleed,
+.footer-signature,
+.footer-signature-mark,
+.footer-bo-gold {
+  all: unset;
+}
+
+/* Mobile: fixed backgrounds can glitch on iOS, so use normal image behavior */
+@media (max-width: 760px), (prefers-reduced-motion: reduce) {
+  .footer-parallax-panel {
+    min-height: 64vh;
+  }
+
+  .footer-fixed-photo img,
+  .footer-photo-shade {
+    position: absolute;
+    height: 100%;
+  }
+
+  .footer-closing-copy {
+    min-height: 64vh;
+    padding: 72px 28px;
+  }
+
+  .footer-script {
+    font-size: clamp(2.4rem, 13vw, 4.6rem);
+  }
+
+  .footer-nav {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+}
