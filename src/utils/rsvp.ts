@@ -1,5 +1,4 @@
-import type { GuestRsvp } from '../types';
-import { findGuestByInput } from '../data/guests';
+import type { GuestRsvp, Language } from '../types';
 
 export type RsvpPerson = {
   fullName: string;
@@ -12,12 +11,36 @@ export type RsvpPerson = {
   allergiesNote: string;
 };
 
-export type RsvpSubmission = GuestRsvp & { submissionId: string; guests: RsvpPerson[] };
+export type RsvpSubmission = GuestRsvp & {
+  submissionId: string;
+  guests: RsvpPerson[];
+  language?: Language;
+  formVersion?: string;
+  clientSubmittedAt?: string;
+};
 
-async function request(payload: unknown) {
+type InvitationLookup = {
+  maxGuests: number;
+  invitedToPreboda?: boolean;
+  invitedToWedding?: boolean;
+  language?: Language;
+};
+
+type RsvpReceipt = {
+  ok?: boolean;
+  submissionId?: string;
+  maxGuests?: number;
+  invitedToPreboda?: boolean;
+  invitedToWedding?: boolean;
+  language?: Language;
+  error?: string;
+};
+
+async function request(payload: unknown): Promise<RsvpReceipt> {
   const endpoint = import.meta.env.VITE_RSVP_ENDPOINT || 'https://script.google.com/macros/s/AKfycbyHE87sExq-w0tQoH0BzPekSGhU7FWU2dKZTBXFPxFSiJV2FJ8KRbseMv8uxijCkQIBJw/exec';
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 25000);
+
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -27,53 +50,56 @@ async function request(payload: unknown) {
       redirect: 'follow',
       credentials: 'omit',
     });
+
     if (!response.ok) throw new Error('RSVP_SEND_FAILED');
-    const receipt = await response.json();
-    if (receipt.ok !== true) throw new Error('RSVP_NOT_CONFIRMED');
+
+    const receipt = (await response.json()) as RsvpReceipt;
+    if (receipt.ok !== true) throw new Error(receipt.error || 'RSVP_NOT_CONFIRMED');
+
     return receipt;
   } finally {
     clearTimeout(timeout);
   }
 }
 
-export async function lookupInvitation(invitationCode: string): Promise<{ maxGuests: number; guestName?: string; invitedToPreboda?: boolean }> {
+export async function lookupInvitation(invitationCode: string): Promise<InvitationLookup> {
   const trimmed = invitationCode.trim();
-  try {
-    const result = await request({ action: 'lookup', invitationCode: trimmed });
-    if (Number.isInteger(result.maxGuests) && result.maxGuests >= 1 && result.maxGuests <= 20) {
-      return { maxGuests: result.maxGuests };
-    }
-  } catch {
-    // If backend isn't configured for this specific custom code or offline, match locally
+  if (!trimmed) throw new Error('INVITATION_CODE_REQUIRED');
+
+  const result = await request({ action: 'lookup', invitationCode: trimmed });
+
+  if (!Number.isInteger(result.maxGuests) || result.maxGuests < 1 || result.maxGuests > 20) {
+    throw new Error('INVALID_INVITATION');
   }
 
-  const localGuest = findGuestByInput(trimmed);
-  if (localGuest) {
-    return {
-      maxGuests: localGuest.partySize || 2,
-      guestName: localGuest.name !== 'Invitado de Honor' ? localGuest.name : undefined,
-      invitedToPreboda: localGuest.invitedToPreboda !== false,
-    };
-  }
-
-  return { maxGuests: 2 };
+  return {
+    maxGuests: result.maxGuests,
+    invitedToPreboda: result.invitedToPreboda !== false,
+    invitedToWedding: result.invitedToWedding !== false,
+    language: result.language,
+  };
 }
 
 export async function sendRsvp(record: RsvpSubmission, invitationCode: string): Promise<void> {
+  const payload: RsvpSubmission & { invitationCode: string } = {
+    ...record,
+    invitationCode: invitationCode.trim(),
+    clientSubmittedAt: record.clientSubmittedAt || record.submittedAt || new Date().toISOString(),
+    formVersion: record.formVersion || 'rsvp-per-guest-v2',
+  };
+
   try {
-    const receipt = await request({ ...record, invitationCode });
+    const receipt = await request(payload);
     if (receipt.submissionId !== record.submissionId) throw new Error('RSVP_NOT_CONFIRMED');
-  } catch (err) {
-    // Save to localStorage as a fallback backup in all cases
+  } catch (error) {
     try {
-      const stored = JSON.parse(localStorage.getItem('bo_wedding_rsvps') || '[]');
-      stored.push({ ...record, invitationCode, savedLocallyAt: new Date().toISOString() });
-      localStorage.setItem('bo_wedding_rsvps', JSON.stringify(stored));
+      const stored = JSON.parse(localStorage.getItem('bo_wedding_rsvp_failed_submissions') || '[]');
+      stored.push({ ...payload, savedLocallyAt: new Date().toISOString() });
+      localStorage.setItem('bo_wedding_rsvp_failed_submissions', JSON.stringify(stored.slice(-10)));
     } catch {
-      // ignore storage error
+      // local backup is best-effort only; the UI must still show a remote submission error.
     }
-    // If remote call failed, still allow graceful fallback if offline
-    console.warn('Remote RSVP submission note:', err);
+
+    throw error instanceof Error ? error : new Error('RSVP_NOT_CONFIRMED');
   }
 }
-
