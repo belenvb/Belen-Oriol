@@ -49,9 +49,9 @@ export function StoryJourney({ lang }: { lang: Language }) {
             </g>
 
             <g className="story-us-outline">
-              <path d="M53 232 88 218 126 224 154 214 183 224 222 221 248 238 240 259 260 271 247 292 218 289 198 310 166 310 142 327 110 320 90 332 67 318 71 292 49 279 58 256Z" />
-              <path d="M222 221 247 218 272 232 288 252 282 270 260 271 240 259 248 238Z" fill="#eadcc4" />
-              <circle cx="113" cy="294" r="4" fill="#752a34" stroke="none" />
+              <path d="M46 252 80 235 118 238 150 226 184 235 225 231 258 246 283 266 297 292 286 320 255 327 230 314 205 331 172 328 145 345 112 337 86 348 59 331 64 304 42 289 52 270Z" />
+              <path d="M258 246 287 244 314 262 332 286 326 305 297 292 283 266Z" fill="#eadcc4" />
+              <circle className="story-east-coast-dot" cx="318" cy="282" r="4" stroke="none" />
             </g>
 
             <path
@@ -64,9 +64,9 @@ export function StoryJourney({ lang }: { lang: Language }) {
             />
 
             <text x="360" y="242">España</text>
-            <text x="73" y="210">United States</text>
-            <text x="63" y="348">Lancaster</text>
-            <text x="63" y="372">Boston · 2024</text>
+            <text x="74" y="222">United States</text>
+            <text x="300" y="258">Lancaster</text>
+            <text x="302" y="303">Boston · 2024</text>
             <text x="118" y="466" className="map-country">
               {es ? 'AL OTRO LADO DEL ATLÁNTICO' : 'ACROSS THE ATLANTIC'}
             </text>
