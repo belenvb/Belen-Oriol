@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import { motion } from 'motion/react';
 import { Language } from '../types';
-
 
 interface FaqSectionProps {
   lang: Language;
@@ -18,14 +17,14 @@ const faqs: FaqItem[] = [
   {
     qEs: '¿Puedo llevar acompañante?',
     qEn: 'Can I bring a plus-one?',
-    aEs: 'Los acompañantes están incluidos únicamente cuando figuran en la invitación. Puedes consultar el número de personas invitadas en tu invitación dentro del RSVP y confirmar allí quiénes asistirán.',
-    aEn: 'Plus-ones are welcome when included in your invitation. You can check the number of invited guests in your invitation within the RSVP and confirm who will attend there.',
+    aEs: 'Tu invitación dentro del RSVP indicará el número de personas invitadas y si incluye acompañante.',
+    aEn: 'Your RSVP invitation will indicate the number of people invited and whether it includes a plus-one.',
   },
   {
-    qEs: '¿Cómo funciona el servicio de autobús para invitados entre Salamanca y el Castillo del Buen Amor?',
-    qEn: 'How does the guest bus service between Salamanca and Castillo del Buen Amor work?',
-    aEs: 'Para el sábado 4 (día de la boda), disponemos de un servicio de autobús sin coste para invitados con salida desde Salamanca hacia el Castillo del Buen Amor para la ceremonia, y de regreso durante la fiesta. Puedes reservar tu plaza al completar el RSVP.',
-    aEn: 'For Saturday Sep 4 (the wedding day), complimentary guest bus transportation is provided from Salamanca to Castillo del Buen Amor for the ceremony, with return transport during the party. You can easily reserve your seat on the RSVP form.',
+    qEs: '¿Habrá autobús entre Salamanca y el Castillo?',
+    qEn: 'Will there be a shuttle between Salamanca and the Castle?',
+    aEs: 'El sábado 4 (día de la boda), habrá un autobús para invitados con salida desde Salamanca hacia el Castillo del Buen Amor antes de la ceremonia, y de regreso después de la fiesta. Puedes reservar tu plaza al completar el RSVP.',
+    aEn: 'On Saturday Sep 4, the wedding day, there will be a guest shuttle from Salamanca to Castillo del Buen Amor before the ceremony, and return service after the party. You can reserve your seat when completing the RSVP.',
   },
   {
     qEs: '¿Cuál es el código de vestimenta para el Viernes 3 y el Sábado 4?',
@@ -36,8 +35,8 @@ const faqs: FaqItem[] = [
   {
     qEs: '¿Hay aparcamiento en El Castillo del Buen Amor?',
     qEn: 'Is there parking available at El Castillo del Buen Amor?',
-    aEs: 'Sí, el recinto del castillo cuenta con un amplio aparcamiento privado gratuito para todos los invitados que prefieran acudir en su propio coche.',
-    aEn: 'Yes, the castle provides ample private parking free of charge for all attending guests.',
+    aEs: 'Sí, el recinto del castillo cuenta con un amplio aparcamiento gratuito para todos los invitados que prefieran acudir en su propio coche.',
+    aEn: 'Yes, the castle grounds have ample free parking for all guests who prefer to drive.',
   },
   {
     qEs: '¿Habrá menús especiales para celíacos, veganos o alérgicos?',
@@ -66,59 +65,47 @@ const faqs: FaqItem[] = [
 ];
 
 export function FaqSection({ lang }: FaqSectionProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  const toggleFaq = (idx: number) => {
-    setOpenIndex(openIndex === idx ? null : idx);
-  };
-
   return (
-    <section id="faq" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#f5efe4] relative border-t border-[rgba(92,20,30,0.12)]">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <span className="text-[11px] tracking-[0.32em] uppercase text-[#5c141e] font-semibold block mb-2">
-            {lang === 'es' ? 'Preguntas Frecuentes' : 'Frequently Asked Questions'}
-          </span>
-          <h2 className="font-cinzel text-3xl sm:text-4xl text-[#37080e] font-bold tracking-[0.03em] uppercase">
-            {lang === 'es' ? 'Información para Invitados' : 'Guest Information'}
-          </h2>
-          
-        </div>
+    <section id="faq" className="faq-editorial-section">
+      <div className="faq-editorial-photo" aria-hidden="true">
+        <img src="/photos/faq-salamanca-smooth-sky-hires.png" alt="" loading="lazy" />
+</div>
 
-        <div className="space-y-4">
-          {faqs.map((faq, idx) => {
-            const isOpen = openIndex === idx;
-            return (
-              <div
-                key={idx}
-                className="bg-[#fdfbf7] rounded-lg border border-[rgba(92,20,30,0.12)] overflow-hidden transition-colors"
-              >
-                <button
-                  onClick={() => toggleFaq(idx)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
-                >
-                  <span className="font-playfair text-base sm:text-lg text-[#37080e] font-semibold">
-                    {lang === 'es' ? faq.qEs : faq.qEn}
-                  </span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-[#b89243] shrink-0 transition-transform duration-300 ${
-                      isOpen ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
+      <div className="faq-editorial-content">
+        <motion.header
+          className="faq-editorial-header"
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className="faq-editorial-kicker">
+            06 / {lang === 'es' ? 'Preguntas frecuentes' : 'Frequently asked questions'}
+          </p>
+          <h2>{lang === 'es' ? 'Dudas. Respuestas.' : 'Questions. Answers.'}</h2>
+          <div className="faq-editorial-rule" />
+          <p>
+            {lang === 'es'
+              ? 'Aquí encontrarás respuestas a las preguntas más comunes sobre el viaje, el alojamiento y todo lo relacionado con nuestra boda.'
+              : 'Here you will find answers to the most common questions about travel, lodging, and everything related to our wedding.'}
+          </p>
+        </motion.header>
 
-                {isOpen && (
-                  <div className="px-6 pb-5 pt-1 text-xs sm:text-sm text-[#44403c] font-cormorant text-base sm:text-lg italic leading-relaxed border-t border-[rgba(92,20,30,0.06)]">
-                    {lang === 'es' ? faq.aEs : faq.aEn}
-                  </div>
-                )}
+        <div className="faq-editorial-list">
+          {faqs.map((faq, idx) => (
+            <article className="faq-editorial-item" key={idx}>
+              <div className="faq-editorial-question">
+                <span className="faq-editorial-number">{String(idx + 1).padStart(2, '0')}</span>
+                <div>
+                  <h3>{lang === 'es' ? faq.qEs : faq.qEn}</h3>
+                  <p>{lang === 'es' ? faq.aEs : faq.aEn}</p>
+                </div>
+                <ChevronDown className="faq-editorial-chevron" aria-hidden="true" />
               </div>
-            );
-          })}
+            </article>
+          ))}
         </div>
       </div>
     </section>
   );
 }
-
-
