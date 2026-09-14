@@ -18,6 +18,7 @@ interface RsvpGuestsProps {
   guests: RsvpPerson[];
   maxGuests: number;
   invitedToPreboda?: boolean;
+  invitationText?: string;
   onChange: (people: RsvpPerson[]) => void;
 }
 
@@ -26,6 +27,7 @@ export function RsvpGuests({
   guests,
   maxGuests,
   invitedToPreboda = true,
+  invitationText = '',
   onChange,
 }: RsvpGuestsProps) {
   const es = lang === 'es';
@@ -114,22 +116,12 @@ export function RsvpGuests({
     { id: 'other', labelEs: 'Otro menú especial', labelEn: 'Other Special', icon: '✨' },
   ];
 
-  const prefilledNames = guests
-    .map((guest) => guest.fullName.trim())
-    .filter(Boolean);
+  const cleanInvitationText = invitationText.trim();
 
-  const formatNameList = (names: string[]) => {
-    if (names.length === 0) return '';
-    if (names.length === 1) return names[0];
-    if (names.length === 2) return `${names[0]} ${es ? 'y' : 'and'} ${names[1]}`;
-
-    return `${names.slice(0, -1).join(', ')} ${es ? 'y' : 'and'} ${names[names.length - 1]}`;
-  };
-
-  const invitationSummary = prefilledNames.length > 0
+  const invitationSummary = cleanInvitationText
     ? es
-      ? `Tu invitación incluye a ${formatNameList(prefilledNames)}.`
-      : `Your invitation includes ${formatNameList(prefilledNames)}.`
+      ? `Tu invitación incluye a ${cleanInvitationText}.`
+      : `Your invitation includes ${cleanInvitationText}.`
     : es
     ? `Tu invitación incluye hasta ${maxGuests} ${maxGuests === 1 ? 'persona' : 'personas'}, incluyendo titular.`
     : `Your invitation includes up to ${maxGuests} ${maxGuests === 1 ? 'guest' : 'guests'}, including the invitation holder.`;

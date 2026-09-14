@@ -533,6 +533,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                         guests={guests}
                         maxGuests={invitation.maxGuests}
                         invitedToPreboda={invitation.invitedToPreboda !== false}
+                        invitationText={invitation.invitationText}
                         onChange={updateGuests}
                       />
 
