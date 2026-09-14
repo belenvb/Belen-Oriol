@@ -42,6 +42,7 @@ function doPost(e) {
         invitedToWedding: invitation.invitedToWedding,
         language: invitation.language,
         guests: invitation.guests,
+        invitationText: invitation.invitationText,
         roomAvailability: getRoomAvailability(book),
       });
     }
@@ -306,6 +307,17 @@ function findInvitation(code) {
     'active',
   ]);
 
+  const invitationTextIndex = findOptionalColumn(idx, [
+    'texto invitacion',
+    'texto invitación',
+    'texto de invitacion',
+    'texto de invitación',
+    'texto mostrado invitacion',
+    'texto mostrado invitación',
+    'invitation text',
+    'invitation label',
+  ]);
+
   const match = rows.find(row => {
     return String(row[codeIndex] || '').trim().toUpperCase() === key;
   });
@@ -316,6 +328,7 @@ function findInvitation(code) {
 
   const holderName = nameIndex === -1 ? '' : String(match[nameIndex] || '').trim();
   const maxGuests = Number(match[maxGuestsIndex]);
+  const invitationText = invitationTextIndex === -1 ? '' : String(match[invitationTextIndex] || '').trim();
   const active = activeIndex === -1 ? true : yesNo(match[activeIndex], true);
 
   const invitedToPreboda = fridayIndex === -1 ? true : yesNo(match[fridayIndex], true);
@@ -347,6 +360,7 @@ function findInvitation(code) {
     invitedToWedding,
     language,
     guests,
+    invitationText,
   };
 }
 
