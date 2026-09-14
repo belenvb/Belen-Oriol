@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useInView, useReducedMotion } from 'motion/react';
 import { RotateCcw } from 'lucide-react';
+import { LancasterCarriage } from './LancasterCarriage';
 import type { Language } from '../types';
 
 export function StoryJourney({ lang }: { lang: Language }) {
@@ -18,8 +19,8 @@ export function StoryJourney({ lang }: { lang: Language }) {
         role="img"
         aria-label={
           es
-            ? 'Un viaje ilustrado: España, Barcelona y Salamanca; después, España y Estados Unidos unidos por el Atlántico.'
-            : 'An illustrated journey: Spain, Barcelona and Salamanca; then Spain and the United States connected across the Atlantic.'
+            ? 'Un viaje ilustrado: España, Barcelona y Salamanca; después, España y Estados Unidos unidos por el Atlántico, y un carruaje Amish de Lancaster.'
+            : 'An illustrated journey: Spain, Barcelona and Salamanca; then Spain and the United States connected across the Atlantic, and an Amish carriage in Lancaster.'
         }
       >
         <svg className="story-map" viewBox="0 0 500 570" aria-hidden="true">
@@ -67,7 +68,8 @@ export function StoryJourney({ lang }: { lang: Language }) {
             <text x="74" y="222">United States</text>
             <text x="300" y="258">Lancaster</text>
             <text x="302" y="303">Boston · 2024</text>
-            <text x="118" y="466" className="map-country">
+            <LancasterCarriage />
+            <text x="250" y="544" textAnchor="middle" className="map-country">
               {es ? 'AL OTRO LADO DEL ATLÁNTICO' : 'ACROSS THE ATLANTIC'}
             </text>
 

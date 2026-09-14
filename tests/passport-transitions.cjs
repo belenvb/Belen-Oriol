@@ -37,19 +37,17 @@ for(const lang of ['es','en']) {
  assert(cls(tree,'is-flipping'));endTurn(tree);tree=render(lang);
  assert(!cls(tree,'is-flipping'));
  click(tree,lang==='es'?'Página siguiente':'Next page');tree=render(lang);
- assert(cls(tree,'is-open'),'pages stay mounted throughout closing');
- assert(cls(tree,'is-closing-back'));
- assert(cls(tree,'passport-leather-reverse'),'leather reverse exists during closing');
- endTurn(tree);tree=render(lang);
  assert(cls(tree,'is-closed'));assert(cls(tree,'is-back-cover'));
  click(tree,lang==='es'?'Volver a la portada':'Back to cover');tree=render(lang);
  assert(cls(tree,'is-closed'));assert(!cls(tree,'is-back-cover'),'cover control works from the end');
  click(tree,lang==='es'?'Abrir pasaporte':'Open passport');tree=render(lang);
  click(tree,lang==='es'?'Página siguiente':'Next page');tree=render(lang);endTurn(tree);tree=render(lang);
- click(tree,lang==='es'?'Página siguiente':'Next page');tree=render(lang);endTurn(tree);tree=render(lang);
+ click(tree,lang==='es'?'Página siguiente':'Next page');tree=render(lang);
  click(tree,lang==='es'?'Abrir pasaporte':'Open passport');tree=render(lang);
- click(tree,lang==='es'?'Página anterior':'Previous page');tree=render(lang);endTurn(tree);tree=render(lang);
+ click(tree,lang==='es'?'Página anterior':'Previous page');tree=render(lang);
+ assert(cls(tree,'passport-turning-front').props.children.props.page.id === 'trains', 'reverse turn reveals the train page on its original face');
+ endTurn(tree);tree=render(lang);
  assert(cls(tree,'is-open'));assert(!cls(tree,'is-flipping'));
 }
 assert(!source.includes('preventDefault'), 'passport must never cancel document scrolling');
-console.log('PASS: ES/EN open, turn, close on animation end, reopen, reverse, cover return and vertical gestures.');
+console.log('PASS: ES/EN open, turn, direct closing, reopen, reverse, cover return and vertical gestures.');

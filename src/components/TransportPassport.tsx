@@ -201,7 +201,8 @@ export function TransportPassport({ lang }: { lang: Language }) {
     setFlipDirection(null);
 
     if (side === 'back' && isOpen) {
-      setIsClosingBack(true);
+      setCoverFace('back');
+      setIsOpen(false);
       return;
     }
 
@@ -297,15 +298,15 @@ export function TransportPassport({ lang }: { lang: Language }) {
   const baseLeftPage = !flipDirection ? currentSpread.left : flipDirection === 'next' ? currentSpread.left : targetSpread.left;
   const baseRightPage = !flipDirection ? currentSpread.right : flipDirection === 'next' ? targetSpread.right : currentSpread.right;
 
-  const turningFrontBlank = flipDirection === 'previous' && !currentSpread.left;
+  const turningFrontBlank = false;
   const turningBackBlank = flipDirection === 'next';
-  const turningFrontPage = flipDirection === 'previous' ? currentSpread.left : currentSpread.right;
-  const turningBackPage = flipDirection === 'next' ? undefined : targetSpread.right;
+  const turningFrontPage = flipDirection === 'previous' ? targetSpread.right : currentSpread.right;
+  const turningBackPage = flipDirection === 'previous' ? currentSpread.left : undefined;
 
 
   return (
     <div className={`passport-wrap ${isSpanish ? 'passport-spain' : 'passport-usa'}`}>
-      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''} ${!isOpen && coverFace === 'front' ? 'has-cover-intro' : ''}`}>
+      <div className={`passport-stage ${isOpen ? 'is-open' : 'is-closed'} ${isClosingBack ? 'is-closing-back' : ''} ${!isOpen && coverFace === 'front' ? 'has-cover-intro' : ''} ${!isOpen && coverFace === 'back' ? 'has-back-cover' : ''}`}>
         <div className="passport-table-shadow" aria-hidden="true" />
         <aside
           className={`passport-rotated-instruction ${

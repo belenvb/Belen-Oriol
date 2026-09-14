@@ -86,7 +86,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
         description: 'Vestido de cóctel o largo para ellas, traje oscuro o esmoquin para ellos.',
       },
       shuttleInfo: {
-        title: 'Servicio de autobús para invitados entre Salamanca y el Castillo del Buen Amor',
+        title: 'Habrá autobús para invitados entre Salamanca y el Castillo del Buen Amor',
         description: 'Salida desde Salamanca para la ceremonia y regreso al finalizar la fiesta.',
       },
       calEvent: {

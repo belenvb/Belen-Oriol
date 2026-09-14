@@ -220,3 +220,54 @@
  #schedule .schedule-art { height:75svh; min-height:0; }
  #schedule .schedule-art img { width:100vw; }
 }
+/* Keep faces below the fixed navigation; crop from the bottom of the artwork. */
+#schedule .schedule-art img { top:82px; height:calc(100svh - 82px); object-position:50% 0%; }
+/* Return along the very same hinged leaf, rather than rotating a new left leaf. */
+.passport-wrap .passport-turning-sheet-previous { left:auto; right:16px; transform-origin:left center; animation-name:passportReturnLeaf; }
+@keyframes passportReturnLeaf { from { transform:translateX(-14px) rotateY(-180deg); } to { transform:rotateY(0deg); } }
+/* The cover and back use the same physical dimensions in every closed state. */
+#journey .passport-stage.has-back-cover .passport-book { width:min(100%,420px)!important; min-height:0!important; margin-inline:auto; }
+#journey .passport-stage.has-back-cover .passport-front-cover.is-back-cover { position:relative!important; inset:auto!important; width:100%!important; height:var(--passport-closed-length)!important; transform:none!important; transition:none!important; }
+/* Side annotation, deliberately plain text rather than a button-shaped panel. */
+#journey .passport-stage { padding-right:44px!important; }
+#journey .passport-stage.has-cover-intro { padding-right:44px!important; }
+#journey .passport-rotated-instruction { top:50%!important; bottom:auto!important; left:auto!important; right:0!important; transform:translateY(-50%)!important; writing-mode:vertical-rl; text-orientation:mixed; background:none!important; border:0!important; padding:0!important; gap:8px!important; }
+#journey .passport-rotated-instruction span,#journey .passport-rotated-instruction small { color:var(--ink)!important; letter-spacing:.06em!important; }
+.wedding-footer .footer-signature-date { font-size:18px!important; line-height:1.4; letter-spacing:.18em!important; }
+/* Consistent editorial grid for portrait and travel animation. */
+#story.story-section { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-areas:'copy photo' 'journey photo'; align-items:start; gap:32px 7%; max-width:1200px; padding:88px 6%; }
+#story .story-copy { grid-area:copy; }
+#story .story-night { grid-area:photo; width:100%; min-height:0; height:100%; margin:0!important; align-self:stretch; }
+#story .story-night img { width:100%; height:100%!important; max-height:none!important; object-fit:cover; object-position:center; border-radius:2px; box-shadow:none; }
+#story .story-journey { grid-area:journey; width:min(100%,430px); margin:0 auto; align-self:start; }
+#story .story-film { width:100%; min-height:0; aspect-ratio:500/570; border-radius:2px; }
+/* Restore the original invitation-style section titles, not the narrative headings. */
+#journey h2,#registry h2,#rsvp h2,#faq h2,
+#rsvp .rsvp-readable-card h3,#rsvp .rsvp-confirm-button {
+ font-family:'Cinzel Decorative',Georgia,serif!important;
+ font-weight:700!important; letter-spacing:.03em!important; text-transform:uppercase!important;
+}
+#journey h2,#registry h2,#rsvp h2,#faq h2 { font-size:clamp(28px,3.5vw,48px)!important; line-height:1.25!important; }
+#rsvp .rsvp-readable-card h3 { font-size:clamp(18px,2vw,24px)!important; line-height:1.4!important; }
+/* Irregular torn-paper edge outside the Q&A content, with comfortable reading margins. */
+#faq { border-top:0; isolation:isolate; }
+#faq::before,#faq::after { content:''; position:absolute; left:0; right:0; height:22px; background:#f5efe4; pointer-events:none; z-index:1; clip-path:polygon(0 50%,2% 38%,4% 61%,7% 30%,9% 46%,12% 21%,15% 39%,17% 62%,20% 42%,23% 60%,26% 30%,29% 42%,32% 20%,35% 43%,38% 35%,41% 57%,44% 30%,48% 49%,51% 20%,55% 42%,58% 27%,61% 58%,64% 40%,68% 56%,71% 28%,74% 49%,77% 36%,80% 64%,83% 44%,86% 28%,89% 41%,92% 22%,95% 49%,98% 31%,100% 50%,100% 100%,0 100%); }
+#faq::before { top:-21px; }
+#faq::after { bottom:-21px; transform:rotate(180deg); }
+@media(max-width:900px) {
+ #story.story-section { grid-template-columns:1fr; grid-template-areas:'copy' 'photo' 'journey'; padding:60px 7%; gap:28px; }
+ #story .story-night { width:min(100%,430px); height:min(75svh,600px); margin-inline:auto!important; }
+ #story .story-journey { width:min(100%,430px); }
+ .wedding-footer .footer-signature-date { font-size:15px!important; }
+}
+@media(max-width:760px) {
+ .passport-wrap .passport-turning-sheet-previous { left:16px; right:16px; transform-origin:center; animation-name:passportReturnMobile; }
+ @keyframes passportReturnMobile { from { transform:rotateY(-180deg); } to { transform:rotateY(0deg); } }
+}
+@media(prefers-reduced-motion:reduce) {
+ #schedule .schedule-art img { top:0; height:100%; }
+}
+#story .story-landmarks { position:absolute; inset:0; width:100%; height:100%; transform:none; object-fit:contain; }
+#story .story-atlantic { transform:none; }
+#story .story-film.is-still .story-landmarks { opacity:0; }
+#story .story-film.is-still .story-atlantic { opacity:1; animation:none; }

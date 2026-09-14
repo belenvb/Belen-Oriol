@@ -34,7 +34,8 @@ html {
 
 body { overflow-x:hidden; position:relative; }
 body::before { display:none; }
-.font-cinzel,.font-baroque { font-family:'Cormorant Garamond',Georgia,serif; }
+.font-cinzel { font-family:'Cinzel Decorative',Georgia,serif; }
+.font-baroque { font-family:'UnifrakturMaguntia',serif; }
 .font-script { font-family:"Great Vibes",cursive; }
 .font-playfair { font-family:"Playfair Display",Georgia,serif; }
 .font-cormorant { font-family:"Cormorant Garamond",Georgia,serif; }
@@ -114,8 +115,6 @@ button,a { -webkit-tap-highlight-color:transparent; }
 .hero-light-symbol::after {
   transform:translate(-50%,-50%) rotate(90deg);
 }
-
-.story-section { max-width:1250px; margin:auto; padding:140px 6%; display:grid; grid-template-columns:1.2fr .8fr; gap:12%; align-items:center; }
 .story-copy h2,.weekend-heading h2 { font:400 clamp(3rem,5.4vw,5.3rem)/1.04 'Cormorant Garamond',Georgia,serif; letter-spacing:-.035em; color:var(--burgundy); margin:28px 0; }
 .story-copy h2 em { color:var(--forest); }
 .story-copy>p:not(.eyebrow) { max-width:400px; font-size:.9rem; line-height:1.9; color:#58574c; }
@@ -202,7 +201,6 @@ footer { padding:0!important; overflow:hidden; }
   .hero-copy { bottom:22%; }
   .hero-bottom { align-items:center; }
   .hero-bottom>span { max-width:150px; }
-  .story-section { padding:75px 7%; grid-template-columns:1fr; gap:35px; }
   .story-section figure { margin:0 0 0 20%; }
   .story-section figure img { max-height:450px; }
   .mosaic-mark { margin-top:30px; }
@@ -1155,59 +1153,6 @@ body::before {
 }
 
 /* STORY: large photo right, illustrated route left; final map shows Spain + US outlines */
-.story-section {
-  max-width: 1320px !important;
-  grid-template-columns: minmax(0, .92fr) minmax(420px, 1.08fr) !important;
-  grid-template-areas:
-    "copy photo"
-    "journey photo" !important;
-  gap: clamp(36px, 5vw, 84px) !important;
-  align-items: center !important;
-  padding-top: clamp(90px, 9vw, 145px) !important;
-  padding-bottom: clamp(90px, 9vw, 145px) !important;
-}
-
-.story-copy {
-  grid-area: copy;
-}
-
-.story-night {
-  grid-area: photo;
-  margin: 0 !important;
-  align-self: stretch;
-  min-height: clamp(620px, 72vw, 860px);
-}
-
-.story-night img {
-  width: 100%;
-  height: 100% !important;
-  max-height: none !important;
-  object-fit: cover;
-  object-position: center;
-  border-radius: 34px 34px 8px 8px;
-  box-shadow: 0 30px 70px rgba(55, 8, 14, .18);
-}
-
-.story-journey {
-  grid-area: journey;
-  width: min(100%, 520px);
-  position: relative;
-  margin-top: 10px;
-}
-
-.story-film {
-  position: relative;
-  min-height: 470px;
-  border-radius: 28px;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 20% 10%, rgba(255,255,255,.55), transparent 30%),
-    linear-gradient(135deg, #f7efe1, #eadcc4);
-  border: 1px solid rgba(184, 146, 67, .34);
-  box-shadow:
-    0 22px 60px rgba(92, 20, 30, .12),
-    inset 0 0 0 1px rgba(255,255,255,.45);
-}
 
 .story-map,
 .story-atlantic svg {
@@ -1323,32 +1268,9 @@ body::before {
     background-attachment: scroll;
     min-height: 460px;
   }
-
-  .story-section {
-    grid-template-columns: 1fr !important;
-    grid-template-areas:
-      "copy"
-      "photo"
-      "journey" !important;
-  }
-
-  .story-night {
-    min-height: 520px;
-  }
-
-  .story-journey {
-    width: 100%;
-  }
 }
 
 @media (max-width: 640px) {
-  .story-night {
-    min-height: 430px;
-  }
-
-  .story-film {
-    min-height: 410px;
-  }
 }
 
 
@@ -1422,15 +1344,9 @@ body::before {
 /* === Traditional section header font correction 2026-09-14 ===
    Restores the more traditional editorial serif feeling for the main
    section headers instead of the newer decorative/uppercase treatment. */
-#journey h2,
-#registry h2,
-#rsvp h2,
-#faq h2,
 #castle h2,
 .story-copy h2,
 .weekend-heading h2,
-.rsvp-hero-panel h2,
-.rsvp-readable-card h2,
 .castle-rooms-panel h3,
 .footer-signature-date {
   font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
@@ -1440,10 +1356,6 @@ body::before {
 }
 
 /* Specific scale/shape for large page section titles */
-#journey h2,
-#registry h2,
-#rsvp h2,
-#faq h2,
 #castle h2,
 .weekend-heading h2,
 .story-copy h2 {
@@ -1468,15 +1380,6 @@ body::before {
 }
 
 /* Undo overly rigid Cinzel-looking uppercase headers inside card sections. */
-#journey .font-cinzel,
-#registry .font-cinzel,
-#rsvp .font-cinzel,
-#faq .font-cinzel {
-  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
-  font-weight: 400 !important;
-  letter-spacing: -0.02em !important;
-  text-transform: none !important;
-}
 
 /* But keep tiny badges/readability labels sans-serif. */
 #journey .inline-flex span,
@@ -1506,10 +1409,6 @@ body::before {
 }
 
 @media (max-width: 760px) {
-  #journey h2,
-  #registry h2,
-  #rsvp h2,
-  #faq h2,
   #castle h2,
   .weekend-heading h2,
   .story-copy h2 {
