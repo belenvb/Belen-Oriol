@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, useScroll } from 'motion/react';
+import { Analytics } from '@vercel/analytics/react';
 import { Language } from './types';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -196,6 +197,9 @@ export default function App() {
         lang={lang}
         onNavigate={scrollToSection}
       />
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
     </div>
   );
 }
