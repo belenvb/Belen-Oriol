@@ -181,7 +181,7 @@ export function HorizontalTrencadis({ className = '' }: HorizontalTrencadisProps
 
         {/* Stable authentic SVG ceramic mosaic with warm grey mortar joints */}
         <svg
-          viewBox="0 0 1600 44"
+          viewBox="0 2.5 1600 39"
           className="relative z-10 w-full h-full"
           preserveAspectRatio="none"
         >
