@@ -797,3 +797,71 @@ footer { padding:0!important; overflow:hidden; }
 .registry-illustration-card {
   display: none !important;
 }
+
+/* RSVP dark trencadís restoration + current RSVP refinements */
+#rsvp.rsvp-trencadis-dark,
+.rsvp-section-shell.rsvp-trencadis-dark {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 16% 8%, rgba(223,194,133,.22), transparent 28%),
+    radial-gradient(circle at 84% 28%, rgba(129,28,43,.32), transparent 30%),
+    linear-gradient(135deg, rgba(12,28,25,.96), rgba(48,10,18,.97) 48%, rgba(19,37,32,.98));
+  isolation: isolate;
+}
+
+#rsvp.rsvp-trencadis-dark::before,
+.rsvp-section-shell.rsvp-trencadis-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.045) 1px, transparent 1px),
+    url('/trencadis-glass-dark.svg');
+  background-size: 72px 72px, 72px 72px, 520px auto;
+  background-position: center, center, center;
+  opacity: .28;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#rsvp.rsvp-trencadis-dark::after,
+.rsvp-section-shell.rsvp-trencadis-dark::after {
+  content: '';
+  position: absolute;
+  inset: 24px;
+  border: 1px solid rgba(223,194,133,.22);
+  pointer-events: none;
+  z-index: 0;
+  display: block !important;
+}
+
+.rsvp-trencadis-dark .rsvp-dark-eyebrow {
+  color: #dfc285 !important;
+  text-shadow: 0 1px 18px rgba(0,0,0,.35);
+}
+
+.rsvp-trencadis-dark .rsvp-dark-title {
+  color: #fff6e8 !important;
+  text-shadow: 0 2px 28px rgba(0,0,0,.45);
+}
+
+.rsvp-trencadis-dark .rsvp-dark-subtitle {
+  color: rgba(255,246,232,.84) !important;
+}
+
+.rsvp-trencadis-dark .rsvp-hero-panel {
+  border-color: rgba(223,194,133,.25) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055)) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.13), 0 24px 80px rgba(0,0,0,.22) !important;
+}
+
+.rsvp-trencadis-dark .rsvp-readable-card {
+  background-color: rgba(255, 250, 240, .97) !important;
+}
+
+.rsvp-trencadis-dark select {
+  min-width: 4.75rem;
+}
