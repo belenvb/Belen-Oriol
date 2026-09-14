@@ -13,7 +13,7 @@ interface RsvpSectionProps {
 export function RsvpSection({ lang }: RsvpSectionProps) {
   const es = lang === 'es';
   const [invitationCode, setInvitationCode] = useState('');
-  const [invitation, setInvitation] = useState<{ maxGuests: number; guestName?: string; invitedToPreboda?: boolean } | null>(null);
+  const [invitation, setInvitation] = useState<{ maxGuests: number; guestName?: string; invitedToPreboda?: boolean; invitedToWedding?: boolean; language?: Language } | null>(null);
   const [checkingCode, setCheckingCode] = useState(false);
   const [codeError, setCodeError] = useState('');
   const [guests, setGuests] = useState<RsvpPerson[]>([emptyPerson()]);
@@ -163,6 +163,9 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
       ...rsvpRecord,
       submissionId,
       guests: people,
+      language: lang,
+      formVersion: 'rsvp-per-guest-v2',
+      clientSubmittedAt: rsvpRecord.submittedAt,
     };
 
     sending.current = true;
