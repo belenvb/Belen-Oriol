@@ -35,6 +35,7 @@ export type InvitationLookup = {
     fullName: string;
     email?: string;
   }[];
+  invitationText?: string;
   roomAvailability?: RoomAvailability[];
 };
 
@@ -49,6 +50,7 @@ type RsvpReceipt = {
     fullName?: string;
     email?: string;
   }[];
+  invitationText?: string;
   roomAvailability?: RoomAvailability[];
   error?: string;
 };
@@ -100,6 +102,7 @@ export async function lookupInvitation(invitationCode: string): Promise<Invitati
           email: typeof guest.email === 'string' ? guest.email : '',
         }))
       : undefined,
+    invitationText: typeof result.invitationText === 'string' ? result.invitationText.trim() : '',
     roomAvailability: Array.isArray(result.roomAvailability)
       ? result.roomAvailability.map((room) => ({
           id: room.id,
