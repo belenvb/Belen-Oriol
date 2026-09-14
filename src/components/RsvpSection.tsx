@@ -359,8 +359,8 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
               </h3>
               <p className="font-sans text-xs sm:text-sm text-[#554f47] leading-relaxed mt-1">
                 {es
-                  ? 'Si tienes intención de acompañarnos y/o alojarte en el castillo, por favor envía tu confirmación preliminar lo antes posible.'
-                  : 'If you plan to join us and/or stay at the castle, please submit your preliminary response as early as possible.'}
+                  ? 'Para poder gestionar con el Castillo del Buen Amor el bloqueo de habitaciones exclusivas para los invitados, necesitamos un conteo inicial antes del 31 de diciembre. Si tienes intención de acompañarnos y/o alojarte en el castillo, por favor envíanos tu confirmación preliminar lo antes posible.'
+                  : 'To arrange a block of rooms exclusively for our guests with Castillo del Buen Amor, we need an initial headcount before December 31. If you plan to join us and/or stay at the castle, please send us your preliminary confirmation as soon as possible.'}
               </p>
             </div>
           </div>

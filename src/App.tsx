@@ -69,9 +69,7 @@ export default function App() {
 
         </section>
 
-        <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
-          <ScheduleSection lang={lang} selectedDay={selectedDay} onSelectDay={setSelectedDay} hasPrebodaAccess={true} />
-        </motion.div>
+        <ScheduleSection lang={lang} selectedDay={selectedDay} onSelectDay={setSelectedDay} hasPrebodaAccess={true} />
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.08 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
           <JourneyMap lang={lang} />
         </motion.div>

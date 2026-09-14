@@ -1,4 +1,4 @@
-.footer-signature { display:flex; align-items:center; justify-content:center; gap:24px; padding:22px 24px; }
+.footer-signature { display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; padding:20px 24px; }
 .footer-signature-mark { width:36px; height:40px; display:flex; align-items:center; }
 .footer-signature-mark img { max-height:40px!important; width:100%!important; object-fit:contain; }
 .footer-signature-date { font:400 10px/1.4 'Plus Jakarta Sans',sans-serif; letter-spacing:.24em; color:#dfc285; }
@@ -55,17 +55,17 @@
 .passport-wrap .passport-front-cover.is-back-cover::before,.passport-wrap .passport-front-cover.is-back-cover::after { content:none!important; }
 /* Full-height illustration on the left; dates and the programme on the right. */
 #schedule.weekend-cinematic { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); padding:0; gap:0; align-items:stretch; }
-.schedule-art { position:relative; min-height:680px; margin:0; overflow:hidden; background:#d5cab6; }
-.schedule-art img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; }
-.schedule-content { min-width:0; padding:clamp(48px,6vw,96px) clamp(28px,5vw,80px); }
+.schedule-art { position:relative; min-height:580px; margin:0; overflow:hidden; clip-path:inset(0); background:#d5cab6; }
+.schedule-art img { position:fixed; top:0; left:0; width:50vw; height:100svh; object-fit:cover; object-position:center; transform:none; }
+.schedule-content { min-width:0; padding:clamp(36px,4vw,64px) clamp(28px,5vw,80px); text-align:center; }
 .schedule-content .weekend-heading { position:static; }
 .schedule-content .weekend-heading h2 { font-size:clamp(42px,5vw,76px); }
-.schedule-content .event-list { list-style:none; margin:40px 0 24px; padding:0; }
+.schedule-content .event-list { list-style:none; margin:24px 0 16px; padding:0; }
 .schedule-content .event-list li { display:block; border:0; padding:0!important; }
-.schedule-event { display:flex; align-items:start; gap:22px; padding:22px 0; }
-.schedule-content .event-emblem { display:flex; flex:0 0 30px; padding-top:6px; color:#c9af7c; }
-.schedule-olive { width:100%; padding:6px 0; }
-.schedule-olive svg { max-width:none; width:100%; height:26px; opacity:.85; }
+.schedule-event { display:flex; flex-direction:column; align-items:center; gap:5px; padding:10px 0; }
+.schedule-content .event-emblem { display:flex; flex:0 0 auto; padding-top:0; color:#c9af7c; }
+.schedule-olive { width:100%; padding:2px 0; }
+.schedule-olive svg { max-width:none; width:100%; height:18px; opacity:.85; }
 .schedule-olive svg path[fill] { fill:#aeb79c; }
 .schedule-olive svg path[stroke] { stroke:#bba887; }
 .schedule-olive svg circle { fill:#c9af7c; }
@@ -75,4 +75,27 @@
  .schedule-content { padding:48px 7%; }
  .passport-wrap .passport-rotated-instruction { gap:6px!important; }
  .passport-wrap .passport-rotated-instruction span,.passport-wrap .passport-rotated-instruction small { font-size:.52rem!important; letter-spacing:.03em!important; }
+}
+
+.schedule-content .day-tabs { justify-content:center; margin:22px 0; }
+.schedule-event>div { width:100%; }
+.schedule-content .event-list h3 { margin:2px 0; }
+/* Both copies of a leaf use identical layout dimensions while turning. */
+.passport-wrap .passport-page-inner { min-height:var(--passport-closed-length)!important; height:100%; box-sizing:border-box; }
+.passport-wrap .passport-stage.is-closed .passport-spread,
+.passport-wrap .passport-stage.is-closed .passport-cover-base,
+.passport-wrap .passport-stage.is-closed .passport-page-stack,
+.passport-wrap .passport-stage.is-closed .passport-gutter { opacity:0!important; visibility:hidden!important; transition:none!important; }
+.passport-wrap .passport-stage.is-closing-back .passport-page-right { animation:hideLastPage 920ms linear both; }
+@keyframes hideLastPage { 0%,49.99% { visibility:visible; } 50%,100% { visibility:hidden; } }
+.passport-wrap { --leather-grain:url('/leather-grain.svg'); }
+.passport-wrap .passport-front-cover.is-back-cover,.passport-wrap .passport-leather-reverse { background-size:160px 160px; background-blend-mode:soft-light; background-color:var(--leather); }
+.passport-deboss { background-size:160px 160px; background-blend-mode:soft-light; }
+@media(max-width:760px) {
+ .schedule-art img { width:100vw; }
+ .schedule-content { padding:34px 7%; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .schedule-art img { position:absolute; width:100%; height:100%; }
+ .passport-wrap .passport-stage.is-closing-back .passport-page-right { animation-duration:1ms; }
 }

@@ -1,5 +1,3 @@
-import { useRef } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
 import { GlassWater, Utensils, Sparkles, Bus, Music, Heart, Wine, Crown, PartyPopper, Coffee } from 'lucide-react';
 import { scheduleData } from '../data/content';
 import { Language } from '../types';
@@ -15,21 +13,16 @@ interface ScheduleSectionProps {
 }
 
 export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAccess = true }: ScheduleSectionProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const reducedMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] });
-  const imageY = useTransform(scrollYProgress, [0, 1], ['-3%', '3%']);
   const day = scheduleData[lang][selectedDay];
   const es = lang === 'es';
 
   return (
-    <section ref={sectionRef} id="schedule" className="weekend-section weekend-cinematic">
+    <section id="schedule" className="weekend-section weekend-cinematic">
       <figure className="schedule-art">
-        <motion.img
+        <img
           src="/photos/wedding-illustration.webp"
           alt={es ? 'Ilustración de Belén y Oriol' : 'Illustration of Belén and Oriol'}
           loading="lazy"
-          style={{ y: reducedMotion ? 0 : imageY, scale: reducedMotion ? 1 : 1.08 }}
         />
       </figure>
       <div className="schedule-content">
@@ -69,7 +62,7 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAcce
         </ol>
         <div className="weekend-details">
           <p><strong>{day.dressCode.title}</strong><br />{day.dressCode.description}</p>
-          <p><strong>{day.shuttleInfo.title}</strong><br />{day.shuttleInfo.description}</p>
+          {selectedDay === 'sept4' && <p><strong>{day.shuttleInfo.title}</strong><br />{day.shuttleInfo.description}</p>}
         </div>
       </div>
     </section>
