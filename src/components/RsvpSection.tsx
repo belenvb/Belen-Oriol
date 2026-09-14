@@ -1,8 +1,9 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { CheckCircle2, Heart, Send, Sparkles, User, Mail, Utensils, Bus, Music, Edit3, BedDouble, Calendar } from 'lucide-react';
 import { motion } from 'motion/react';
+import { sendRsvp, RsvpSubmission } from '../utils/rsvp';
 import { GuestRsvp, Language } from '../types';
-import { CASTLE_ROOMS, getCastleRoomBookings, recordRoomBooking } from '../data/rooms';
+import { CASTLE_ROOMS } from '../data/rooms';
 
 
 interface RsvpSectionProps {
@@ -10,7 +11,11 @@ interface RsvpSectionProps {
 }
 
 export function RsvpSection({ lang }: RsvpSectionProps) {
-  const [roomBookings, setRoomBookings] = useState<Record<string, number>>({});
+  const [isSending, setIsSending] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const sending = useRef(false);
+  const pending = useRef<{ fingerprint: string; record: RsvpSubmission } | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [formData, setFormData] = useState<Partial<GuestRsvp>>({
     fullName: '',
@@ -38,13 +43,6 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
   };
 
   useEffect(() => {
-    setRoomBookings(getCastleRoomBookings());
-
-    const handleRoomUpdate = () => {
-      setRoomBookings(getCastleRoomBookings());
-    };
-    window.addEventListener('room_reservations_changed', handleRoomUpdate);
-
     // Listen for room pre-selection from the accommodation section
     const handleRoomSelect = (e: Event) => {
       const customEvent = e as CustomEvent<{ roomId: string }>;
@@ -56,32 +54,39 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     };
     window.addEventListener('select_room_in_rsvp', handleRoomSelect);
 
-    const saved = localStorage.getItem('belen_oriol_rsvp_data');
+    let saved: string | null = null;
+    try { saved = localStorage.getItem('belen_oriol_rsvp_receipt_v1'); } catch { /* Storage may be unavailable. */ }
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setSubmittedRsvp(parsed);
-        setIsSubmitted(true);
-        setFormData(parsed);
+        if (parsed.confirmed === true && parsed.record?.fullName && parsed.record?.submissionId) {
+          setSubmittedRsvp(parsed.record);
+          setIsSubmitted(true);
+          setFormData(parsed.record);
+        }
       } catch {
         // Safe fallback
       }
     }
 
     return () => {
-      window.removeEventListener('room_reservations_changed', handleRoomUpdate);
       window.removeEventListener('select_room_in_rsvp', handleRoomSelect);
     };
   }, []);
 
-  const handleSubmit = (e: FormEvent) => {
+  useEffect(() => {
+    if (isFormOpen) formRef.current?.querySelector<HTMLInputElement>('input')?.focus();
+  }, [isFormOpen]);
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!formData.fullName || !formData.email) return;
+    if (sending.current || !formData.fullName?.trim() || !formData.email?.trim()) return;
+    setSubmitError('');
 
     const rsvpRecord: GuestRsvp = {
       code: 'RSVP-WEB',
-      fullName: formData.fullName,
-      email: formData.email,
+      fullName: formData.fullName.trim(),
+      email: formData.email.trim(),
       attendance: formData.attendance || 'yes',
       attendingDays: formData.attendingDays || 'both',
       plusOneCount: Number(formData.plusOneCount) || 1,
@@ -96,14 +101,41 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
       submittedAt: new Date().toISOString(),
     };
 
-    if (formData.roomBooking && formData.roomBooking !== 'none') {
-      recordRoomBooking(formData.roomBooking);
+    if (rsvpRecord.attendance === 'no') {
+      rsvpRecord.plusOneCount = 0;
+      rsvpRecord.plusOneNames = '';
+      rsvpRecord.attendingDays = undefined;
+      rsvpRecord.dietaryPreference = 'none';
+      rsvpRecord.allergiesNote = '';
+      rsvpRecord.shuttleBooking = false;
+      rsvpRecord.shuttlePickupLocation = '';
+      rsvpRecord.roomBooking = 'none';
+      rsvpRecord.songRequest = '';
     }
-
-    localStorage.setItem('belen_oriol_rsvp_data', JSON.stringify(rsvpRecord));
-    setSubmittedRsvp(rsvpRecord);
-    setIsSubmitted(true);
-    setIsFormOpen(false);
+    const fingerprint = JSON.stringify({ ...rsvpRecord, submittedAt: undefined });
+    if (!pending.current || pending.current.fingerprint !== fingerprint) {
+      pending.current = { fingerprint, record: { ...rsvpRecord, submissionId: crypto.randomUUID() } };
+    }
+    sending.current = true;
+    setIsSending(true);
+    try {
+      const record = pending.current.record;
+      await sendRsvp(record);
+      try {
+        localStorage.setItem('belen_oriol_rsvp_receipt_v1', JSON.stringify({ confirmed: true, record }));
+      } catch { /* A confirmed server receipt remains valid without local storage. */ }
+      setSubmittedRsvp(record);
+      setIsSubmitted(true);
+      setIsFormOpen(false);
+      pending.current = null;
+    } catch {
+      setSubmitError(lang === 'es'
+        ? 'No hemos podido confirmar el registro. Tu respuesta sigue en el formulario. Comprueba la conexión y vuelve a intentarlo.'
+        : 'We could not confirm your submission. Your answers are still in the form. Check your connection and try again.');
+    } finally {
+      sending.current = false;
+      setIsSending(false);
+    }
   };
 
   const handleEdit = () => {
@@ -237,8 +269,8 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                     <span>
                       {submittedRsvp.shuttleBooking
                         ? lang === 'es'
-                          ? 'Sí, reservada'
-                          : 'Yes, reserved'
+                          ? 'Sí, solicitada'
+                          : 'Yes, requested'
                         : lang === 'es'
                         ? 'No necesario'
                         : 'Not needed'}
@@ -303,6 +335,8 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
             <button
               type="button"
+              aria-controls="rsvp-questionnaire"
+              aria-expanded={isFormOpen}
               onClick={openRsvpForm}
               className="rsvp-confirm-button inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5c141e] hover:bg-[#7a1d2b] text-white font-cinzel text-xs sm:text-sm font-bold tracking-[0.22em] uppercase transition-all duration-300 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer"
             >
@@ -332,6 +366,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
               </div>
               <button
                 type="button"
+                disabled={isSending}
                 onClick={() => setIsFormOpen(false)}
                 className="text-xs text-[#8c6d4f] hover:text-[#5c141e] underline cursor-pointer font-sans"
               >
@@ -339,7 +374,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form ref={formRef} id="rsvp-questionnaire" onSubmit={handleSubmit} className="space-y-6" aria-busy={isSending}><fieldset disabled={isSending} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-xs font-semibold tracking-wider uppercase text-[#5c141e] mb-1.5 flex items-center gap-1.5">
@@ -608,7 +643,6 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
                         {/* Castle Room Options */}
                         {CASTLE_ROOMS.map((room) => {
-                          const booked = roomBookings[room.id] || 0;
                           const remaining = room.total;
                           const isSelected = formData.roomBooking === room.id;
 
@@ -640,9 +674,9 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                                   <span className="text-[#6e675f] text-[11px] block sm:inline sm:ml-2">
                                     {room.price} € / {lang === 'es' ? 'noche · Desayuno incl.' : 'night · Breakfast incl.'}
                                   </span>
-                                  {getRoomSubtext(room.id, room.nameEn || room.name) && (
+                                  {(lang === 'es' ? room.description : room.descriptionEn) && (
                                     <span className="room-option-subtext block mt-1 text-[10.5px] leading-snug text-[#6e675f] font-normal">
-                                      {getRoomSubtext(room.id, room.nameEn || room.name)}
+                                      {(lang === 'es' ? room.description : room.descriptionEn)}
                                     </span>
                                   )}
                                 </div>
@@ -709,18 +743,21 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                   />
                 </div>
 
+                {submitError && <p role="alert" className="text-sm text-red-800">{submitError}</p>}
                 <button
+                  disabled={isSending}
                   type="submit"
                   className="w-full py-4 bg-[#5c141e] hover:bg-[#7a1d2b] text-white text-xs font-bold tracking-[0.25em] uppercase rounded transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4 text-[#e5cb8f]" />
-                  <span>{lang === 'es' ? 'Confirmar Asistencia' : 'Submit RSVP'}</span>
+                  <span>{isSending ? (lang === 'es' ? 'Enviando…' : 'Sending…') : (lang === 'es' ? 'Enviar respuesta' : 'Submit RSVP')}</span>
                 </button>
-              </form>
+              </fieldset></form>
           </motion.div>
         )}
       </div>
     </section>
   );
 }
+
 
