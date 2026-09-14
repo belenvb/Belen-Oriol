@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+__MACOSX/
+._*
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini

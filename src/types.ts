@@ -61,6 +61,8 @@ export interface GuestRsvp {
   shuttleBooking: boolean;
   shuttlePickupLocation?: string;
   roomBooking?: 'none' | 'estandar' | 'superior' | 'deluxe' | 'suite_guardia' | 'suite_medieval';
+  roomBookings?: Partial<Record<'estandar' | 'superior' | 'deluxe' | 'suite_guardia' | 'suite_medieval', number>>;
+  returnShuttleBooking?: boolean;
   songRequest?: string;
   blessingMessage?: string;
   submittedAt: string;

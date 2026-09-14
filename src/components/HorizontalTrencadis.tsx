@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 
 interface HorizontalTrencadisProps {
   className?: string;
@@ -12,6 +12,7 @@ interface TileShard {
 }
 
 export function HorizontalTrencadis({ className = '' }: HorizontalTrencadisProps) {
+  const glazeId = `ceramic-${useId().replace(/:/g, '')}`;
   // Pure Gaudí & Catalan Modernist ceramic palette
   const shards = useMemo(() => {
     const palette = [
@@ -172,34 +173,44 @@ export function HorizontalTrencadis({ className = '' }: HorizontalTrencadisProps
       className={`relative w-full overflow-hidden select-none my-0 py-0 z-20 ${className}`}
     >
       {/* Top Architectural Border */}
-      <div className="relative w-full h-[1.5px] bg-[#2d221f]" />
+      <div className="relative w-full h-[1.5px] bg-[#b89243]" />
 
       {/* Main Gaudí Trencadís Mosaic Bed (Stable, matte, zero-flash ceramic bed) */}
-      <div className="relative h-9 sm:h-11 md:h-12 w-full overflow-hidden bg-[#161211]">
-        <div className="absolute inset-0 bg-[#161211]" />
+      <div className="relative h-9 sm:h-11 md:h-12 w-full overflow-hidden bg-[#b5b1a7]">
+        <div className="absolute inset-0 bg-[#b5b1a7]" />
 
-        {/* Stable authentic SVG ceramic mosaic with dark mortar lines */}
+        {/* Stable authentic SVG ceramic mosaic with warm grey mortar joints */}
         <svg
-          viewBox="0 0 1600 44"
+          viewBox="0 2.5 1600 39"
           className="relative z-10 w-full h-full"
           preserveAspectRatio="none"
         >
+          <defs>
+            <linearGradient id={glazeId} x1="0" y1="0" x2="0.3" y2="1">
+              <stop offset="0" stopColor="#fff8dd" stopOpacity=".38" />
+              <stop offset=".25" stopColor="#fff8dd" stopOpacity=".06" />
+              <stop offset=".68" stopColor="#fff8dd" stopOpacity="0" />
+              <stop offset="1" stopColor="#302a23" stopOpacity=".22" />
+            </linearGradient>
+          </defs>
           {shards.map((shard) => (
             <polygon
               key={shard.id}
               points={shard.points}
               fill={shard.fill}
               fillOpacity={shard.opacity}
-              stroke="#140f0e"
-              strokeWidth="1.6"
+              stroke="#b5b1a7"
+              strokeWidth="0.75"
               strokeLinejoin="round"
             />
           ))}
+          {shards.map(shard => <polygon key={`glaze-${shard.id}`} points={shard.points} fill={`url(#${glazeId})`} stroke="#fff5db" strokeOpacity=".22" strokeWidth=".3" />)}
         </svg>
       </div>
 
       {/* Bottom Architectural Border */}
-      <div className="relative w-full h-[1.5px] bg-[#2d221f]" />
+      <div className="relative w-full h-[1.5px] bg-[#b89243]" />
     </div>
   );
 }
+
