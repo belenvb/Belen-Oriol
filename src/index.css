@@ -1784,3 +1784,647 @@ body::before {
     max-width: none;
   }
 }
+
+
+/* === Smaller luxury room block refinement 2026-09-14 ===
+   Reduces the scale and density of the castle-room section so it feels more elegant/editorial. */
+
+.castle-rooms-mockup-panel {
+  grid-template-columns: minmax(230px, .48fr) minmax(0, 1.52fr) !important;
+  gap: clamp(1.5rem, 3.4vw, 3rem) !important;
+  padding: clamp(1.75rem, 3.2vw, 3rem) !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 18px 54px rgba(67, 46, 30, .075) !important;
+}
+
+.castle-rooms-mockup-panel::before {
+  inset: 18px !important;
+}
+
+.castle-rooms-mockup-kicker {
+  font-size: .58rem !important;
+  letter-spacing: .22em !important;
+  margin-bottom: .65rem !important;
+}
+
+.castle-rooms-mockup-copy h3 {
+  font-size: clamp(2.25rem, 3.8vw, 3.95rem) !important;
+  line-height: .96 !important;
+  letter-spacing: -.04em !important;
+}
+
+.castle-rooms-mockup-rule {
+  width: 118px !important;
+  margin: 1rem 0 1.05rem !important;
+}
+
+.castle-rooms-mockup-copy p {
+  max-width: 360px !important;
+  font-size: .78rem !important;
+  line-height: 1.72 !important;
+}
+
+.castle-rooms-mockup-copy em {
+  max-width: 340px !important;
+  margin-top: .85rem !important;
+  font-size: 1rem !important;
+  line-height: 1.32 !important;
+}
+
+.castle-room-block-badge {
+  max-width: 390px !important;
+  gap: .75rem !important;
+  margin-top: 1rem !important;
+  padding: .78rem .86rem !important;
+}
+
+.castle-room-block-badge strong {
+  font-size: .56rem !important;
+  letter-spacing: .13em !important;
+  margin-bottom: .22rem !important;
+}
+
+.castle-room-block-badge span {
+  font-size: .66rem !important;
+  line-height: 1.42 !important;
+}
+
+.castle-room-block-badge small {
+  min-height: 34px !important;
+  padding: .42rem .58rem !important;
+  font-size: .5rem !important;
+  letter-spacing: .12em !important;
+}
+
+.castle-rooms-mockup-copy button {
+  min-height: 40px !important;
+  margin-top: 1.25rem !important;
+  padding: 0 1.1rem !important;
+  font-size: .56rem !important;
+  letter-spacing: .14em !important;
+}
+
+.castle-rooms-mockup-grid {
+  gap: .7rem !important;
+}
+
+.castle-room-mockup-card {
+  box-shadow: inset 0 1px rgba(255,255,255,.45) !important;
+}
+
+.castle-room-mockup-card:hover {
+  transform: translateY(-2px) !important;
+}
+
+.castle-room-mockup-image {
+  height: clamp(86px, 8vw, 124px) !important;
+}
+
+.castle-room-mockup-body {
+  padding: .82rem .68rem .95rem !important;
+}
+
+.castle-room-mockup-body h4 {
+  min-height: 2.3rem !important;
+  margin-bottom: .55rem !important;
+  font-size: clamp(1.05rem, 1.35vw, 1.38rem) !important;
+  line-height: 1.02 !important;
+}
+
+.castle-room-mockup-body strong {
+  font-size: clamp(1.65rem, 2.35vw, 2.45rem) !important;
+  line-height: .9 !important;
+}
+
+.castle-room-mockup-body span {
+  max-width: 110px !important;
+  margin-top: .28rem !important;
+  font-size: .61rem !important;
+  line-height: 1.3 !important;
+}
+
+.castle-room-mockup-body small {
+  min-height: 1.75rem !important;
+  margin-top: .68rem !important;
+  font-size: .57rem !important;
+  line-height: 1.35 !important;
+}
+
+.castle-room-mockup-body button {
+  margin-top: .7rem !important;
+  padding-bottom: .32rem !important;
+  font-size: .5rem !important;
+  letter-spacing: .13em !important;
+}
+
+.castle-rooms-mockup-note {
+  margin-top: .65rem !important;
+  padding-top: .78rem !important;
+  font-size: .88rem !important;
+  line-height: 1.4 !important;
+}
+
+@media (max-width: 1180px) {
+  .castle-rooms-mockup-panel {
+    grid-template-columns: 1fr !important;
+  }
+
+  .castle-rooms-mockup-grid {
+    grid-template-columns: repeat(3, minmax(150px, 1fr)) !important;
+  }
+
+  .castle-rooms-mockup-copy {
+    max-width: 650px !important;
+  }
+
+  .castle-rooms-mockup-copy p,
+  .castle-rooms-mockup-copy em,
+  .castle-room-block-badge {
+    max-width: 520px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .castle-rooms-mockup-panel {
+    padding: 1.35rem !important;
+  }
+
+  .castle-rooms-mockup-panel::before {
+    inset: 10px !important;
+  }
+
+  .castle-rooms-mockup-copy h3 {
+    font-size: clamp(2.15rem, 11vw, 3.25rem) !important;
+  }
+
+  .castle-rooms-mockup-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .castle-room-mockup-image {
+    height: auto !important;
+    min-height: 132px !important;
+  }
+
+  .castle-room-mockup-body span {
+    max-width: none !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* === FAQ editorial aligned image + original copy 2026-09-14 === */
+
+.faq-editorial-section {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(310px, 32vw) minmax(0, 1fr);
+  gap: clamp(2.75rem, 4.8vw, 5.2rem);
+  padding: clamp(4.2rem, 6.4vw, 6.2rem) clamp(1.5rem, 4vw, 4rem);
+  background:
+    radial-gradient(circle at 86% 8%, rgba(184,146,67,.08), transparent 20rem),
+    radial-gradient(circle at 20% 85%, rgba(92,20,30,.032), transparent 18rem),
+    #faf6ee;
+  color: #2d211c;
+  border-top: 1px solid rgba(92,20,30,.12);
+  border-bottom: 1px solid rgba(92,20,30,.12);
+  overflow: hidden;
+}
+
+.faq-editorial-photo {
+  position: sticky;
+  top: 6rem;
+  align-self: start;
+  margin-top: clamp(1.2rem, 2.3vw, 2.1rem);
+  min-height: clamp(560px, 74vh, 770px);
+  overflow: hidden;
+  background: #e8dfd1;
+  box-shadow: 0 24px 70px rgba(59, 41, 27, .09);
+}
+
+.faq-editorial-photo img {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+  filter: saturate(.86) contrast(1.02) brightness(.99);
+}
+
+.faq-editorial-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(16,25,20,.04) 38%, rgba(16,25,20,.58)),
+    radial-gradient(circle at 42% 14%, rgba(255,242,216,.10), transparent 34%);
+  pointer-events: none;
+}
+
+.faq-photo-caption {
+  position: absolute;
+  z-index: 2;
+  left: clamp(1.3rem, 2vw, 2rem);
+  bottom: clamp(1.2rem, 2vw, 2rem);
+  display: grid;
+  gap: .32rem;
+  color: rgba(255,248,236,.92);
+  text-transform: uppercase;
+}
+
+.faq-photo-caption span,
+.faq-photo-caption small {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .56rem;
+  line-height: 1.5;
+  letter-spacing: .28em;
+  font-weight: 700;
+}
+
+.faq-photo-caption small {
+  font-size: .52rem;
+  opacity: .82;
+}
+
+.faq-photo-caption::after {
+  content: '';
+  width: 54px;
+  height: 1px;
+  margin-top: .45rem;
+  background: rgba(255,248,236,.72);
+}
+
+.faq-editorial-content {
+  min-width: 0;
+  max-width: 850px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+}
+
+.faq-editorial-header {
+  text-align: center;
+  margin-bottom: clamp(1.9rem, 3.2vw, 2.9rem);
+}
+
+.faq-editorial-kicker {
+  margin: 0 0 .78rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .58rem;
+  letter-spacing: .29em;
+  text-transform: uppercase;
+  color: #2d211c;
+  font-weight: 800;
+}
+
+.faq-editorial-header h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3.15rem, 4.8vw, 4.95rem);
+  line-height: .98;
+  font-weight: 400;
+  letter-spacing: -.04em;
+  color: #5c141e;
+}
+
+.faq-editorial-rule {
+  position: relative;
+  width: 150px;
+  height: 1px;
+  margin: 1.18rem auto 1.08rem;
+  background: linear-gradient(90deg, transparent, rgba(184,146,67,.75), transparent);
+}
+
+.faq-editorial-rule::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  background: #b89243;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.faq-editorial-header > p:last-child {
+  max-width: 610px;
+  margin: 0 auto;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.03rem, 1.55vw, 1.28rem);
+  line-height: 1.38;
+  color: #544a41;
+}
+
+.faq-editorial-list {
+  border-top: 1px solid rgba(92,20,30,.17);
+}
+
+.faq-editorial-item {
+  border-bottom: 1px solid rgba(92,20,30,.15);
+}
+
+.faq-editorial-question {
+  display: grid;
+  grid-template-columns: 54px 1fr 22px;
+  gap: 1.05rem;
+  align-items: start;
+  padding: 1.16rem 0 1.08rem;
+}
+
+.faq-editorial-number {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.58rem, 2vw, 2rem);
+  line-height: .95;
+  letter-spacing: .015em;
+  color: #8c6d3b;
+  font-weight: 400;
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum" 1;
+}
+
+.faq-editorial-question h3 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.28rem, 1.8vw, 1.72rem);
+  line-height: 1.08;
+  letter-spacing: -.014em;
+  color: #5c141e;
+  font-weight: 400;
+}
+
+.faq-editorial-question p {
+  max-width: 700px;
+  margin: .42rem 0 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .78rem;
+  line-height: 1.58;
+  color: #5f574f;
+}
+
+.faq-editorial-chevron {
+  width: 17px;
+  height: 17px;
+  margin-top: .2rem;
+  color: #9a7435;
+  stroke-width: 1.5;
+  opacity: .9;
+}
+
+@media (max-width: 980px) {
+  .faq-editorial-section {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-editorial-photo {
+    position: relative;
+    top: auto;
+    margin-top: 0;
+    min-height: 460px;
+  }
+
+  .faq-editorial-content {
+    max-width: 780px;
+  }
+}
+
+@media (max-width: 640px) {
+  .faq-editorial-section {
+    padding: 3.25rem 1.25rem;
+    gap: 2rem;
+  }
+
+  .faq-editorial-photo {
+    min-height: 420px;
+  }
+
+  .faq-editorial-header {
+    text-align: left;
+  }
+
+  .faq-editorial-rule {
+    margin-left: 0;
+  }
+
+  .faq-editorial-header > p:last-child {
+    margin-left: 0;
+    font-size: 1.04rem;
+  }
+
+  .faq-editorial-question {
+    grid-template-columns: 38px 1fr 18px;
+    gap: .85rem;
+    padding: 1.05rem 0 1rem;
+  }
+
+  .faq-editorial-number {
+    font-size: 1.48rem;
+  }
+
+  .faq-editorial-question h3 {
+    font-size: 1.22rem;
+  }
+
+  .faq-editorial-question p {
+    font-size: .75rem;
+    line-height: 1.55;
+  }
+}
+
+
+/* === FAQ full mockup photo cleaned, branch restored 2026-09-14 === */
+
+.faq-editorial-section {
+  grid-template-columns: minmax(330px, 33vw) minmax(0, 1fr) !important;
+  gap: clamp(2.75rem, 4.8vw, 5.2rem) !important;
+  padding: 0 clamp(1.5rem, 4vw, 4rem) 0 0 !important;
+  background:
+    radial-gradient(circle at 86% 8%, rgba(184,146,67,.04), transparent 20rem),
+    radial-gradient(circle at 20% 85%, rgba(92,20,30,.012), transparent 18rem),
+    #fdfaf4 !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+}
+
+.faq-editorial-photo {
+  position: relative !important;
+  top: auto !important;
+  align-self: stretch !important;
+  min-height: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: 12px 0 42px rgba(59, 41, 27, .045) !important;
+  overflow: hidden !important;
+}
+
+.faq-editorial-photo img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  filter: saturate(.9) contrast(1.01) brightness(1.015) !important;
+  image-rendering: auto !important;
+}
+
+.faq-editorial-photo::after {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.005), rgba(16,25,20,.02) 42%, rgba(16,25,20,.24)),
+    radial-gradient(circle at 42% 14%, rgba(255,242,216,.07), transparent 34%) !important;
+}
+
+.faq-photo-caption,
+.faq-photo-caption *,
+.faq-photo-caption::after,
+.faq-editorial-footer-note,
+.faq-editorial-footer-note * {
+  display: none !important;
+}
+
+.faq-editorial-content {
+  align-self: center !important;
+  padding-top: clamp(4.2rem, 6.4vw, 6.2rem) !important;
+  padding-bottom: clamp(4.2rem, 6.4vw, 6.2rem) !important;
+}
+
+@media (max-width: 980px) {
+  .faq-editorial-section {
+    grid-template-columns: 1fr !important;
+    padding: 0 0 clamp(3.5rem, 6vw, 5rem) !important;
+  }
+
+  .faq-editorial-photo {
+    min-height: 540px !important;
+  }
+
+  .faq-editorial-content {
+    padding: 0 clamp(1.5rem, 5vw, 3rem) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .faq-editorial-photo {
+    min-height: 460px !important;
+  }
+
+  .faq-editorial-content {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+
+/* === FAQ peak-safe photo and no inter-section band 2026-09-14 === */
+
+/* Lighten the FAQ background and remove any vertical/bottom padding that creates a band around the image. */
+.faq-editorial-section {
+  grid-template-columns: minmax(340px, 33vw) minmax(0, 1fr) !important;
+  gap: clamp(2.75rem, 4.8vw, 5.2rem) !important;
+  padding: 0 clamp(1.5rem, 4vw, 4rem) 0 0 !important;
+  background: #fdfaf4 !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+  border-bottom: 0 !important;
+}
+
+/* Image is flush left, full height, and has no background block/band underneath. */
+.faq-editorial-photo {
+  position: relative !important;
+  top: auto !important;
+  align-self: stretch !important;
+  min-height: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  line-height: 0 !important;
+}
+
+.faq-editorial-photo img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  /* Bias upward enough to preserve the cathedral peak and the top-left branch. */
+  object-position: center 32% !important;
+  filter: saturate(.9) contrast(1.01) brightness(1.015) !important;
+  image-rendering: auto !important;
+}
+
+.faq-editorial-photo::after {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.005), rgba(16,25,20,.018) 44%, rgba(16,25,20,.18)) !important;
+}
+
+/* Remove all image overlay text and final note. */
+.faq-photo-caption,
+.faq-photo-caption *,
+.faq-photo-caption::after,
+.faq-editorial-footer-note,
+.faq-editorial-footer-note * {
+  display: none !important;
+}
+
+/* Remove possible empty grey/band artifacts from the old package/image containers. */
+#faq + *,
+.faq-editorial-section + * {
+  margin-top: 0 !important;
+}
+
+.faq-editorial-content {
+  align-self: center !important;
+  padding-top: clamp(4.2rem, 6.4vw, 6.2rem) !important;
+  padding-bottom: clamp(4.2rem, 6.4vw, 6.2rem) !important;
+}
+
+@media (max-width: 980px) {
+  .faq-editorial-section {
+    grid-template-columns: 1fr !important;
+    padding: 0 0 clamp(3.5rem, 6vw, 5rem) !important;
+  }
+
+  .faq-editorial-photo {
+    min-height: 540px !important;
+  }
+
+  .faq-editorial-photo img {
+    object-position: center 30% !important;
+  }
+
+  .faq-editorial-content {
+    padding: 0 clamp(1.5rem, 5vw, 3rem) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .faq-editorial-photo {
+    min-height: 460px !important;
+  }
+
+  .faq-editorial-content {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+
+/* === FAQ smooth sky anti-pixelation 2026-09-14 === */
+
+.faq-editorial-photo img {
+  object-position: center 30% !important;
+  filter: saturate(.88) contrast(1.005) brightness(1.02) !important;
+  image-rendering: auto !important;
+}
+
+.faq-editorial-photo::after {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0), rgba(16,25,20,.014) 44%, rgba(16,25,20,.16)) !important;
+}
