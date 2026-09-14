@@ -6,3 +6,13 @@ coverage/
 *.log
 .env*
 !.env.example
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+__MACOSX/
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
