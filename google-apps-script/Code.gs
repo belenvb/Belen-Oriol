@@ -10,7 +10,16 @@ function getSpreadsheet() {
 const RSVP_TAB = 'Respuestas web';
 const GUESTS_TAB = 'Detalle por invitado';
 const INVITATIONS_TAB = 'Invitaciones';
-const RSVP_FORM_VERSION = 'rsvp-per-guest-v2';
+const ROOMS_TAB = 'Habitaciones';
+const RSVP_FORM_VERSION = 'rsvp-per-guest-v3-rooms';
+
+const ROOM_CONFIG = [
+  { id: 'estandar', label: 'Habitación Estándar', total: 10 },
+  { id: 'superior', label: 'Habitación Superior', total: 10 },
+  { id: 'deluxe', label: 'Habitación Deluxe', total: 10 },
+  { id: 'suite_guardia', label: 'Suite Paso de Guardia', total: 3 },
+  { id: 'suite_medieval', label: 'Suite Medieval', total: 3 },
+];
 
 function doPost(e) {
   let lock;
@@ -24,6 +33,7 @@ function doPost(e) {
 
     if (data.action === 'lookup') {
       const invitation = findInvitation(data.invitationCode);
+      const book = getSpreadsheet();
 
       return jsonReply({
         ok: true,
@@ -32,6 +42,7 @@ function doPost(e) {
         invitedToWedding: invitation.invitedToWedding,
         language: invitation.language,
         guests: invitation.guests,
+        roomAvailability: getRoomAvailability(book),
       });
     }
 
@@ -48,6 +59,13 @@ function doPost(e) {
 
     const invitation = findInvitation(code);
     const people = validatePeople(data, invitation);
+    const roomBookings = normalizeRoomBookings(data);
+    const requestedRoomCount = Object.keys(roomBookings).reduce((sum, roomId) => sum + roomBookings[roomId], 0);
+
+    const returnShuttle = data.returnShuttleBooking === true && requestedRoomCount === 0;
+    if (data.returnShuttleBooking === true && requestedRoomCount > 0) {
+      throw Error('Return shuttle cannot be selected with a castle room');
+    }
 
     const attendingPeople = people.filter(person => person.attendance === 'yes');
     const anyAttending = attendingPeople.length > 0;
@@ -73,8 +91,8 @@ function doPost(e) {
         ? 'sept4_only'
         : '';
 
-    const shuttle = anyAttending && data.shuttleBooking === true ? 'Sí' : 'No';
-    const room = anyAttending ? text(data.roomBooking || 'none', 50) : 'none';
+    const outboundShuttle = anyAttending && data.shuttleBooking === true ? 'Sí' : 'No';
+    const roomSummary = anyAttending ? formatRoomBookings(roomBookings) : '';
     const song = anyAttending ? text(data.songRequest, 500) : '';
     const message = text(data.blessingMessage, 3000);
 
@@ -98,6 +116,7 @@ function doPost(e) {
     lock.waitLock(15000);
 
     const book = getSpreadsheet();
+    assertRoomAvailability(book, roomBookings, id);
 
     let sheet = book.getSheetByName(RSVP_TAB);
 
@@ -118,24 +137,28 @@ function doPost(e) {
         'Asistentes viernes',
         'Asistentes sábado',
         'Nombres grupo',
-        'Autobús',
-        'Habitación solicitada',
+        'Autobús ida Salamanca - Castillo',
+        'Autobús vuelta Castillo - Salamanca',
+        'Habitaciones solicitadas',
+        'Habitaciones JSON',
         'Canción',
         'Mensaje',
       ]);
 
       sheet.setFrozenRows(1);
       sheet
-        .getRange(1, 1, 1, 18)
+        .getRange(1, 1, 1, 20)
         .setFontWeight('bold')
         .setBackground('#5c141e')
         .setFontColor('#ffffff');
 
-      sheet.setColumnWidths(1, 18, 170);
+      sheet.setColumnWidths(1, 20, 170);
       sheet.setColumnWidth(2, 180);
       sheet.setColumnWidth(3, 180);
       sheet.setColumnWidth(14, 320);
-      sheet.setColumnWidth(18, 420);
+      sheet.setColumnWidth(17, 300);
+      sheet.setColumnWidth(18, 260);
+      sheet.setColumnWidth(20, 420);
     }
 
     const last = sheet.getLastRow();
@@ -167,8 +190,10 @@ function doPost(e) {
         fridayCount,
         saturdayCount,
         plusOneNames,
-        shuttle,
-        room,
+        outboundShuttle,
+        returnShuttle ? 'Sí' : 'No',
+        roomSummary,
+        JSON.stringify(roomBookings),
         song,
         message,
       ];
@@ -188,6 +213,8 @@ function doPost(e) {
       attendingGuests: attendingPeople.length,
       fridayCount,
       saturdayCount,
+      roomBookings,
+      roomAvailability: getRoomAvailability(book),
     });
   } catch (error) {
     console.error(error);
@@ -420,6 +447,134 @@ function validatePeople(data, invitation) {
   });
 
   return people;
+}
+
+function normalizeRoomBookings(data) {
+  const result = {};
+  const source = data.roomBookings && typeof data.roomBookings === 'object' ? data.roomBookings : {};
+
+  ROOM_CONFIG.forEach(room => {
+    const qty = Math.max(0, Math.floor(Number(source[room.id]) || 0));
+    if (qty > 0) result[room.id] = qty;
+  });
+
+  if (Object.keys(result).length === 0 && data.roomBooking && data.roomBooking !== 'none') {
+    const id = String(data.roomBooking);
+    if (ROOM_CONFIG.some(room => room.id === id)) result[id] = 1;
+  }
+
+  return result;
+}
+
+function getRoomsSheet(book) {
+  let sheet = book.getSheetByName(ROOMS_TAB);
+
+  if (!sheet) {
+    sheet = book.insertSheet(ROOMS_TAB);
+    sheet.appendRow(['ID habitación', 'Tipo de habitación', 'Total habitaciones']);
+    ROOM_CONFIG.forEach(room => sheet.appendRow([room.id, room.label, room.total]));
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, 3).setFontWeight('bold').setBackground('#5c141e').setFontColor('#ffffff');
+    sheet.setColumnWidths(1, 3, 220);
+  }
+
+  return sheet;
+}
+
+function getRoomTotals(book) {
+  const sheet = getRoomsSheet(book);
+  const rows = sheet.getLastRow() > 1 ? sheet.getRange(2, 1, sheet.getLastRow() - 1, 3).getValues() : [];
+  const totals = {};
+
+  ROOM_CONFIG.forEach(room => {
+    totals[room.id] = room.total;
+  });
+
+  rows.forEach(row => {
+    const id = String(row[0] || '').trim();
+    const total = Number(row[2]);
+    if (ROOM_CONFIG.some(room => room.id === id) && Number.isInteger(total) && total >= 0) {
+      totals[id] = total;
+    }
+  });
+
+  return totals;
+}
+
+function getReservedRoomCounts(book, ignoreSubmissionId) {
+  const counts = {};
+  ROOM_CONFIG.forEach(room => {
+    counts[room.id] = 0;
+  });
+
+  const sheet = book.getSheetByName(RSVP_TAB);
+  if (!sheet || sheet.getLastRow() < 2) return counts;
+
+  const lastColumn = sheet.getLastColumn();
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+  const idx = makeHeaderIndex(headers);
+  const idIndex = findOptionalColumn(idx, ['id de envio', 'id de envío']);
+  const jsonIndex = findOptionalColumn(idx, ['habitaciones json', 'rooms json']);
+  const roomTextIndex = findOptionalColumn(idx, ['habitaciones solicitadas', 'habitacion solicitada', 'habitación solicitada']);
+
+  if (jsonIndex === -1 && roomTextIndex === -1) return counts;
+
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, lastColumn).getValues();
+
+  rows.forEach(row => {
+    if (ignoreSubmissionId && idIndex !== -1 && String(row[idIndex] || '') === String(ignoreSubmissionId)) return;
+
+    if (jsonIndex !== -1 && row[jsonIndex]) {
+      try {
+        const parsed = JSON.parse(String(row[jsonIndex]));
+        ROOM_CONFIG.forEach(room => {
+          counts[room.id] += Math.max(0, Math.floor(Number(parsed[room.id]) || 0));
+        });
+        return;
+      } catch (e) {}
+    }
+
+    if (roomTextIndex !== -1) {
+      const value = String(row[roomTextIndex] || '').toLowerCase();
+      ROOM_CONFIG.forEach(room => {
+        if (value === room.id || value.indexOf(room.id.toLowerCase()) !== -1) counts[room.id] += 1;
+      });
+    }
+  });
+
+  return counts;
+}
+
+function getRoomAvailability(book, ignoreSubmissionId) {
+  const totals = getRoomTotals(book);
+  const reserved = getReservedRoomCounts(book, ignoreSubmissionId);
+
+  return ROOM_CONFIG.map(room => ({
+    id: room.id,
+    total: totals[room.id],
+    reserved: reserved[room.id] || 0,
+    remaining: Math.max(0, totals[room.id] - (reserved[room.id] || 0)),
+  }));
+}
+
+function assertRoomAvailability(book, roomBookings, submissionId) {
+  const availability = getRoomAvailability(book, submissionId);
+
+  Object.keys(roomBookings).forEach(roomId => {
+    const requested = roomBookings[roomId];
+    const room = availability.find(item => item.id === roomId);
+    if (!room) throw Error('Invalid room request');
+    if (requested > room.remaining) throw Error('Room allocation unavailable');
+  });
+}
+
+function formatRoomBookings(roomBookings) {
+  const parts = [];
+  ROOM_CONFIG.forEach(room => {
+    const qty = roomBookings[room.id] || 0;
+    if (qty > 0) parts.push(qty + ' × ' + room.label);
+  });
+  return parts.length ? parts.join(', ') : 'none';
 }
 
 function saveGuestDetails(book, id, code, titularEmail, people, literal) {
