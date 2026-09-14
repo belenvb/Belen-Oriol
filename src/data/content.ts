@@ -41,7 +41,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       dateKey: 'sept3',
       dayOfWeek: 'Viernes',
       fullDateString: 'Viernes, 03 de Septiembre de 2027',
-      title: 'La Víspera · Encuentro Íntimo de Bienvenida',
+      title: 'Pre-boda y bienvenida',
       subtitle: 'Una velada en Salamanca para brindar antes del gran día.',
       location: 'Salamanca',
       dressCode: {
@@ -63,12 +63,12 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
         {
           id: 's3-1',
           time: 'Evening',
-          title: 'Encuentro Íntimo de Bienvenida',
+          title: 'Pre-boda y bienvenida',
           location: 'Salamanca',
           iconName: 'GlassWater',
           highlight: true,
           badge: 'Solo Invitación',
-          description: 'Por motivos de aforo, se trata de un encuentro íntimo y exclusivo para quienes hayáis recibido la convocatoria correspondiente.',
+          description: 'Por motivos de aforo, la preboda tiene una invitación separada que podrás consultar al abrir tu RSVP y confirmar allí tu asistencia.',
         },
       ],
     },
@@ -87,7 +87,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       },
       shuttleInfo: {
         title: 'Habrá autobús para invitados entre Salamanca y el Castillo del Buen Amor',
-        description: 'Salida desde Salamanca para la ceremonia y regreso al finalizar la fiesta.',
+        description: 'Servicio sin coste, con salida desde Salamanca para la ceremonia y de regreso durante la fiesta.',
       },
       calEvent: {
         title: 'Boda Belén & Oriol — Ceremonia & Celebración',
@@ -172,7 +172,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
           iconName: 'GlassWater',
           highlight: true,
           badge: 'Invite Only',
-          description: 'Due to limited venue capacity, this intimate gathering is reserved for guests who have received a separate invitation.',
+          description: 'Due to limited venue capacity, this intimate gathering has a separate invitation. You can view it when you open your RSVP and confirm your attendance there.',
         },
       ],
     },
@@ -191,7 +191,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       },
       shuttleInfo: {
         title: 'Guest bus service between Salamanca and Castillo del Buen Amor',
-        description: 'Departure from Salamanca for the ceremony, with return after the party.',
+        description: 'Complimentary service from Salamanca for the ceremony, with return transport during the party.',
       },
       calEvent: {
         title: 'Belén & Oriol Wedding Ceremony & Reception',
@@ -432,3 +432,4 @@ export const accommodationsList = [
     url: 'https://maps.google.com/?q=NH+Collection+Salamanca',
   },
 ];
+

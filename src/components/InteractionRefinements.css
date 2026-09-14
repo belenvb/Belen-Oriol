@@ -83,3 +83,24 @@
   #journey .passport-coherent .passport-stage.is-closing-back .passport-spread { animation-duration:1ms!important; }
   #story .story-film * { animation:none!important; }
 }
+
+/* Compact room catalogue: keep every rate and action visible. */
+#journey .castle-rooms-panel { padding:18px 22px; }
+#journey .castle-rooms-panel > div:first-child { padding-bottom:12px; margin-bottom:4px; gap:12px; }
+#journey .castle-rooms-panel h3 { font-size:22px; }
+#journey .castle-rooms-panel .room-row { padding:9px 0; gap:14px; }
+#journey .castle-rooms-panel .room-row h4 { font-size:17px; }
+#journey .castle-rooms-panel .room-row p { margin:2px 0; line-height:1.35; }
+#journey .castle-rooms-panel .room-row small { letter-spacing:.035em; }
+#journey .castle-rooms-panel .room-price-block strong { font-size:23px; }
+#journey .castle-rooms-panel .room-note { margin:9px 0; }
+#journey .castle-rooms-panel > div:last-child { padding:10px 12px; }
+.rsvp-botanical { width:210px; height:90px; display:block; margin:0 auto 12px; pointer-events:none; }
+@media(max-width:600px) {
+ #journey .castle-rooms-panel { padding:16px; }
+ #journey .castle-rooms-panel .room-row { grid-template-columns:minmax(0,1fr) auto; gap:6px 12px; }
+ #journey .castle-rooms-panel .room-row-copy { grid-column:1/-1; }
+ #journey .castle-rooms-panel .room-row button { min-height:44px; }
+ #journey .castle-rooms-panel .room-price-block { text-align:left; }
+ .rsvp-botanical { width:175px; height:75px; }
+}

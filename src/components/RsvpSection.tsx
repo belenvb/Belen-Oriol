@@ -1,3 +1,4 @@
+import { RoseAndWheat } from './RoseAndWheat';
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { CheckCircle2, Heart, Send, Sparkles, BedDouble, Bus, Music, Edit3, Key, Check, Users, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -324,6 +325,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="rsvp-hero-panel text-center w-full mx-auto mb-10"
         >
+          <RoseAndWheat />
           <span className="text-[11px] tracking-[0.32em] uppercase font-bold block mb-2 rsvp-dark-eyebrow">
             {es ? 'Rogamos Confirmación' : 'Kindly Respond'}
           </span>
@@ -742,3 +744,4 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
     </section>
   );
 }
+

@@ -24,8 +24,8 @@ const faqs: FaqItem[] = [
   {
     qEs: '¿Cómo funciona el servicio de autobús para invitados entre Salamanca y el Castillo del Buen Amor?',
     qEn: 'How does the guest bus service between Salamanca and Castillo del Buen Amor work?',
-    aEs: 'Para el sábado 4 (día de la boda), disponemos de un servicio de autobús para invitados con salida desde Salamanca hacia el Castillo del Buen Amor para la ceremonia, y varios turnos de regreso durante la fiesta y la madrugada. Puedes reservar tu plaza al completar el RSVP.',
-    aEn: 'For Saturday Sep 4 (the wedding day), guest bus transportation is provided from Salamanca to Castillo del Buen Amor for the ceremony, with multiple return buses during the evening and late night. You can easily reserve your seat on the RSVP form.',
+    aEs: 'Para el sábado 4 (día de la boda), disponemos de un servicio de autobús sin coste para invitados con salida desde Salamanca hacia el Castillo del Buen Amor para la ceremonia, y de regreso durante la fiesta. Puedes reservar tu plaza al completar el RSVP.',
+    aEn: 'For Saturday Sep 4 (the wedding day), complimentary guest bus transportation is provided from Salamanca to Castillo del Buen Amor for the ceremony, with return transport during the party. You can easily reserve your seat on the RSVP form.',
   },
   {
     qEs: '¿Cuál es el código de vestimenta para el Viernes 3 y el Sábado 4?',
@@ -36,14 +36,26 @@ const faqs: FaqItem[] = [
   {
     qEs: '¿Hay aparcamiento en El Castillo del Buen Amor?',
     qEn: 'Is there parking available at El Castillo del Buen Amor?',
-    aEs: 'Sí, el recinto del castillo cuenta con un amplio aparcamiento privado gratuito vigilado para todos los invitados que prefieran acudir en su propio vehículo.',
-    aEn: 'Yes, the castle provides ample secure private parking free of charge for all attending guests.',
+    aEs: 'Sí, el recinto del castillo cuenta con un amplio aparcamiento privado gratuito para todos los invitados que prefieran acudir en su propio coche.',
+    aEn: 'Yes, the castle provides ample private parking free of charge for all attending guests.',
   },
   {
-    qEs: '¿Se contemplan menús especiales para celíacos, veganos o alérgicos?',
+    qEs: '¿Habrá menús especiales para celíacos, veganos o alérgicos?',
     qEn: 'Are special dietary menus catered for celiac, vegans, and allergies?',
     aEs: 'Absolutamente. El equipo de cocina del castillo adaptará cada plato con el máximo rigor para cualquier intolerancia, celiaquía o preferencia alimentaria. Por favor indícalo en el formulario de confirmación.',
     aEn: 'Absolutely. The castle culinary team caters dedicated menus for celiac (gluten-free), vegan, vegetarian, and all specific allergies. Please note your requirements in the RSVP.',
+  },
+  {
+    qEs: '¿Cómo sé si estoy invitado a la preboda?',
+    qEn: 'How do I know if I am invited to the pre-wedding gathering?',
+    aEs: 'La pre-boda y bienvenida tendrá lugar el viernes 3 de septiembre en Salamanca. Por motivos de aforo, tiene una invitación separada que podrás consultar al abrir tu RSVP. Si está incluida en tu invitación, podrás confirmar allí tu asistencia.',
+    aEn: 'The pre-wedding welcome gathering takes place on Friday, September 3 in Salamanca. Due to limited capacity, it has a separate invitation that you can view when you open your RSVP. If it is included in your invitation, you can confirm your attendance there.',
+  },
+  {
+    qEs: '¿Puedo alojarme con mi mascota en el castillo?',
+    qEn: 'Can I stay at the castle with my pet?',
+    aEs: 'Algunas habitaciones Standard y Suites Paso de Guardia permiten mascotas. Si quieres alojarte con la tuya, contacta con nosotros para que podamos consultar la disponibilidad de una habitación adecuada.',
+    aEn: 'Some Standard rooms and Paso de Guardia Suites welcome pets. If you would like to bring yours, please contact us so we can check availability for a suitable room.',
   },
   {
     qEs: '¿Pueden asistir niños a la boda?',
@@ -108,4 +120,5 @@ export function FaqSection({ lang }: FaqSectionProps) {
     </section>
   );
 }
+
 

@@ -173,8 +173,8 @@ export function JourneyMap({ lang }: JourneyMapProps) {
           <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-xs text-[#6e5832] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span>
               {lang === 'es'
-                ? '📌 Las habitaciones del castillo se asignan por orden de confirmación en el formulario de RSVP. El bloqueo de habitaciones solo está disponible hasta el 31 de diciembre; a partir de esa fecha no podemos garantizar disponibilidad.'
-                : '📌 Castle rooms are allocated in order of confirmation in the RSVP form. Room block is only reserved until December 31st; after this date, availability cannot be guaranteed.'}
+                ? 'Las habitaciones se asignan por orden de confirmación en el RSVP. Cada huésped paga su habitación.'
+                : 'Rooms are allocated in RSVP confirmation order. Each guest pays for their own room.'}
             </span>
             <button
               onClick={() => handleSelectRoomForRsvp('estandar')}
@@ -241,5 +241,6 @@ export function JourneyMap({ lang }: JourneyMapProps) {
     </section>
   );
 }
+
 
 
