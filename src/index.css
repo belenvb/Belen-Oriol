@@ -923,3 +923,118 @@ footer { padding:0!important; overflow:hidden; }
     background-attachment: scroll;
   }
 }
+
+/* RSVP trencadís containment + elegant dark mosaic correction
+   Keeps the mosaic only inside #rsvp, prevents the fixed pseudo-element
+   from painting the whole page, and uses small repeating tiles instead
+   of a stretched oversized pattern. */
+html::before,
+body::before {
+  display: none !important;
+}
+
+.rsvp-trencadis-dark:not(#rsvp)::before,
+.rsvp-trencadis-dark:not(#rsvp)::after {
+  display: none !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  clip-path: inset(0) !important;
+  background-color: #111f1b !important;
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(219, 183, 103, .18), transparent 22rem),
+    radial-gradient(circle at 86% 34%, rgba(97, 18, 31, .30), transparent 20rem),
+    linear-gradient(135deg, rgba(9, 31, 27, .98), rgba(47, 12, 20, .98) 50%, rgba(13, 34, 29, .99)) !important;
+  background-attachment: fixed, fixed, fixed !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 100% !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  opacity: .32 !important;
+  mix-blend-mode: screen !important;
+  background-image:
+    linear-gradient(118deg, transparent 0 42%, rgba(255, 242, 208, .20) 43% 46%, transparent 47% 100%),
+    linear-gradient(32deg, transparent 0 48%, rgba(105, 22, 38, .34) 49% 52%, transparent 53% 100%),
+    linear-gradient(145deg, rgba(255, 236, 187, .13) 0 9%, transparent 10% 100%),
+    linear-gradient(72deg, transparent 0 68%, rgba(46, 93, 68, .28) 69% 78%, transparent 79% 100%),
+    radial-gradient(circle at 50% 50%, rgba(255, 245, 220, .10) 0 1px, transparent 2px),
+    linear-gradient(135deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(255,255,255,.028) 1px, transparent 1px) !important;
+  background-size:
+    34px 34px,
+    29px 29px,
+    23px 23px,
+    41px 41px,
+    18px 18px,
+    26px 26px,
+    31px 31px !important;
+  background-position:
+    0 0,
+    11px 7px,
+    5px 13px,
+    17px 19px,
+    0 0,
+    0 0,
+    8px 12px !important;
+  background-repeat: repeat !important;
+  background-attachment: fixed !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 22px !important;
+  display: block !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  border: 1px solid rgba(223, 194, 133, .18) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.035),
+    inset 0 0 90px rgba(0,0,0,.22) !important;
+  background: radial-gradient(circle at 50% 0%, rgba(255,247,226,.07), transparent 42%) !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark > .max-w-3xl,
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-hero-panel,
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-readable-card {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-hero-panel {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.055)) !important;
+  border-color: rgba(223, 194, 133, .25) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+@media (max-width: 760px), (prefers-reduced-motion: reduce) {
+  #rsvp.rsvp-section-shell.rsvp-trencadis-dark {
+    background-attachment: scroll, scroll, scroll !important;
+  }
+
+  #rsvp.rsvp-section-shell.rsvp-trencadis-dark::before {
+    position: absolute !important;
+    background-attachment: scroll !important;
+    background-size:
+      28px 28px,
+      24px 24px,
+      19px 19px,
+      34px 34px,
+      15px 15px,
+      22px 22px,
+      26px 26px !important;
+  }
+}
