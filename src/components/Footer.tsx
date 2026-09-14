@@ -1,4 +1,5 @@
 import { Language } from '../types';
+import boLogo from '../assets/images/bo-logo.png';
 
 interface FooterProps {
   lang: Language;
@@ -24,9 +25,9 @@ export function Footer({ lang }: FooterProps) {
         {/* Small, transparent BO Monogram */}
         <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 flex items-center justify-center">
           <img
-            className="w-full h-full object-contain filter brightness-110 drop-shadow-sm"
-            src="/bo_monogram.png"
-            alt="BO Monogram"
+            className="footer-bo-mark"
+            src={boLogo}
+            alt="Belén & Oriol monogram"
             loading="lazy"
           />
         </div>

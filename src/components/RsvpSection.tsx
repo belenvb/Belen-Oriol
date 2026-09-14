@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
-import { CheckCircle2, Heart, Send, Sparkles, BedDouble, Bus, Music, Edit3, Key, Check, Users, ShieldCheck, RotateCcw } from 'lucide-react';
+import { CheckCircle2, Heart, Send, Sparkles, BedDouble, Bus, Music, Edit3, Key, Check, Users, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { sendRsvp, lookupInvitation, RsvpSubmission, RsvpPerson, InvitationLookup } from '../utils/rsvp';
 import { GuestRsvp, Language } from '../types';
@@ -76,9 +76,9 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
   const hasCastleRoom = selectedRoomCount > 0;
 
   const scrollToRsvp = () => {
-    requestAnimationFrame(() => {
+    window.setTimeout(() => {
       document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    }, 80);
   };
 
   const getRemoteRemaining = (roomId: Exclude<RoomId, 'none'>) => {
@@ -392,7 +392,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                 {!submittedRsvp.roomBookings || getRoomCount(submittedRsvp.roomBookings as RoomQuantities) === 0 ? (
                   <div className="flex justify-between border-b border-gray-100 pb-2">
                     <span className="text-[#8c6d3b] uppercase font-bold tracking-wider">{es ? 'Vuelta:' : 'Return:'}</span>
-                    <span>{submittedRsvp.returnShuttleBooking ? (es ? 'Autobús Castillo - Salamanca' : 'Castle - Salamanca return shuttle') : '—'}</span>
+                    <span>{submittedRsvp.returnShuttleBooking ? (es ? 'Autobús Castillo - Salamanca' : 'Castillo del Buen Amor - Salamanca return shuttle') : '—'}</span>
                   </div>
                 ) : null}
                 <div>
@@ -558,7 +558,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                               <div className="text-xs">
                                 <span className="font-bold text-[#37080e] flex items-center gap-1.5 uppercase tracking-wider text-xs sm:text-sm">
                                   <Bus className="w-4 h-4 text-[#b89243]" />
-                                  {es ? 'Autobús para invitados · Ida Salamanca - Castillo' : 'Guest shuttle · Outbound Salamanca - Castle'}
+                                  {es ? 'Autobús para invitados · Ida Salamanca - Castillo' : 'Guest shuttle · Outbound Salamanca - Castillo del Buen Amor'}
                                 </span>
                                 <span className="text-[#6e675f] block mt-1 leading-relaxed">
                                   {es
@@ -573,7 +573,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                             <div className="flex items-center justify-between gap-2 mb-2">
                               <label className="block text-xs font-bold tracking-wider uppercase text-[#5c141e] flex items-center gap-1.5">
                                 <BedDouble className="w-4 h-4 text-[#b89243]" />
-                                <span>{es ? 'Alojamiento en El Castillo del Buen Amor' : 'Castle Room Reservation'}</span>
+                                <span>{es ? 'Solicitud de habitación en El Castillo del Buen Amor' : 'Castle Room Request'}</span>
                               </label>
                               <span className="text-[10px] font-bold text-[#b89243] uppercase tracking-wider bg-[#b89243]/10 px-2 py-0.5 rounded">
                                 {es ? `${selectedRoomCount} seleccionada${selectedRoomCount === 1 ? '' : 's'}` : `${selectedRoomCount} selected`}
@@ -582,8 +582,8 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
 
                             <p className="text-xs text-[#6e675f] mb-4 leading-relaxed">
                               {es
-                                ? 'Cada huésped abona su habitación al hotel. Puedes seleccionar más de una habitación si sois un grupo grande.'
-                                : 'Each guest settles their room directly with the hotel. Larger parties may request more than one room.'}
+                                ? 'Tenemos un cupo de habitaciones con tarifas especiales negociadas en el Castillo del Buen Amor para nuestros invitados. Selecciona si te gustaría solicitar alguna habitación. La confirmación y el pago se gestionarán directamente con el Castillo del Buen Amor según disponibilidad.'
+                                : 'We have a room block with special negotiated rates at Castillo del Buen Amor for our guests. Please select if you would like to reserve some of the rooms. Confirmation and payment will follow from Castillo del Buen Amor upon availability.'}
                             </p>
 
                             <div className={`p-3 rounded-xl border-2 text-xs transition-all ${!hasCastleRoom ? 'border-[#5c141e] bg-[#5c141e]/5' : 'border-gray-200 bg-[#faf7f2]'}`}>
@@ -611,7 +611,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                                   />
                                   <span>
                                     <span className="font-bold text-[#37080e] block uppercase tracking-wider">
-                                      {es ? 'Autobús de vuelta · Castillo - Salamanca' : 'Return shuttle · Castle - Salamanca'}
+                                      {es ? 'Autobús de vuelta · Castillo - Salamanca' : 'Return shuttle · Castillo del Buen Amor - Salamanca'}
                                     </span>
                                     <span className="text-[11px] text-[#6e675f] block mt-0.5">
                                       {es
@@ -679,15 +679,6 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                                 })}
                               </div>
                             )}
-
-                            <div className="mt-4 flex items-start gap-2 text-[11px] text-[#6e675f] bg-[#f5efe3] border border-[#b89243]/20 rounded-lg p-3">
-                              <RotateCcw className="w-3.5 h-3.5 text-[#b89243] mt-0.5 shrink-0" />
-                              <span>
-                                {es
-                                  ? 'Los contadores se actualizan al abrir la invitación. Si Belén y Oriol ajustan el cupo en Google Sheets, el contador se recalcula con ese nuevo total.'
-                                  : 'Counters refresh when the invitation opens. If Belén and Oriol adjust the allocation in Google Sheets, the counter recalculates from the new total.'}
-                              </span>
-                            </div>
                           </div>
 
                           <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#5c141e]/15">
