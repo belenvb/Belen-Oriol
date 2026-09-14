@@ -21,9 +21,9 @@ export function Footer({ lang }: FooterProps) {
       </div>
 
       {/* Elegant, minimalist Footer */}
-      <div className="py-10 sm:py-14 px-6 max-w-xl mx-auto flex flex-col items-center justify-center text-center">
+      <div className="footer-signature">
         {/* Small, transparent BO Monogram */}
-        <div className="w-12 h-12 sm:w-14 sm:h-14 mb-4 flex items-center justify-center">
+        <div className="footer-signature-mark">
           <img
             className="footer-bo-mark"
             src={boLogo}
@@ -33,7 +33,7 @@ export function Footer({ lang }: FooterProps) {
         </div>
 
         {/* Date */}
-        <p className="font-cinzel text-xs sm:text-sm text-[#dfc285] tracking-[0.3em] uppercase font-bold">
+        <p className="footer-signature-date">
           {numericDate}
         </p>
       </div>

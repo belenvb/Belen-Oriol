@@ -315,7 +315,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
   };
 
   return (
-    <section id="rsvp" className="rsvp-section-shell rsvp-trencadis-dark py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative">
+    <section id="rsvp" className="rsvp-section-shell rsvp-stationery py-20 sm:py-28 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-3xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -335,6 +335,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
               ? 'Por favor confírmanos tu asistencia antes del 15 de julio de 2027.'
               : 'Please confirm your attendance before July 15, 2027.'}
           </p>
+          <p className="rsvp-invitation-note">{es ? 'El número de personas invitadas figura en tu invitación dentro del RSVP. Los acompañantes deben estar incluidos en esa invitación.' : 'Your invitation in the RSVP shows the number of invited guests. Plus-ones must be included in that invitation.'}</p>
         </motion.div>
 
         <motion.div
@@ -691,7 +692,7 @@ export function RsvpSection({ lang }: RsvpSectionProps) {
                               type="text"
                               value={formData.songRequest || ''}
                               onChange={(e) => setFormData({ ...formData, songRequest: e.target.value })}
-                              placeholder="Artista - Título de la canción"
+                              placeholder={es ? 'Artista - Título de la canción' : 'Artist - Song title'}
                               className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#5c141e]/20 rounded-lg text-sm text-[#2c241e] placeholder:text-[#9c9489] focus:bg-white focus:outline-none focus:border-[#5c141e] transition-all"
                             />
                           </div>

@@ -548,18 +548,6 @@
   box-shadow: -4px 6px 12px rgba(38,20,12,.14);
 }
 
-.passport-stage.is-closing-back .passport-front-cover.is-back-cover {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: none;
-  top: 18px;
-  right: 18px;
-  width: calc(50% - 18px);
-  height: calc(100% - 36px);
-  transform-origin: left center;
-  animation: passportCloseBack .98s cubic-bezier(.2,.78,.18,1) forwards;
-  transition: none;
-}
 @keyframes passportCloseBack {
   0% {
     transform: rotateY(0deg) translateZ(14px);
@@ -696,9 +684,6 @@
   }
 }
 
-.passport-stage.is-closing-back .passport-spread {
-  pointer-events:none;
-}
 .passport-drag-hint { max-width: 235px; }
 
 @media (max-width: 1080px) {
@@ -827,18 +812,7 @@
   right: 18px !important;
 }
 
-/* Cleaner back-cover close: hide static covers/pages while animated leather sheet closes */
-.passport-stage.is-closing-back .passport-front-cover,
-.passport-stage.is-closing-back .passport-cover-base,
-.passport-stage.is-closing-back .passport-page-stack,
-.passport-stage.is-closing-back .passport-gutter {
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-.passport-stage.is-closing-back .passport-spread {
-  opacity: 1;
-  pointer-events: none;
-}
+
 .passport-back-closing-sheet {
   right: 18px !important;
   left: auto !important;
@@ -991,18 +965,7 @@
   pointer-events: auto;
 }
 
-/* Hide the static cover during the closing animation; the animated sheet does the close */
-.passport-stage.is-closing-back .passport-front-cover,
-.passport-stage.is-closing-back .passport-cover-base,
-.passport-stage.is-closing-back .passport-page-stack,
-.passport-stage.is-closing-back .passport-gutter {
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-.passport-stage.is-closing-back .passport-spread {
-  opacity: 1 !important;
-  pointer-events: none;
-}
+
 
 /* Two-sided closing sheet: page face first, leather back after the fold */
 .passport-back-closing-sheet {
@@ -1170,23 +1133,7 @@
   bottom: 28px !important;
 }
 
-/* End close: do a quick leather fold into back cover, without rendering page 3 again */
-.passport-stage.is-closing-back .passport-spread,
-.passport-stage.is-closing-back .passport-cover-base,
-.passport-stage.is-closing-back .passport-page-stack,
-.passport-stage.is-closing-back .passport-gutter {
-  opacity: 0 !important;
-  transition: opacity .16s ease .24s !important;
-  pointer-events: none !important;
-}
-.passport-stage.is-closing-back .passport-front-cover {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: none !important;
-  transform-origin: left center !important;
-  animation: passportFoldToBack .72s cubic-bezier(.2,.78,.18,1) forwards !important;
-  transition: none !important;
-}
+
 @keyframes passportFoldToBack {
   0% {
     transform: translateX(-82%) rotateY(-168deg);
@@ -1332,23 +1279,7 @@
   opacity: .32 !important;
 }
 
-/* More reliable fold to back, no page flash */
-.passport-stage.is-closing-back .passport-spread,
-.passport-stage.is-closing-back .passport-cover-base,
-.passport-stage.is-closing-back .passport-page-stack,
-.passport-stage.is-closing-back .passport-gutter {
-  opacity: 0 !important;
-  transition: opacity .12s ease .18s !important;
-  pointer-events: none !important;
-}
-.passport-stage.is-closing-back .passport-front-cover {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: none !important;
-  transform-origin: left center !important;
-  animation: passportFoldToBack .72s cubic-bezier(.2,.78,.18,1) forwards !important;
-  transition: none !important;
-}
+
 @keyframes passportFoldToBack {
   0% { transform: translateX(-82%) rotateY(-168deg); opacity: .26; }
   35% { opacity: .9; }
@@ -1569,35 +1500,9 @@
   bottom: 8px !important;
 }
 
-/* Closing last page to back: visually closes to the left and lands as closed passport on the left */
-.passport-stage.is-closing-back .passport-spread {
-  opacity: 1 !important;
-  pointer-events: none !important;
-}
 
-.passport-stage.is-closing-back .passport-page-left {
-  opacity: 0 !important;
-  transition: opacity .2s ease .22s !important;
-}
 
-.passport-stage.is-closing-back .passport-page-right {
-  transform-origin: left center !important;
-  animation: passportLastPageCloseLeft .98s cubic-bezier(.2,.72,.16,1) forwards !important;
-  z-index: 70 !important;
-  backface-visibility: hidden !important;
-}
 
-.passport-stage.is-closing-back .passport-front-cover {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: none !important;
-  left: clamp(64px, 6vw, 96px) !important;
-  right: auto !important;
-  transform-origin: left center !important;
-  animation: passportBackCoverLandLeft .98s cubic-bezier(.2,.72,.16,1) forwards !important;
-  transition: none !important;
-  z-index: 72 !important;
-}
 
 @keyframes passportLastPageCloseLeft {
   0% { transform: rotateY(0deg) translateZ(16px); opacity: 1; }
@@ -1786,30 +1691,8 @@
   bottom: 7px !important;
 }
 
-/* Last page close: page folds right-to-left and the closed passport lands on the left */
-.passport-stage.is-closing-back .passport-page-left {
-  opacity: 0 !important;
-  transition: opacity .16s ease .2s !important;
-}
 
-.passport-stage.is-closing-back .passport-page-right {
-  transform-origin: left center !important;
-  animation: passportLastPageCloseLeft .98s cubic-bezier(.2,.72,.16,1) forwards !important;
-  z-index: 70 !important;
-  backface-visibility: hidden !important;
-}
 
-.passport-stage.is-closing-back .passport-front-cover {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: none !important;
-  left: clamp(92px, 8vw, 136px) !important;
-  right: auto !important;
-  transform-origin: left center !important;
-  animation: passportBackCoverLandLeft .98s cubic-bezier(.2,.72,.16,1) forwards !important;
-  transition: none !important;
-  z-index: 72 !important;
-}
 
 @keyframes passportLastPageCloseLeft {
   0% { transform: rotateY(0deg) translateZ(16px); opacity: 1; }
@@ -1864,10 +1747,7 @@
   right: auto !important;
   transform: translateX(0) rotateY(0deg) !important;
 }
-.passport-stage.is-closing-back .passport-front-cover {
-  left: clamp(92px, 8vw, 136px) !important;
-  right: auto !important;
-}
+
 
 
 /* Hide castle side info when closed on the back cover to avoid overlap */
@@ -1884,8 +1764,4 @@
   left: clamp(92px, 8vw, 136px) !important;
   right: auto !important;
   transform: translateX(0) rotateY(0deg) !important;
-}
-.passport-stage.is-closing-back .passport-front-cover {
-  left: clamp(92px, 8vw, 136px) !important;
-  right: auto !important;
 }

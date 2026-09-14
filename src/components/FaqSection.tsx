@@ -16,6 +16,12 @@ interface FaqItem {
 
 const faqs: FaqItem[] = [
   {
+    qEs: '¿Puedo llevar acompañante?',
+    qEn: 'Can I bring a plus-one?',
+    aEs: 'Los acompañantes están incluidos únicamente cuando figuran en la invitación. Puedes consultar el número de personas invitadas en tu invitación dentro del RSVP y confirmar allí quiénes asistirán.',
+    aEn: 'Plus-ones are welcome when included in your invitation. You can check the number of invited guests in your invitation within the RSVP and confirm who will attend there.',
+  },
+  {
     qEs: '¿Cómo funciona el servicio de autobús para invitados entre Salamanca y el Castillo del Buen Amor?',
     qEn: 'How does the guest bus service between Salamanca and Castillo del Buen Amor work?',
     aEs: 'Para el sábado 4 (día de la boda), disponemos de un servicio de autobús para invitados con salida desde Salamanca hacia el Castillo del Buen Amor para la ceremonia, y varios turnos de regreso durante la fiesta y la madrugada. Puedes reservar tu plaza al completar el RSVP.',
