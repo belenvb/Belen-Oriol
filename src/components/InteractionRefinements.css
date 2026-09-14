@@ -88,7 +88,7 @@
 #journey .castle-rooms-panel { padding:18px 22px; }
 #journey .castle-rooms-panel > div:first-child { padding-bottom:12px; margin-bottom:4px; gap:12px; }
 #journey .castle-rooms-panel h3 { font-size:22px; }
-#journey .castle-rooms-panel .room-row { padding:9px 0; gap:14px; }
+#journey .castle-rooms-panel .room-row { padding:9px 0!important; gap:14px!important; }
 #journey .castle-rooms-panel .room-row h4 { font-size:17px; }
 #journey .castle-rooms-panel .room-row p { margin:2px 0; line-height:1.35; }
 #journey .castle-rooms-panel .room-row small { letter-spacing:.035em; }
