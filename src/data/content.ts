@@ -87,7 +87,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       },
       shuttleInfo: {
         title: 'Servicio de autobús para invitados entre Salamanca y el Castillo del Buen Amor',
-        description: 'Salida desde Salamanca para la ceremonia y servicio de regreso al finalizar la fiesta.',
+        description: 'Salida desde Salamanca para la ceremonia y regreso al finalizar la fiesta.',
       },
       calEvent: {
         title: 'Boda Belén & Oriol — Ceremonia & Celebración',
@@ -191,7 +191,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       },
       shuttleInfo: {
         title: 'Guest bus service between Salamanca and Castillo del Buen Amor',
-        description: 'Departure from Salamanca for the ceremony, with return service after the party.',
+        description: 'Departure from Salamanca for the ceremony, with return after the party.',
       },
       calEvent: {
         title: 'Belén & Oriol Wedding Ceremony & Reception',
