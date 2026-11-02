@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 360" role="img" aria-label="Castillo del Buen Amor sketch">
+  <defs>
+    <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="8" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8"/>
+    </filter>
+    <style>
+      .ink{fill:none;stroke:#65482f;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;filter:url(#paper)}
+      .thin{fill:none;stroke:#65482f;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round;opacity:.62;filter:url(#paper)}
+      .wash{fill:#8c6847;opacity:.075;filter:url(#paper)}
+    </style>
+  </defs>
+  <path class="wash" d="M176 289c67-18 119-23 187-11 74 13 120 26 204 11 78-14 125-18 183-2 28 8 65 14 105 5-72 42-183 49-294 38-120-12-224-9-338 14-70 14-127 3-165-17 47-2 77-27 118-38z"/>
+  <path class="thin" d="M36 314c81-24 151-32 221-23 105 14 170 51 300 19 109-26 197-20 328 8"/>
+  <path class="thin" d="M74 329c90-22 172-19 259-4 91 16 156 12 245-7 99-21 180-12 281 19"/>
+
+  <path class="ink" d="M164 265h610"/>
+  <path class="ink" d="M190 264V151h103v113"/>
+  <path class="ink" d="M278 264V119h118v145"/>
+  <path class="ink" d="M382 264V145h154v119"/>
+  <path class="ink" d="M520 264V112h116v152"/>
+  <path class="ink" d="M622 264V150h96v114"/>
+
+  <path class="ink" d="M177 151h129"/>
+  <path class="ink" d="M268 119h141"/>
+  <path class="ink" d="M374 145h171"/>
+  <path class="ink" d="M508 112h142"/>
+  <path class="ink" d="M609 150h123"/>
+
+  <path class="ink" d="M213 151V92c0-24 17-43 39-43s39 19 39 43v59"/>
+  <path class="ink" d="M538 112V66c0-25 19-45 43-45s43 20 43 45v46"/>
+  <path class="ink" d="M279 119V69c0-22 16-39 38-39s38 17 38 39v50"/>
+  <path class="thin" d="M220 93h64M285 70h65M544 67h75"/>
+
+  <path class="ink" d="M210 265v-42c0-21 15-38 34-38s34 17 34 38v42"/>
+  <path class="thin" d="M226 263v-38c0-11 7-20 17-20s17 9 17 20v38"/>
+  <path class="ink" d="M444 264v-54c0-26 18-47 42-47s42 21 42 47v54"/>
+
+  <path class="thin" d="M318 62h10M556 53h9M579 47h9M603 54h9M239 79h10M262 80h10"/>
+  <path class="thin" d="M204 168h77M302 138h77M409 164h102M544 132h70M641 169h61"/>
+  <path class="thin" d="M204 195h77M302 165h77M409 191h102M544 159h70M641 196h61"/>
+  <path class="thin" d="M204 222h77M302 192h77M409 218h102M544 186h70M641 223h61"/>
+
+  <path class="thin" d="M101 269c16-35 40-57 73-66M732 264c47-14 82-38 106-76M121 250c-24 9-47 10-71 4M789 250c28 3 52-2 77-15"/>
+  <path class="thin" d="M100 289l-36 16M128 293l-39 28M760 291l37 18M730 296l51 33"/>
+  <path class="thin" d="M86 244c11-25 17-54 16-88M123 237c9-28 12-60 8-94M811 228c20-28 33-59 40-93M780 241c15-31 21-63 17-97"/>
+</svg>

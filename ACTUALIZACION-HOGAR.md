@@ -1,0 +1,2 @@
+Lista de bodas: nuevo diseño burdeos y marfil, todas las aportaciones destinadas a la compra de vuestra casa. Sonido y botón retirados. Spotify pendiente del enlace colaborativo. Datos de pago conservados sin cambios. Comprobado en ES/EN a 1440, 390 y 320 px; transferencia, Bizum, Venmo y copia del IBAN. No se realizaron pagos. TypeScript y build verificados; persiste el aviso previo de trencadis-glass-dark.svg.
+Solo cambios: copiar estos archivos sobre la entrega Portada_Menu y recompilar.

@@ -1,204 +1,44 @@
-import { useState, useEffect } from 'react';
-import { Volume2, VolumeX, Menu, X } from 'lucide-react';
-import { Monogram } from './Monogram';
+import { useState, useEffect, useRef } from 'react';
+import { Menu, X } from 'lucide-react';
 import { Language } from '../types';
-import { romanticSynth } from '../utils/audio';
 
-interface HeaderProps {
-  lang: Language;
-  onLanguageChange: (lang: Language) => void;
-  activeSection: string;
-}
-
-export function Header({
-  lang,
-  onLanguageChange,
-  activeSection,
-}: HeaderProps) {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const toggleAudio = () => {
-    const active = romanticSynth.toggle();
-    setIsPlayingAudio(active);
-  };
-
-  const navLinks = [
-    { href: '#hero', es: 'Inicio', en: 'Home' },
-    { href: '#schedule', es: 'Programa', en: 'Schedule' },
-    { href: '#castle', es: 'El Castillo', en: 'The Castle' },
-    { href: '#journey', es: 'Viaje & Hoteles', en: 'Travel/Hotels' },
-    { href: '#registry', es: 'Lista de Bodas', en: 'Registry' },
-    { href: '#faq', es: 'Q&A', en: 'Q&A' },
-    { href: '#rsvp', es: 'Asistencia', en: 'RSVP' },
+interface HeaderProps { lang: Language; onLanguageChange: (lang: Language) => void; activeSection: string; }
+export function Header({lang,onLanguageChange,activeSection}:HeaderProps) {
+  const [scrolled,setScrolled]=useState(false);
+  const [open,setOpen]=useState(false);
+  const menuButton=useRef<HTMLButtonElement>(null);
+  const panel=useRef<HTMLElement>(null);
+  const links=[
+    ['hero','Inicio','Home'],['schedule','Programa','Schedule'],['journey','Viaje y estancia','Travel & stay'],
+    ['registry','Lista de bodas','Registry'],['faq','Preguntas','FAQ'],['rsvp','Confirmar asistencia','RSVP'],
   ];
-
-  const handleNavClick = (href: string) => {
-    setIsMobileMenuOpen(false);
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+  useEffect(()=>{const update=()=>setScrolled(window.scrollY>20);update();window.addEventListener('scroll',update,{passive:true});return()=>window.removeEventListener('scroll',update)},[]);
+  useEffect(()=>{
+    if(!open)return;
+    const previous=document.body.style.overflow;document.body.style.overflow='hidden';
+    panel.current?.querySelector<HTMLButtonElement>('button')?.focus();
+    const closeOnWide=()=>{if(window.innerWidth>=1100)setOpen(false)};
+    window.addEventListener('resize',closeOnWide);
+    return()=>{document.body.style.overflow=previous;window.removeEventListener('resize',closeOnWide)};
+  },[open]);
+  const go=(id:string)=>{setOpen(false);document.getElementById(id)?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});};
+  return <header className={`wedding-header ${scrolled||open?'is-solid':''}`} onKeyDown={event=>{
+    if(open&&event.key==='Escape'){setOpen(false);menuButton.current?.focus()}
+    if(open&&event.key==='Tab'){
+      const controls=Array.from<HTMLButtonElement>((event.currentTarget as HTMLElement).querySelectorAll<HTMLButtonElement>('button')).filter(el=>el.getClientRects().length);
+      const first=controls[0],last=controls[controls.length-1];
+      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+      if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
     }
-  };
-
-  return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-[#faf7f2]/95 backdrop-blur-md py-3 shadow-[0_4px_24px_rgba(45,30,15,0.06)] border-b border-[rgba(92,20,30,0.12)] text-[#37080e]'
-          : 'bg-[#0e1e14]/75 backdrop-blur-md py-4 border-b border-[#dfc285]/20 text-[#f8f5ee]'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-        {/* Left: Monogram and Names */}
-        <a
-          href="#hero"
-          onClick={(e) => {
-            e.preventDefault();
-            handleNavClick('#hero');
-          }}
-          className="flex items-center gap-3 shrink-0 mr-2 xl:mr-6 group focus:outline-none"
-        >
-          <Monogram
-            size={40}
-            variant={isScrolled ? 'burgundy' : 'gold'}
-            className="transition-transform duration-300 group-hover:scale-105 shrink-0"
-          />
-          <div className="flex flex-col justify-center">
-            <span
-              className={`text-[10px] sm:text-[11px] tracking-[0.18em] xl:tracking-[0.22em] uppercase font-semibold transition-colors font-cinzel whitespace-nowrap ${
-                isScrolled ? 'text-[#5c141e]' : 'text-[#dfc285]'
-              }`}
-            >
-              Salamanca · 4 September 2027
-            </span>
-          </div>
-        </a>
-
-        {/* Center: Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-3.5 xl:gap-6 2xl:gap-7 justify-center flex-1">
-          {navLinks.map((link) => {
-            const isActive = activeSection === link.href.substring(1);
-            return (
-              <button
-                key={link.href}
-                onClick={() => handleNavClick(link.href)}
-                className={`text-[10.5px] xl:text-[11px] tracking-[0.13em] xl:tracking-[0.18em] uppercase font-medium transition-all duration-200 relative py-1 focus:outline-none cursor-pointer whitespace-nowrap ${
-                  isActive
-                    ? isScrolled
-                      ? 'text-[#5c141e] font-bold'
-                      : 'text-[#dfc285] font-bold'
-                    : isScrolled
-                    ? 'text-[#574c43] hover:text-[#5c141e]'
-                    : 'text-[#f8f5ee]/80 hover:text-[#dfc285]'
-                }`}
-              >
-                {lang === 'es' ? link.es : link.en}
-                {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#b89243] rounded-full" />
-                )}
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* Right: Audio synth and Language Toggle */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-2 xl:ml-4">
-          {/* Audio Synthesizer */}
-          <button
-            onClick={toggleAudio}
-            className={`p-2 rounded-full border transition-all duration-300 cursor-pointer ${
-              isPlayingAudio
-                ? 'border-[#b89243] bg-[#b89243]/20 text-[#dfc285]'
-                : isScrolled
-                ? 'border-[#b89243]/30 hover:border-[#b89243] bg-white/70 text-[#5c141e]'
-                : 'border-[#dfc285]/30 hover:border-[#dfc285] bg-black/20 text-[#dfc285]'
-            }`}
-            title={isPlayingAudio ? 'Silenciar música' : 'Reproducir música'}
-            aria-label="Reproducir música"
-          >
-            {isPlayingAudio ? (
-              <Volume2 className="w-4 h-4 animate-pulse" />
-            ) : (
-              <VolumeX className="w-4 h-4" />
-            )}
-          </button>
-
-          {/* Language Switcher */}
-          <div
-            className={`flex items-center rounded-full p-0.5 border shadow-2xs ${
-              isScrolled
-                ? 'border-[#b89243]/30 bg-white/70'
-                : 'border-[#dfc285]/30 bg-black/25'
-            }`}
-          >
-            <button
-              onClick={() => onLanguageChange('es')}
-              className={`px-2.5 py-1 text-[10px] font-semibold tracking-wider rounded-full transition-all cursor-pointer ${
-                lang === 'es'
-                  ? 'bg-[#b89243] text-[#0d1a12] font-bold shadow-xs'
-                  : isScrolled
-                  ? 'text-[#44403c] hover:text-[#5c141e]'
-                  : 'text-[#f8f5ee]/80 hover:text-[#dfc285]'
-              }`}
-            >
-              ES
-            </button>
-            <button
-              onClick={() => onLanguageChange('en')}
-              className={`px-2.5 py-1 text-[10px] font-semibold tracking-wider rounded-full transition-all cursor-pointer ${
-                lang === 'en'
-                  ? 'bg-[#b89243] text-[#0d1a12] font-bold shadow-xs'
-                  : isScrolled
-                  ? 'text-[#44403c] hover:text-[#5c141e]'
-                  : 'text-[#f8f5ee]/80 hover:text-[#dfc285]'
-              }`}
-            >
-              EN
-            </button>
-          </div>
-
-          {/* Mobile Menu Toggle Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`lg:hidden p-2 rounded-lg focus:outline-none ${
-              isScrolled
-                ? 'text-[#5c141e] hover:bg-black/5'
-                : 'text-[#dfc285] hover:bg-white/10'
-            }`}
-            aria-label="Abrir menú"
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
+  }}>
+    <div className="wedding-header__bar">
+      <button className="wedding-header__wordmark" onClick={()=>go('hero')} aria-label={lang==='es'?'Belén y Oriol · Inicio':'Belén and Oriol · Home'}>Belén <em>&</em> Oriol</button>
+      <nav className="wedding-header__desktop" aria-label={lang==='es'?'Navegación principal':'Main navigation'}>{links.map(([id,es,en])=><button key={id} onClick={()=>go(id)} aria-current={activeSection===id?'location':undefined} className={id==='rsvp'?'wedding-header__rsvp':''}>{lang==='es'?es:en}</button>)}</nav>
+      <div className="wedding-header__tools">
+        <div className="wedding-header__languages" aria-label={lang==='es'?'Idioma':'Language'}><button aria-pressed={lang==='es'} onClick={()=>onLanguageChange('es')}>ES</button><span aria-hidden="true">/</span><button aria-pressed={lang==='en'} onClick={()=>onLanguageChange('en')}>EN</button></div>
+        <button ref={menuButton} className="wedding-header__toggle" aria-label={lang==='es'?(open?'Cerrar menú':'Abrir menú'):(open?'Close menu':'Open menu')} aria-expanded={open} aria-controls="wedding-mobile-menu" onClick={()=>setOpen(!open)}>{open?<X size={22}/>:<Menu size={22}/>}</button>
       </div>
-
-      {/* Mobile Menu Dropdown */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden bg-[#faf7f2]/98 backdrop-blur-xl border-b border-[#b89243]/30 px-6 py-6 shadow-xl animate-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => handleNavClick(link.href)}
-                className="text-left py-2 font-cinzel text-xs tracking-[0.25em] uppercase text-[#37080e] hover:text-[#5c141e] border-b border-[#b89243]/15 flex items-center justify-between"
-              >
-                <span>{lang === 'es' ? link.es : link.en}</span>
-                <span className="text-xs text-[#b89243]">✦</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-      )}
-    </header>
-  );
+    </div>
+    {open&&<nav ref={panel} id="wedding-mobile-menu" className="wedding-header__mobile" aria-label={lang==='es'?'Navegación principal':'Main navigation'}>{links.map(([id,es,en],i)=><button key={id} onClick={()=>go(id)} aria-current={activeSection===id?'location':undefined}><span className="wedding-header__index">0{i+1}</span>{lang==='es'?es:en}</button>)}</nav>}
+  </header>;
 }

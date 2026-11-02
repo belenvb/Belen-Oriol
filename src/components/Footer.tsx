@@ -1,6 +1,5 @@
-import { Monogram } from './Monogram';
 import { Language } from '../types';
-import { Heart } from 'lucide-react';
+import boLogo from '../assets/images/bo-logo.png';
 
 interface FooterProps {
   lang: Language;
@@ -8,21 +7,34 @@ interface FooterProps {
 }
 
 export function Footer({ lang }: FooterProps) {
+  const numericDate = lang === 'es' ? '04.09.2027' : '09.04.2027';
   return (
-    <footer className="bg-[#1f1917] text-[#f4ede2] py-6 px-4 text-center relative border-t border-[#b89243]/30">
-      <div className="max-w-4xl mx-auto flex flex-col items-center">
-        {/* Compact Monogram */}
-        <div className="mb-2">
-          <Monogram size={28} variant="white" className="opacity-80" />
+    <footer className="wedding-footer text-[#f4ede2] text-center relative">
+      {/* Full-bleed closing rainbow photo with no text overlay */}
+      <div className="closing-photo closing-photo-fullbleed relative overflow-hidden">
+        <img
+          src="/photos/rainbow-parallax.webp"
+          loading="lazy"
+          alt={lang === 'es' ? 'Belén y Oriol' : 'Belén & Oriol'}
+          className="w-full h-full object-cover object-center block"
+        />
+      </div>
+
+      {/* Elegant, minimalist Footer */}
+      <div className="footer-signature">
+        {/* Small, transparent BO Monogram */}
+        <div className="footer-signature-mark">
+          <span
+            className="footer-bo-gold"
+            role="img"
+            aria-label="Belén & Oriol"
+            style={{ maskImage: `url(${boLogo})`, WebkitMaskImage: `url(${boLogo})` }}
+          />
         </div>
 
-        <p className="font-cormorant text-sm sm:text-base text-[#dfc285] italic tracking-wide mb-2">
-          El Castillo del Buen Amor · Salamanca · {lang === 'es' ? '3 & 4 de Septiembre de 2027' : 'September 3 & 4, 2027'}
-        </p>
-
-        <p className="text-[9.5px] tracking-[0.2em] uppercase text-white/45 flex items-center justify-center gap-1.5">
-          <span>{lang === 'es' ? 'Con todo nuestro amor para nuestra familia y amigos' : 'With all our love for our family and friends'}</span>
-          <Heart className="w-2.5 h-2.5 text-[#dfc285] fill-[#dfc285]/40" />
+        {/* Date */}
+        <p className="footer-signature-date">
+          {numericDate}
         </p>
       </div>
     </footer>

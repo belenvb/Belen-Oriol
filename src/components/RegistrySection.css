@@ -1,0 +1,46 @@
+.home-gift{padding:clamp(80px,10vw,150px) 24px;background:#f7f3eb;color:#542b31}
+.home-gift__layout{max-width:1100px;margin:auto;display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(48px,8vw,115px);align-items:center}
+.home-gift .eyebrow{font-size:10px;margin-bottom:28px;color:#856c4d}
+#registry.home-gift h2{font-family:'Cormorant Garamond',Georgia,serif!important;font-size:clamp(54px,6vw,82px)!important;line-height:.98!important;letter-spacing:-.035em;text-transform:none;font-weight:400;margin:0 0 28px}
+.home-gift h2 em{font-weight:400;color:#7c3443}
+.home-gift__story>p:not(.eyebrow):not(.home-gift__signature){font-size:14px;line-height:1.95;max-width:440px;margin-bottom:18px;color:#6b605a}
+.home-gift__story>p.home-gift__lead{font-family:'Cormorant Garamond',Georgia,serif;font-size:25px!important;line-height:1.35!important;color:#542b31!important}
+.home-gift__signature{margin-top:30px;font-size:12px;line-height:1.8;color:#867464}
+.home-gift__signature span{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:30px;color:#542b31}
+.home-gift__details{padding:36px 0 0}
+.home-gift__caption{font-family:'Cormorant Garamond',Georgia,serif;font-size:29px;line-height:1.2;margin-bottom:15px}
+.home-gift__intro,.home-gift__note{font-size:12px;line-height:1.9;color:#6b605a}
+.home-gift__methods{display:flex;gap:24px;margin:24px 0 22px;flex-wrap:wrap}
+.home-gift button{cursor:pointer;min-height:44px;background:none;border:0;color:#725d56;font-size:12px;padding:0}
+.home-gift button:hover{color:#7c3443}
+.home-gift button:focus-visible{outline:2px solid #7c3443;outline-offset:5px}
+.home-gift__methods button{position:relative}
+.home-gift__methods button[aria-pressed=true]{color:#702d3c;font-weight:600}
+.home-gift__methods button[aria-pressed=true]:after{content:'';position:absolute;height:1px;bottom:2px;left:0;right:0;background:currentColor}
+.home-gift__field{margin:0 0 18px}
+.home-gift__field dt{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#867464;margin-bottom:3px}
+.home-gift__field dd{display:flex;align-items:center;gap:14px;justify-content:space-between;margin:0;font-size:14px;line-height:1.7;min-width:0}
+.home-gift__value{user-select:all;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.home-gift__field button{flex-shrink:0;font-size:11px;text-decoration:underline;text-underline-offset:4px}
+.home-gift__feedback{font-size:11px;line-height:1.6;min-height:20px;color:#702d3c}
+.home-gift__thanks{font-family:'Cormorant Garamond',Georgia,serif;font-size:21px;font-style:italic;margin-top:12px}
+@media(max-width:760px){.home-gift__layout{grid-template-columns:1fr;gap:12px;max-width:480px}.home-gift__details{padding-top:12px}.home-gift{padding:72px 24px}.home-gift__methods{gap:22px}.home-gift__field dd{font-size:13px}.home-gift__story>p:not(.eyebrow){max-width:none}}
+/* A keepsake letter, set against the deep burgundy of the invitation. */
+#registry.home-gift{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 10% 0%,#843b49 0,transparent 60%),linear-gradient(125deg,#602330,#36121e);padding:clamp(85px,11vw,160px) 28px;color:#fbf1df}
+.home-gift__art{position:absolute;left:17%;top:14%;width:240px;height:650px;transform:rotate(27deg);opacity:.09;pointer-events:none;z-index:-1}
+.home-gift__art svg{width:100%;height:100%;stroke:#efd5a1;stroke-width:1.2}
+.home-gift__layout{max-width:1180px;gap:clamp(50px,8vw,120px);align-items:center}
+#registry.home-gift h2{font-size:clamp(62px,7.8vw,110px)!important;color:#fbf1df;letter-spacing:-.05em}
+.home-gift h2 em{color:#e5c69d}
+.home-gift .eyebrow{color:#e4c6a1;margin-bottom:38px}
+.home-gift__story>p:not(.eyebrow):not(.home-gift__signature){color:#ead8d1;max-width:400px}
+.home-gift__story>p.home-gift__lead{color:#f5e7d7!important;font-size:27px!important;margin:32px 0 24px}
+.home-gift__signature{color:#d7bab0;margin-top:32px}.home-gift__signature span{color:#f5e7d7}
+.home-gift__details{background:#f8f3e9;color:#542b31;padding:48px 38px 32px;box-shadow:0 30px 70px #18050c33;position:relative}
+.home-gift__details:before{content:'B & O';display:block;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;color:#976c57;font-size:30px;text-align:center;margin-bottom:34px}
+.home-gift__caption{font-size:30px;text-align:center}.home-gift__intro{text-align:center}
+.home-gift__methods{justify-content:center;gap:22px;margin-top:26px}
+.home-gift__thanks{font-size:20px;text-align:center;margin-top:18px}
+@media(max-width:760px){#registry.home-gift{padding:76px 20px}.home-gift__layout{max-width:480px;gap:32px}.home-gift__details{padding:34px 24px 24px}.home-gift__story{padding:0 8px}.home-gift__art{left:40%;top:30px;width:180px;height:400px}.home-gift .eyebrow{margin-bottom:26px}#registry.home-gift h2{font-size:70px!important}.home-gift__details:before{margin-bottom:22px}.home-gift__caption{font-size:27px}.home-gift__methods{gap:18px}}
+@media(max-width:360px){#registry.home-gift h2{font-size:60px!important}.home-gift__details{padding:30px 18px 20px}.home-gift__methods{gap:14px}.home-gift__field dd{gap:8px;font-size:12px}}
+#registry.home-gift h2{text-transform:none!important}

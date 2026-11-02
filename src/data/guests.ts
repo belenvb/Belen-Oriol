@@ -111,14 +111,13 @@ export function findGuestByInput(input: string): GuestData {
     };
   }
 
-  // Generic custom name / code defaults to personalized name with wedding_only or all
-  const isPreboda = clean.toLowerCase().includes('preboda');
+  // All other codes and names default to full celebration access
   return {
     id: `guest-${clean}`,
     code: clean,
     name: input.trim(),
-    tier: isPreboda ? 'all' : 'wedding_only',
-    invitedToPreboda: isPreboda,
+    tier: 'all',
+    invitedToPreboda: true,
     partySize: 2,
   };
 }

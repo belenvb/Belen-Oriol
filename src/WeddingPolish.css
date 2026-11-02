@@ -1,0 +1,51 @@
+/* Editorial navigation and landing page; the invitation retains its own styling. */
+.wedding-header{position:fixed;inset:0 0 auto;z-index:70;color:#fff7eb;background:linear-gradient(#14201899,transparent);transition:background .25s,color .25s}
+.wedding-header.is-solid{background:#faf7f2f5;color:#552331;backdrop-filter:blur(16px)}
+.wedding-header__bar{height:84px;max-width:1600px;margin:auto;padding:0 clamp(20px,4vw,64px);display:flex;align-items:center;justify-content:space-between;gap:26px}
+.wedding-header button{cursor:pointer;background:none;border:0;box-shadow:none;border-radius:0}
+.wedding-header button:focus-visible,.hero-quick-links button:focus-visible{outline:1px solid currentColor;outline-offset:5px}
+.wedding-header__wordmark{font:400 29px/1 'Cormorant Garamond',Georgia,serif;white-space:nowrap;flex-shrink:0}
+.wedding-header__wordmark em{font-weight:300;color:#c4a575}
+.wedding-header__desktop{display:flex;align-items:center;gap:clamp(16px,1.8vw,28px);margin-left:auto}
+.wedding-header__desktop button{font:500 10px/1.4 'Plus Jakarta Sans',sans-serif;letter-spacing:.08em;min-height:44px;white-space:nowrap;opacity:.8}
+.wedding-header__desktop button:hover,.wedding-header__desktop button[aria-current]{opacity:1}
+.wedding-header__desktop button[aria-current]{text-decoration:underline;text-underline-offset:8px;text-decoration-thickness:1px}
+.wedding-header__desktop .wedding-header__rsvp{opacity:1;font-weight:700}
+.wedding-header__tools{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.wedding-header__sound,.wedding-header__toggle{display:grid;place-items:center;width:44px;height:44px}
+.wedding-header__languages{display:flex;align-items:center;gap:1px;font:500 10px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.08em}
+.wedding-header__languages button{height:44px;min-width:33px;opacity:.5}
+.wedding-header__languages button[aria-pressed=true]{opacity:1}
+.wedding-header__languages span{opacity:.3}
+.wedding-header__toggle{display:none}
+.wedding-header__mobile{position:fixed;top:72px;bottom:0;left:0;right:0;background:#faf7f2;overflow:auto;padding:30px max(28px,6vw) 50px}
+.wedding-header__mobile button{display:flex;align-items:center;gap:20px;width:100%;text-align:left;padding:16px 0;font:400 clamp(25px,5vw,36px)/1.2 'Cormorant Garamond',Georgia,serif;color:#552331}
+.wedding-header__index{font:500 9px/1 'Plus Jakarta Sans',sans-serif;color:#9d8566;letter-spacing:.1em}
+.editorial-hero .hero-copy{bottom:17%;animation:none;transform:none;opacity:1}
+.editorial-hero .hero-copy h1{font-size:clamp(4.2rem,10vw,10rem);line-height:1.05;letter-spacing:-.045em;margin:18px 0 20px;text-shadow:0 3px 28px #20180d26}
+.editorial-hero .hero-copy>.eyebrow{font-size:10px;letter-spacing:.32em;color:#f5e7cf}
+.editorial-hero .hero-date-long{font-size:clamp(14px,1.35vw,18px)!important;letter-spacing:.13em!important;margin-top:16px!important}
+.hero-quick-links{display:flex;align-items:center;justify-content:center;gap:clamp(18px,3vw,42px);margin-top:27px;flex-wrap:wrap}
+.hero-quick-links button{color:#fff7eb;font:500 10px/1.4 'Plus Jakarta Sans',sans-serif;letter-spacing:.06em;padding:10px 2px;min-height:44px;cursor:pointer}
+.hero-quick-links button:last-child{color:#f1d39e}
+.hero-quick-links button:hover{text-decoration:underline;text-underline-offset:6px}
+.editorial-hero .hero-discover{bottom:20px;min-height:48px;font-size:9px;letter-spacing:.2em;gap:10px;animation:none}
+.editorial-hero .hero-discover i{height:25px;box-shadow:none;background:#e3c27999}
+.editorial-hero .hero-discover i::after{display:none}
+#schedule,#journey,#registry,#rsvp,#faq,#story{scroll-margin-top:94px}
+.rsvp-room-receipt{max-width:500px;margin:0 auto 24px;color:#675448;font-size:14px;line-height:1.65}
+#rsvp .rsvp-readable-card{border-width:0!important;border-radius:2px!important;box-shadow:none!important}
+#rsvp input,#rsvp select,#rsvp textarea{font-size:16px;min-height:44px}
+#rsvp button{min-height:44px}
+@media(max-width:1099px){.wedding-header__desktop{display:none}.wedding-header__toggle{display:grid}.wedding-header__bar{height:72px;gap:12px}.wedding-header__wordmark{font-size:27px}.wedding-header__tools{gap:3px}}
+@media(max-width:600px){
+ .wedding-header__bar{padding:0 18px;gap:8px}.wedding-header__wordmark{font-size:25px}.wedding-header__sound{width:34px}.wedding-header__languages button{min-width:29px}
+ .editorial-hero .hero-copy{bottom:20%;left:5%;right:5%}.editorial-hero .hero-copy h1{font-size:clamp(3.5rem,14vw,5.5rem);margin:19px 0}
+ .editorial-hero .hero-copy>.eyebrow{font-size:9px;letter-spacing:.26em}.editorial-hero .hero-venue-line{font-size:15px!important;letter-spacing:.02em!important}
+ .hero-quick-links{gap:10px 18px;margin-top:22px}.hero-quick-links button{font-size:10px}.hero-quick-links button:last-child{flex-basis:100%;padding-top:3px}
+ .editorial-hero .hero-discover{bottom:28px}
+ #rsvp .rsvp-readable-card{padding:24px 16px!important}#rsvp .rsvp-paper-layout{padding-left:18px;padding-right:18px}
+}
+@media(max-width:360px){.wedding-header__sound{display:none}.wedding-header__wordmark{font-size:24px}.wedding-header__bar{padding:0 14px}.wedding-header__tools{gap:0}}
+@media(max-height:500px) and (min-width:600px){.wedding-header__bar{height:60px}.wedding-header__mobile{top:60px;padding-top:10px}.wedding-header__mobile button{padding:10px 0}.editorial-hero{min-height:100svh}.editorial-hero .hero-copy{bottom:5%}.editorial-hero .hero-copy h1{font-size:58px;margin:8px 0}.editorial-hero .hero-date-long{margin-top:8px!important}.hero-quick-links{margin-top:6px}.editorial-hero .hero-discover{display:none}}
+@media(prefers-reduced-motion:reduce){.wedding-header{transition:none}}

@@ -18,6 +18,8 @@
   --line: rgba(92, 20, 30, 0.14);
   --line-gold: rgba(184, 146, 67, 0.3);
   --white: #fdfbf7;
+  --forest: #293e32;
+  --ochre: #b89243;
 }
 
 html {
@@ -30,117 +32,2399 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  overflow-x: hidden;
-  position: relative;
+body { overflow-x:hidden; position:relative; }
+body::before { display:none; }
+.font-cinzel { font-family:'Cinzel Decorative',Georgia,serif; }
+.font-baroque { font-family:'UnifrakturMaguntia',serif; }
+.font-script { font-family:"Great Vibes",cursive; }
+.font-playfair { font-family:"Playfair Display",Georgia,serif; }
+.font-cormorant { font-family:"Cormorant Garamond",Georgia,serif; }
+.font-sans-app { font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+.gold-text { background:none; -webkit-text-fill-color:currentColor; }
+.gold-border { border-color:#b89243; }
+.gold-foil-card::before,.shimmer-gold { display:none; }
+.wax-seal { box-shadow:none; background:var(--burgundy); }
+.burgundy-text { color:var(--burgundy); }
+::-webkit-scrollbar { width:8px; }
+::-webkit-scrollbar-track { background:var(--paper); }
+::-webkit-scrollbar-thumb { background:rgba(184,146,67,.4); border-radius:4px; }
+::-webkit-scrollbar-thumb:hover { background:var(--gold); }
+::selection { background:rgba(92,20,30,.15); color:var(--burgundy); }
+:focus-visible { outline:2px solid var(--ochre)!important; outline-offset:5px; }
+button,a { -webkit-tap-highlight-color:transparent; }
+
+.eyebrow { font:500 .65rem/1.6 'Plus Jakarta Sans',sans-serif; letter-spacing:.22em; text-transform:uppercase; }
+.page-content-stack { position:relative; z-index:2; background:#faf7f2; box-shadow:0 -28px 45px rgba(34,24,16,.16); }
+.editorial-hero { height:100svh; min-height:640px; position:relative; color:#fff9ee; background:var(--forest); overflow:hidden; z-index:1; }
+.hero-fixed-photo { position:absolute; inset:0; z-index:0; overflow:hidden; clip-path:inset(0); }
+.hero-fixed-photo img,
+.hero-fixed-photo .hero-shade {
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100svh;
+  object-fit:cover;
+  object-position:50% 54%;
+}
+.hero-shade { background:linear-gradient(180deg,rgba(13,25,19,.30),rgba(13,25,19,.08) 35%,rgba(13,25,19,.68)); }
+.hero-copy { position:absolute; left:6%; right:6%; bottom:18%; text-align:center; z-index:2; will-change:transform, opacity; }
+.hero-copy h1 { font:400 clamp(4.8rem,12vw,12rem)/1.1 'Cormorant Garamond',Georgia,serif; letter-spacing:-.05em; margin:20px 0; }
+.hero-copy h1 em { font-weight:300; color:#e3c279; }
+.hero-copy>p:last-child { font:400 1.1rem 'Cormorant Garamond',Georgia,serif; letter-spacing:.08em; }
+.hero-discover {
+  position:absolute;
+  left:50%;
+  bottom:34px;
+  z-index:3;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  min-height:78px;
+  color:#fff9ee;
+  font:600 .72rem/1 'Plus Jakarta Sans',sans-serif;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+.hero-discover i {
+  display:block;
+  width:1px;
+  height:52px;
+  background:linear-gradient(180deg,rgba(227,194,121,0),rgba(227,194,121,.85),rgba(227,194,121,0));
+  box-shadow:0 0 16px rgba(227,194,121,.62);
+}
+@supports (animation-timeline: view()) {
+  .hero-copy {
+    animation: heroTextLift linear both;
+    animation-timeline: view();
+    animation-range: exit -10% exit 78%;
+  }
+  .hero-discover {
+    animation: heroTextLift linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 60%;
+  }
+}
+@keyframes heroTextLift {
+  from { transform:translateY(0); opacity:1; }
+  to { transform:translateY(-120px); opacity:0; }
 }
 
-/* Subtle organic paper grain overlay */
-body::before {
-  content: "";
+.hero-light-symbol::after {
+  transform:translate(-50%,-50%) rotate(90deg);
+}
+.story-copy h2,.weekend-heading h2 { font:400 clamp(3rem,5.4vw,5.3rem)/1.04 'Cormorant Garamond',Georgia,serif; letter-spacing:-.035em; color:var(--burgundy); margin:28px 0; }
+.story-copy h2 em { color:var(--forest); }
+.story-copy>p:not(.eyebrow) { max-width:400px; font-size:.9rem; line-height:1.9; color:#58574c; }
+.editorial-link { display:inline-block; margin-top:28px; border-bottom:1px solid; padding:10px 0; font-size:.7rem; letter-spacing:.07em; }
+.story-section figure { margin-top:70px; }
+.story-section figure img { width:100%; height:auto; max-height:580px; object-fit:cover; }
+.story-section figcaption { font:italic 1.1rem 'Cormorant Garamond',serif; margin-top:15px; color:#676657; }
+.mosaic-mark { width:62px; margin-top:55px; }
+
+.rainbow-break { width:100vw; height:min(72vw,760px); min-height:420px; overflow:hidden; background:#d8d2c7; position:relative; }
+.rainbow-break img { width:100%; height:100%; display:block; object-fit:cover; object-position:center; }
+.rainbow-break:after { content:""; position:absolute; inset:0; box-shadow:inset 0 1px rgba(255,255,255,.2),inset 0 -1px rgba(52,35,23,.12); pointer-events:none; }
+
+.weekend-section { background:var(--forest); color:#f6f1e6; padding:110px max(6%,calc((100% - 1100px)/2)); display:grid; grid-template-columns:1fr 1fr; gap:10%; }
+.weekend-heading h2 { color:inherit; }
+.weekend-heading>p:not(.eyebrow),.event-list p:not(.eyebrow),.weekend-details { font-size:.8rem; line-height:1.8; }
+.day-tabs { display:flex; gap:24px; margin:35px 0; }
+.day-tabs button { border-bottom:1px solid #889386; padding:12px 0; cursor:pointer; font:2.4rem 'Cormorant Garamond',serif; opacity:.6; }
+.day-tabs button[aria-pressed=true] { opacity:1; border-color:#dfc285; color:#dfc285; }
+.day-tabs span { font:.65rem sans-serif; margin-left:8px; }
+.event-list li { display:flex; gap:24px; padding:24px 0; border-top:1px solid #ffffff30; }
+.event-list li>span { color:#dfc285; font:.75rem serif; padding-top:5px; }
+.event-list h3 { font:400 2rem 'Cormorant Garamond',serif; margin:5px 0; }
+.weekend-details { border-top:1px solid #ffffff30; padding-top:24px; display:grid; gap:20px; }
+
+#castle { background:#f3ede2; }
+#castle .castle-photo { padding:0; border:0; border-radius:0; box-shadow:none; background:transparent; }
+#castle .castle-photo>div { border-radius:0; }
+#castle .castle-photo:first-child { grid-column:1/-1; }
+#castle .castle-photo:first-child>div:first-child { height:min(70vw,650px); }
+.castle-editorial { padding:110px max(7%,calc((100% - 1100px)/2)); background:#efe6d4!important; }
+.castle-editorial-grid { display:grid; grid-template-columns:1.3fr 1fr; gap:10%; margin-top:40px; }
+.castle-editorial h2 { font:400 clamp(3.4rem,6.4vw,6.5rem)/1 'Cormorant Garamond',serif; letter-spacing:-.04em; color:var(--burgundy); }
+.castle-editorial-grid>div { padding-top:8px; }
+.castle-editorial p:not(.eyebrow) { font-size:.85rem; line-height:1.9; }
+.castle-editorial .castle-intro { font:400 1.8rem/1.25 'Cormorant Garamond',serif!important; margin-bottom:24px; }
+.invitation-inspired { position:relative; overflow:hidden; }
+.invitation-inspired:before { content:""; position:absolute; inset:24px; border:1px solid rgba(140,109,59,.28); pointer-events:none; }
+.castle-corner { position:absolute; width:120px; height:120px; top:24px; border-top:1px solid rgba(92,20,30,.34); pointer-events:none; }
+.castle-corner:before,.castle-corner:after { content:""; position:absolute; border-radius:50%; border:1px solid rgba(92,20,30,.24); }
+.castle-corner:before { width:78px; height:78px; top:12px; }
+.castle-corner:after { width:42px; height:42px; top:30px; }
+.castle-corner-left { left:24px; border-left:1px solid rgba(92,20,30,.34); }
+.castle-corner-left:before,.castle-corner-left:after { left:12px; }
+.castle-corner-right { right:24px; border-right:1px solid rgba(92,20,30,.34); }
+.castle-corner-right:before,.castle-corner-right:after { right:12px; }
+.gothic-motif { width:min(300px,80%); margin:34px 0 4px; fill:none; stroke:#8c6d3b; stroke-width:1.15; opacity:.72; }
+.castle-botanical { max-width:260px; opacity:.75; margin-top:28px!important; }
+
+#journey { background:var(--paper); }
+#journey>div>div { background:transparent; }
+.room-payment { font:400 1.5rem/1.4 'Cormorant Garamond',serif; color:var(--burgundy); margin:24px 0; max-width:700px; }
+.room-row { display:grid; grid-template-columns:1fr auto auto; gap:30px; align-items:center; padding:25px 0; border-top:1px solid var(--line); }
+.room-row h4 { font:400 1.6rem 'Cormorant Garamond',serif; }
+.room-row p,.room-note { font-size:.7rem; color:#65665b; line-height:1.8; }
+.room-row strong { font:400 2.5rem 'Cormorant Garamond',serif; color:var(--burgundy); }
+.room-row button { min-height:44px; font-size:.7rem; border-bottom:1px solid; cursor:pointer; }
+.room-note { margin:15px 0 35px; }
+
+#rsvp { background:#ede7da; }
+#faq { background:var(--paper); }
+.original-seal { display:none!important; }
+#registry > div > div:first-child > p.font-cormorant { display:none; }
+
+footer { padding:0!important; overflow:hidden; }
+.closing-photo { position:relative; height:min(70vw,680px); min-height:380px; margin-bottom:0; }
+.closing-photo-fullbleed { width:100vw; margin-left:calc(50% - 50vw); margin-right:calc(50% - 50vw); }
+.closing-photo>img { width:100%; height:100%; object-fit:cover; object-position:50% 40%; display:block; }
+.footer-signature { padding-top:28px; }
+.footer-bo-art { width:74px; height:74px; object-fit:contain; margin-bottom:10px; filter:saturate(.95) brightness(1.1); }
+
+.travel-tabs { display:flex; gap:24px; flex-wrap:wrap; border-bottom:1px solid var(--line); }
+.travel-tabs button { min-height:44px; font-size:.7rem; letter-spacing:.08em; cursor:pointer; padding:15px 0; }
+.travel-tabs button[aria-pressed=true] { border-bottom:2px solid var(--burgundy); color:var(--burgundy); }
+.travel-guide>h3 { font:400 2.5rem 'Cormorant Garamond',serif; margin:30px 0; }
+.travel-columns { display:grid; grid-template-columns:1fr 1fr; gap:45px; }
+.travel-columns h4 { font:400 1.6rem 'Cormorant Garamond',serif; margin-bottom:15px; }
+.travel-columns p { font-size:.8rem; line-height:1.9; margin:10px 0; }
+
+@media(max-width:767px) {
+  header a>div.flex-col { display:none; }
+    .editorial-hero { min-height:590px; }
+  .hero-copy h1 { font-size:clamp(4rem,15vw,7rem); }
+  .hero-copy { bottom:22%; }
+  .hero-bottom { align-items:center; }
+  .hero-bottom>span { max-width:150px; }
+  .story-section figure { margin:0 0 0 20%; }
+  .story-section figure img { max-height:450px; }
+  .mosaic-mark { margin-top:30px; }
+  .rainbow-break { height:66svh; min-height:380px; }
+  .rainbow-break img { object-position:center center; }
+  .weekend-section { grid-template-columns:1fr; padding:75px 7%; gap:45px; }
+  .room-row { grid-template-columns:1fr auto; gap:10px; }
+  .room-row button { grid-column:1/-1; justify-self:start; }
+  .room-row h4 { font-size:1.4rem; }
+  .travel-columns { grid-template-columns:1fr; gap:25px; }
+  .invitation-inspired:before { inset:12px; }
+  .castle-corner { display:none; }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  *,*::before,*::after { animation:none!important; transition:none!important; }
+}
+
+
+.registry-section-shell {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(92,20,30,0.06), rgba(92,20,30,0.00) 22%),
+    #f6f0e6;
+}
+
+.registry-section-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184,146,67,.8), transparent);
+}
+
+.rsvp-section-shell {
+  position: relative;
+  background: #ede7da;
+}
+
+
+@media (max-width: 760px) {
+  .hero-fixed-photo img,
+  .hero-fixed-photo .hero-shade,
+  .parallax-photo-fixed {
+    position:absolute;
+    height:100%;
+  }
+  .photo-break-caption {
+    font-size:2.2rem;
+    bottom:32px;
+  }
+}
+
+
+/* Hero discover beam refinement */
+.hero-discover i {
+  position: relative;
+  overflow: hidden;
+}
+.hero-discover i::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -28%;
+  width: 3px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255, 238, 202, 0.96);
+  box-shadow: 0 0 14px rgba(227,194,121,.95), 0 0 24px rgba(227,194,121,.55);
+  transform: translateX(-50%);
+  animation: discoverBeam 1.9s ease-in-out infinite;
+}
+@keyframes discoverBeam {
+  0% { top: -22%; opacity: 0; }
+  18% { opacity: 1; }
+  55% { top: 42%; opacity: .95; }
+  100% { top: 112%; opacity: 0; }
+}
+
+/* RSVP readability and layout */
+.rsvp-hero-panel {
+  max-width: none !important;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  border-radius: 2.3rem;
+  border: 1px solid rgba(239,202,124,.22);
+  background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.07));
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px rgba(255,255,255,.12);
+}
+.rsvp-section-shell::after { inset: 30px; }
+.rsvp-readable-card,
+.rsvp-readable-card * { color: initial; }
+.rsvp-readable-card h3,
+.rsvp-readable-card .text-\[\#37080e\],
+.rsvp-readable-card .text-\[\#5c141e\] { color: #371017 !important; }
+.rsvp-readable-card p,
+.rsvp-readable-card .text-\[\#554f47\],
+.rsvp-readable-card .text-\[\#6e675f\],
+.rsvp-readable-card .font-cormorant { color: #554f47 !important; }
+.rsvp-readable-card .bg-\[\#5c141e\],
+.rsvp-readable-card button.bg-\[\#5c141e\] { color: #fff7e7 !important; background-color:#6d1020 !important; }
+.rsvp-section-shell .max-w-3xl { max-width: 960px; }
+.photo-basalt-break .photo-break-caption { display:none; }
+
+@media (max-width: 760px) {
+  .rsvp-hero-panel { padding: 1.8rem 1.15rem; border-radius: 1.7rem; }
+}
+
+
+/* Final RSVP cleanup */
+.rsvp-section-shell::after {
+  display: none !important;
+}
+#rsvp .rsvp-readable-card,
+#rsvp .rsvp-readable-card * {
+  color: #371017 !important;
+}
+#rsvp .rsvp-readable-card p,
+#rsvp .rsvp-readable-card .font-cormorant,
+#rsvp .rsvp-readable-card .text-\[\#554f47\],
+#rsvp .rsvp-readable-card .text-\[\#6e675f\] {
+  color: #554f47 !important;
+}
+#rsvp .rsvp-readable-card .bg-\[\#5c141e\],
+#rsvp .rsvp-readable-card button.bg-\[\#5c141e\],
+#rsvp .rsvp-readable-card button {
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-readable-card button:not(.bg-\[\#5c141e\]) {
+  color: #5c141e !important;
+}
+#rsvp .rsvp-readable-card .bg-\[\#5c141e\],
+#rsvp .rsvp-readable-card button.bg-\[\#5c141e\] {
+  background-color: #6d1020 !important;
+}
+#rsvp .rsvp-readable-card svg,
+#rsvp .rsvp-readable-card .text-\[\#dfc285\],
+#rsvp .rsvp-readable-card .text-\[\#dfc285\] svg {
+  color: #dfc285 !important;
+  stroke: #dfc285 !important;
+}
+
+
+/* Keep the parallax/fixed photo effect on mobile too */
+@media (max-width: 760px) {
+  .hero-fixed-photo img,
+  .hero-fixed-photo .hero-shade,
+  .parallax-photo-fixed {
+    position: fixed !important;
+    height: 100svh !important;
+    min-height: 100svh !important;
+  }
+}
+
+/* Stronger moving light in the Discover beam */
+.hero-discover i::after {
+  height: 26px !important;
+  width: 4px !important;
+  animation-duration: 1.55s !important;
+}
+
+
+/* RSVP final readability fix */
+#rsvp .rsvp-section-shell::after,
+.rsvp-section-shell::after {
+  display:none !important;
+}
+#rsvp .rsvp-readable-card {
+  background-color: rgba(255, 250, 240, .96) !important;
+  color:#371017 !important;
+}
+#rsvp .rsvp-readable-card h1,
+#rsvp .rsvp-readable-card h2,
+#rsvp .rsvp-readable-card h3,
+#rsvp .rsvp-readable-card h4,
+#rsvp .rsvp-readable-card .text-\[\#37080e\],
+#rsvp .rsvp-readable-card .text-\[\#5c141e\] {
+  color:#371017 !important;
+}
+#rsvp .rsvp-readable-card p,
+#rsvp .rsvp-readable-card .font-cormorant,
+#rsvp .rsvp-readable-card .text-\[\#554f47\],
+#rsvp .rsvp-readable-card .text-\[\#6e675f\] {
+  color:#554f47 !important;
+}
+#rsvp .rsvp-readable-card > button,
+#rsvp .rsvp-readable-card > button span {
+  color:#fff7e7 !important;
+}
+#rsvp .rsvp-readable-card > button svg {
+  color:#dfc285 !important;
+  stroke:#dfc285 !important;
+}
+#rsvp .rsvp-readable-card .bg-\[\#5c141e\],
+#rsvp .rsvp-readable-card button.bg-\[\#5c141e\] {
+  background-color:#6d1020 !important;
+  color:#fff7e7 !important;
+}
+#rsvp .rsvp-readable-card .bg-\[\#5c141e\] *,
+#rsvp .rsvp-readable-card button.bg-\[\#5c141e\] * {
+  color:#fff7e7 !important;
+  stroke:#dfc285 !important;
+}
+
+/* Keep mobile fixed-photo feel */
+@media (max-width: 760px) {
+  .hero-fixed-photo img,
+  .hero-fixed-photo .hero-shade,
+  .parallax-photo-fixed {
+    position: fixed !important;
+    height: 100svh !important;
+    min-height: 100svh !important;
+  }
+}
+
+/* Stronger moving Discover light */
+.hero-discover i {
+  position:relative;
+  overflow:hidden;
+}
+.hero-discover i::after {
+  content:'';
+  position:absolute;
+  left:50%;
+  top:-32%;
+  width:4px;
+  height:26px;
+  border-radius:999px;
+  background:rgba(255,238,202,.98);
+  box-shadow:0 0 16px rgba(227,194,121,.98), 0 0 28px rgba(227,194,121,.62);
+  transform:translateX(-50%);
+  animation:discoverBeam 1.55s ease-in-out infinite;
+}
+@keyframes discoverBeam {
+  0% { top:-28%; opacity:0; }
+  18% { opacity:1; }
+  56% { top:44%; opacity:.98; }
+  100% { top:112%; opacity:0; }
+}
+
+
+.hero-date-long {
+  margin-top: .8rem !important;
+  font: 600 clamp(.82rem,1.4vw,1.05rem)/1.2 'Plus Jakarta Sans', sans-serif !important;
+  letter-spacing: .16em !important;
+  text-transform: uppercase !important;
+  color: #e3c279 !important;
+}
+
+
+/* Final caption and hero typography tweaks */
+.photo-rainbow-break .photo-break-caption,
+.photo-temple-break .photo-break-caption,
+.photo-basalt-break .photo-break-caption {
+  display: none !important;
+}
+
+.hero-venue-line {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 400 !important;
+  font-size: clamp(.92rem, 1.35vw, 1.15rem) !important;
+  letter-spacing: .075em !important;
+  text-transform: none !important;
+  color: #fff9ee !important;
+}
+
+
+/* Final requested copy/layout cleanup */
+.photo-rainbow-break .photo-break-caption,
+.photo-temple-break .photo-break-caption,
+.photo-basalt-break .photo-break-caption {
+  display: none !important;
+}
+
+.hero-venue-line {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-weight: 400 !important;
+  font-size: clamp(.92rem, 1.35vw, 1.15rem) !important;
+  letter-spacing: .075em !important;
+  text-transform: none !important;
+  color: #fff9ee !important;
+}
+
+.room-option-subtext {
+  max-width: 440px;
+}
+
+@media (min-width: 640px) {
+  .room-option-subtext {
+    margin-left: 0;
+  }
+}
+
+
+/* RSVP confirm button readability and room descriptions */
+#rsvp .rsvp-confirm-button,
+#rsvp .rsvp-confirm-button span,
+#rsvp .rsvp-confirm-button * {
+  color: #fff7e7 !important;
+}
+
+#rsvp .rsvp-confirm-button svg,
+#rsvp .rsvp-confirm-icon {
+  color: #dfc285 !important;
+  stroke: #dfc285 !important;
+}
+
+.room-list-compact {
+  gap: .55rem !important;
+}
+
+.room-row-detailed {
+  align-items: center;
+  gap: .75rem !important;
+  padding-top: .85rem !important;
+  padding-bottom: .85rem !important;
+}
+
+.room-row-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.room-row-copy h4 {
+  margin-bottom: .15rem !important;
+}
+
+.room-row-copy p {
+  margin: 0 !important;
+  color: #6e675f !important;
+  font-size: .76rem !important;
+  line-height: 1.35 !important;
+  max-width: 560px;
+}
+
+.room-row-copy small {
+  display: block;
+  margin-top: .25rem;
+  color: #8c6d3b;
+  font-size: .68rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+
+/* Functional RSVP button fix */
+#rsvp .rsvp-entry-card,
+#rsvp .rsvp-readable-card {
+  position: relative;
+  z-index: 2;
+}
+#rsvp .rsvp-confirm-button {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto !important;
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-confirm-button span,
+#rsvp .rsvp-confirm-button * {
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-confirm-button svg {
+  stroke: #dfc285 !important;
+  color: #dfc285 !important;
+}
+
+/* Castle rooms: descriptions, area subheaders, price line */
+.room-payment {
+  display: none !important;
+}
+.room-list-compact {
+  gap: .5rem !important;
+}
+.room-row-detailed {
+  align-items: center;
+  gap: .75rem !important;
+  padding-top: .8rem !important;
+  padding-bottom: .8rem !important;
+}
+.room-row-copy {
+  min-width: 0;
+  flex: 1;
+}
+.room-row-title-line {
+  display: flex;
+  align-items: baseline;
+  gap: .65rem;
+  flex-wrap: wrap;
+}
+.room-row-title-line h4 {
+  margin: 0 !important;
+}
+.room-row-title-line span {
+  font: 700 .66rem/1 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #8c6d3b;
+}
+.room-row-copy p {
+  margin: .25rem 0 0 !important;
+  color: #6e675f !important;
+  font-size: .76rem !important;
+  line-height: 1.35 !important;
+  max-width: 600px;
+}
+.room-row-copy small {
+  display: block;
+  margin-top: .24rem;
+  color: #8c6d3b;
+  font-size: .67rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.room-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: .45rem;
+  white-space: nowrap;
+  color: #6b1420;
+}
+.room-price-block strong {
+  font: 700 clamp(1.7rem, 3.4vw, 3rem)/1 'Cormorant Garamond', serif;
+  color: #6b1420;
+}
+.room-price-block span {
+  font: 500 .82rem/1 'Plus Jakarta Sans', sans-serif;
+  color: #6e675f;
+}
+
+/* Story image full height */
+.story-section figure {
+  align-self: stretch !important;
+  min-height: clamp(520px, 82vh, 900px);
+  overflow: hidden;
+}
+.story-section figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Registry illustration */
+.registry-illustration-card {
+  width: min(360px, 72vw);
+  margin: -1rem auto 2.5rem;
+  opacity: .94;
+}
+.registry-illustration-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+}
+
+/* Passport wheel and final back-cover placement */
+.passport-stage,
+.passport-spread {
+  overscroll-behavior: contain !important;
+}
+.passport-stage.is-closed .passport-front-cover.is-back-cover {
+  left: clamp(92px, 8vw, 136px) !important;
+  right: auto !important;
+  transform: translateX(0) rotateY(0deg) !important;
+}
+.passport-stage.is-closing-back .passport-front-cover {
+  left: clamp(92px, 8vw, 136px) !important;
+  right: auto !important;
+}
+
+
+/* Fix RSVP open button and prevent blank-looking form */
+#rsvp .rsvp-confirm-button {
+  position: relative;
+  z-index: 30;
+  pointer-events: auto !important;
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-confirm-button span,
+#rsvp .rsvp-confirm-button * {
+  color: #fff7e7 !important;
+}
+#rsvp .rsvp-confirm-button svg {
+  color: #dfc285 !important;
+  stroke: #dfc285 !important;
+}
+
+/* Castle rooms formatting */
+.room-payment {
+  display: none !important;
+}
+.room-list-compact {
+  gap: .5rem !important;
+}
+.room-row-detailed {
+  align-items: center;
+  gap: .8rem !important;
+  padding-top: .8rem !important;
+  padding-bottom: .8rem !important;
+}
+.room-row-copy {
+  flex: 1;
+  min-width: 0;
+}
+.room-row-title-line {
+  display: flex;
+  align-items: baseline;
+  gap: .65rem;
+  flex-wrap: wrap;
+}
+.room-row-title-line h4 {
+  margin: 0 !important;
+}
+.room-row-title-line span {
+  font: 700 .66rem/1 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #8c6d3b;
+}
+.room-row-copy p {
+  margin: .24rem 0 0 !important;
+  color: #6e675f !important;
+  font-size: .76rem !important;
+  line-height: 1.35 !important;
+  max-width: 620px;
+}
+.room-row-copy small {
+  display: block;
+  margin-top: .24rem;
+  color: #8c6d3b;
+  font-size: .67rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.room-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: .42rem;
+  white-space: nowrap;
+}
+.room-price-block strong {
+  font: 700 clamp(1.65rem, 3.1vw, 2.85rem)/1 'Cormorant Garamond', serif;
+  color: #6b1420;
+}
+.room-price-block span {
+  font: 500 clamp(.62rem, .85vw, .78rem)/1 'Plus Jakarta Sans', sans-serif;
+  color: #77706a;
+}
+
+/* Schedule illustration */
+.schedule-illustration-card {
+  width: min(310px, 62vw);
+  margin: 0 auto 2rem;
+  opacity: .94;
+}
+.schedule-illustration-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  mix-blend-mode: multiply;
+}
+
+/* Footer BO logo above text */
+.footer-bo-mark {
+  width: 38px;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto 14px;
+  opacity: .86;
+  filter: grayscale(1) brightness(1.9);
+}
+
+/* Story photo should fill the section vertically */
+.story-section figure {
+  align-self: stretch !important;
+  min-height: clamp(520px, 82vh, 900px);
+  overflow: hidden;
+}
+.story-section figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Remove old registry illustration placement if CSS remains */
+.registry-illustration-card {
+  display: none !important;
+}
+
+/* RSVP dark trencadís restoration + current RSVP refinements */
+#rsvp.rsvp-trencadis-dark,
+.rsvp-section-shell.rsvp-trencadis-dark {
+  position: relative;
+  overflow: hidden;
+  clip-path: inset(0);
+  background:
+    radial-gradient(circle at 16% 8%, rgba(223,194,133,.20), transparent 28%),
+    radial-gradient(circle at 84% 28%, rgba(129,28,43,.30), transparent 30%),
+    linear-gradient(135deg, rgba(10,27,24,.98), rgba(48,10,18,.98) 48%, rgba(15,34,29,.99));
+  isolation: isolate;
+}
+
+#rsvp.rsvp-trencadis-dark::before,
+.rsvp-section-shell.rsvp-trencadis-dark::before {
+  content: '';
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100svh;
+  background-image:
+    url('/trencadis-glass-dark.svg'),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    radial-gradient(circle at 20% 18%, rgba(223,194,133,.16), transparent 18%),
+    radial-gradient(circle at 76% 68%, rgba(92,20,30,.22), transparent 20%);
+  background-size: 260px auto, 32px 32px, 32px 32px, 180px 180px, 220px 220px;
+  background-position: center, center, center, 0 0, 80px 60px;
+  background-repeat: repeat;
+  opacity: .36;
+  mix-blend-mode: screen;
   pointer-events: none;
-  z-index: 999;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 0;
+  will-change: transform;
 }
 
-/* Custom Font utilities */
-.font-cinzel {
-  font-family: "Cinzel Decorative", Georgia, serif;
+#rsvp.rsvp-trencadis-dark::after,
+.rsvp-section-shell.rsvp-trencadis-dark::after {
+  content: '';
+  position: absolute;
+  inset: 24px;
+  border: 1px solid rgba(223,194,133,.22);
+  pointer-events: none;
+  z-index: 0;
+  display: block !important;
 }
 
-.font-script {
-  font-family: "Great Vibes", cursive;
+.rsvp-trencadis-dark .rsvp-dark-eyebrow {
+  color: #dfc285 !important;
+  text-shadow: 0 1px 18px rgba(0,0,0,.35);
 }
 
-.font-playfair {
-  font-family: "Playfair Display", Georgia, serif;
+.rsvp-trencadis-dark .rsvp-dark-title {
+  color: #fff6e8 !important;
+  text-shadow: 0 2px 28px rgba(0,0,0,.45);
 }
 
-.font-cormorant {
+.rsvp-trencadis-dark .rsvp-dark-subtitle {
+  color: rgba(255,246,232,.84) !important;
+}
+
+.rsvp-trencadis-dark .rsvp-hero-panel {
+  border-color: rgba(223,194,133,.25) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055)) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.13), 0 24px 80px rgba(0,0,0,.22) !important;
+}
+
+.rsvp-trencadis-dark .rsvp-readable-card {
+  background-color: rgba(255, 250, 240, .97) !important;
+}
+
+.rsvp-trencadis-dark select {
+  min-width: 4.75rem;
+}
+
+/* Final RSVP / schedule / footer polish */
+.rsvp-room-note-internal { display: none !important; }
+
+.footer-bo-mark {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.28));
+}
+
+.weekend-section {
+  align-items: start;
+  gap: clamp(2rem, 6vw, 4.5rem);
+  padding-top: clamp(82px, 8vw, 104px);
+  padding-bottom: clamp(82px, 8vw, 104px);
+}
+
+.schedule-illustration-card {
+  width: min(245px, 48vw) !important;
+  margin: 0 0 1.35rem auto !important;
+}
+
+.event-list li {
+  padding: 18px 0 !important;
+}
+
+.event-list h3 {
+  font-size: clamp(1.55rem, 2.5vw, 1.95rem) !important;
+}
+
+.weekend-details {
+  gap: 14px !important;
+  padding-top: 18px !important;
+}
+
+@media (max-width: 900px) {
+  .schedule-illustration-card {
+    width: min(220px, 58vw) !important;
+    margin: 0 auto 1.5rem !important;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  #rsvp.rsvp-trencadis-dark::before,
+  .rsvp-section-shell.rsvp-trencadis-dark::before {
+    position: absolute;
+    height: 100%;
+    background-attachment: scroll;
+  }
+}
+
+/* RSVP trencadís containment + elegant dark mosaic correction
+   Keeps the mosaic only inside #rsvp, prevents the fixed pseudo-element
+   from painting the whole page, and uses small repeating tiles instead
+   of a stretched oversized pattern. */
+html::before,
+body::before {
+  display: none !important;
+}
+
+.rsvp-trencadis-dark:not(#rsvp)::before,
+.rsvp-trencadis-dark:not(#rsvp)::after {
+  display: none !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  clip-path: inset(0) !important;
+  background-color: #111f1b !important;
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(219, 183, 103, .18), transparent 22rem),
+    radial-gradient(circle at 86% 34%, rgba(97, 18, 31, .30), transparent 20rem),
+    linear-gradient(135deg, rgba(9, 31, 27, .98), rgba(47, 12, 20, .98) 50%, rgba(13, 34, 29, .99)) !important;
+  background-attachment: fixed, fixed, fixed !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 100% !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  opacity: .32 !important;
+  mix-blend-mode: screen !important;
+  background-image:
+    linear-gradient(118deg, transparent 0 42%, rgba(255, 242, 208, .20) 43% 46%, transparent 47% 100%),
+    linear-gradient(32deg, transparent 0 48%, rgba(105, 22, 38, .34) 49% 52%, transparent 53% 100%),
+    linear-gradient(145deg, rgba(255, 236, 187, .13) 0 9%, transparent 10% 100%),
+    linear-gradient(72deg, transparent 0 68%, rgba(46, 93, 68, .28) 69% 78%, transparent 79% 100%),
+    radial-gradient(circle at 50% 50%, rgba(255, 245, 220, .10) 0 1px, transparent 2px),
+    linear-gradient(135deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(255,255,255,.028) 1px, transparent 1px) !important;
+  background-size:
+    34px 34px,
+    29px 29px,
+    23px 23px,
+    41px 41px,
+    18px 18px,
+    26px 26px,
+    31px 31px !important;
+  background-position:
+    0 0,
+    11px 7px,
+    5px 13px,
+    17px 19px,
+    0 0,
+    0 0,
+    8px 12px !important;
+  background-repeat: repeat !important;
+  background-attachment: fixed !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 22px !important;
+  display: block !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  border: 1px solid rgba(223, 194, 133, .18) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.035),
+    inset 0 0 90px rgba(0,0,0,.22) !important;
+  background: radial-gradient(circle at 50% 0%, rgba(255,247,226,.07), transparent 42%) !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark > .max-w-3xl,
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-hero-panel,
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-readable-card {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-hero-panel {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.055)) !important;
+  border-color: rgba(223, 194, 133, .25) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+@media (max-width: 760px), (prefers-reduced-motion: reduce) {
+  #rsvp.rsvp-section-shell.rsvp-trencadis-dark {
+    background-attachment: scroll, scroll, scroll !important;
+  }
+
+  #rsvp.rsvp-section-shell.rsvp-trencadis-dark::before {
+    position: absolute !important;
+    background-attachment: scroll !important;
+    background-size:
+      28px 28px,
+      24px 24px,
+      19px 19px,
+      34px 34px,
+      15px 15px,
+      22px 22px,
+      26px 26px !important;
+  }
+}
+
+
+/* === Editorial schedule/footer/passport/story polish 2026-09-14 === */
+
+/* PROGRAM / SCHEDULE: full-height fixed left image, text scrolls on the right */
+
+#schedule .schedule-content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: clamp(78px, 8vw, 128px) clamp(24px, 6vw, 92px);
+  display: grid;
+  align-content: center;
+}
+
+#schedule .weekend-heading,
+#schedule .event-list,
+#schedule .weekend-details {
+  max-width: 720px;
+}
+
+/* FOOTER: same fixed-photo effect as hero, with final photo held while content scrolls */
+.wedding-footer {
+  position: relative;
+  overflow: hidden;
+  background: #151f1a;
+}
+
+.wedding-footer .closing-photo-fullbleed {
+  height: min(88vh, 760px);
+  min-height: 520px;
+  clip-path: inset(0);
+  background-image:
+    linear-gradient(180deg, rgba(18, 31, 25, .10), rgba(18, 31, 25, .42)),
+    url('/photos/rainbow-parallax.webp');
+  background-size: cover;
+  background-position: center 40%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.wedding-footer .closing-photo-fullbleed img {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wedding-footer .footer-signature {
+  position: relative;
+  z-index: 2;
+  margin-top: -1px;
+  padding: 38px 24px 50px;
+  background:
+    linear-gradient(180deg, rgba(21, 31, 26, .94), rgba(21, 31, 26, 1));
+  border-top: 1px solid rgba(223, 194, 133, .24);
+}
+
+/* PASSPORT: breathing room to the right + sharper burgundy leather texture */
+
+.passport-front-cover,
+.passport-cover-base {
+  background-color: var(--leather) !important;
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(255, 226, 160, .08), transparent 20%),
+    radial-gradient(circle at 72% 88%, rgba(0, 0, 0, .30), transparent 36%),
+    repeating-radial-gradient(ellipse at 38% 45%,
+      rgba(255,255,255,.050) 0 1px,
+      rgba(255,255,255,0) 1px 3px,
+      rgba(0,0,0,.070) 3px 4px,
+      rgba(0,0,0,0) 4px 7px),
+    repeating-linear-gradient(78deg,
+      rgba(255,255,255,.030) 0 1px,
+      transparent 1px 5px,
+      rgba(0,0,0,.045) 5px 6px,
+      transparent 6px 11px),
+    linear-gradient(135deg, var(--leather-light), var(--leather) 42%, var(--leather-dark)) !important;
+  background-size:
+    auto,
+    auto,
+    34px 26px,
+    19px 19px,
+    auto !important;
+  box-shadow:
+    0 30px 52px rgba(35,14,10,.24),
+    0 10px 20px rgba(35,14,10,.12),
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset -18px 0 24px rgba(0,0,0,.22),
+    inset 10px 0 14px rgba(255,255,255,.025) !important;
+  filter: contrast(1.04) saturate(1.02);
+}
+
+.passport-front-cover::before,
+.passport-cover-base::before {
+  opacity: .46 !important;
+  mix-blend-mode: overlay !important;
+  background-image:
+    radial-gradient(circle at 24% 19%, rgba(255,255,255,.16) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 62% 78%, rgba(0,0,0,.20) 0 1px, transparent 1.5px),
+    repeating-radial-gradient(ellipse at center,
+      rgba(255,255,255,.045) 0 1px,
+      transparent 1px 2.5px,
+      rgba(0,0,0,.050) 2.5px 3.5px,
+      transparent 3.5px 6px) !important;
+  background-size: 13px 11px, 17px 15px, 29px 23px !important;
+  filter: none !important;
+}
+
+.passport-cover-country,
+.passport-cover-guide,
+.passport-cover-type,
+.passport-cover-crest,
+.passport-cover-epass {
+  text-shadow:
+    0 .8px 0 rgba(255,255,255,.10),
+    0 1px 3px rgba(0,0,0,.20);
+}
+
+/* STORY: large photo right, illustrated route left; final map shows Spain + US outlines */
+
+.story-map,
+.story-atlantic svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.story-map text,
+.story-atlantic text {
+  font: 700 10px/1 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: .08em;
+  fill: #6b202e;
+  text-transform: uppercase;
+}
+
+.story-map .map-country,
+.story-atlantic .map-country {
+  font: 700 13px/1 'Cinzel Decorative', Georgia, serif;
+  letter-spacing: .14em;
+  fill: rgba(107,32,46,.42);
+}
+
+.story-landmarks {
+  position: absolute;
+  left: 50%;
+  bottom: 7%;
+  width: min(62%, 280px);
+  transform: translateX(-50%);
+  opacity: .78;
+  filter: sepia(.18) saturate(.9);
+}
+
+.story-atlantic {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.story-film.is-playing .story-atlantic,
+.story-film.is-still .story-atlantic {
+  animation: storyAtlanticIn .7s ease forwards;
+  animation-delay: 6.2s;
+}
+
+.story-film.is-playing .story-map {
+  animation: storyMapDim .7s ease forwards;
+  animation-delay: 6.2s;
+}
+
+.story-film.is-still .story-atlantic {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+.story-film.is-still .story-map {
+  opacity: .22;
+  animation: none;
+}
+
+.story-spain-outline,
+.story-us-outline {
+  fill: #efe4cf;
+  stroke: #796348;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+
+.story-us-outline {
+  fill: #e6d9c2;
+  opacity: .95;
+}
+
+.story-flight-svg {
+  filter: drop-shadow(0 4px 6px rgba(92,20,30,.18));
+}
+
+.story-replay {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #5c141e;
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(92,20,30,.45);
+  padding-bottom: 6px;
+  cursor: pointer;
+}
+
+@keyframes storyAtlanticIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes storyMapDim {
+  to { opacity: .18; }
+}
+
+@media (max-width: 900px) {
+
+  #schedule .schedule-content {
+    min-height: auto;
+    padding: 70px 7%;
+  }
+
+  .wedding-footer .closing-photo-fullbleed {
+    background-attachment: scroll;
+    min-height: 460px;
+  }
+}
+
+@media (max-width: 640px) {
+}
+
+
+/* === Fix schedule image visibility + stronger passport spacing 2026-09-14 === */
+
+/* The previous fixed background could disappear depending on browser/viewport.
+   This keeps the real image visible and makes it behave like a pinned hero panel. */
+
+/* Push the passport clearly away from the left copy on desktop. */
+
+/* Keep the passport readable if the viewport is narrower. */
+
+
+/* === Schedule full-left image, no overlap passport, Boston/Lancaster fix 2026-09-14 === */
+
+/* Schedule: image fills the whole left column from top to bottom.
+   The real image is sticky, so it behaves like the hero while right-side text scrolls. */
+
+/* Journey section: preserve a real two-column layout so the castle copy never slides under the passport. */
+#journey > .max-w-5xl,
+#journey .max-w-5xl {
+  max-width: 1320px !important;
+}
+
+#journey .journey-venue-grid,
+#journey .venue-passport-grid,
+#journey .castle-passport-grid {
+  display: grid !important;
+  grid-template-columns: minmax(420px, .9fr) minmax(520px, 1.1fr) !important;
+  gap: clamp(56px, 7vw, 112px) !important;
+  align-items: center !important;
+}
+
+/* In case the current section is using a generic first grid around the passport. */
+
+/* Safety net: the venue text remains above the background but below no passport overlays. */
+
+#journey .castle-editorial-copy,
+#journey .venue-copy,
+#journey .journey-copy {
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 500px !important;
+}
+
+/* Story map: east-coast placement for Lancaster/Boston, not Texas. */
+.story-atlantic .story-us-outline {
+  transform-origin: center;
+}
+
+.story-atlantic .story-east-coast-dot {
+  fill: #752a34;
+}
+
+@media (max-width: 1100px) {
+  #journey .journey-venue-grid,
+  #journey .venue-passport-grid,
+  #journey .castle-passport-grid {
+    grid-template-columns: 1fr !important;
+    gap: 44px !important;
+  }
+
+  #journey .castle-editorial-copy,
+  #journey .venue-copy,
+  #journey .journey-copy {
+    max-width: 680px !important;
+  }
+}
+
+
+/* === Traditional section header font correction 2026-09-14 ===
+   Restores the more traditional editorial serif feeling for the main
+   section headers instead of the newer decorative/uppercase treatment. */
+#castle h2,
+.story-copy h2,
+.weekend-heading h2,
+.castle-rooms-panel h3,
+.footer-signature-date {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.035em !important;
+  text-transform: none !important;
+}
+
+/* Specific scale/shape for large page section titles */
+#castle h2,
+.weekend-heading h2,
+.story-copy h2 {
+  font-size: clamp(3.2rem, 6vw, 6.4rem) !important;
+  line-height: 0.98 !important;
+}
+
+/* Keep the small eyebrow labels clean and understated, not decorative. */
+#journey .eyebrow,
+#registry .eyebrow,
+#rsvp .eyebrow,
+#faq .eyebrow,
+#castle .eyebrow,
+.story-section .eyebrow,
+.weekend-section .eyebrow,
+.rsvp-hero-panel .eyebrow,
+.rsvp-readable-card .eyebrow {
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+}
+
+/* Undo overly rigid Cinzel-looking uppercase headers inside card sections. */
+
+/* But keep tiny badges/readability labels sans-serif. */
+#journey .inline-flex span,
+#registry .inline-flex span,
+#rsvp .inline-flex span,
+#faq .inline-flex span,
+#journey .text-\[10px\],
+#registry .text-\[10px\],
+#rsvp .text-\[10px\],
+#faq .text-\[10px\],
+#journey .text-xs,
+#registry .text-xs,
+#rsvp .text-xs,
+#faq .text-xs {
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: inherit;
+}
+
+/* Room names can stay elegant serif but less decorative. */
+.room-row h4,
+.room-row-title-line h4,
+.room-price-block strong {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em !important;
+  text-transform: none !important;
+}
+
+@media (max-width: 760px) {
+  #castle h2,
+  .weekend-heading h2,
+  .story-copy h2 {
+    font-size: clamp(2.8rem, 15vw, 4.8rem) !important;
+  }
+}
+
+/* === Room block mockup redesign only 2026-09-14 ===
+   Keeps the original travel header, original passport placement, and original hotels.
+   Only replaces the castle room block with the proposed mockup-style room cards. */
+
+.castle-rooms-mockup-panel {
+  position: relative;
+  margin: 0 0 2.5rem;
+  display: grid;
+  grid-template-columns: minmax(260px, .56fr) minmax(0, 1.44fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+  padding: clamp(2.4rem, 5vw, 4.6rem);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(184,146,67,.10), transparent 18rem),
+    radial-gradient(circle at 88% 82%, rgba(92,20,30,.045), transparent 20rem),
+    #f6efe3;
+  border: 1px solid rgba(92, 20, 30, .13);
+  box-shadow: 0 24px 80px rgba(67, 46, 30, .10);
+  overflow: hidden;
+}
+
+.castle-rooms-mockup-panel::before {
+  content: '';
+  position: absolute;
+  inset: 22px;
+  border: 1px solid rgba(184, 146, 67, .20);
+  pointer-events: none;
+}
+
+.castle-rooms-mockup-copy,
+.castle-rooms-mockup-grid,
+.castle-rooms-mockup-note {
+  position: relative;
+  z-index: 1;
+}
+
+.castle-rooms-mockup-kicker {
+  margin: 0 0 .9rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .66rem;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: #5c141e;
+  font-weight: 800;
+}
+
+.castle-rooms-mockup-copy h3 {
+  margin: 0;
   font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(2.9rem, 5.2vw, 5.4rem);
+  line-height: .92;
+  letter-spacing: -.045em;
+  color: #5c141e;
 }
 
-.font-baroque {
-  font-family: "UnifrakturMaguntia", "Cinzel Decorative", Georgia, serif;
+.castle-rooms-mockup-rule {
+  position: relative;
+  width: 150px;
+  height: 1px;
+  margin: 1.45rem 0 1.55rem;
+  background: linear-gradient(90deg, rgba(184,146,67,.68), rgba(184,146,67,.12));
 }
 
-.font-sans-app {
-  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+.castle-rooms-mockup-rule::after {
+  content: '';
+  position: absolute;
+  left: 54px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  background: #b89243;
+  transform: translateY(-50%) rotate(45deg);
 }
 
-/* Gold Gradient Text */
-.gold-text {
-  background: linear-gradient(135deg, #dfc285 0%, #b89243 45%, #f6e6c2 70%, #9a762f 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.castle-rooms-mockup-copy p {
+  max-width: 410px;
+  margin: 0;
+  font-size: .88rem;
+  line-height: 1.82;
+  color: #5f574f;
 }
 
-.gold-border {
+.castle-rooms-mockup-copy em {
+  display: block;
+  max-width: 390px;
+  margin-top: 1.25rem;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.18rem;
+  line-height: 1.35;
+  color: #6f6149;
+}
+
+.castle-rooms-mockup-copy button {
+  cursor: pointer;
+  min-height: 48px;
+  margin-top: 1.85rem;
+  padding: 0 1.5rem;
+  border: 1px solid rgba(92,20,30,.42);
+  background: rgba(255,255,255,.28);
+  color: #3a211b;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .66rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-weight: 800;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.castle-rooms-mockup-copy button:hover {
+  background: #5c141e;
+  color: #fff7e7;
+  border-color: #5c141e;
+}
+
+.castle-rooms-mockup-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(115px, 1fr));
+  gap: .9rem;
+}
+
+.castle-room-mockup-card {
+  min-width: 0;
+  background: rgba(255,255,255,.42);
+  border: 1px solid rgba(92,20,30,.12);
+  box-shadow: inset 0 1px rgba(255,255,255,.55);
+  text-align: center;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.castle-room-mockup-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(184,146,67,.58);
+  background: rgba(255,255,255,.66);
+}
+
+.castle-room-mockup-image {
+  height: clamp(112px, 11vw, 162px);
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(92,20,30,.10), rgba(184,146,67,.12)),
+    #e8decd;
+  border-bottom: 1px solid rgba(92,20,30,.10);
+}
+
+.castle-room-mockup-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  filter: saturate(.86) contrast(1.04) brightness(.96);
+}
+
+.castle-room-mockup-body {
+  padding: 1.05rem .85rem 1.2rem;
+}
+
+.castle-room-mockup-body h4 {
+  min-height: 2.85rem;
+  margin: 0 0 .8rem;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 1.7vw, 1.72rem);
+  line-height: 1;
+  color: #311916;
+}
+
+.castle-room-mockup-body strong {
+  display: block;
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2.15rem, 3.2vw, 3.35rem);
+  font-weight: 400;
+  line-height: .86;
+  letter-spacing: -.04em;
+  color: #5c141e;
+}
+
+.castle-room-mockup-body span {
+  display: block;
+  margin-top: .35rem;
+  font-size: .72rem;
+  color: #5d554d;
+}
+
+.castle-room-mockup-body small {
+  display: block;
+  min-height: 2.2rem;
+  margin-top: .9rem;
+  font-size: .66rem;
+  line-height: 1.45;
+  color: #746b62;
+}
+
+.castle-room-mockup-body button {
+  cursor: pointer;
+  margin-top: .95rem;
+  padding: 0 0 .4rem;
+  border: 0;
+  border-bottom: 1px solid rgba(92,20,30,.42);
+  background: transparent;
+  color: #5c141e;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .58rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.castle-room-mockup-body button:hover {
+  color: #8c6d3b;
   border-color: #b89243;
 }
 
-.gold-foil-card {
-  background: linear-gradient(145deg, rgba(253,251,247,0.98) 0%, rgba(246,239,228,0.95) 100%);
-  position: relative;
+.castle-rooms-mockup-note {
+  grid-column: 1 / -1;
+  margin: .85rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(92,20,30,.10);
+  text-align: center;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: #6a5e52;
 }
 
-.gold-foil-card::before {
-  content: "";
+@media (max-width: 1180px) {
+  .castle-rooms-mockup-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .castle-rooms-mockup-copy {
+    max-width: 720px;
+  }
+
+  .castle-rooms-mockup-grid {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .castle-rooms-mockup-panel {
+    padding: 1.6rem;
+    margin-left: -.25rem;
+    margin-right: -.25rem;
+  }
+
+  .castle-rooms-mockup-panel::before {
+    inset: 12px;
+  }
+
+  .castle-rooms-mockup-grid {
+    grid-template-columns: 1fr;
+    gap: .85rem;
+  }
+
+  .castle-room-mockup-card {
+    display: grid;
+    grid-template-columns: 118px 1fr;
+    text-align: left;
+  }
+
+  .castle-room-mockup-image {
+    height: 100%;
+    min-height: 168px;
+    border-bottom: 0;
+    border-right: 1px solid rgba(92,20,30,.10);
+  }
+
+  .castle-room-mockup-body h4,
+  .castle-room-mockup-body small {
+    min-height: 0;
+  }
+
+  .castle-rooms-mockup-note {
+    text-align: left;
+    font-size: .98rem;
+  }
+}
+
+
+/* === Room block badge + breakfast prominence 2026-09-14 === */
+
+.castle-room-block-badge {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  max-width: 520px;
+  margin-top: 1.35rem;
+  padding: 1rem 1.05rem;
+  background:
+    linear-gradient(135deg, rgba(184,146,67,.16), rgba(255,255,255,.42)),
+    rgba(255,255,255,.38);
+  border: 1px solid rgba(184,146,67,.48);
+  box-shadow: inset 0 1px rgba(255,255,255,.55);
+}
+
+.castle-room-block-badge strong {
+  display: block;
+  margin: 0 0 .35rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .68rem;
+  line-height: 1.35;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #5c141e;
+}
+
+.castle-room-block-badge span {
+  display: block;
+  font-size: .74rem;
+  line-height: 1.55;
+  color: #655d55;
+}
+
+.castle-room-block-badge small {
+  display: inline-grid;
+  place-items: center;
+  min-height: 42px;
+  padding: .55rem .75rem;
+  border-radius: 999px;
+  background: #5c141e;
+  color: #fff7e7;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .58rem;
+  line-height: 1.25;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .castle-room-block-badge {
+    grid-template-columns: 1fr;
+  }
+
+  .castle-room-block-badge small {
+    justify-self: start;
+    white-space: normal;
+  }
+}
+
+
+/* === Breakfast included in price line 2026-09-14 === */
+
+.castle-room-mockup-body span {
+  max-width: 125px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.35;
+  color: #5f574f;
+}
+
+.castle-room-price-line span,
+.room-price-block span {
+  line-height: 1.35;
+}
+
+@media (max-width: 760px) {
+  .castle-room-mockup-body span {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none;
+  }
+}
+
+
+/* === Smaller luxury room block refinement 2026-09-14 ===
+   Reduces the scale and density of the castle-room section so it feels more elegant/editorial. */
+
+.castle-rooms-mockup-panel {
+  grid-template-columns: minmax(230px, .48fr) minmax(0, 1.52fr) !important;
+  gap: clamp(1.5rem, 3.4vw, 3rem) !important;
+  padding: clamp(1.75rem, 3.2vw, 3rem) !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 18px 54px rgba(67, 46, 30, .075) !important;
+}
+
+.castle-rooms-mockup-panel::before {
+  inset: 18px !important;
+}
+
+.castle-rooms-mockup-kicker {
+  font-size: .58rem !important;
+  letter-spacing: .22em !important;
+  margin-bottom: .65rem !important;
+}
+
+.castle-rooms-mockup-copy h3 {
+  font-size: clamp(2.25rem, 3.8vw, 3.95rem) !important;
+  line-height: .96 !important;
+  letter-spacing: -.04em !important;
+}
+
+.castle-rooms-mockup-rule {
+  width: 118px !important;
+  margin: 1rem 0 1.05rem !important;
+}
+
+.castle-rooms-mockup-copy p {
+  max-width: 360px !important;
+  font-size: .78rem !important;
+  line-height: 1.72 !important;
+}
+
+.castle-rooms-mockup-copy em {
+  max-width: 340px !important;
+  margin-top: .85rem !important;
+  font-size: 1rem !important;
+  line-height: 1.32 !important;
+}
+
+.castle-room-block-badge {
+  max-width: 390px !important;
+  gap: .75rem !important;
+  margin-top: 1rem !important;
+  padding: .78rem .86rem !important;
+}
+
+.castle-room-block-badge strong {
+  font-size: .56rem !important;
+  letter-spacing: .13em !important;
+  margin-bottom: .22rem !important;
+}
+
+.castle-room-block-badge span {
+  font-size: .66rem !important;
+  line-height: 1.42 !important;
+}
+
+.castle-room-block-badge small {
+  min-height: 34px !important;
+  padding: .42rem .58rem !important;
+  font-size: .5rem !important;
+  letter-spacing: .12em !important;
+}
+
+.castle-rooms-mockup-copy button {
+  min-height: 40px !important;
+  margin-top: 1.25rem !important;
+  padding: 0 1.1rem !important;
+  font-size: .56rem !important;
+  letter-spacing: .14em !important;
+}
+
+.castle-rooms-mockup-grid {
+  gap: .7rem !important;
+}
+
+.castle-room-mockup-card {
+  box-shadow: inset 0 1px rgba(255,255,255,.45) !important;
+}
+
+.castle-room-mockup-card:hover {
+  transform: translateY(-2px) !important;
+}
+
+.castle-room-mockup-image {
+  height: clamp(86px, 8vw, 124px) !important;
+}
+
+.castle-room-mockup-body {
+  padding: .82rem .68rem .95rem !important;
+}
+
+.castle-room-mockup-body h4 {
+  min-height: 2.3rem !important;
+  margin-bottom: .55rem !important;
+  font-size: clamp(1.05rem, 1.35vw, 1.38rem) !important;
+  line-height: 1.02 !important;
+}
+
+.castle-room-mockup-body strong {
+  font-size: clamp(1.65rem, 2.35vw, 2.45rem) !important;
+  line-height: .9 !important;
+}
+
+.castle-room-mockup-body span {
+  max-width: 110px !important;
+  margin-top: .28rem !important;
+  font-size: .61rem !important;
+  line-height: 1.3 !important;
+}
+
+.castle-room-mockup-body small {
+  min-height: 1.75rem !important;
+  margin-top: .68rem !important;
+  font-size: .57rem !important;
+  line-height: 1.35 !important;
+}
+
+.castle-room-mockup-body button {
+  margin-top: .7rem !important;
+  padding-bottom: .32rem !important;
+  font-size: .5rem !important;
+  letter-spacing: .13em !important;
+}
+
+.castle-rooms-mockup-note {
+  margin-top: .65rem !important;
+  padding-top: .78rem !important;
+  font-size: .88rem !important;
+  line-height: 1.4 !important;
+}
+
+@media (max-width: 1180px) {
+  .castle-rooms-mockup-panel {
+    grid-template-columns: 1fr !important;
+  }
+
+  .castle-rooms-mockup-grid {
+    grid-template-columns: repeat(3, minmax(150px, 1fr)) !important;
+  }
+
+  .castle-rooms-mockup-copy {
+    max-width: 650px !important;
+  }
+
+  .castle-rooms-mockup-copy p,
+  .castle-rooms-mockup-copy em,
+  .castle-room-block-badge {
+    max-width: 520px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .castle-rooms-mockup-panel {
+    padding: 1.35rem !important;
+  }
+
+  .castle-rooms-mockup-panel::before {
+    inset: 10px !important;
+  }
+
+  .castle-rooms-mockup-copy h3 {
+    font-size: clamp(2.15rem, 11vw, 3.25rem) !important;
+  }
+
+  .castle-rooms-mockup-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .castle-room-mockup-image {
+    height: auto !important;
+    min-height: 132px !important;
+  }
+
+  .castle-room-mockup-body span {
+    max-width: none !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* === FAQ editorial aligned image + original copy 2026-09-14 === */
+
+.faq-editorial-section {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(310px, 32vw) minmax(0, 1fr);
+  gap: clamp(2.75rem, 4.8vw, 5.2rem);
+  padding: clamp(4.2rem, 6.4vw, 6.2rem) clamp(1.5rem, 4vw, 4rem);
+  background:
+    radial-gradient(circle at 86% 8%, rgba(184,146,67,.08), transparent 20rem),
+    radial-gradient(circle at 20% 85%, rgba(92,20,30,.032), transparent 18rem),
+    #faf6ee;
+  color: #2d211c;
+  border-top: 1px solid rgba(92,20,30,.12);
+  border-bottom: 1px solid rgba(92,20,30,.12);
+  overflow: hidden;
+}
+
+.faq-editorial-photo {
+  position: sticky;
+  top: 6rem;
+  align-self: start;
+  margin-top: clamp(1.2rem, 2.3vw, 2.1rem);
+  min-height: clamp(560px, 74vh, 770px);
+  overflow: hidden;
+  background: #e8dfd1;
+  box-shadow: 0 24px 70px rgba(59, 41, 27, .09);
+}
+
+.faq-editorial-photo img {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+  filter: saturate(.86) contrast(1.02) brightness(.99);
+}
+
+.faq-editorial-photo::after {
+  content: '';
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  padding: 1.5px;
-  background: linear-gradient(135deg, rgba(223, 194, 133, 0.8) 0%, rgba(184, 146, 67, 0.4) 50%, rgba(223, 194, 133, 0.9) 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(16,25,20,.04) 38%, rgba(16,25,20,.58)),
+    radial-gradient(circle at 42% 14%, rgba(255,242,216,.10), transparent 34%);
   pointer-events: none;
 }
 
-/* Wax seal badge */
-.wax-seal {
-  background: radial-gradient(circle at 35% 35%, #7a1d2b, #450c14);
-  box-shadow: 0 4px 14px rgba(69, 12, 20, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.2), inset 0 -2px 5px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(223, 194, 133, 0.4);
+.faq-photo-caption {
+  position: absolute;
+  z-index: 2;
+  left: clamp(1.3rem, 2vw, 2rem);
+  bottom: clamp(1.2rem, 2vw, 2rem);
+  display: grid;
+  gap: .32rem;
+  color: rgba(255,248,236,.92);
+  text-transform: uppercase;
 }
 
-/* Subtle Shimmer effect */
-@keyframes goldShimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+.faq-photo-caption span,
+.faq-photo-caption small {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .56rem;
+  line-height: 1.5;
+  letter-spacing: .28em;
+  font-weight: 700;
 }
 
-.shimmer-gold {
-  background: linear-gradient(90deg, transparent, rgba(229, 203, 143, 0.25), transparent);
-  background-size: 200% 100%;
-  animation: goldShimmer 6s infinite;
+.faq-photo-caption small {
+  font-size: .52rem;
+  opacity: .82;
 }
 
-.burgundy-text {
-  color: var(--burgundy);
+.faq-photo-caption::after {
+  content: '';
+  width: 54px;
+  height: 1px;
+  margin-top: .45rem;
+  background: rgba(255,248,236,.72);
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
+.faq-editorial-content {
+  min-width: 0;
+  max-width: 850px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+}
+
+.faq-editorial-header {
+  text-align: center;
+  margin-bottom: clamp(1.9rem, 3.2vw, 2.9rem);
+}
+
+.faq-editorial-kicker {
+  margin: 0 0 .78rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .58rem;
+  letter-spacing: .29em;
+  text-transform: uppercase;
+  color: #2d211c;
+  font-weight: 800;
+}
+
+.faq-editorial-header h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3.15rem, 4.8vw, 4.95rem);
+  line-height: .98;
+  font-weight: 400;
+  letter-spacing: -.04em;
+  color: #5c141e;
+}
+
+.faq-editorial-rule {
+  position: relative;
+  width: 150px;
+  height: 1px;
+  margin: 1.18rem auto 1.08rem;
+  background: linear-gradient(90deg, transparent, rgba(184,146,67,.75), transparent);
+}
+
+.faq-editorial-rule::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
   width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--paper);
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(184, 146, 67, 0.4);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gold);
+  height: 8px;
+  background: #b89243;
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
-/* Smooth selection */
-::selection {
-  background: rgba(92, 20, 30, 0.15);
-  color: var(--burgundy);
+.faq-editorial-header > p:last-child {
+  max-width: 610px;
+  margin: 0 auto;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.03rem, 1.55vw, 1.28rem);
+  line-height: 1.38;
+  color: #544a41;
 }
 
+.faq-editorial-list {
+  border-top: 1px solid rgba(92,20,30,.17);
+}
+
+.faq-editorial-item {
+  border-bottom: 1px solid rgba(92,20,30,.15);
+}
+
+.faq-editorial-question {
+  display: grid;
+  grid-template-columns: 54px 1fr 22px;
+  gap: 1.05rem;
+  align-items: start;
+  padding: 1.16rem 0 1.08rem;
+}
+
+.faq-editorial-number {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.58rem, 2vw, 2rem);
+  line-height: .95;
+  letter-spacing: .015em;
+  color: #8c6d3b;
+  font-weight: 400;
+  font-variant-numeric: lining-nums;
+  font-feature-settings: "lnum" 1;
+}
+
+.faq-editorial-question h3 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.28rem, 1.8vw, 1.72rem);
+  line-height: 1.08;
+  letter-spacing: -.014em;
+  color: #5c141e;
+  font-weight: 400;
+}
+
+.faq-editorial-question p {
+  max-width: 700px;
+  margin: .42rem 0 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: .78rem;
+  line-height: 1.58;
+  color: #5f574f;
+}
+
+.faq-editorial-chevron {
+  width: 17px;
+  height: 17px;
+  margin-top: .2rem;
+  color: #9a7435;
+  stroke-width: 1.5;
+  opacity: .9;
+}
+
+@media (max-width: 980px) {
+  .faq-editorial-section {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-editorial-photo {
+    position: relative;
+    top: auto;
+    margin-top: 0;
+    min-height: 460px;
+  }
+
+  .faq-editorial-content {
+    max-width: 780px;
+  }
+}
+
+@media (max-width: 640px) {
+  .faq-editorial-section {
+    padding: 3.25rem 1.25rem;
+    gap: 2rem;
+  }
+
+  .faq-editorial-photo {
+    min-height: 420px;
+  }
+
+  .faq-editorial-header {
+    text-align: left;
+  }
+
+  .faq-editorial-rule {
+    margin-left: 0;
+  }
+
+  .faq-editorial-header > p:last-child {
+    margin-left: 0;
+    font-size: 1.04rem;
+  }
+
+  .faq-editorial-question {
+    grid-template-columns: 38px 1fr 18px;
+    gap: .85rem;
+    padding: 1.05rem 0 1rem;
+  }
+
+  .faq-editorial-number {
+    font-size: 1.48rem;
+  }
+
+  .faq-editorial-question h3 {
+    font-size: 1.22rem;
+  }
+
+  .faq-editorial-question p {
+    font-size: .75rem;
+    line-height: 1.55;
+  }
+}
+
+
+/* === FAQ full mockup photo cleaned, branch restored 2026-09-14 === */
+
+.faq-editorial-section {
+  grid-template-columns: minmax(330px, 33vw) minmax(0, 1fr) !important;
+  gap: clamp(2.75rem, 4.8vw, 5.2rem) !important;
+  padding: 0 clamp(1.5rem, 4vw, 4rem) 0 0 !important;
+  background:
+    radial-gradient(circle at 86% 8%, rgba(184,146,67,.04), transparent 20rem),
+    radial-gradient(circle at 20% 85%, rgba(92,20,30,.012), transparent 18rem),
+    #fdfaf4 !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+}
+
+.faq-editorial-photo {
+  position: relative !important;
+  top: auto !important;
+  align-self: stretch !important;
+  min-height: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: 12px 0 42px rgba(59, 41, 27, .045) !important;
+  overflow: hidden !important;
+}
+
+.faq-editorial-photo img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  filter: saturate(.9) contrast(1.01) brightness(1.015) !important;
+  image-rendering: auto !important;
+}
+
+.faq-editorial-photo::after {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.005), rgba(16,25,20,.02) 42%, rgba(16,25,20,.24)),
+    radial-gradient(circle at 42% 14%, rgba(255,242,216,.07), transparent 34%) !important;
+}
+
+.faq-photo-caption,
+.faq-photo-caption *,
+.faq-photo-caption::after,
+.faq-editorial-footer-note,
+.faq-editorial-footer-note * {
+  display: none !important;
+}
+
+.faq-editorial-content {
+  align-self: center !important;
+  padding-top: clamp(4.2rem, 6.4vw, 6.2rem) !important;
+  padding-bottom: clamp(4.2rem, 6.4vw, 6.2rem) !important;
+}
+
+@media (max-width: 980px) {
+  .faq-editorial-section {
+    grid-template-columns: 1fr !important;
+    padding: 0 0 clamp(3.5rem, 6vw, 5rem) !important;
+  }
+
+  .faq-editorial-photo {
+    min-height: 540px !important;
+  }
+
+  .faq-editorial-content {
+    padding: 0 clamp(1.5rem, 5vw, 3rem) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .faq-editorial-photo {
+    min-height: 460px !important;
+  }
+
+  .faq-editorial-content {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+
+/* === FAQ peak-safe photo and no inter-section band 2026-09-14 === */
+
+/* Lighten the FAQ background and remove any vertical/bottom padding that creates a band around the image. */
+.faq-editorial-section {
+  grid-template-columns: minmax(340px, 33vw) minmax(0, 1fr) !important;
+  gap: clamp(2.75rem, 4.8vw, 5.2rem) !important;
+  padding: 0 clamp(1.5rem, 4vw, 4rem) 0 0 !important;
+  background: #fdfaf4 !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+  border-bottom: 0 !important;
+}
+
+/* Image is flush left, full height, and has no background block/band underneath. */
+.faq-editorial-photo {
+  position: relative !important;
+  top: auto !important;
+  align-self: stretch !important;
+  min-height: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  line-height: 0 !important;
+}
+
+.faq-editorial-photo img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  /* Bias upward enough to preserve the cathedral peak and the top-left branch. */
+  object-position: center 32% !important;
+  filter: saturate(.9) contrast(1.01) brightness(1.015) !important;
+  image-rendering: auto !important;
+}
+
+.faq-editorial-photo::after {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.005), rgba(16,25,20,.018) 44%, rgba(16,25,20,.18)) !important;
+}
+
+/* Remove all image overlay text and final note. */
+.faq-photo-caption,
+.faq-photo-caption *,
+.faq-photo-caption::after,
+.faq-editorial-footer-note,
+.faq-editorial-footer-note * {
+  display: none !important;
+}
+
+/* Remove possible empty grey/band artifacts from the old package/image containers. */
+#faq + *,
+.faq-editorial-section + * {
+  margin-top: 0 !important;
+}
+
+.faq-editorial-content {
+  align-self: center !important;
+  padding-top: clamp(4.2rem, 6.4vw, 6.2rem) !important;
+  padding-bottom: clamp(4.2rem, 6.4vw, 6.2rem) !important;
+}
+
+@media (max-width: 980px) {
+  .faq-editorial-section {
+    grid-template-columns: 1fr !important;
+    padding: 0 0 clamp(3.5rem, 6vw, 5rem) !important;
+  }
+
+  .faq-editorial-photo {
+    min-height: 540px !important;
+  }
+
+  .faq-editorial-photo img {
+    object-position: center 30% !important;
+  }
+
+  .faq-editorial-content {
+    padding: 0 clamp(1.5rem, 5vw, 3rem) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .faq-editorial-photo {
+    min-height: 460px !important;
+  }
+
+  .faq-editorial-content {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+}
+
+
+/* === FAQ smooth sky anti-pixelation 2026-09-14 === */
+
+.faq-editorial-photo img {
+  object-position: center 30% !important;
+  filter: saturate(.88) contrast(1.005) brightness(1.02) !important;
+  image-rendering: auto !important;
+}
+
+.faq-editorial-photo::after {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0), rgba(16,25,20,.014) 44%, rgba(16,25,20,.16)) !important;
+}
