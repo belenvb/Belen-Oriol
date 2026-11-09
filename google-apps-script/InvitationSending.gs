@@ -507,6 +507,25 @@ function getSendingDashboardData() {
   return {websiteUrl:getWeddingWebsiteUrl(),hasUrl:!!getWeddingWebsiteUrl(),rows:publicRows};
 }
 
+// Configure privately in Script Properties. Never commit the organizer's address.
+function invitationBccRecipient_() {
+  const value = String(PropertiesService.getScriptProperties().getProperty('WEDDING_INVITATION_BCC') || '').trim();
+  if (!/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(value)) {
+    throw Error('Configura WEDDING_INVITATION_BCC con tu email de copia oculta en las propiedades del proyecto.');
+  }
+  return value;
+}
+
+function invitationMailRecipients_(recipient, bcc) {
+  const to = String(recipient || '').trim();
+  // A test addressed to the organizer already delivers their copy.
+  return to.toLowerCase() === bcc.toLowerCase() ? {to: to} : {to: to, bcc: bcc};
+}
+
+function invitationRecipientCount_(recipient, bcc) {
+  return invitationMailRecipients_(recipient, bcc).bcc ? 2 : 1;
+}
+
 function sendInvitationEmailsByRows(rowNumbers) {
   if (!Array.isArray(rowNumbers) || !rowNumbers.length) throw Error('Selecciona al menos una familia');
   const selected = [...new Set(rowNumbers.map(Number))];
@@ -521,14 +540,16 @@ function sendInvitationEmailsByRows(rowNumbers) {
     const responded=readRsvpCodes_();
     const toSend=list.filter(r=>r.channels.includes('Email')&&!r.emailSentAt&&!responded[r.code]);
     toSend.forEach(r=>ensureReadyToSend_(r,'Email'));
+    const bcc = toSend.length ? invitationBccRecipient_() : '';
+    const recipients = toSend.reduce((total, r) => total + invitationRecipientCount_(r.email, bcc), 0);
     const quota=MailApp.getRemainingDailyQuota();
-    if(toSend.length>quota)throw Error('La cuota permite solo '+quota+' destinatarios más hoy');
+    if(recipients>quota)throw Error('La cuota permite solo '+quota+' destinatarios más hoy, incluida la copia oculta.');
     const failures=[],success=[];
     toSend.forEach(r=>{
       const now=new Date();sheet.getRange(r.row,columns['Último intento']).setValue(now);
       try {
         const message=invitationEmail_(r,sendingLink_(r.code, r.language));
-        MailApp.sendEmail({to:r.email,subject:message.subject,htmlBody:message.htmlBody,body:message.body,name:'Belén & Oriol',inlineImages:{weddingTop:weddingEmailTopBlob_(r.language!=='en'),weddingBottom:weddingEmailBottomBlob_(r.language!=='en'),weddingGuestPaper:weddingEmailGuestBlob_()}});
+        MailApp.sendEmail({...invitationMailRecipients_(r.email, bcc),subject:message.subject,htmlBody:message.htmlBody,body:message.body,name:'Belén & Oriol',inlineImages:{weddingTop:weddingEmailTopBlob_(r.language!=='en'),weddingBottom:weddingEmailBottomBlob_(r.language!=='en'),weddingGuestPaper:weddingEmailGuestBlob_()}});
         // Record only the Email channel; other channels remain independently pending.
         sheet.getRange(r.row,columns['Email enviado el']).setValue(now);
         if(!r.sentAt)sheet.getRange(r.row,columns['Fecha envío']).setValue(now);
@@ -551,8 +572,12 @@ function sendTestInvitationEmail(rowNumber, testAddress) {
   if (!r) throw Error('No existe esa familia');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(testAddress || '').trim())) throw Error('Introduce un email válido para la prueba');
   if (!r.active || !r.code || !r.fridaySpecified || !r.saturdaySpecified) throw Error('Completa la invitación antes de probar');
+  const bcc = invitationBccRecipient_();
+  if (invitationRecipientCount_(testAddress, bcc) > MailApp.getRemainingDailyQuota()) {
+    throw Error('No hay cuota suficiente para la prueba y su copia oculta.');
+  }
   const message = invitationEmail_(r, sendingLink_(r.code, r.language));
-  MailApp.sendEmail({to:String(testAddress).trim(),subject:'[PRUEBA] ' + message.subject,htmlBody:message.htmlBody,body:message.body,name:'Belén & Oriol',inlineImages:{weddingTop:weddingEmailTopBlob_(r.language !== 'en'),weddingBottom:weddingEmailBottomBlob_(r.language !== 'en'),weddingGuestPaper:weddingEmailGuestBlob_()}});
+  MailApp.sendEmail({...invitationMailRecipients_(testAddress, bcc),subject:'[PRUEBA] ' + message.subject,htmlBody:message.htmlBody,body:message.body,name:'Belén & Oriol',inlineImages:{weddingTop:weddingEmailTopBlob_(r.language !== 'en'),weddingBottom:weddingEmailBottomBlob_(r.language !== 'en'),weddingGuestPaper:weddingEmailGuestBlob_()}});
   // A test must never mark the real family as sent.
   return {ok:true};
 }
