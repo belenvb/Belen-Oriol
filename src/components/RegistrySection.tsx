@@ -195,9 +195,6 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                   ) : (
                     <p className="home-gift__note">{es ? 'Datos pendientes de confirmar.' : 'Details to be confirmed.'}</p>
                   )}
-                  <p className="home-gift__note">{es
-                    ? 'Estos datos son exclusivos para personas con invitación. Por favor, no compartas el enlace ni el código.'
-                    : 'These details are for invited guests only. Please do not share your invitation link or code.'}</p>
                 </div>
               </>
             )}
