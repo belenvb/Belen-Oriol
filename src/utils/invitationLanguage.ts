@@ -5,6 +5,7 @@ export function invitationLanguageFromSearch(search: string): Language | null {
   return value === 'en' || value === 'es' ? value : null;
 }
 
-export function isInvitationLanguagePending(code: string, resolvedCode: string, explicitLanguage: Language | null): boolean {
-  return Boolean(code && code !== resolvedCode && !explicitLanguage);
+// Language is a display preference, never a prerequisite for opening the site.
+export function initialInvitationLanguage(search: string, browserLanguage = 'es'): Language {
+  return invitationLanguageFromSearch(search) ?? (/^en(?:-|$)/i.test(browserLanguage) ? 'en' : 'es');
 }
