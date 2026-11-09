@@ -11,6 +11,7 @@ export function Hero({ lang, onNavigate }: HeroProps) {
 
   return (
     <section id="hero" className="editorial-hero parallax-photo-section">
+      <div className="hero-portrait">
       <div className="hero-fixed-photo" aria-hidden="true">
         <img src="/photos/sunset.webp" alt="" fetchPriority="high" />
         <div className="hero-shade" />
@@ -19,6 +20,8 @@ export function Hero({ lang, onNavigate }: HeroProps) {
       <div className="hero-copy">
         <p className="eyebrow">{lang === 'es' ? 'Celebramos nuestra boda' : 'Celebrating our wedding'}</p>
         <h1>Belén <em>&</em> Oriol</h1>
+      </div>
+
       </div>
 
       <div className="hero-details">

@@ -20,7 +20,7 @@ export default defineConfig(() => {
         ).trim().replace(/\/+$/, '');
         const origin = raw ? (/^https?:\/\//i.test(raw) ? raw : `https://${raw}`) : '';
         // Relative URLs allow local browsing; public deployments MUST have an absolute origin.
-        const imageUrl = (origin || '') + '/invitacion-preview.jpg';
+        const imageUrl = (origin || '') + '/invitacion-preview-acuarela-v2.jpg';
         const pageUrl = (origin || '') + '/';
         return html
           .replaceAll('__WEDDING_OG_IMAGE_URL__', imageUrl)
