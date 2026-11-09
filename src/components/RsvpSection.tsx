@@ -471,7 +471,6 @@ export function RsvpSection({ lang, initialInvitationCode = '', onInvitationVali
                 onClick={openRsvpForm}
                 className="rsvp-confirm-button inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#5c141e] hover:bg-[#7a1d2b] text-white font-cinzel text-xs sm:text-sm font-bold tracking-[0.22em] uppercase transition-all duration-300 shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer"
               >
-                <span aria-hidden="true">→</span>
                 <span>{es ? 'Confirmar asistencia' : 'Confirm attendance'}</span>
               </button>
               <button type="button" className="rsvp-edit-link" onClick={openRsvpForm}>{es ? 'Modificar mi respuesta' : 'Edit my response'}</button>

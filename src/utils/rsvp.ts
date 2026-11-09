@@ -28,6 +28,21 @@ export type RsvpSubmission = GuestRsvp & {
   clientSubmittedAt?: string;
 };
 
+// These values are received only after an invitation code is validated.
+// Their actual contents are stored in Apps Script Script Properties, not the website.
+export type GiftPaymentDetails = {
+  usBank?: string;
+  usHolder?: string;
+  usAccount?: string;
+  usRouting?: string;
+  esHolder?: string;
+  esIban?: string;
+  esBic?: string;
+  bizum?: string;
+  venmo?: string;
+  zelle?: string;
+};
+
 export type InvitationLookup = {
   previousRsvp?: RsvpSubmission;
   maxGuests: number;
@@ -39,6 +54,7 @@ export type InvitationLookup = {
     email?: string;
   }[];
   invitationText?: string;
+  giftDetails?: GiftPaymentDetails;
   roomAvailability?: RoomAvailability[];
 };
 
@@ -55,6 +71,7 @@ type RsvpReceipt = {
     email?: string;
   }[];
   invitationText?: string;
+  giftDetails?: GiftPaymentDetails;
   roomAvailability?: RoomAvailability[];
   error?: string;
 };
@@ -128,6 +145,7 @@ export async function lookupInvitation(invitationCode: string): Promise<Invitati
         }))
       : undefined,
     invitationText: typeof result.invitationText === 'string' ? result.invitationText.trim() : '',
+    giftDetails: result.giftDetails && typeof result.giftDetails === 'object' ? result.giftDetails : undefined,
     roomAvailability: parseRooms(result),
   };
 }
