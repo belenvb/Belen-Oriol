@@ -7,7 +7,7 @@ interface EnvelopeIntroProps {
   lang: Language;
   languagePending?: boolean;
   onLanguageChange: (language: Language) => void;
-  onEnter: () => void;
+  onEnter: (destination?: 'rsvp') => void;
   monogramSrc?: string;
   coupleNames?: string;
   weddingDate?: string;
@@ -28,7 +28,7 @@ export function EnvelopeIntro({
 }: EnvelopeIntroProps) {
   const [opening, setOpening] = useState(false);
   const [canEnter, setCanEnter] = useState(false);
-  const reveal = useRef<(() => void) | null>(null);
+  const reveal = useRef<((destination?: 'rsvp') => void) | null>(null);
   const hasEntered = useRef(false);
   const root = useRef<HTMLDivElement>(null);
   const animations = useRef<Animation[]>([]);
@@ -132,12 +132,12 @@ export function EnvelopeIntro({
       setCanEnter(true);
     }).catch(() => { /* unmounted */ });
     if (reducedMotion) openingTracks.forEach(animation => animation.finish());
-    reveal.current = () => {
+    reveal.current = (destination) => {
       if (hasEntered.current) return;
       hasEntered.current = true;
       setCanEnter(false);
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        enterRef.current();
+        enterRef.current(destination);
         return;
       }
       origin = document.timeline.currentTime;
@@ -152,7 +152,7 @@ export function EnvelopeIntro({
     }
     track('.bo-intro__portal', [{opacity:0},{opacity:1}], 350, 850);
     const finish = track(':root', [{opacity:1},{opacity:0}], 1500, 150);
-    finish.finished.then(() => enterRef.current()).catch(() => { /* unmounted */ });
+    finish.finished.then(() => enterRef.current(destination)).catch(() => { /* unmounted */ });
     };
   };
 
@@ -220,6 +220,9 @@ export function EnvelopeIntro({
         </div>
       </main>
       {canEnter && <div className="bo-intro__read-actions">
+        <button type="button" className="bo-intro__enter bo-intro__rsvp" onClick={() => reveal.current?.('rsvp')}>
+          {lang === 'es' ? 'RSVP · Confirmar asistencia' : 'RSVP · Confirm attendance'}
+        </button>
         <button type="button" className="bo-intro__enter" onClick={() => reveal.current?.()}>
           {lang === 'es' ? 'Entrar en nuestra web' : 'Enter our wedding website'} <span aria-hidden="true">→</span>
         </button>
