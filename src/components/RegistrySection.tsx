@@ -167,7 +167,6 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                     </div>
                   ) : (paymentIdentifier || method === 'zelle' || method === 'venmo') ? (
                     <div className="home-gift__payment-link-area">
-                      <div className="home-gift__brand-heading"><PaymentBrand method={method} /></div>
                       {(method === 'venmo' || method === 'zelle') && (
                         <PaymentQr
                           method={method} lang={lang}

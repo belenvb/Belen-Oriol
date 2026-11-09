@@ -54,13 +54,18 @@ function getWeddingWebsiteUrl() {
   return String(PropertiesService.getScriptProperties().getProperty('WEDDING_SITE_URL') || '').trim();
 }
 
-function setWeddingWebsiteUrl(input) {
+function normalizedWeddingWebsiteUrl_(input) {
   const raw = String(input || '').trim().replace(/\/+$/, '');
-  if (!/^https:\/\/[a-z0-9][^\s#?]*$/i.test(raw) || /[\[\]<>]/.test(raw)) {
-    throw Error('Utiliza la dirección https:// de tu web publicada, sin parámetros ni #.');
+  if (!/^https:\/\/[a-z0-9][a-z0-9.-]*(?::[0-9]+)?(?:\/[^\s#?<>\[\]]*)?$/i.test(raw)) {
+    throw Error('Configura una URL https:// válida de la web, sin parámetros ni código privado.');
   }
+  return raw;
+}
+
+function setWeddingWebsiteUrl(input) {
+  const raw = normalizedWeddingWebsiteUrl_(input);
   PropertiesService.getScriptProperties().setProperty('WEDDING_SITE_URL', raw);
-  return getWeddingWebsiteUrl();
+  return raw;
 }
 
 /** Find or safely create the sending columns without overwriting guest data. */
@@ -98,11 +103,14 @@ function prepareSendingColumns_() {
     sheet.getRange(1, c).setFontWeight('bold').setBackground('#5c141e').setFontColor('#ffffff').setWrap(true);
     sheet.setColumnWidth(c, name === 'Error envío' ? 260 : 175);
   });
-  sheet.getRange(2, cols['Teléfono internacional'], 999, 1).setNumberFormat('@');
+  const dataRows = Math.min(999, Math.max(0, sheet.getMaxRows() - 1));
+  if (dataRows > 0) {
+  sheet.getRange(2, cols['Teléfono internacional'], dataRows, 1).setNumberFormat('@');
   const combinations = ['Email', 'WhatsApp', 'SMS', 'Email + WhatsApp', 'Email + SMS', 'WhatsApp + SMS', 'Email + WhatsApp + SMS'];
-  sheet.getRange(2, cols['Canal envío'], 999, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(combinations, true).setAllowInvalid(false).build());
-  sheet.getRange(2, cols['Estado envío'], 999, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['Pendiente','Enviada','RSVP recibido','Error'], true).setAllowInvalid(false).build());
-  ['Fecha envío','Último intento','Email enviado el','WhatsApp enviado el','SMS enviado el'].forEach(n => sheet.getRange(2, cols[n], 999, 1).setNumberFormat('dd/MM/yyyy HH:mm'));
+  sheet.getRange(2, cols['Canal envío'], dataRows, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(combinations, true).setAllowInvalid(false).build());
+  sheet.getRange(2, cols['Estado envío'], dataRows, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(['Pendiente','Enviada','RSVP recibido','Error'], true).setAllowInvalid(false).build());
+  ['Fecha envío','Último intento','Email enviado el','WhatsApp enviado el','SMS enviado el'].forEach(n => sheet.getRange(2, cols[n], dataRows, 1).setNumberFormat('dd/MM/yyyy HH:mm'));
+  }
   return {sheet: sheet, columns: cols};
 }
 
@@ -207,8 +215,9 @@ function sendingRows_() {
 }
 
 function sendingLink_(code, language) {
-  const base = getWeddingWebsiteUrl();
-  if (!base) throw Error('Primero configura la URL de la web.');
+  const configured = getWeddingWebsiteUrl();
+  if (!configured) throw Error('Primero configura la URL de la web.');
+  const base = normalizedWeddingWebsiteUrl_(configured);
   if (!/^[A-Z0-9-]{16,80}$/.test(code)) throw Error('Código privado ausente o inválido');
   const lang = String(language || '').trim().toLowerCase() === 'en' ? 'en' : 'es';
   return base + '/?lang=' + lang + '#invitacion=' + encodeURIComponent(code);
@@ -428,28 +437,41 @@ function ensureUniqueCodes_(records) {
 }
 
 function richLink_(label, url) {
+  if (!/^https:\/\/[^\s<>]+$/i.test(String(url || ''))) throw Error('El enlace de la hoja debe ser https://.');
   return SpreadsheetApp.newRichTextValue().setText(label).setLinkUrl(url).build();
 }
 
 function prepareInvitationSending() {
+  // Validate configuration before creating columns or writing any links.
+  normalizedWeddingWebsiteUrl_(getWeddingWebsiteUrl());
   const result = sendingRows_();
-  if (!getWeddingWebsiteUrl()) throw Error('Configura primero la URL de la web desde el menú ✉ Invitaciones.');
   ensureUniqueCodes_(result.records);
   let count = 0;
   result.records.forEach(r => {
     if (!r.code) return;
-    const link = sendingLink_(r.code, r.language);
-    result.sheet.getRange(r.row, result.columns['Enlace privado']).setRichTextValue(richLink_('Abrir invitación', link));
-    const phone = normalizedPhone_(r.phone);
-    const copy = sendingCopy_(r, link);
-    if (phone) {
-      result.sheet.getRange(r.row, result.columns['Abrir WhatsApp']).setRichTextValue(richLink_('Enviar por WhatsApp', 'https://wa.me/' + phone.slice(1) + '?text=' + encodeURIComponent(copy.whatsapp)));
-      result.sheet.getRange(r.row, result.columns['Abrir SMS']).setRichTextValue(richLink_('Enviar por SMS', 'sms:' + phone + '?body=' + encodeURIComponent(copy.sms)));
-    } else {
-      result.sheet.getRange(r.row, result.columns['Abrir WhatsApp']).clearContent();
-      result.sheet.getRange(r.row, result.columns['Abrir SMS']).clearContent();
+    let field = 'Enlace privado';
+    try {
+      const link = sendingLink_(r.code, r.language);
+      result.sheet.getRange(r.row, result.columns[field]).setRichTextValue(richLink_('Abrir invitación', link));
+      const phone = normalizedPhone_(r.phone);
+      field = 'Abrir WhatsApp';
+      if (phone) {
+        const copy = sendingCopy_(r, link);
+        result.sheet.getRange(r.row, result.columns[field]).setRichTextValue(richLink_('Enviar por WhatsApp', 'https://wa.me/' + phone.slice(1) + '?text=' + encodeURIComponent(copy.whatsapp)));
+        field = 'Abrir SMS';
+        // Sheets does not reliably support sms: rich-text hyperlinks. The panel
+        // retains the SMS action; never route private invitation URLs via a redirect service.
+        result.sheet.getRange(r.row, result.columns[field]).setValue('SMS: abrir desde el panel de envíos');
+      } else {
+        result.sheet.getRange(r.row, result.columns[field]).clearContent();
+        field = 'Abrir SMS';
+        result.sheet.getRange(r.row, result.columns[field]).clearContent();
+      }
+      count++;
+    } catch (error) {
+      // Do not echo the raw exception, URL, guest name, phone or private code.
+      throw Error('No se pudo preparar «' + field + '» en la fila ' + r.row + '. Revisa la URL de la web y los permisos de esa celda.');
     }
-    count++;
   });
   return {prepared: count};
 }
