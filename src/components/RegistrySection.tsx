@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import type { Language } from '../types';
-import { lookupGiftByName, type GiftPaymentDetails } from '../utils/rsvp';
+import { lookupGiftAccess, type GiftPaymentDetails } from '../utils/rsvp';
 import './RegistrySection.css';
 
 type PaymentMethod = 'bank' | 'bizum' | 'venmo' | 'zelle';
@@ -14,28 +14,28 @@ interface Props {
 export function RegistrySection({ lang, verified, giftDetails }: Props) {
   const [method, setMethod] = useState<PaymentMethod>('bank');
   const es = lang === 'es';
-  const [fullName, setFullName] = useState('');
-  const [checkingName, setCheckingName] = useState(false);
-  const [nameError, setNameError] = useState('');
-  const [detailsByName, setDetailsByName] = useState<GiftPaymentDetails | null>(null);
-  const unlocked = verified || detailsByName !== null;
-  const details = verified ? giftDetails : detailsByName;
+  const [guestAccess, setGuestAccess] = useState('');
+  const [checkingAccess, setCheckingAccess] = useState(false);
+  const [accessError, setAccessError] = useState('');
+  const [detailsByAccess, setDetailsByAccess] = useState<GiftPaymentDetails | null>(null);
+  const unlocked = verified || detailsByAccess !== null;
+  const details = verified ? giftDetails : detailsByAccess;
 
-  const confirmGuestName = async (event: FormEvent<HTMLFormElement>) => {
+  const confirmGuestAccess = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (checkingName) return;
-    setCheckingName(true);
-    setNameError('');
+    if (checkingAccess) return;
+    setCheckingAccess(true);
+    setAccessError('');
     try {
-      const result = await lookupGiftByName(fullName);
-      setDetailsByName(result);
-      setFullName('');
+      const result = await lookupGiftAccess(guestAccess);
+      setDetailsByAccess(result);
+      setGuestAccess('');
     } catch {
-      setNameError(es
-        ? 'No hemos podido verificar el nombre. Escríbelo tal como aparece en la invitación.'
-        : 'We could not verify that name. Please enter it as written on the invitation.');
+      setAccessError(es
+        ? 'No hemos encontrado una invitación con esos datos. Compruébalos e inténtalo de nuevo.'
+        : 'We could not find an invitation with those details. Please check and try again.');
     } finally {
-      setCheckingName(false);
+      setCheckingAccess(false);
     }
   };
 
@@ -96,28 +96,28 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
             {!unlocked ? (
               <div className="home-gift__private-details">
                 <p className="home-gift__note">{es
-                  ? 'Introduce tu nombre y apellidos para consultar los datos de transferencia y las opciones de regalo. No es necesario confirmar tu asistencia.'
-                  : 'Enter your first and last name to see the transfer details and gift options. You do not need to complete the RSVP.'}</p>
-                <form onSubmit={confirmGuestName} className="home-gift__name-form">
-                  <label htmlFor="wedding-gift-name">{es ? 'Nombre y apellidos' : 'First and last name'}</label>
+                  ? 'Introduce tu nombre y apellidos, tu email o tu código de invitación para ver los datos de regalo. Si escribes tu nombre, solo comprobaremos el nombre de pila. No es necesario confirmar asistencia.'
+                  : 'Enter your full name, email or invitation code to see gift details. For names, we only check the first name. You do not need to complete the RSVP.'}</p>
+                <form onSubmit={confirmGuestAccess} className="home-gift__name-form">
+                  <label htmlFor="wedding-gift-name">{es ? 'Nombre y apellidos, email o código de invitación' : 'Full name, email or invitation code'}</label>
                   <input
                     id="wedding-gift-name"
                     type="text"
-                    name="giftGuestName"
-                    autoComplete="name"
-                    autoCapitalize="words"
+                    name="giftAccess"
+                    autoComplete="off"
+                    autoCapitalize="off"
                     spellCheck={false}
                     maxLength={120}
-                    placeholder={es ? 'Ej. María García López' : 'e.g. Maria Garcia'}
-                    value={fullName}
-                    onChange={event => { setFullName(event.target.value); setNameError(''); }}
+                    placeholder={es ? 'Ej. María García, maria@email.com o ABC123' : 'e.g. Maria Garcia, maria@email.com or ABC123'}
+                    value={guestAccess}
+                    onChange={event => { setGuestAccess(event.target.value); setAccessError(''); }}
                     required
-                    aria-invalid={Boolean(nameError)}
-                    aria-describedby={nameError ? 'gift-name-error' : undefined}
+                    aria-invalid={Boolean(accessError)}
+                    aria-describedby={accessError ? 'gift-name-error' : undefined}
                   />
-                  {nameError && <p id="gift-name-error" className="home-gift__note" role="alert">{nameError}</p>}
-                  <button type="submit" className="home-gift__access-button" disabled={checkingName || fullName.trim().length < 5}>
-                    {checkingName ? (es ? 'Comprobando…' : 'Checking…') : (es ? 'Ver datos para el regalo' : 'See gift details')}
+                  {accessError && <p id="gift-name-error" className="home-gift__note" role="alert">{accessError}</p>}
+                  <button type="submit" className="home-gift__access-button" disabled={checkingAccess || guestAccess.trim().length < 3}>
+                    {checkingAccess ? (es ? 'Comprobando…' : 'Checking…') : (es ? 'Ver datos para el regalo' : 'See gift details')}
                   </button>
                 </form>
               </div>
