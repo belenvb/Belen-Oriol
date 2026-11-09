@@ -43,6 +43,68 @@ function privateWeddingPaymentDetails_() {
   };
 }
 
+
+// Gift-only lookup by a guest's exact full name. This is a convenience check,
+// NOT authentication: someone who knows an invitee's full name may gain access.
+// Never return invitation codes, guest lists, RSVP responses, or emails here.
+function normalizeGiftGuestName_(name) {
+  return String(name || '').trim().normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z\s'-]/g, ' ')
+    .replace(/['-]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+
+function checkGiftNameRate_() {
+  // Coarse global cap; Apps Script web apps do not expose a reliable IP to rate limit.
+  const cache = CacheService.getScriptCache();
+  const key = 'wedding_gift_name_requests_' + Math.floor(Date.now() / 60000);
+  const hits = Number(cache.get(key) || '0');
+  if (hits >= 60) throw Error('Unable to verify guest');
+  cache.put(key, String(hits + 1), 75);
+}
+
+function findGiftDetailsByGuestName_(submittedName) {
+  checkGiftNameRate_();
+  const input = String(submittedName || '');
+  const name = normalizeGiftGuestName_(input);
+  // Require a first name and a surname, without allowing huge input strings.
+  if (input.length > 120 || name.length < 5 || name.split(' ').length < 2) {
+    throw Error('Unable to verify guest');
+  }
+
+  const sheet = getSpreadsheet().getSheetByName(INVITATIONS_TAB);
+  if (!sheet || sheet.getLastRow() < 2) throw Error('Unable to verify guest');
+  const values = sheet.getDataRange().getValues();
+  const idx = makeHeaderIndex(values[0]);
+  const activeCol = findOptionalColumn(idx, ['activa', 'activa si no', 'activa sí no', 'active']);
+  const holderCol = findOptionalColumn(idx, ['titular / familia', 'titular', 'familia', 'guest name', 'name']);
+  const guestCols = [];
+  for (let n = 1; n <= 20; n++) {
+    const col = findOptionalColumn(idx, [
+      'invitado ' + n, 'nombre invitado ' + n, 'guest ' + n, 'guest name ' + n
+    ]);
+    if (col >= 0 && !guestCols.includes(col)) guestCols.push(col);
+  }
+
+  // Family labels such as "Padres Oriol" do not count as a guest's full name.
+  const familyLabel = /^(familia|padres|madres|hermanos|hermanas|amigos|primos|tios|tias|sr y sra)\b/;
+  const allowed = values.slice(1).some(row => {
+    if (activeCol >= 0 && !yesNo(row[activeCol], true)) return false;
+    const names = guestCols.map(col => normalizeGiftGuestName_(row[col]));
+    // Some legacy invitations store the named holder without an Invitado 1.
+    if (holderCol >= 0) {
+      const holder = normalizeGiftGuestName_(row[holderCol]);
+      if (holder && !familyLabel.test(holder)) names.push(holder);
+    }
+    return names.some(value => value === name);
+  });
+
+  if (!allowed) throw Error('Unable to verify guest');
+  return privateWeddingPaymentDetails_();
+}
+
 function doPost(e) {
   rsvpSnapshot = null;
   const startedAt = Date.now();
@@ -54,6 +116,11 @@ function doPost(e) {
     }
 
     const data = JSON.parse(e.postData.contents);
+
+    // Separate gift access: no RSVP submission, invitation-code discovery, or guest data.
+    if (data.action === 'giftByName') {
+      return jsonReply({ ok: true, giftDetails: findGiftDetailsByGuestName_(data.fullName) });
+    }
 
     // Public room catalogue: exposes ONLY category, price, and availability,
     // never invitation names, RSVP replies, or private access codes.

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import type { Language } from '../types';
-import type { GiftPaymentDetails } from '../utils/rsvp';
+import { lookupGiftByName, type GiftPaymentDetails } from '../utils/rsvp';
 import './RegistrySection.css';
 
 type PaymentMethod = 'bank' | 'bizum' | 'venmo' | 'zelle';
@@ -14,6 +14,30 @@ interface Props {
 export function RegistrySection({ lang, verified, giftDetails }: Props) {
   const [method, setMethod] = useState<PaymentMethod>('bank');
   const es = lang === 'es';
+  const [fullName, setFullName] = useState('');
+  const [checkingName, setCheckingName] = useState(false);
+  const [nameError, setNameError] = useState('');
+  const [detailsByName, setDetailsByName] = useState<GiftPaymentDetails | null>(null);
+  const unlocked = verified || detailsByName !== null;
+  const details = verified ? giftDetails : detailsByName;
+
+  const confirmGuestName = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (checkingName) return;
+    setCheckingName(true);
+    setNameError('');
+    try {
+      const result = await lookupGiftByName(fullName);
+      setDetailsByName(result);
+      setFullName('');
+    } catch {
+      setNameError(es
+        ? 'No hemos podido verificar el nombre. Escríbelo tal como aparece en la invitación.'
+        : 'We could not verify that name. Please enter it as written on the invitation.');
+    } finally {
+      setCheckingName(false);
+    }
+  };
 
   // Actual payment identifiers are read from private Apps Script properties
   // after invitation lookup; they are never included in the public website.
@@ -22,25 +46,25 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
       id: 'us',
       title: es ? 'Transferencia desde Estados Unidos' : 'US bank transfer',
       rows: [
-        { label: es ? 'Banco' : 'Bank', value: giftDetails?.usBank },
-        { label: es ? 'Titular' : 'Account holder', value: giftDetails?.usHolder },
-        { label: es ? 'Número de cuenta' : 'Account number', value: giftDetails?.usAccount },
-        { label: 'Routing number', value: giftDetails?.usRouting },
+        { label: es ? 'Banco' : 'Bank', value: details?.usBank },
+        { label: es ? 'Titular' : 'Account holder', value: details?.usHolder },
+        { label: es ? 'Número de cuenta' : 'Account number', value: details?.usAccount },
+        { label: 'Routing number', value: details?.usRouting },
       ],
     },
     {
       id: 'es',
       title: es ? 'Transferencia desde España' : 'Transfer from Spain',
       rows: [
-        { label: es ? 'Titular' : 'Account holder', value: giftDetails?.esHolder },
-        { label: 'IBAN', value: giftDetails?.esIban },
-        { label: es ? 'BIC / SWIFT' : 'BIC / SWIFT', value: giftDetails?.esBic },
+        { label: es ? 'Titular' : 'Account holder', value: details?.esHolder },
+        { label: 'IBAN', value: details?.esIban },
+        { label: es ? 'BIC / SWIFT' : 'BIC / SWIFT', value: details?.esBic },
       ],
     },
   ];
-  const paymentIdentifier = method === 'bizum' ? giftDetails?.bizum
-    : method === 'venmo' ? giftDetails?.venmo
-    : method === 'zelle' ? giftDetails?.zelle
+  const paymentIdentifier = method === 'bizum' ? details?.bizum
+    : method === 'venmo' ? details?.venmo
+    : method === 'zelle' ? details?.zelle
     : undefined;
 
   return (
@@ -69,14 +93,33 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
             </span>
           </summary>
           <div className="home-gift__payment-content">
-            {!verified ? (
+            {!unlocked ? (
               <div className="home-gift__private-details">
                 <p className="home-gift__note">{es
-                  ? 'Para consultar los datos de transferencia y las demás opciones de regalo, abre tu invitación con el código privado en la sección RSVP.'
-                  : 'To see bank transfer details and other gift options, please open your invitation using the private code in the RSVP section.'}</p>
-                <button type="button" className="home-gift__access-button" onClick={() => document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-                  {es ? 'Introducir código de invitación' : 'Enter invitation code'}
-                </button>
+                  ? 'Introduce tu nombre y apellidos para consultar los datos de transferencia y las opciones de regalo. No es necesario confirmar tu asistencia.'
+                  : 'Enter your first and last name to see the transfer details and gift options. You do not need to complete the RSVP.'}</p>
+                <form onSubmit={confirmGuestName} className="home-gift__name-form">
+                  <label htmlFor="wedding-gift-name">{es ? 'Nombre y apellidos' : 'First and last name'}</label>
+                  <input
+                    id="wedding-gift-name"
+                    type="text"
+                    name="giftGuestName"
+                    autoComplete="name"
+                    autoCapitalize="words"
+                    spellCheck={false}
+                    maxLength={120}
+                    placeholder={es ? 'Ej. María García López' : 'e.g. Maria Garcia'}
+                    value={fullName}
+                    onChange={event => { setFullName(event.target.value); setNameError(''); }}
+                    required
+                    aria-invalid={Boolean(nameError)}
+                    aria-describedby={nameError ? 'gift-name-error' : undefined}
+                  />
+                  {nameError && <p id="gift-name-error" className="home-gift__note" role="alert">{nameError}</p>}
+                  <button type="submit" className="home-gift__access-button" disabled={checkingName || fullName.trim().length < 5}>
+                    {checkingName ? (es ? 'Comprobando…' : 'Checking…') : (es ? 'Ver datos para el regalo' : 'See gift details')}
+                  </button>
+                </form>
               </div>
             ) : (
               <>

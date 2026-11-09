@@ -122,6 +122,20 @@ export async function loadRoomCatalogue(): Promise<void> {
   await request({ action: 'rooms' }, true);
 }
 
+// Gift-only access deliberately never retrieves RSVP answers, codes or guest names.
+// Full-name matching is convenience access, not proof of identity.
+export async function lookupGiftByName(fullName: string): Promise<GiftPaymentDetails> {
+  const name = fullName.trim().replace(/\s+/g, ' ');
+  if (name.length < 5 || name.length > 120 || name.split(' ').length < 2) {
+    throw new Error('GIFT_NAME_INVALID');
+  }
+  const result = await request({ action: 'giftByName', fullName: name });
+  if (!result.giftDetails || typeof result.giftDetails !== 'object') {
+    throw new Error('GIFT_NAME_NOT_FOUND');
+  }
+  return result.giftDetails;
+}
+
 export async function lookupInvitation(invitationCode: string): Promise<InvitationLookup> {
   const trimmed = invitationCode.trim();
   if (!trimmed) throw new Error('INVITATION_CODE_REQUIRED');
