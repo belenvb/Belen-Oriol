@@ -165,8 +165,14 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                         );
                       })}
                     </div>
-                  ) : (paymentIdentifier || (method === 'zelle' && details?.zelleQrDataUrl)) ? (
+                  ) : (paymentIdentifier || (method === 'zelle' && details?.zelleQrDataUrl) || (method === 'venmo' && details?.venmoQrDataUrl)) ? (
                     <div className="home-gift__payment-link-area">
+                      {method === 'venmo' && details?.venmoQrDataUrl && (
+                        <div className="home-gift__zelle-qr">
+                          <img src={details.venmoQrDataUrl} alt={es ? 'Código QR de Venmo del destinatario' : "Recipient's Venmo QR code"} loading="lazy" decoding="async" />
+                          <p className="home-gift__note">{es ? 'Escanea el código con Venmo y comprueba el destinatario antes de enviar el regalo.' : 'Scan this code using Venmo and confirm the recipient before sending your gift.'}</p>
+                        </div>
+                      )}
                       {method === 'zelle' && details?.zelleQrDataUrl && (
                         <div className="home-gift__zelle-qr">
                           <img src={details.zelleQrDataUrl} alt={es ? 'Código QR oficial para enviar el regalo mediante Zelle' : 'Official Zelle QR code for sending a gift'} loading="lazy" decoding="async" />
