@@ -35,9 +35,6 @@ html {
 body { overflow-x:hidden; position:relative; }
 body::before { display:none; }
 .font-cinzel { font-family:'Cinzel Decorative',Georgia,serif; }
-.font-baroque { font-family:'UnifrakturMaguntia',serif; }
-.font-script { font-family:"Great Vibes",cursive; }
-.font-playfair { font-family:"Playfair Display",Georgia,serif; }
 .font-cormorant { font-family:"Cormorant Garamond",Georgia,serif; }
 .font-sans-app { font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
 .gold-text { background:none; -webkit-text-fill-color:currentColor; }
@@ -119,9 +116,6 @@ button,a { -webkit-tap-highlight-color:transparent; }
 .story-copy h2 em { color:var(--forest); }
 .story-copy>p:not(.eyebrow) { max-width:400px; font-size:.9rem; line-height:1.9; color:#58574c; }
 .editorial-link { display:inline-block; margin-top:28px; border-bottom:1px solid; padding:10px 0; font-size:.7rem; letter-spacing:.07em; }
-.story-section figure { margin-top:70px; }
-.story-section figure img { width:100%; height:auto; max-height:580px; object-fit:cover; }
-.story-section figcaption { font:italic 1.1rem 'Cormorant Garamond',serif; margin-top:15px; color:#676657; }
 .mosaic-mark { width:62px; margin-top:55px; }
 
 .rainbow-break { width:100vw; height:min(72vw,760px); min-height:420px; overflow:hidden; background:#d8d2c7; position:relative; }
@@ -201,8 +195,6 @@ footer { padding:0!important; overflow:hidden; }
   .hero-copy { bottom:22%; }
   .hero-bottom { align-items:center; }
   .hero-bottom>span { max-width:150px; }
-  .story-section figure { margin:0 0 0 20%; }
-  .story-section figure img { max-height:450px; }
   .mosaic-mark { margin-top:30px; }
   .rainbow-break { height:66svh; min-height:380px; }
   .rainbow-break img { object-position:center center; }
@@ -635,17 +627,6 @@ footer { padding:0!important; overflow:hidden; }
 }
 
 /* Story image full height */
-.story-section figure {
-  align-self: stretch !important;
-  min-height: clamp(520px, 82vh, 900px);
-  overflow: hidden;
-}
-.story-section figure img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
 
 /* Registry illustration */
 .registry-illustration-card {
@@ -779,17 +760,6 @@ footer { padding:0!important; overflow:hidden; }
 }
 
 /* Story photo should fill the section vertically */
-.story-section figure {
-  align-self: stretch !important;
-  min-height: clamp(520px, 82vh, 900px);
-  overflow: hidden;
-}
-.story-section figure img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
 
 /* Remove old registry illustration placement if CSS remains */
 .registry-illustration-card {
@@ -797,79 +767,6 @@ footer { padding:0!important; overflow:hidden; }
 }
 
 /* RSVP dark trencadís restoration + current RSVP refinements */
-#rsvp.rsvp-trencadis-dark,
-.rsvp-section-shell.rsvp-trencadis-dark {
-  position: relative;
-  overflow: hidden;
-  clip-path: inset(0);
-  background:
-    radial-gradient(circle at 16% 8%, rgba(223,194,133,.20), transparent 28%),
-    radial-gradient(circle at 84% 28%, rgba(129,28,43,.30), transparent 30%),
-    linear-gradient(135deg, rgba(10,27,24,.98), rgba(48,10,18,.98) 48%, rgba(15,34,29,.99));
-  isolation: isolate;
-}
-
-#rsvp.rsvp-trencadis-dark::before,
-.rsvp-section-shell.rsvp-trencadis-dark::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100svh;
-  background-image:
-    url('/trencadis-glass-dark.svg'),
-    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
-    radial-gradient(circle at 20% 18%, rgba(223,194,133,.16), transparent 18%),
-    radial-gradient(circle at 76% 68%, rgba(92,20,30,.22), transparent 20%);
-  background-size: 260px auto, 32px 32px, 32px 32px, 180px 180px, 220px 220px;
-  background-position: center, center, center, 0 0, 80px 60px;
-  background-repeat: repeat;
-  opacity: .36;
-  mix-blend-mode: screen;
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform;
-}
-
-#rsvp.rsvp-trencadis-dark::after,
-.rsvp-section-shell.rsvp-trencadis-dark::after {
-  content: '';
-  position: absolute;
-  inset: 24px;
-  border: 1px solid rgba(223,194,133,.22);
-  pointer-events: none;
-  z-index: 0;
-  display: block !important;
-}
-
-.rsvp-trencadis-dark .rsvp-dark-eyebrow {
-  color: #dfc285 !important;
-  text-shadow: 0 1px 18px rgba(0,0,0,.35);
-}
-
-.rsvp-trencadis-dark .rsvp-dark-title {
-  color: #fff6e8 !important;
-  text-shadow: 0 2px 28px rgba(0,0,0,.45);
-}
-
-.rsvp-trencadis-dark .rsvp-dark-subtitle {
-  color: rgba(255,246,232,.84) !important;
-}
-
-.rsvp-trencadis-dark .rsvp-hero-panel {
-  border-color: rgba(223,194,133,.25) !important;
-  background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.055)) !important;
-  box-shadow: inset 0 1px rgba(255,255,255,.13), 0 24px 80px rgba(0,0,0,.22) !important;
-}
-
-.rsvp-trencadis-dark .rsvp-readable-card {
-  background-color: rgba(255, 250, 240, .97) !important;
-}
-
-.rsvp-trencadis-dark select {
-  min-width: 4.75rem;
-}
 
 /* Final RSVP / schedule / footer polish */
 .rsvp-room-note-internal { display: none !important; }
@@ -913,15 +810,6 @@ footer { padding:0!important; overflow:hidden; }
   }
 }
 
-@supports (-webkit-touch-callout: none) {
-  #rsvp.rsvp-trencadis-dark::before,
-  .rsvp-section-shell.rsvp-trencadis-dark::before {
-    position: absolute;
-    height: 100%;
-    background-attachment: scroll;
-  }
-}
-
 /* RSVP trencadís containment + elegant dark mosaic correction
    Keeps the mosaic only inside #rsvp, prevents the fixed pseudo-element
    from painting the whole page, and uses small repeating tiles instead
@@ -929,112 +817,6 @@ footer { padding:0!important; overflow:hidden; }
 html::before,
 body::before {
   display: none !important;
-}
-
-.rsvp-trencadis-dark:not(#rsvp)::before,
-.rsvp-trencadis-dark:not(#rsvp)::after {
-  display: none !important;
-}
-
-#rsvp.rsvp-section-shell.rsvp-trencadis-dark {
-  position: relative !important;
-  isolation: isolate !important;
-  overflow: hidden !important;
-  clip-path: inset(0) !important;
-  background-color: #111f1b !important;
-  background-image:
-    radial-gradient(circle at 18% 12%, rgba(219, 183, 103, .18), transparent 22rem),
-    radial-gradient(circle at 86% 34%, rgba(97, 18, 31, .30), transparent 20rem),
-    linear-gradient(135deg, rgba(9, 31, 27, .98), rgba(47, 12, 20, .98) 50%, rgba(13, 34, 29, .99)) !important;
-  background-attachment: fixed, fixed, fixed !important;
-}
-
-#rsvp.rsvp-section-shell.rsvp-trencadis-dark::before {
-  content: '' !important;
-  position: absolute !important;
-  inset: 0 !important;
-  width: auto !important;
-  height: auto !important;
-  min-height: 100% !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-  opacity: .32 !important;
-  mix-blend-mode: screen !important;
-  background-image:
-    linear-gradient(118deg, transparent 0 42%, rgba(255, 242, 208, .20) 43% 46%, transparent 47% 100%),
-    linear-gradient(32deg, transparent 0 48%, rgba(105, 22, 38, .34) 49% 52%, transparent 53% 100%),
-    linear-gradient(145deg, rgba(255, 236, 187, .13) 0 9%, transparent 10% 100%),
-    linear-gradient(72deg, transparent 0 68%, rgba(46, 93, 68, .28) 69% 78%, transparent 79% 100%),
-    radial-gradient(circle at 50% 50%, rgba(255, 245, 220, .10) 0 1px, transparent 2px),
-    linear-gradient(135deg, rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(45deg, rgba(255,255,255,.028) 1px, transparent 1px) !important;
-  background-size:
-    34px 34px,
-    29px 29px,
-    23px 23px,
-    41px 41px,
-    18px 18px,
-    26px 26px,
-    31px 31px !important;
-  background-position:
-    0 0,
-    11px 7px,
-    5px 13px,
-    17px 19px,
-    0 0,
-    0 0,
-    8px 12px !important;
-  background-repeat: repeat !important;
-  background-attachment: fixed !important;
-  transform: none !important;
-  will-change: auto !important;
-}
-
-#rsvp.rsvp-section-shell.rsvp-trencadis-dark::after {
-  content: '' !important;
-  position: absolute !important;
-  inset: 22px !important;
-  display: block !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  border: 1px solid rgba(223, 194, 133, .18) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.035),
-    inset 0 0 90px rgba(0,0,0,.22) !important;
-  background: radial-gradient(circle at 50% 0%, rgba(255,247,226,.07), transparent 42%) !important;
-}
-
-#rsvp.rsvp-section-shell.rsvp-trencadis-dark > .max-w-3xl,
-#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-hero-panel,
-#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-readable-card {
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-#rsvp.rsvp-section-shell.rsvp-trencadis-dark .rsvp-hero-panel {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.055)) !important;
-  border-color: rgba(223, 194, 133, .25) !important;
-  backdrop-filter: blur(10px) !important;
-}
-
-@media (max-width: 760px), (prefers-reduced-motion: reduce) {
-  #rsvp.rsvp-section-shell.rsvp-trencadis-dark {
-    background-attachment: scroll, scroll, scroll !important;
-  }
-
-  #rsvp.rsvp-section-shell.rsvp-trencadis-dark::before {
-    position: absolute !important;
-    background-attachment: scroll !important;
-    background-size:
-      28px 28px,
-      24px 24px,
-      19px 19px,
-      34px 34px,
-      15px 15px,
-      22px 22px,
-      26px 26px !important;
-  }
 }
 
 
@@ -1154,69 +936,6 @@ body::before {
 
 /* STORY: large photo right, illustrated route left; final map shows Spain + US outlines */
 
-.story-map,
-.story-atlantic svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.story-map text,
-.story-atlantic text {
-  font: 700 10px/1 'Plus Jakarta Sans', sans-serif;
-  letter-spacing: .08em;
-  fill: #6b202e;
-  text-transform: uppercase;
-}
-
-.story-map .map-country,
-.story-atlantic .map-country {
-  font: 700 13px/1 'Cinzel Decorative', Georgia, serif;
-  letter-spacing: .14em;
-  fill: rgba(107,32,46,.42);
-}
-
-.story-landmarks {
-  position: absolute;
-  left: 50%;
-  bottom: 7%;
-  width: min(62%, 280px);
-  transform: translateX(-50%);
-  opacity: .78;
-  filter: sepia(.18) saturate(.9);
-}
-
-.story-atlantic {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transform: translateY(12px);
-}
-
-.story-film.is-playing .story-atlantic,
-.story-film.is-still .story-atlantic {
-  animation: storyAtlanticIn .7s ease forwards;
-  animation-delay: 6.2s;
-}
-
-.story-film.is-playing .story-map {
-  animation: storyMapDim .7s ease forwards;
-  animation-delay: 6.2s;
-}
-
-.story-film.is-still .story-atlantic {
-  opacity: 1;
-  transform: none;
-  animation: none;
-}
-
-.story-film.is-still .story-map {
-  opacity: .22;
-  animation: none;
-}
-
 .story-spain-outline,
 .story-us-outline {
   fill: #efe4cf;
@@ -1270,9 +989,6 @@ body::before {
   }
 }
 
-@media (max-width: 640px) {
-}
-
 
 /* === Fix schedule image visibility + stronger passport spacing 2026-09-14 === */
 
@@ -1317,13 +1033,6 @@ body::before {
 }
 
 /* Story map: east-coast placement for Lancaster/Boston, not Texas. */
-.story-atlantic .story-us-outline {
-  transform-origin: center;
-}
-
-.story-atlantic .story-east-coast-dot {
-  fill: #752a34;
-}
 
 @media (max-width: 1100px) {
   #journey .journey-venue-grid,
@@ -1347,7 +1056,6 @@ body::before {
 #castle h2,
 .story-copy h2,
 .weekend-heading h2,
-.castle-rooms-panel h3,
 .footer-signature-date {
   font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif !important;
   font-weight: 400 !important;
@@ -1420,557 +1128,20 @@ body::before {
    Keeps the original travel header, original passport placement, and original hotels.
    Only replaces the castle room block with the proposed mockup-style room cards. */
 
-.castle-rooms-mockup-panel {
-  position: relative;
-  margin: 0 0 2.5rem;
-  display: grid;
-  grid-template-columns: minmax(260px, .56fr) minmax(0, 1.44fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
-  align-items: center;
-  padding: clamp(2.4rem, 5vw, 4.6rem);
-  background:
-    radial-gradient(circle at 18% 12%, rgba(184,146,67,.10), transparent 18rem),
-    radial-gradient(circle at 88% 82%, rgba(92,20,30,.045), transparent 20rem),
-    #f6efe3;
-  border: 1px solid rgba(92, 20, 30, .13);
-  box-shadow: 0 24px 80px rgba(67, 46, 30, .10);
-  overflow: hidden;
-}
-
-.castle-rooms-mockup-panel::before {
-  content: '';
-  position: absolute;
-  inset: 22px;
-  border: 1px solid rgba(184, 146, 67, .20);
-  pointer-events: none;
-}
-
-.castle-rooms-mockup-copy,
-.castle-rooms-mockup-grid,
-.castle-rooms-mockup-note {
-  position: relative;
-  z-index: 1;
-}
-
-.castle-rooms-mockup-kicker {
-  margin: 0 0 .9rem;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  font-size: .66rem;
-  letter-spacing: .26em;
-  text-transform: uppercase;
-  color: #5c141e;
-  font-weight: 800;
-}
-
-.castle-rooms-mockup-copy h3 {
-  margin: 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(2.9rem, 5.2vw, 5.4rem);
-  line-height: .92;
-  letter-spacing: -.045em;
-  color: #5c141e;
-}
-
-.castle-rooms-mockup-rule {
-  position: relative;
-  width: 150px;
-  height: 1px;
-  margin: 1.45rem 0 1.55rem;
-  background: linear-gradient(90deg, rgba(184,146,67,.68), rgba(184,146,67,.12));
-}
-
-.castle-rooms-mockup-rule::after {
-  content: '';
-  position: absolute;
-  left: 54px;
-  top: 50%;
-  width: 8px;
-  height: 8px;
-  background: #b89243;
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.castle-rooms-mockup-copy p {
-  max-width: 410px;
-  margin: 0;
-  font-size: .88rem;
-  line-height: 1.82;
-  color: #5f574f;
-}
-
-.castle-rooms-mockup-copy em {
-  display: block;
-  max-width: 390px;
-  margin-top: 1.25rem;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.18rem;
-  line-height: 1.35;
-  color: #6f6149;
-}
-
-.castle-rooms-mockup-copy button {
-  cursor: pointer;
-  min-height: 48px;
-  margin-top: 1.85rem;
-  padding: 0 1.5rem;
-  border: 1px solid rgba(92,20,30,.42);
-  background: rgba(255,255,255,.28);
-  color: #3a211b;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  font-size: .66rem;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  font-weight: 800;
-  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
-}
-
-.castle-rooms-mockup-copy button:hover {
-  background: #5c141e;
-  color: #fff7e7;
-  border-color: #5c141e;
-}
-
-.castle-rooms-mockup-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(115px, 1fr));
-  gap: .9rem;
-}
-
-.castle-room-mockup-card {
-  min-width: 0;
-  background: rgba(255,255,255,.42);
-  border: 1px solid rgba(92,20,30,.12);
-  box-shadow: inset 0 1px rgba(255,255,255,.55);
-  text-align: center;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
-}
-
-.castle-room-mockup-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(184,146,67,.58);
-  background: rgba(255,255,255,.66);
-}
-
-.castle-room-mockup-image {
-  height: clamp(112px, 11vw, 162px);
-  overflow: hidden;
-  background:
-    linear-gradient(135deg, rgba(92,20,30,.10), rgba(184,146,67,.12)),
-    #e8decd;
-  border-bottom: 1px solid rgba(92,20,30,.10);
-}
-
-.castle-room-mockup-image img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  filter: saturate(.86) contrast(1.04) brightness(.96);
-}
-
-.castle-room-mockup-body {
-  padding: 1.05rem .85rem 1.2rem;
-}
-
-.castle-room-mockup-body h4 {
-  min-height: 2.85rem;
-  margin: 0 0 .8rem;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(1.25rem, 1.7vw, 1.72rem);
-  line-height: 1;
-  color: #311916;
-}
-
-.castle-room-mockup-body strong {
-  display: block;
-  margin: 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(2.15rem, 3.2vw, 3.35rem);
-  font-weight: 400;
-  line-height: .86;
-  letter-spacing: -.04em;
-  color: #5c141e;
-}
-
-.castle-room-mockup-body span {
-  display: block;
-  margin-top: .35rem;
-  font-size: .72rem;
-  color: #5d554d;
-}
-
-.castle-room-mockup-body small {
-  display: block;
-  min-height: 2.2rem;
-  margin-top: .9rem;
-  font-size: .66rem;
-  line-height: 1.45;
-  color: #746b62;
-}
-
-.castle-room-mockup-body button {
-  cursor: pointer;
-  margin-top: .95rem;
-  padding: 0 0 .4rem;
-  border: 0;
-  border-bottom: 1px solid rgba(92,20,30,.42);
-  background: transparent;
-  color: #5c141e;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  font-size: .58rem;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  font-weight: 800;
-}
-
-.castle-room-mockup-body button:hover {
-  color: #8c6d3b;
-  border-color: #b89243;
-}
-
-.castle-rooms-mockup-note {
-  grid-column: 1 / -1;
-  margin: .85rem 0 0;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(92,20,30,.10);
-  text-align: center;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.05rem;
-  line-height: 1.45;
-  color: #6a5e52;
-}
-
-@media (max-width: 1180px) {
-  .castle-rooms-mockup-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .castle-rooms-mockup-copy {
-    max-width: 720px;
-  }
-
-  .castle-rooms-mockup-grid {
-    grid-template-columns: repeat(3, minmax(150px, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .castle-rooms-mockup-panel {
-    padding: 1.6rem;
-    margin-left: -.25rem;
-    margin-right: -.25rem;
-  }
-
-  .castle-rooms-mockup-panel::before {
-    inset: 12px;
-  }
-
-  .castle-rooms-mockup-grid {
-    grid-template-columns: 1fr;
-    gap: .85rem;
-  }
-
-  .castle-room-mockup-card {
-    display: grid;
-    grid-template-columns: 118px 1fr;
-    text-align: left;
-  }
-
-  .castle-room-mockup-image {
-    height: 100%;
-    min-height: 168px;
-    border-bottom: 0;
-    border-right: 1px solid rgba(92,20,30,.10);
-  }
-
-  .castle-room-mockup-body h4,
-  .castle-room-mockup-body small {
-    min-height: 0;
-  }
-
-  .castle-rooms-mockup-note {
-    text-align: left;
-    font-size: .98rem;
-  }
-}
-
 
 /* === Room block badge + breakfast prominence 2026-09-14 === */
 
-.castle-room-block-badge {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 1rem;
-  align-items: center;
-  max-width: 520px;
-  margin-top: 1.35rem;
-  padding: 1rem 1.05rem;
-  background:
-    linear-gradient(135deg, rgba(184,146,67,.16), rgba(255,255,255,.42)),
-    rgba(255,255,255,.38);
-  border: 1px solid rgba(184,146,67,.48);
-  box-shadow: inset 0 1px rgba(255,255,255,.55);
-}
-
-.castle-room-block-badge strong {
-  display: block;
-  margin: 0 0 .35rem;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  font-size: .68rem;
-  line-height: 1.35;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  color: #5c141e;
-}
-
-.castle-room-block-badge span {
-  display: block;
-  font-size: .74rem;
-  line-height: 1.55;
-  color: #655d55;
-}
-
-.castle-room-block-badge small {
-  display: inline-grid;
-  place-items: center;
-  min-height: 42px;
-  padding: .55rem .75rem;
-  border-radius: 999px;
-  background: #5c141e;
-  color: #fff7e7;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  font-size: .58rem;
-  line-height: 1.25;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  font-weight: 800;
-  text-align: center;
-  white-space: nowrap;
-}
-
-@media (max-width: 760px) {
-  .castle-room-block-badge {
-    grid-template-columns: 1fr;
-  }
-
-  .castle-room-block-badge small {
-    justify-self: start;
-    white-space: normal;
-  }
-}
-
 
 /* === Breakfast included in price line 2026-09-14 === */
-
-.castle-room-mockup-body span {
-  max-width: 125px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.35;
-  color: #5f574f;
-}
 
 .castle-room-price-line span,
 .room-price-block span {
   line-height: 1.35;
 }
 
-@media (max-width: 760px) {
-  .castle-room-mockup-body span {
-    margin-left: 0;
-    margin-right: 0;
-    max-width: none;
-  }
-}
-
 
 /* === Smaller luxury room block refinement 2026-09-14 ===
    Reduces the scale and density of the castle-room section so it feels more elegant/editorial. */
-
-.castle-rooms-mockup-panel {
-  grid-template-columns: minmax(230px, .48fr) minmax(0, 1.52fr) !important;
-  gap: clamp(1.5rem, 3.4vw, 3rem) !important;
-  padding: clamp(1.75rem, 3.2vw, 3rem) !important;
-  margin-bottom: 2rem !important;
-  box-shadow: 0 18px 54px rgba(67, 46, 30, .075) !important;
-}
-
-.castle-rooms-mockup-panel::before {
-  inset: 18px !important;
-}
-
-.castle-rooms-mockup-kicker {
-  font-size: .58rem !important;
-  letter-spacing: .22em !important;
-  margin-bottom: .65rem !important;
-}
-
-.castle-rooms-mockup-copy h3 {
-  font-size: clamp(2.25rem, 3.8vw, 3.95rem) !important;
-  line-height: .96 !important;
-  letter-spacing: -.04em !important;
-}
-
-.castle-rooms-mockup-rule {
-  width: 118px !important;
-  margin: 1rem 0 1.05rem !important;
-}
-
-.castle-rooms-mockup-copy p {
-  max-width: 360px !important;
-  font-size: .78rem !important;
-  line-height: 1.72 !important;
-}
-
-.castle-rooms-mockup-copy em {
-  max-width: 340px !important;
-  margin-top: .85rem !important;
-  font-size: 1rem !important;
-  line-height: 1.32 !important;
-}
-
-.castle-room-block-badge {
-  max-width: 390px !important;
-  gap: .75rem !important;
-  margin-top: 1rem !important;
-  padding: .78rem .86rem !important;
-}
-
-.castle-room-block-badge strong {
-  font-size: .56rem !important;
-  letter-spacing: .13em !important;
-  margin-bottom: .22rem !important;
-}
-
-.castle-room-block-badge span {
-  font-size: .66rem !important;
-  line-height: 1.42 !important;
-}
-
-.castle-room-block-badge small {
-  min-height: 34px !important;
-  padding: .42rem .58rem !important;
-  font-size: .5rem !important;
-  letter-spacing: .12em !important;
-}
-
-.castle-rooms-mockup-copy button {
-  min-height: 40px !important;
-  margin-top: 1.25rem !important;
-  padding: 0 1.1rem !important;
-  font-size: .56rem !important;
-  letter-spacing: .14em !important;
-}
-
-.castle-rooms-mockup-grid {
-  gap: .7rem !important;
-}
-
-.castle-room-mockup-card {
-  box-shadow: inset 0 1px rgba(255,255,255,.45) !important;
-}
-
-.castle-room-mockup-card:hover {
-  transform: translateY(-2px) !important;
-}
-
-.castle-room-mockup-image {
-  height: clamp(86px, 8vw, 124px) !important;
-}
-
-.castle-room-mockup-body {
-  padding: .82rem .68rem .95rem !important;
-}
-
-.castle-room-mockup-body h4 {
-  min-height: 2.3rem !important;
-  margin-bottom: .55rem !important;
-  font-size: clamp(1.05rem, 1.35vw, 1.38rem) !important;
-  line-height: 1.02 !important;
-}
-
-.castle-room-mockup-body strong {
-  font-size: clamp(1.65rem, 2.35vw, 2.45rem) !important;
-  line-height: .9 !important;
-}
-
-.castle-room-mockup-body span {
-  max-width: 110px !important;
-  margin-top: .28rem !important;
-  font-size: .61rem !important;
-  line-height: 1.3 !important;
-}
-
-.castle-room-mockup-body small {
-  min-height: 1.75rem !important;
-  margin-top: .68rem !important;
-  font-size: .57rem !important;
-  line-height: 1.35 !important;
-}
-
-.castle-room-mockup-body button {
-  margin-top: .7rem !important;
-  padding-bottom: .32rem !important;
-  font-size: .5rem !important;
-  letter-spacing: .13em !important;
-}
-
-.castle-rooms-mockup-note {
-  margin-top: .65rem !important;
-  padding-top: .78rem !important;
-  font-size: .88rem !important;
-  line-height: 1.4 !important;
-}
-
-@media (max-width: 1180px) {
-  .castle-rooms-mockup-panel {
-    grid-template-columns: 1fr !important;
-  }
-
-  .castle-rooms-mockup-grid {
-    grid-template-columns: repeat(3, minmax(150px, 1fr)) !important;
-  }
-
-  .castle-rooms-mockup-copy {
-    max-width: 650px !important;
-  }
-
-  .castle-rooms-mockup-copy p,
-  .castle-rooms-mockup-copy em,
-  .castle-room-block-badge {
-    max-width: 520px !important;
-  }
-}
-
-@media (max-width: 760px) {
-  .castle-rooms-mockup-panel {
-    padding: 1.35rem !important;
-  }
-
-  .castle-rooms-mockup-panel::before {
-    inset: 10px !important;
-  }
-
-  .castle-rooms-mockup-copy h3 {
-    font-size: clamp(2.15rem, 11vw, 3.25rem) !important;
-  }
-
-  .castle-rooms-mockup-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  .castle-room-mockup-image {
-    height: auto !important;
-    min-height: 132px !important;
-  }
-
-  .castle-room-mockup-body span {
-    max-width: none !important;
-    margin-left: 0 !important;
-  }
-}
 
 /* === FAQ editorial aligned image + original copy 2026-09-14 === */
 
@@ -2428,3 +1599,10 @@ body::before {
   background:
     linear-gradient(180deg, rgba(255,255,255,0), rgba(16,25,20,.014) 44%, rgba(16,25,20,.16)) !important;
 }
+
+/* A neutral, accessible fallback until verified room photographs are supplied. */
+
+/* Photo viewer inside RSVP, using the same gallery as the room catalogue. */
+#rsvp .rsvp-room-photo-link{font:600 11px/1.4 Arial,sans-serif;color:#6e3040;text-decoration:underline;text-underline-offset:3px;min-height:34px;padding:5px 4px;cursor:pointer}
+#rsvp .rsvp-room-photo-link:hover{color:#a35d66}
+#rsvp .rsvp-room-photo-link:focus-visible{outline:2px solid #6e3040;outline-offset:2px}

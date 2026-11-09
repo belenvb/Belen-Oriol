@@ -1,3 +1,4 @@
+import { roomAvailabilityStore } from './roomAvailability';
 import type { GuestRsvp, Language } from '../types';
 
 export type RsvpPerson = {
@@ -16,6 +17,7 @@ export type RoomAvailability = {
   total: number;
   reserved: number;
   remaining: number;
+  price: number | null;
 };
 
 export type RsvpSubmission = GuestRsvp & {
@@ -27,6 +29,7 @@ export type RsvpSubmission = GuestRsvp & {
 };
 
 export type InvitationLookup = {
+  previousRsvp?: RsvpSubmission;
   maxGuests: number;
   invitedToPreboda?: boolean;
   invitedToWedding?: boolean;
@@ -40,6 +43,7 @@ export type InvitationLookup = {
 };
 
 type RsvpReceipt = {
+  previousRsvp?: RsvpSubmission;
   ok?: boolean;
   submissionId?: string;
   maxGuests?: number;
@@ -55,7 +59,19 @@ type RsvpReceipt = {
   error?: string;
 };
 
-async function request(payload: unknown): Promise<RsvpReceipt> {
+function parseRooms(receipt: RsvpReceipt): RoomAvailability[] | undefined {
+  if (!Array.isArray(receipt.roomAvailability)) return undefined;
+  return receipt.roomAvailability.map(room => ({
+    id: room.id,
+    total: Math.max(0, Number(room.total) || 0),
+    reserved: Math.max(0, Number(room.reserved) || 0),
+    remaining: Math.max(0, Number(room.remaining) || 0),
+    price: room.price !== null && room.price !== undefined &&
+      Number.isFinite(Number(room.price)) && Number(room.price) >= 0 ? Number(room.price) : null,
+  }));
+}
+
+async function request(payload: unknown, isPublicCatalogue = false): Promise<RsvpReceipt> {
   const endpoint = import.meta.env.VITE_RSVP_ENDPOINT || 'https://script.google.com/macros/s/AKfycbyHE87sExq-w0tQoH0BzPekSGhU7FWU2dKZTBXFPxFSiJV2FJ8KRbseMv8uxijCkQIBJw/exec';
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 25000);
@@ -75,10 +91,18 @@ async function request(payload: unknown): Promise<RsvpReceipt> {
     const receipt = (await response.json()) as RsvpReceipt;
     if (receipt.ok !== true) throw new Error(receipt.error || 'RSVP_NOT_CONFIRMED');
 
+    const rooms = parseRooms(receipt);
+    if (isPublicCatalogue) roomAvailabilityStore.publishPublic(rooms);
+    else if (rooms) roomAvailabilityStore.publish(rooms);
     return receipt;
   } finally {
     clearTimeout(timeout);
   }
+}
+
+// Prices are public, but no guest details or private invitation codes are returned.
+export async function loadRoomCatalogue(): Promise<void> {
+  await request({ action: 'rooms' }, true);
 }
 
 export async function lookupInvitation(invitationCode: string): Promise<InvitationLookup> {
@@ -92,6 +116,7 @@ export async function lookupInvitation(invitationCode: string): Promise<Invitati
   }
 
   return {
+    previousRsvp: result.previousRsvp,
     maxGuests: result.maxGuests,
     invitedToPreboda: result.invitedToPreboda !== false,
     invitedToWedding: result.invitedToWedding !== false,
@@ -103,14 +128,7 @@ export async function lookupInvitation(invitationCode: string): Promise<Invitati
         }))
       : undefined,
     invitationText: typeof result.invitationText === 'string' ? result.invitationText.trim() : '',
-    roomAvailability: Array.isArray(result.roomAvailability)
-      ? result.roomAvailability.map((room) => ({
-          id: room.id,
-          total: Number(room.total) || 0,
-          reserved: Number(room.reserved) || 0,
-          remaining: Math.max(0, Number(room.remaining) || 0),
-        }))
-      : undefined,
+    roomAvailability: parseRooms(result),
   };
 }
 
@@ -122,18 +140,6 @@ export async function sendRsvp(record: RsvpSubmission, invitationCode: string): 
     formVersion: record.formVersion || 'rsvp-per-guest-v3-rooms',
   };
 
-  try {
-    const receipt = await request(payload);
-    if (receipt.submissionId !== record.submissionId) throw new Error('RSVP_NOT_CONFIRMED');
-  } catch (err) {
-    try {
-      const stored = JSON.parse(localStorage.getItem('bo_wedding_rsvp_failed_submissions') || '[]');
-      stored.push({ ...payload, savedLocallyAt: new Date().toISOString() });
-      localStorage.setItem('bo_wedding_rsvp_failed_submissions', JSON.stringify(stored.slice(-10)));
-    } catch {
-      // Local backup is best-effort only. The UI must still show the remote submission error.
-    }
-
-    throw err instanceof Error ? err : new Error('RSVP_NOT_CONFIRMED');
-  }
+  const receipt = await request(payload);
+  if (receipt.submissionId !== record.submissionId) throw new Error('RSVP_NOT_CONFIRMED');
 }

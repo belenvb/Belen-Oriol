@@ -7,13 +7,14 @@ import { HandDrawnBotanicalVine } from './BotanicalVine';
 const eventIcons = { GlassWater, Utensils, Sparkles, Bus, Music, Heart, Wine, Crown, PartyPopper, Coffee, Shirt };
 interface ScheduleSectionProps {
   lang: Language;
-  selectedDay: 'sept3' | 'sept4';
-  onSelectDay: (day: 'sept3' | 'sept4') => void;
+  selectedDay: 'sept3' | 'sept4' | 'sept5';
+  onSelectDay: (day: 'sept3' | 'sept4' | 'sept5') => void;
   hasPrebodaAccess?: boolean;
 }
 
 export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAccess = true }: ScheduleSectionProps) {
-  const day = scheduleData[lang][selectedDay];
+  const sunday = selectedDay === 'sept5';
+  const day = scheduleData[lang][sunday ? 'sept4' : selectedDay];
   const es = lang === 'es';
 
   return (
@@ -27,27 +28,27 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAcce
       </figure>
       <div className="schedule-content">
         <div className="weekend-heading">
-          <p className="eyebrow">{es ? 'Programa' : 'Schedule'}</p>
-          <h2>{es ? <>3 & 4 de<br /><em>septiembre.</em></> : <>September<br /><em>3 & 4.</em></>}</h2>
+          <h2>{es ? 'Programa' : 'Schedule'}</h2>
           <div className="day-tabs">
-            {(['sept3', 'sept4'] as const).filter(d => d === 'sept4' || hasPrebodaAccess).map(d => (
+            {(['sept3', 'sept4', 'sept5'] as const).filter(d => d !== 'sept3' || hasPrebodaAccess).map(d => (
               <button key={d} aria-pressed={selectedDay === d} onClick={() => onSelectDay(d)}>
-                {d === 'sept3' ? '03' : '04'} <span>{es ? 'Septiembre' : 'September'}</span>
+                {d === 'sept3' ? '03' : d === 'sept4' ? '04' : '05'} <span>{es ? 'Septiembre' : 'September'}</span>
               </button>
             ))}
           </div>
-          <p>{day.subtitle}</p>
-          <p>{day.location}</p>
-          <a className="editorial-link" target="_blank" rel="noreferrer" href={generateGoogleCalendarUrl(day.calEvent)}>
+          <p>{sunday ? (es ? 'Brunch de despedida para quienes se alojen en el castillo.' : 'Farewell brunch for guests staying at the castle.') : day.subtitle}</p>
+          <p>{sunday ? 'Castillo del Buen Amor' : day.location}</p>
+          {!sunday && <a className="editorial-link" target="_blank" rel="noreferrer" href={generateGoogleCalendarUrl(day.calEvent)}>
             {es ? 'Añadir al calendario' : 'Add to calendar'} ↗
-          </a>
+          </a>}
         </div>
-        <div className="weekend-details">
+        {!sunday && <div className="weekend-details">
           <p><Shirt className="detail-emblem" size={24} aria-hidden="true"/><strong>{day.dressCode.title}</strong><br />{day.dressCode.description}</p>
           {selectedDay === 'sept4' && <p><Bus className="detail-emblem" size={24} aria-hidden="true"/><strong>{day.shuttleInfo.title}</strong><br />{day.shuttleInfo.description}</p>}
-        </div>
+        </div>}
         <ol className="event-list">
-          {day.events.map((event, index) => {
+          {sunday && <li><div className="schedule-event"><span className="event-emblem" aria-hidden="true"><Coffee size={26} strokeWidth={1.2}/></span><div><p className="eyebrow">{es ? 'Domingo 5 · Mañana' : 'Sunday 5 · Morning'}</p><h3>{es ? 'Brunch de despedida' : 'Farewell brunch'}</h3><p>{es ? 'Para los invitados que se alojen en el castillo.' : 'For wedding guests staying at the castle.'}</p></div></div></li>}
+          {!sunday && day.events.map((event, index) => {
             const Icon = eventIcons[event.iconName as keyof typeof eventIcons] || Sparkles;
             return (
               <li key={event.id}>

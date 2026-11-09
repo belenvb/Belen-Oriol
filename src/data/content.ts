@@ -22,15 +22,6 @@ export const weddingInfo = {
     sept3Display: '3 de Septiembre de 2027',
     sept4Display: '4 de Septiembre de 2027',
   },
-  bankInfo: {
-    holders: 'Belén Vicente & Oriol',
-    iban: 'ES76 2100 0418 4502 0005 6789',
-    bic: 'CAIXESBBXXX',
-    bankName: 'CaixaBank',
-    bizumPhone: '+34 654 321 098',
-    venmoHandle: '@Belen-Oriol-2027',
-    conceptSample: 'Boda Belén & Oriol — [Tu Nombre]',
-  },
 };
 
 export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySchedule }> = {
@@ -93,7 +84,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
         title: 'Boda Belén & Oriol — Ceremonia & Celebración',
         description: 'Ceremonia, cóctel, banquete y fiesta en El Castillo del Buen Amor, Salamanca.',
         location: 'El Castillo del Buen Amor, Salamanca',
-        startTime: '20270904T173000',
+        startTime: '20270904T160000',
         endTime: '20270905T060000',
       },
       events: [
@@ -197,7 +188,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
         title: 'Belén & Oriol Wedding Ceremony & Reception',
         description: 'Wedding celebration at El Castillo del Buen Amor, Salamanca.',
         location: 'El Castillo del Buen Amor, Salamanca, Spain',
-        startTime: '20270904T173000',
+        startTime: '20270904T160000',
         endTime: '20270905T060000',
       },
       events: [

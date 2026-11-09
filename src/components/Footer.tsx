@@ -1,5 +1,5 @@
 import { Language } from '../types';
-import boLogo from '../assets/images/bo-logo.png';
+import boLogo from '../assets/images/bo-logo.webp';
 
 interface FooterProps {
   lang: Language;

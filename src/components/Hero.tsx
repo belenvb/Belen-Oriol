@@ -16,15 +16,13 @@ export function Hero({ lang, onNavigate }: HeroProps) {
       </div>
 
       <div className="hero-copy">
-        <p className="eyebrow">SAVE THE DATE</p>
+        <p className="eyebrow">{lang === 'es' ? 'Celebramos nuestra boda' : 'Celebrating our wedding'}</p>
         <h1>Belén <em>&</em> Oriol</h1>
+      </div>
+
+      <div className="hero-details">
         <p className="hero-venue-line">Castillo del Buen Amor · Salamanca</p>
         <p className="hero-date-long">{lang === 'es' ? '04 septiembre 2027' : 'September 4, 2027'}</p>
-        <nav className="hero-quick-links" aria-label={lang === 'es' ? 'Organiza tu visita' : 'Plan your visit'}>
-          <button onClick={() => onNavigate('schedule')}>{lang === 'es' ? 'El programa' : 'The schedule'}</button>
-          <button onClick={() => onNavigate('journey')}>{lang === 'es' ? 'Viaje y estancia' : 'Travel & stay'}</button>
-          <button onClick={() => onNavigate('rsvp')}>{lang === 'es' ? 'Confirmar asistencia' : 'RSVP'} <span aria-hidden="true">↗</span></button>
-        </nav>
       </div>
 
       <button className="hero-discover" onClick={() => onNavigate('story')}>

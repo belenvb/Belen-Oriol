@@ -14,14 +14,18 @@ const ROOMS_TAB = 'Habitaciones';
 const RSVP_FORM_VERSION = 'rsvp-per-guest-v3-rooms';
 
 const ROOM_CONFIG = [
-  { id: 'estandar', label: 'Habitación Estándar', total: 10 },
-  { id: 'superior', label: 'Habitación Superior', total: 10 },
-  { id: 'deluxe', label: 'Habitación Deluxe', total: 10 },
+  { id: 'estandar', label: 'Habitación Estándar', total: 9 },
+  { id: 'superior', label: 'Habitación Superior', total: 8 },
+  { id: 'deluxe', label: 'Habitación Deluxe', total: 13 },
   { id: 'suite_guardia', label: 'Suite Paso de Guardia', total: 3 },
   { id: 'suite_medieval', label: 'Suite Medieval', total: 3 },
+  { id: 'suite_torreon', label: 'Suite con Torreón', total: 2 },
 ];
 
+let rsvpSnapshot = null;
 function doPost(e) {
+  rsvpSnapshot = null;
+  const startedAt = Date.now();
   let lock;
 
   try {
@@ -31,19 +35,28 @@ function doPost(e) {
 
     const data = JSON.parse(e.postData.contents);
 
+    // Public room catalogue: exposes ONLY category, price, and availability,
+    // never invitation names, RSVP replies, or private access codes.
+    if (data.action === 'rooms') {
+      return jsonReply({ ok: true, roomAvailability: getRoomAvailability(getSpreadsheet()) });
+    }
+
     if (data.action === 'lookup') {
       const invitation = findInvitation(data.invitationCode);
       const book = getSpreadsheet();
 
+      const previous = getPreviousRsvp(book, invitation.invitationCode || data.invitationCode);
       return jsonReply({
+        previousRsvp: previous,
         ok: true,
         maxGuests: invitation.maxGuests,
+        holderName: invitation.holderName,
         invitedToPreboda: invitation.invitedToPreboda,
         invitedToWedding: invitation.invitedToWedding,
         language: invitation.language,
         guests: invitation.guests,
         invitationText: invitation.invitationText,
-        roomAvailability: getRoomAvailability(book),
+        roomAvailability: getRoomAvailability(book, previous && previous.submissionId),
       });
     }
 
@@ -56,17 +69,13 @@ function doPost(e) {
       typeof value === 'string' && /^[=+@\-\t\r]/.test(value) ? "'" + value : value;
 
     const id = text(data.submissionId || Utilities.getUuid(), 80);
-    const code = text(data.invitationCode, 80).toUpperCase();
-
-    const invitation = findInvitation(code);
+    const credential = text(data.invitationCode, 254);
+    const invitation = findInvitation(credential);
+    const code = invitation.invitationCode || credential.toUpperCase();
     const people = validatePeople(data, invitation);
     const roomBookings = normalizeRoomBookings(data);
-    const requestedRoomCount = Object.keys(roomBookings).reduce((sum, roomId) => sum + roomBookings[roomId], 0);
 
-    const returnShuttle = data.returnShuttleBooking === true && requestedRoomCount === 0;
-    if (data.returnShuttleBooking === true && requestedRoomCount > 0) {
-      throw Error('Return shuttle cannot be selected with a castle room');
-    }
+    const returnShuttle = data.returnShuttleBooking === true;
 
     const attendingPeople = people.filter(person => person.attendance === 'yes');
     const anyAttending = attendingPeople.length > 0;
@@ -117,7 +126,14 @@ function doPost(e) {
     lock.waitLock(15000);
 
     const book = getSpreadsheet();
-    assertRoomAvailability(book, roomBookings, id);
+    const previous = getPreviousRsvp(book, code);
+    const availabilityBefore = getRoomAvailability(book, previous ? previous.submissionId : id);
+    Object.keys(roomBookings).forEach(roomId => {
+      const room = availabilityBefore.find(item => item.id === roomId);
+      if (!room || roomBookings[roomId] > room.remaining) throw Error('Room allocation unavailable');
+    });
+    const outboundCount = validatePassengerCount(data.outboundShuttleCount, data.shuttleBooking, saturdayCount);
+    const returnCount = validatePassengerCount(data.returnShuttleCount, returnShuttle, saturdayCount);
 
     let sheet = book.getSheetByName(RSVP_TAB);
 
@@ -162,18 +178,9 @@ function doPost(e) {
       sheet.setColumnWidth(20, 420);
     }
 
-    const last = sheet.getLastRow();
-    let alreadyExists = false;
-
-    if (last > 1 && id) {
-      const finder = sheet
-        .getRange(2, 1, last - 1, 1)
-        .createTextFinder(id)
-        .matchEntireCell(true)
-        .findNext();
-
-      if (finder) alreadyExists = true;
-    }
+    if (sheet.getLastColumn() < 23) sheet.getRange(1, 21, 1, 3).setValues([['Personas autobús ida', 'Personas autobús vuelta', 'Respuesta JSON']]);
+    const existingSnapshot = readRsvpSnapshot(book);
+    const alreadyExists = existingSnapshot.rows.some(row => String(row[0]) === id);
 
     if (!alreadyExists) {
       const row = [
@@ -191,20 +198,30 @@ function doPost(e) {
         fridayCount,
         saturdayCount,
         plusOneNames,
-        outboundShuttle,
-        returnShuttle ? 'Sí' : 'No',
+        outboundCount ? outboundShuttle : 'No',
+        returnCount ? 'Sí' : 'No',
         roomSummary,
         JSON.stringify(roomBookings),
         song,
         message,
+        outboundCount,
+        returnCount,
+        JSON.stringify(Object.assign({}, data, {submissionId:id, invitationCode:code, code:code, guests:people, roomBookings:roomBookings, outboundShuttleCount:outboundCount, returnShuttleCount:returnCount})),
       ];
 
-      sheet.appendRow(row.map(literal));
-      sheet.getRange(sheet.getLastRow(), 2).setNumberFormat('dd/MM/yyyy HH:mm:ss');
-      SpreadsheetApp.flush();
+      const existingRow = findRsvpRow(sheet, code);
+      if (existingRow) sheet.getRange(existingRow, 1, 1, row.length).setValues([row.map(literal)]);
+      else sheet.appendRow(row.map(literal));
+      sheet.getRange(existingRow || sheet.getLastRow(), 2).setNumberFormat('dd/MM/yyyy HH:mm:ss');
     }
 
     saveGuestDetails(book, id, code, titularEmail, people, literal);
+    SpreadsheetApp.flush();
+    const availabilityAfter = availabilityBefore.map(room => ({...room,
+      reserved: room.reserved + (roomBookings[room.id] || 0),
+      remaining: Math.max(0, room.remaining - (roomBookings[room.id] || 0))
+    }));
+    console.log('RSVP processing ms: ' + (Date.now() - startedAt));
 
     return jsonReply({
       ok: true,
@@ -215,7 +232,8 @@ function doPost(e) {
       fridayCount,
       saturdayCount,
       roomBookings,
-      roomAvailability: getRoomAvailability(book),
+      roomAvailability: availabilityAfter,
+      processingMs: Date.now() - startedAt,
     });
   } catch (error) {
     console.error(error);
@@ -233,12 +251,27 @@ function doPost(e) {
   }
 }
 
-function findInvitation(code) {
-  const key = String(code || '').trim().toUpperCase();
+function checkShortInvitationRate_() {
+  // Limit repeated six-character lookups for this public endpoint.
+  // The longer per-family URL is recommended for accessing an invitation.
+  if (typeof CacheService === 'undefined') return;
+  const cache = CacheService.getScriptCache();
+  const key = 'short_code_lookup_' + Math.floor(Date.now() / 60000);
+  const attempts = Number(cache.get(key) || '0');
+  if (attempts >= 60) throw Error('Too many attempts. Try again later.');
+  cache.put(key, String(attempts + 1), 75);
+}
 
-  if (!key || !/^[A-Z0-9-]{3,80}$/.test(key)) {
-    throw Error('Invalid invitation');
-  }
+function findInvitation(code) {
+  // The private invitation code is the sole lookup credential.
+  // Email-only lookup previously exposed guest responses and allergy information.
+  const key = String(code || '').trim().toUpperCase();
+  const isLongCode = /^[A-Z0-9-]{16,80}$/.test(key);
+  const isShortCode = /^[A-HJ-NP-Z2-9]{6}$/.test(key);
+  if (!isLongCode && !isShortCode) throw Error('Invalid invitation');
+  // Short memorable codes are rate-limited and ONLY resolve to the existing
+  // canonical long identifier. Previous RSVPs are still stored under the long code.
+  if (isShortCode) checkShortInvitationRate_();
 
   const book = getSpreadsheet();
   const sheet = book.getSheetByName(INVITATIONS_TAB);
@@ -318,20 +351,25 @@ function findInvitation(code) {
     'invitation label',
   ]);
 
-  const match = rows.find(row => {
-    return String(row[codeIndex] || '').trim().toUpperCase() === key;
-  });
+  const shortCodeIndex = findOptionalColumn(idx, ['codigo corto', 'código corto', 'short code']);
+  const matches = rows.filter(row =>
+    String(row[codeIndex] || '').trim().toUpperCase() === key ||
+    (isShortCode && shortCodeIndex !== -1 && String(row[shortCodeIndex] || '').trim().toUpperCase() === key)
+  );
 
-  if (!match) {
-    throw Error('Invalid invitation');
+  if (matches.length !== 1) {
+    throw Error(matches.length ? 'Duplicate invitation code' : 'Invalid invitation');
   }
+  const match = matches[0];
 
+  const resolvedCode = String(match[codeIndex] || '').trim().toUpperCase();
+  if (!/^[A-Z0-9-]{16,80}$/.test(resolvedCode)) throw Error('Invalid invitation');
   const holderName = nameIndex === -1 ? '' : String(match[nameIndex] || '').trim();
   const maxGuests = Number(match[maxGuestsIndex]);
   const invitationText = invitationTextIndex === -1 ? '' : String(match[invitationTextIndex] || '').trim();
   const active = activeIndex === -1 ? true : yesNo(match[activeIndex], true);
 
-  const invitedToPreboda = fridayIndex === -1 ? true : yesNo(match[fridayIndex], true);
+  const invitedToPreboda = fridayIndex === -1 ? false : yesNo(match[fridayIndex], false);
   const invitedToWedding = saturdayIndex === -1 ? true : yesNo(match[saturdayIndex], true);
 
   const language =
@@ -354,6 +392,7 @@ function findInvitation(code) {
   const guests = buildPrefilledGuests(idx, match, maxGuests, holderName);
 
   return {
+    invitationCode: resolvedCode,
     holderName,
     maxGuests,
     invitedToPreboda,
@@ -485,11 +524,12 @@ function getRoomsSheet(book) {
 
   if (!sheet) {
     sheet = book.insertSheet(ROOMS_TAB);
-    sheet.appendRow(['ID habitación', 'Tipo de habitación', 'Total habitaciones']);
-    ROOM_CONFIG.forEach(room => sheet.appendRow([room.id, room.label, room.total]));
+    sheet.appendRow(['ID habitación', 'Tipo de habitación', 'Total habitaciones', 'Precio por noche (€)']);
+    // Prices are intentionally NOT populated from the website. Enter them in Sheets.
+    ROOM_CONFIG.forEach(room => sheet.appendRow([room.id, room.label, room.total, '']));
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, 3).setFontWeight('bold').setBackground('#5c141e').setFontColor('#ffffff');
-    sheet.setColumnWidths(1, 3, 220);
+    sheet.getRange(1, 1, 1, 4).setFontWeight('bold').setBackground('#5c141e').setFontColor('#ffffff');
+    sheet.setColumnWidths(1, 4, 220);
   }
 
   return sheet;
@@ -501,7 +541,7 @@ function getRoomTotals(book) {
   const totals = {};
 
   ROOM_CONFIG.forEach(room => {
-    totals[room.id] = room.total;
+    totals[room.id] = 0;
   });
 
   rows.forEach(row => {
@@ -524,8 +564,8 @@ function getReservedRoomCounts(book, ignoreSubmissionId) {
   const sheet = book.getSheetByName(RSVP_TAB);
   if (!sheet || sheet.getLastRow() < 2) return counts;
 
-  const lastColumn = sheet.getLastColumn();
-  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+  const snapshot = readRsvpSnapshot(book);
+  const headers = snapshot.headers;
   const idx = makeHeaderIndex(headers);
   const idIndex = findOptionalColumn(idx, ['id de envio', 'id de envío']);
   const jsonIndex = findOptionalColumn(idx, ['habitaciones json', 'rooms json']);
@@ -533,9 +573,11 @@ function getReservedRoomCounts(book, ignoreSubmissionId) {
 
   if (jsonIndex === -1 && roomTextIndex === -1) return counts;
 
-  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, lastColumn).getValues();
+  const rows = snapshot.rows;
 
-  rows.forEach(row => {
+  const latestByCode = {};
+  rows.forEach((row, i) => { latestByCode[String(row[5] || row[0] || i).trim().toUpperCase()] = row; });
+  Object.keys(latestByCode).map(key => latestByCode[key]).forEach(row => {
     if (ignoreSubmissionId && idIndex !== -1 && String(row[idIndex] || '') === String(ignoreSubmissionId)) return;
 
     if (jsonIndex !== -1 && row[jsonIndex]) {
@@ -559,16 +601,79 @@ function getReservedRoomCounts(book, ignoreSubmissionId) {
   return counts;
 }
 
+// Read prices and (optionally) a precomputed remaining-room count by HEADER,
+// never by a hard-coded column letter. This preserves existing extra columns.
+function parseRoomPrice(value) {
+  if (typeof value === 'number') return Number.isFinite(value) && value >= 0 ? value : null;
+  let raw = String(value == null ? '' : value).trim().replace(/[^0-9,.-]/g, '');
+  if (!raw) return null;
+  const comma = raw.lastIndexOf(',');
+  const point = raw.lastIndexOf('.');
+  if (comma >= 0 && point >= 0) {
+    raw = comma > point ? raw.replace(/\./g, '').replace(',', '.') : raw.replace(/,/g, '');
+  } else if (comma >= 0) {
+    raw = raw.replace(',', '.');
+  }
+  const number = Number(raw);
+  return Number.isFinite(number) && number >= 0 ? number : null;
+}
+
+function getRoomSheetPublicFields(book) {
+  const sheet = getRoomsSheet(book);
+  const lastRow = sheet.getLastRow();
+  const lastCol = Math.max(3, typeof sheet.getLastColumn === 'function' ? sheet.getLastColumn() : 3);
+  const result = {};
+  if (lastRow < 2) return result;
+  const headings = sheet.getRange(1, 1, 1, lastCol).getValues()[0] || [];
+  const index = makeHeaderIndex(headings);
+  const idCol = findOptionalColumn(index, ['id habitacion', 'id habitación', 'id', 'room id']);
+  const priceCol = findOptionalColumn(index, [
+    'precio por noche', 'precio por noche euros', 'precio noche', 'precio noche euros',
+    'precio', 'tarifa por noche', 'tarifa', 'tarifa especial',
+    'price per night', 'nightly price', 'price', 'rate', 'euros noche',
+  ]);
+  const remainingCol = findOptionalColumn(index, [
+    'disponibles', 'habitaciones disponibles', 'habitaciones libres', 'libres',
+    'disponibilidad', 'quedan', 'quedan libres', 'habitaciones restantes',
+    'habitaciones disponibles ahora', 'disponibles ahora', 'stock disponible', 'rooms available',
+    'remaining rooms', 'remaining', 'open rooms',
+  ]);
+  const rows = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  rows.forEach(row => {
+    const id = String(row[idCol < 0 ? 0 : idCol] || '').trim();
+    if (!ROOM_CONFIG.some(room => room.id === id)) return;
+    const price = priceCol >= 0 ? parseRoomPrice(row[priceCol]) : null;
+    const rawRemaining = remainingCol >= 0 ? row[remainingCol] : '';
+    const remaining = rawRemaining !== '' && rawRemaining != null &&
+      Number.isInteger(Number(rawRemaining)) && Number(rawRemaining) >= 0
+        ? Number(rawRemaining) : null;
+    result[id] = { price, remaining };
+  });
+  return result;
+}
+
 function getRoomAvailability(book, ignoreSubmissionId) {
   const totals = getRoomTotals(book);
   const reserved = getReservedRoomCounts(book, ignoreSubmissionId);
+  const sheetFields = getRoomSheetPublicFields(book);
 
-  return ROOM_CONFIG.map(room => ({
-    id: room.id,
-    total: totals[room.id],
-    reserved: reserved[room.id] || 0,
-    remaining: Math.max(0, totals[room.id] - (reserved[room.id] || 0)),
-  }));
+  return ROOM_CONFIG.map(room => {
+    const count = reserved[room.id] || 0;
+    const derivedRemaining = Math.max(0, totals[room.id] - count);
+    const fromSheet = sheetFields[room.id];
+    // A sheet-provided remaining count can LOWER availability, never increase it
+    // beyond total minus outstanding RSVP requests. Updates are checked again
+    // under the existing server lock when an RSVP is submitted.
+    const remaining = fromSheet && fromSheet.remaining !== null
+      ? Math.min(derivedRemaining, fromSheet.remaining) : derivedRemaining;
+    return {
+      id: room.id,
+      total: totals[room.id],
+      reserved: count,
+      remaining,
+      price: fromSheet ? fromSheet.price : null,
+    };
+  });
 }
 
 function assertRoomAvailability(book, roomBookings, submissionId) {
@@ -624,43 +729,24 @@ function saveGuestDetails(book, id, code, titularEmail, people, literal) {
     gSheet.setColumnWidth(13, 320);
   }
 
-  people.forEach((person, index) => {
-    const personId = id + ':' + index;
-    const last = gSheet.getLastRow();
-
-    if (
-      last > 1 &&
-      gSheet
-        .getRange(2, 2, last - 1, 1)
-        .createTextFinder(personId)
-        .matchEntireCell(true)
-        .findNext()
-    ) {
-      return;
-    }
-
-    const days = dayLabel(person);
-
-    gSheet.appendRow(
-      [
-        id,
-        personId,
-        new Date(),
-        code,
-        titularEmail,
-        person.fullName,
-        person.email,
-        person.attendance === 'yes' ? 'Sí' : 'No',
-        person.attendingFriday ? 'Sí' : 'No',
-        person.attendingSaturday ? 'Sí' : 'No',
-        days,
-        person.dietaryPreference,
-        person.allergiesNote,
-      ].map(value => (typeof value === 'string' ? literal(value) : value))
-    );
-  });
-
-  SpreadsheetApp.flush();
+  const last = gSheet.getLastRow();
+  const rows = last > 1 ? gSheet.getRange(2,1,last-1,13).getValues() : [];
+  const positions = rows.map((row,i)=>String(row[3]).trim().toUpperCase()===code ? i+2 : 0).filter(Boolean);
+  const values = people.map((person,index)=>[id,id+':'+index,new Date(),code,titularEmail,person.fullName,person.email,person.attendance==='yes'?'Sí':'No',person.attendingFriday?'Sí':'No',person.attendingSaturday?'Sí':'No',dayLabel(person),person.dietaryPreference,person.allergiesNote].map(literal));
+  const reused = Math.min(positions.length, values.length);
+  for(let i=0;i<reused;) {
+    let end=i+1;
+    while(end<reused && positions[end]===positions[end-1]+1) end++;
+    gSheet.getRange(positions[i],1,end-i,13).setValues(values.slice(i,end));
+    i=end;
+  }
+  if(values.length>reused) gSheet.getRange(last+1,1,values.length-reused,13).setValues(values.slice(reused));
+  for(let i=positions.length-1;i>=reused;) {
+    let start=i;
+    while(start>reused && positions[start-1]===positions[start]-1) start--;
+    gSheet.deleteRows(positions[start],i-start+1);
+    i=start-1;
+  }
 }
 
 function dayLabel(person) {
@@ -732,4 +818,36 @@ function doGet() {
     status: 'ready',
     ok: true,
   });
+}
+
+function validatePassengerCount(value, enabled, maximum) {
+  if (!enabled) return 0;
+  const count = value == null ? maximum : Number(value);
+  if (!Number.isInteger(count) || count < 0 || count > maximum) throw Error('Invalid shuttle passenger count');
+  return count;
+}
+function readRsvpSnapshot(book) {
+  if(rsvpSnapshot) return rsvpSnapshot;
+  const sheet=book.getSheetByName(RSVP_TAB);
+  if(!sheet || sheet.getLastRow()<1) return rsvpSnapshot={headers:[],rows:[]};
+  const values=sheet.getRange(1,1,sheet.getLastRow(),sheet.getLastColumn()).getValues();
+  return rsvpSnapshot={headers:values[0]||[],rows:values.slice(1)};
+}
+function findRsvpRow(sheet, code) {
+  if(!sheet) return 0;
+  const rows=readRsvpSnapshot({getSheetByName:()=>sheet}).rows;
+  for(let i=rows.length-1;i>=0;i--) if(String(rows[i][5]).trim().toUpperCase()===String(code).trim().toUpperCase()) return i+2;
+  return 0;
+}
+function getPreviousRsvp(book, code) {
+  const sheet=book.getSheetByName(RSVP_TAB);
+  const rowNumber=findRsvpRow(sheet,code);
+  if(!rowNumber) return null;
+  const row=readRsvpSnapshot(book).rows[rowNumber-2];
+  if(row[22]) {try{return JSON.parse(String(row[22]));}catch(e){}}
+  const detail=book.getSheetByName(GUESTS_TAB);
+  const people=detail && detail.getLastRow()>1 ? detail.getRange(2,1,detail.getLastRow()-1,13).getValues().filter(r=>String(r[0])===String(row[0])).map(r=>({fullName:String(r[5]||''),email:String(r[6]||''),attendance:r[7]==='Sí'?'yes':'no',attendingFriday:r[8]==='Sí',attendingSaturday:r[9]==='Sí',dietaryPreference:String(r[11]||'none'),allergiesNote:String(r[12]||'')})) : [];
+  if(!people.length) return null;
+  let rooms={};try{rooms=JSON.parse(String(row[17]||'{}'));}catch(e){}
+  return {submissionId:String(row[0]),fullName:String(row[6]),email:String(row[7]),guests:people,roomBookings:rooms,shuttleBooking:row[14]==='Sí',returnShuttleBooking:row[15]==='Sí',outboundShuttleCount:(row[20]==null||row[20]==='')?(row[14]==='Sí'?Number(row[12]):0):Number(row[20]),returnShuttleCount:(row[21]==null||row[21]==='')?(row[15]==='Sí'?Number(row[12]):0):Number(row[21]),songRequest:String(row[18]||''),blessingMessage:String(row[19]||'')};
 }

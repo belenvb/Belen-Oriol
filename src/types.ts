@@ -59,9 +59,11 @@ export interface GuestRsvp {
   dietaryPreference?: 'none' | 'vegetarian' | 'vegan' | 'celiac' | 'other';
   allergiesNote?: string;
   shuttleBooking: boolean;
+  outboundShuttleCount?: number;
+  returnShuttleCount?: number;
   shuttlePickupLocation?: string;
-  roomBooking?: 'none' | 'estandar' | 'superior' | 'deluxe' | 'suite_guardia' | 'suite_medieval';
-  roomBookings?: Partial<Record<'estandar' | 'superior' | 'deluxe' | 'suite_guardia' | 'suite_medieval', number>>;
+  roomBooking?: 'none' | 'estandar' | 'superior' | 'deluxe' | 'suite_guardia' | 'suite_medieval' | 'suite_torreon';
+  roomBookings?: Partial<Record<'estandar' | 'superior' | 'deluxe' | 'suite_guardia' | 'suite_medieval' | 'suite_torreon', number>>;
   returnShuttleBooking?: boolean;
   songRequest?: string;
   blessingMessage?: string;
