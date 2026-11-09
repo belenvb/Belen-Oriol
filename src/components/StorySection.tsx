@@ -32,6 +32,8 @@ const photographs = [
   { id:'memory-cave', width:1767, height:994, es:'Belén y Oriol explorando una cueva con cascos y linternas', en:'Belén and Oriol exploring a cave with helmets and headlamps', name:'Bajo tierra', nameEn:'Underground' },
   { id:'memory-toto', width:1800, height:1013, es:'Belén y Oriol en casa con Totò', en:'Belén and Oriol at home with Totò', name:'Los tres', nameEn:'The three of us' },
   { id:'memory-ocean', width:1800, height:1012, es:'Belén y Oriol en un mirador sobre el océano', en:'Belén and Oriol at a viewpoint above the ocean', name:'Con vistas al mar', nameEn:'An ocean view' },
+  { id:'memory-louvre', width:1800, height:1350, es:'Oriol besa a Belén junto a la pirámide iluminada del Louvre', en:'Oriol kisses Belén beside the illuminated Louvre pyramid', name:'Una noche en París', nameEn:'A night in Paris' },
+  { id:'memory-boston', width:1350, height:1800, es:'Belén y Oriol junto al puerto de Boston', en:'Belén and Oriol beside Boston harbor', name:'Boston', nameEn:'Boston' },
 ];
 export function StorySection({ lang }: { lang: Language }) {
   const es = lang === 'es';
