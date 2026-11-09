@@ -41,6 +41,7 @@ export type GiftPaymentDetails = {
   bizum?: string;
   venmo?: string;
   zelle?: string;
+  zelleQrDataUrl?: string;
 };
 
 export type InvitationLookup = {
