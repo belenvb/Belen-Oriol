@@ -1,4 +1,5 @@
 import { Language } from '../types';
+import './HeroDetails.css';
 
 interface HeroProps {
   lang: Language;
@@ -21,8 +22,11 @@ export function Hero({ lang, onNavigate }: HeroProps) {
       </div>
 
       <div className="hero-details">
-        <p className="hero-venue-line">Castillo del Buen Amor · Salamanca</p>
-        <p className="hero-date-long">{lang === 'es' ? '04 septiembre 2027' : 'September 4, 2027'}</p>
+        <p className="hero-venue-line">Castillo del Buen Amor · Salamanca · {lang === 'es' ? 'España' : 'Spain'}</p>
+        <p className="hero-date-long">{lang === 'es' ? '4 de septiembre de 2027' : 'September 4, 2027'}</p>
+        <button type="button" className="hero-rsvp" onClick={() => onNavigate('rsvp')}>
+          {lang === 'es' ? 'RSVP · Confirmar asistencia' : 'RSVP · Confirm attendance'}
+        </button>
       </div>
 
       <button className="hero-discover" onClick={() => onNavigate('story')}>

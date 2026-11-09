@@ -148,3 +148,13 @@
  #registry.home-gift .home-gift__card-caption{padding:25px 23px 29px}
  #registry.home-gift .home-gift__payment-content{padding:25px 23px 14px}
 }
+
+/* Payment brands: local assets, original proportions and accessible names. */
+#registry.home-gift .home-gift__brand{display:inline-flex;align-items:center;justify-content:center;gap:7px;vertical-align:middle;line-height:1}
+#registry.home-gift .home-gift__brand img{display:block;object-fit:contain;max-width:none;border:0;border-radius:0;box-shadow:none;margin:0;background:none;aspect-ratio:auto}
+#registry.home-gift .home-gift__brand--bizum img{width:67px;height:21px}
+#registry.home-gift .home-gift__brand--venmo img{width:67px;height:20px}
+#registry.home-gift .home-gift__brand--zelle img{width:16px;height:24px}
+#registry.home-gift .home-gift__brand--zelle{color:#6d1ed4;font:600 17px/1 Arial,sans-serif}
+#registry.home-gift .home-gift__brand-heading{display:flex;justify-content:center;margin:8px 0 20px}
+#registry.home-gift .home-gift__methods button[aria-pressed=true] .home-gift__brand{background:#fff;border-radius:4px;padding:5px 7px}
