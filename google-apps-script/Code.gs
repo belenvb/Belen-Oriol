@@ -53,10 +53,11 @@ function privateWeddingZelleQrDataUrl_(fileId) {
   try {
     // The script must be deployed to execute as the organizer, who has access
     // to this PRIVATE Drive file. Do not change Drive file sharing to public.
-    const blob = DriveApp.getFileById(id).getBlob();
+    const file = DriveApp.getFileById(id);
+    if (file.getSize() > 600000) return ''; // Keep Apps Script replies lightweight.
+    const blob = file.getBlob();
     const mime = String(blob.getContentType() || '').toLowerCase();
     if (!['image/png','image/jpeg','image/webp'].includes(mime)) return '';
-    if (blob.getSize() > 600000) return ''; // Keep Apps Script replies lightweight.
     return 'data:' + mime + ';base64,' + Utilities.base64Encode(blob.getBytes());
   } catch (error) {
     console.error('Private Zelle QR cannot be loaded: ' + String(error));
