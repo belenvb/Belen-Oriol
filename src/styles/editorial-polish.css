@@ -83,3 +83,87 @@
 #journey #castle-rooms .castle-stay__aside>a::before,#journey #castle-rooms .castle-stay__aside>a::after{content:none!important}
 @media(max-width:1099px){.wedding-header .wedding-header__tools{gap:10px}.wedding-header .wedding-header__rsvp-button{padding:8px 11px;min-height:36px;font-size:10px}}
 @media(max-width:380px){.wedding-header .wedding-header__tools{gap:6px}.wedding-header .wedding-header__rsvp-button{padding-inline:9px}.wedding-header .wedding-header__bar{gap:6px;padding-inline:14px}}
+
+/* Mobile text links: show descriptive labels rather than ornamental arrows. */
+@media (max-width: 760px) {
+  #journey .fashion-travel__venue a,
+  #journey .fashion-travel__information a,
+  #journey #castle-rooms .castle-stay__aside > a,
+  #schedule a.editorial-link {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+    text-align: left !important;
+  }
+  #journey #castle-rooms .castle-stay__room > button {
+    font-size: 12px !important;
+    min-height: 44px;
+  }
+}
+
+/* Private payment information appears only after invitation validation. */
+#registry.home-gift .home-gift__access-button {
+  margin-top: 10px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  color: #6b2b3a;
+  background: none;
+  cursor: pointer;
+  font: 500 12px/1.4 'Plus Jakarta Sans', sans-serif;
+}
+#registry.home-gift .home-gift__bank-groups {
+  display: grid;
+  gap: 22px;
+}
+#registry.home-gift .home-gift__bank-group {
+  padding-top: 16px;
+  border-top: 1px solid rgba(140, 109, 89, .26);
+}
+#registry.home-gift .home-gift__bank-group h3 {
+  margin: 0 0 14px;
+  font: 500 24px/1.1 'Cormorant Garamond', Georgia, serif;
+  color: #542b31;
+}
+#registry.home-gift .home-gift__bank-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+#registry.home-gift .home-gift__bank-row dt,
+#registry.home-gift .home-gift__payment-identifier dt {
+  flex: 0 0 auto;
+  font: 500 11px/1.5 'Plus Jakarta Sans', sans-serif;
+  color: #786759;
+}
+#registry.home-gift .home-gift__bank-row dd,
+#registry.home-gift .home-gift__payment-identifier dd {
+  margin: 0;
+  max-width: 70%;
+  text-align: right;
+  overflow-wrap: anywhere;
+  user-select: text;
+  font: 500 13px/1.5 'Plus Jakarta Sans', sans-serif;
+  color: #542b31;
+}
+#registry.home-gift .home-gift__payment-identifier {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+@media (max-width: 460px) {
+  #registry.home-gift .home-gift__bank-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  #registry.home-gift .home-gift__bank-row dd {
+    max-width: 100%;
+    text-align: left;
+  }
+}
