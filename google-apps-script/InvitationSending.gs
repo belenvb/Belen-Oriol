@@ -251,12 +251,12 @@ function sendingCopy_(r, link) {
   // Social previews come from public Open Graph metadata and never contain a guest name or code.
   if (spanish) return {
     subject: 'Belén & Oriol | Nuestra invitación de boda',
-    whatsapp: 'Hola, ' + r.name + '!\n\nEl 4 de septiembre de 2027 celebraremos nuestra boda en el Castillo del Buen Amor, Salamanca, y nos encantaría compartir ese día con vosotros. Hemos preparado una invitación muy especial para vosotros.' + fridayEs + '\n\nCódigo privado de acceso: ' + code + '\n\nAbre vuestro sobre aquí:\n' + link,
+    whatsapp: 'Hola, ' + r.name + '!\n\nEl 4 de septiembre de 2027 celebraremos nuestra boda en el Castillo del Buen Amor, Salamanca, y nos encantaría compartir ese día con vosotros. Hemos preparado una invitación muy especial para vosotros.' + fridayEs + '\n\nPor favor, confirma tu asistencia en el RSVP de nuestra web.\n\nCódigo privado de acceso: ' + code + '\n\nAbre vuestro sobre aquí:\n' + link,
     sms: 'Belén y Oriol: ¡tenéis una invitación para nuestra boda! Código privado: ' + code + '\nAbre el sobre: ' + link,
   };
   return {
     subject: 'Belén & Oriol | Our Wedding Invitation',
-    whatsapp: 'Hi ' + r.name + '!\n\nWe’re celebrating our wedding on September 4, 2027 at Castillo del Buen Amor in Salamanca, and we would love to share the day with you. We have a very special invitation for you.' + fridayEn + '\n\nPrivate access code: ' + code + '\n\nOpen your envelope:\n' + link,
+    whatsapp: 'Hi ' + r.name + '!\n\nWe’re celebrating our wedding on September 4, 2027 at Castillo del Buen Amor in Salamanca, and we would love to share the day with you. We have a very special invitation for you.' + fridayEn + '\n\nPlease confirm your attendance using the RSVP on our wedding website.\n\nPrivate access code: ' + code + '\n\nOpen your envelope:\n' + link,
     sms: 'Belén & Oriol: You are invited to our wedding! Private code: ' + code + '\nOpen your envelope: ' + link,
   };
 }
@@ -274,6 +274,7 @@ function invitationEmail_(r, url) {
   const button = es ? 'ABRIR EL SOBRE' : 'OPEN THE ENVELOPE';
   const date = es ? '4 de septiembre de 2027' : 'September 4, 2027';
   const subject = es ? 'Belén & Oriol · Tu invitación' : 'Belén & Oriol · Your invitation';
+  const rsvpRequest = es ? 'Por favor, confirma tu asistencia en el RSVP de nuestra web.' : 'Please confirm your attendance using the RSVP on our wedding website.';
   const preheader = es ? 'Una invitación muy especial para ti.' : 'A very special invitation for you.';
   // The email shows the six-character alias. The one-click URL continues to
   // carry the strong original credential from column D.
@@ -323,6 +324,7 @@ function invitationEmail_(r, url) {
 <img class="email-art" src="cid:weddingBottom" width="620" alt="${t(altBottom)}" style="display:block;width:100%;max-width:620px;height:auto;border:0;outline:none;text-decoration:none;" />
 </a>
 </td></tr>
+<tr><td align="center" bgcolor="#fae8d5" style="padding:18px 24px 6px;font:normal 14px/22px Georgia,'Times New Roman',serif;color:#64232e;text-align:center;">${t(rsvpRequest)}</td></tr>
 ${accessCodeRow}
 <tr><td align="center" bgcolor="#fae8d5" style="padding:5px 20px 23px;font:normal 11px/1.55 Arial,Helvetica,sans-serif;color:#855f50;">
 ${es ? '¿No ves la invitación? ' : 'Can’t see the invitation? '}<a href="${t(url)}" style="color:#64232e;text-decoration:underline;">${es ? 'Ábrela aquí' : 'Open it here'}</a>.
@@ -333,6 +335,7 @@ ${es ? '¿No ves la invitación? ' : 'Can’t see the invitation? '}<a href="${t
     'Belén & Oriol',
     (es ? 'Una invitación para ' : 'An invitation for ') + r.name,
     date + ' · Castillo del Buen Amor · Salamanca',
+    rsvpRequest,
     (es ? 'Abre tu sobre: ' : 'Open your envelope: ') + url,
     ...(validAccessCode ? [(es ? 'Tu código privado de acceso: ' : 'Your private access code: ') + accessCode] : []),
   ].join('\n\n');
