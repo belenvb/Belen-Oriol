@@ -367,3 +367,9 @@
 }
 
 @media(max-width:600px){.bo-intro__letter-frame > .bo-intro__identity-mark{top:5%}.bo-intro__letter-names{margin-top:5%}.bo-intro__letter-small{margin-bottom:1.2%}}
+
+/* Separate RSVP and browsing actions beneath the open invitation. */
+.bo-intro__read-actions{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px 22px}
+.bo-intro__read-actions .bo-intro__rsvp{min-height:44px;padding:12px 22px;background:#f7eddd;color:#542b31;border:1px solid #f7eddd;border-radius:999px;letter-spacing:.06em}
+.bo-intro__read-actions .bo-intro__rsvp:hover{background:#fffaf2;color:#542b31}
+@media(max-width:600px){.bo-intro__read-actions{gap:4px;flex-direction:column}.bo-intro__read-actions .bo-intro__enter{padding:10px 16px;min-height:44px}}

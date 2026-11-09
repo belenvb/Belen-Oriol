@@ -39,6 +39,7 @@ export default function App() {
   };
   const [prebodaUnlocked, setPrebodaUnlocked] = useState(false);
   const [registryVerified, setRegistryVerified] = useState(false);
+  const [rsvpEntryRequested, setRsvpEntryRequested] = useState(false);
   const [giftDetails, setGiftDetails] = useState<GiftPaymentDetails | null>(null);
   
   // En local o si la URL lleva ?intro o ?para=..., siempre mostramos el sobre para facilitar pruebas
@@ -165,7 +166,8 @@ export default function App() {
           lang={lang}
           languagePending={languagePending}
           onLanguageChange={chooseLanguage}
-          onEnter={() => {
+          onEnter={(destination) => {
+            if (destination === 'rsvp') setRsvpEntryRequested(true);
             try { sessionStorage.setItem('belen_oriol_invitation_opened', 'true'); } catch { /* Storage may be unavailable */ }
             setShowIntro(false);
           }}
@@ -188,6 +190,7 @@ export default function App() {
         <RsvpSection
           lang={lang}
           initialInvitationCode={privateInvitationCode}
+          openRequested={rsvpEntryRequested && !showIntro}
           onInvitationValidated={(invitation) => {
             setPrebodaUnlocked(Boolean(invitation?.invitedToPreboda));
              setRegistryVerified(Boolean(invitation));

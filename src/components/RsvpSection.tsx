@@ -14,6 +14,7 @@ import { CASTLE_ROOMS } from '../data/rooms';
 interface RsvpSectionProps {
   lang: Language;
   initialInvitationCode?: string;
+  openRequested?: boolean;
   onInvitationValidated?: (invitation: InvitationLookup | null) => void;
 }
 
@@ -43,7 +44,7 @@ function roomSummary(roomQuantities: RoomQuantities, lang: Language) {
     .join(', ');
 }
 
-export function RsvpSection({ lang, initialInvitationCode = '', onInvitationValidated }: RsvpSectionProps) {
+export function RsvpSection({ lang, initialInvitationCode = '', openRequested = false, onInvitationValidated }: RsvpSectionProps) {
   const es = lang === 'es';
   const [invitationCode, setInvitationCode] = useState(initialInvitationCode);
   const [invitation, setInvitation] = useState<InvitationLookup | null>(null);
@@ -263,6 +264,12 @@ export function RsvpSection({ lang, initialInvitationCode = '', onInvitationVali
     scrollToRsvp();
   };
 
+
+  useEffect(() => {
+    if (openRequested) openRsvpForm();
+    // Open once when requested by the invitation; language changes keep user input.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openRequested]);
   useEffect(() => {
     const handleRoomSelect = (e: Event) => {
       const customEvent = e as CustomEvent<{ roomId: string }>;
