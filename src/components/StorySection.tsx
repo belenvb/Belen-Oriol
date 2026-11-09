@@ -29,6 +29,9 @@ const photographs = [
   {"id": "memory-6", "width": 1625, "height": 914, "es": "Belén y Oriol frente a una cueva rodeada de vegetación", "en": "Belén and Oriol in front of a cave surrounded by greenery", "name": "De aventura", "nameEn": "On an adventure"},
   { id:'memory-jurassic', width:1448, height:1086, es:'Belén y Oriol junto a un dinosaurio de Jurassic Park', en:'Belén and Oriol beside a Jurassic Park dinosaur', name:'Jurassic Park', nameEn:'Jurassic Park' },
   { id:'memory-rocky', width:1012, height:1800, es:'Belén y Oriol junto a la estatua de Rocky, con los brazos levantados', en:'Belén and Oriol beside the Rocky statue, with their arms raised', name:'Rocky, Filadelfia', nameEn:'Rocky, Philadelphia' },
+  { id:'memory-cave', width:1767, height:994, es:'Belén y Oriol explorando una cueva con cascos y linternas', en:'Belén and Oriol exploring a cave with helmets and headlamps', name:'Bajo tierra', nameEn:'Underground' },
+  { id:'memory-toto', width:1800, height:1013, es:'Belén y Oriol en casa con Totò', en:'Belén and Oriol at home with Totò', name:'Los tres', nameEn:'The three of us' },
+  { id:'memory-ocean', width:1800, height:1012, es:'Belén y Oriol en un mirador sobre el océano', en:'Belén and Oriol at a viewpoint above the ocean', name:'Con vistas al mar', nameEn:'An ocean view' },
 ];
 export function StorySection({ lang }: { lang: Language }) {
   const es = lang === 'es';
