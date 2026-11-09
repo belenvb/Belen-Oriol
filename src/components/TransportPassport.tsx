@@ -2,7 +2,7 @@ import type { MouseEvent, PointerEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Plane, Train, MapPin, ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { Language } from '../types';
-import boLogo from '../assets/images/bo-logo.png';
+import boLogo from '../assets/images/bo-logo.webp';
 import './PassportStyles.css';
 
 type IconType = typeof Plane;
@@ -39,7 +39,7 @@ function BlankCastlePage({ isSpanish }: { isSpanish: boolean }) {
       <div className="passport-page-inner passport-blank-page-inner">
         <span className="passport-page-overline">{isSpanish ? 'GUÍA DE VIAJE · PÁG. 03' : 'TRAVEL GUIDE · PG. 03'}</span>
         <div className="passport-castle-sketch-wrap">
-          <img className="passport-castle-sketch" src="/castle-sketch-transparent.png" alt={isSpanish ? 'Ilustración del castillo' : 'Castle illustration'} />
+          <img className="passport-castle-sketch" src="/castle-sketch-transparent.webp" alt={isSpanish ? 'Ilustración del castillo' : 'Castle illustration'} />
         </div>
         <p className="passport-castle-caption">Castillo del Buen Amor</p>
         <a

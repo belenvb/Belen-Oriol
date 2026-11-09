@@ -23,8 +23,8 @@ export function HorizontalTrencadis({ className = '' }: { className?: string }) 
   const left = (fullWidth - visibleWidth) / 2;
   const extensionScale = bandHeight / 146;
   const extensionWidth = 2172 * extensionScale;
-  const original = '/photos/trencadis-v9-original-v18.png';
-  const extension = '/photos/trencadis-new-ends-v18.png';
+  const original = '/photos/trencadis-v9-original-v18.webp';
+  const extension = '/photos/trencadis-new-ends-v18.webp';
 
   return <div ref={ref} className={className} aria-hidden="true"
     style={{ width: '100%', height, padding: 0, border: 0, lineHeight: 0, overflow: 'hidden' }}>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import boLogo from '../assets/images/bo-logo.webp';
 import type { Language } from '../types';
 import './EnvelopeIntro.css';
 
@@ -19,7 +20,6 @@ export function EnvelopeIntro({
   lang,
   onLanguageChange,
   onEnter,
-  monogramSrc = '/photos/bo-original.webp',
   coupleNames = 'Belén & Oriol',
   weddingDate,
   location = 'Castillo del Buen Amor · Salamanca',
@@ -30,7 +30,6 @@ export function EnvelopeIntro({
   const hasEntered = useRef(false);
   const root = useRef<HTMLDivElement>(null);
   const animations = useRef<Animation[]>([]);
-  const [imageFailed, setImageFailed] = useState(false);
   const enterRef = useRef(onEnter);
   const hasOpened = useRef(false);
 
@@ -67,7 +66,6 @@ export function EnvelopeIntro({
       animations.current.push(animation);
       return animation;
     };
-    const envelope = scene.querySelector<HTMLElement>('.bo-intro__envelope')!;
     const letter = scene.querySelector<HTMLElement>('.bo-intro__letter')!;
     const portal = scene.querySelector<HTMLElement>('.bo-intro__portal')!;
     const box = letter.getBoundingClientRect();
@@ -101,6 +99,7 @@ export function EnvelopeIntro({
     portal.style.height = vh + 'px';
     portal.style.transform = 'translate(-50%,-50%) scale(' + (1 / fillScale) + ')';
     track('.bo-intro__envelope', [{transform:'translateY(0px)'},{transform:'translateY(' + lowerBy + 'px)'}], 0, 800);
+    track('.bo-intro__closed-photo', [{opacity:1},{opacity:0}], 0, 200);
     track('.bo-intro__action', [{opacity:1},{opacity:0}], 0, 200);
 
 
@@ -111,19 +110,21 @@ export function EnvelopeIntro({
       {transform:'rotateX(0deg)'}, {transform:'rotateX(176deg)'},
     ], 0, 900, 'cubic-bezier(.42,0,.24,1)');
     track('.bo-intro__flap', [{zIndex:5},{zIndex:0}], 445, 1, 'linear');
-    // The sheet clears the pocket before moving towards the camera.
+    // Extract behind the opaque pocket only after the flap is fully open.
+    track('.bo-intro__letter', [{visibility:'hidden'},{visibility:'visible'}], 900, 1, 'linear');
     track('.bo-intro__letter', [
-      {transform:'translate(0px,0px) scale(1)',offset:0},
-      {transform:'translate(0px,' + (-box.height * 1.10) + 'px) scale(1)',offset:.59},
-      {transform:'translate(' + dx + 'px,' + dy + 'px) scale(' + readingScale + ')',offset:1},
-    ], 420, 1280, 'cubic-bezier(.35,0,.2,1)');
-    track('.bo-intro__letter', [{zIndex:1},{zIndex:8}], 1200, 1, 'linear');
-    track('.bo-intro__photo-back', [{opacity:1},{opacity:0}], 1250, 650);
-    track('.bo-intro__photo-front', [{opacity:1},{opacity:0}], 1250, 650);
-    for (const part of ['.bo-intro__flap-face', '.bo-intro__flap-reverse', '.bo-intro__seal']) {
-      track(part, [{opacity:1},{opacity:0}], 1250, 650);
+      {transform:'translate(0px,0px) scale(1)'},
+      {transform:'translate(0px,' + (-box.height * 1.10) + 'px) scale(1)'},
+    ], 900, 900, 'cubic-bezier(.35,0,.2,1)').effect!.updateTiming({fill:'forwards'});
+    // Advance towards the reader only once the entire sheet clears the pocket.
+    track('.bo-intro__letter', [
+      {transform:'translate(0px,' + (-box.height * 1.10) + 'px) scale(1)'},
+      {transform:'translate(' + dx + 'px,' + dy + 'px) scale(' + readingScale + ')'},
+    ], 1800, 650, 'cubic-bezier(.35,0,.2,1)').effect!.updateTiming({fill:'forwards'});
+    track('.bo-intro__letter', [{zIndex:1},{zIndex:8}], 1800, 1, 'linear');
+    for (const part of ['.bo-intro__photo-back', '.bo-intro__photo-front', '.bo-intro__flap-face', '.bo-intro__flap-reverse', '.bo-intro__seal', '.bo-intro__seal-back', '.bo-intro__envelope-shadow']) {
+      track(part, [{opacity:1},{opacity:0}], 1800, 350);
     }
-    track('.bo-intro__envelope-shadow', [{opacity:1},{opacity:0}], 1250, 650);
     const openingTracks = [...animations.current];
     Promise.all(openingTracks.map(animation => animation.finished)).then(() => {
       setCanEnter(true);
@@ -158,9 +159,11 @@ export function EnvelopeIntro({
   }, [canEnter]);
 
   const date = weddingDate ?? (lang === 'es' ? '4 de septiembre de 2027' : '4 September 2027');
+  const [venueName, ...venueCityParts] = location.split(/\s*·\s*/);
+  const venueCity = venueCityParts.join(' · ');
 
   return (
-    <div ref={root} className="bo-intro" role="dialog" aria-modal="true" onKeyDown={event => {
+    <div ref={root} className="bo-intro" data-opening={opening} role="dialog" aria-modal="true" onKeyDown={event => {
       if (event.key !== 'Tab') return;
       const buttons = Array.from<HTMLElement>(root.current!.querySelectorAll<HTMLElement>('button:not(:disabled), [role=button]:not([aria-disabled=true])'));
       if (!buttons.length) { event.preventDefault(); return; }
@@ -180,7 +183,6 @@ export function EnvelopeIntro({
       <div className="bo-intro__light" aria-hidden="true" />
 
       <header className="bo-intro__topline">
-        <span className="bo-intro__wordmark">Belén <i>&</i> Oriol</span>
         <div className="bo-intro__languages" aria-label={lang === 'es' ? 'Idioma' : 'Language'}>
           <button type="button" aria-pressed={lang === 'es'} disabled={opening} onClick={() => onLanguageChange('es')}>ES</button>
           <span aria-hidden="true">/</span>
@@ -190,26 +192,25 @@ export function EnvelopeIntro({
 
       <main className="bo-intro__scene">
         <div className="bo-intro__stationery">
-          <div className="bo-intro__envelope" role="button" tabIndex={opening ? -1 : 0} onClick={startOpening} aria-disabled={opening}
-            onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); startOpening(); } }}
-            aria-label={lang === 'es' ? 'Abrir la invitación' : 'Open the invitation'}>
+          <div className="bo-intro__envelope" role="button" tabIndex={opening && !canEnter ? -1 : 0} onClick={() => canEnter ? reveal.current?.() : startOpening()} aria-disabled={opening && !canEnter}
+            onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (canEnter) reveal.current?.(); else startOpening(); } }}
+            aria-label={canEnter ? (lang === 'es' ? 'Entrar en nuestra web' : 'Enter our wedding website') : (lang === 'es' ? 'Abrir la invitación' : 'Open the invitation')}>
+            <span className="bo-intro__closed-photo" aria-hidden="true" />
             <span className="bo-intro__envelope-shadow" aria-hidden="true" />
             <span className="bo-intro__shell bo-intro__photo-back" aria-hidden="true" />
             <span className="bo-intro__letter">
               <span className="bo-intro__letter-frame">
-                <span className="bo-intro__identity-mark" aria-hidden="true"><svg viewBox="0 0 389 266"><defs><filter id="bo-logo-density"><feComponentTransfer><feFuncR type="linear" slope="6"/><feFuncG type="linear" slope="6"/><feFuncB type="linear" slope="6"/></feComponentTransfer></filter><mask id="bo-logo-print" maskUnits="userSpaceOnUse" x="0" y="0" width="389" height="266"><image href={monogramSrc} width="389" height="266" filter="url(#bo-logo-density)" /></mask></defs><rect width="389" height="266" fill="#652535" mask="url(#bo-logo-print)" /></svg></span>
-                <span className="bo-intro__letter-small">{lang === 'es' ? 'ESTÁS INVITADO' : 'YOU ARE INVITED'}</span>
+                <span className="bo-intro__identity-mark" aria-hidden="true"><img src={boLogo} alt="" /></span>
                 <span className="bo-intro__letter-names">{coupleNames}</span>
+                <span className="bo-intro__letter-small">{lang === 'es' ? 'Os invitamos a celebrar nuestra boda' : 'We invite you to celebrate our wedding'}</span>
                 <span className="bo-intro__letter-date">{date}</span>
-                <span className="bo-intro__letter-place">{location}</span>
+                <span className="bo-intro__letter-place"><span className="bo-intro__letter-venue">{venueName}</span>{venueCity && <span className="bo-intro__letter-city">{venueCity}</span>}</span>
               </span>
               <span className="bo-intro__portal" aria-hidden="true" />
             </span>
             <span className="bo-intro__shell bo-intro__photo-front" aria-hidden="true" />
             <span className="bo-intro__flap" aria-hidden="true"><span className="bo-intro__flap-face" /><span className="bo-intro__flap-reverse" />
-            <span className="bo-intro__seal" aria-hidden="true">
-              {!imageFailed ? <img src={monogramSrc} alt="" onError={() => setImageFailed(true)} /> : <span>B <em>&</em> O</span>}
-            </span></span>
+            <span className="bo-intro__seal" aria-hidden="true"><img src={boLogo} alt="" /></span><span className="bo-intro__seal-back" aria-hidden="true" /></span>
           </div>
           <button className="bo-intro__action" type="button" onClick={startOpening} disabled={opening}>
             {lang === 'es' ? 'Abrir la invitación' : 'Open the invitation'}

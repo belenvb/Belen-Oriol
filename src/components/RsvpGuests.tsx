@@ -1,4 +1,4 @@
-import { Check, Plus, Trash2, Calendar, Utensils, X, Wine, Castle } from 'lucide-react';
+import { Check, Plus, Trash2, Utensils, X, Wine, Castle } from 'lucide-react';
 import type { Language } from '../types';
 import type { RsvpPerson } from '../utils/rsvp';
 
@@ -127,9 +127,9 @@ export function RsvpGuests({
     : `Your invitation includes up to ${maxGuests} ${maxGuests === 1 ? 'guest' : 'guests'}, including the invitation holder.`;
 
   return (
-    <div className="space-y-7">
+    <div className="rsvp-guests space-y-7">
       {/* Maximum guests banner */}
-      <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-[#f5efe3] border border-[#b89243]/40 text-[#371017]">
+      <div className="rsvp-guests__summary flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-[#f5efe3] border border-[#b89243]/40 text-[#371017]">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-[#b89243] shrink-0" />
           <span className="text-xs sm:text-sm font-semibold text-[#371017]">
@@ -142,7 +142,7 @@ export function RsvpGuests({
       </div>
 
       {/* Guest Cards */}
-      <div className="space-y-6">
+      <div className="rsvp-guests-grid">
         {guests.map((person, index) => {
           const isTitular = index === 0;
           const isAttending = person.attendance === 'yes';
@@ -155,7 +155,7 @@ export function RsvpGuests({
           return (
             <div
               key={index}
-              className="bg-white rounded-2xl border-2 border-[#b89243]/30 p-5 sm:p-7 shadow-md relative transition-all"
+              className="rsvp-guest-sheet bg-white rounded-2xl border-2 border-[#b89243]/30 p-5 sm:p-7 shadow-md relative transition-all"
             >
               {/* Card Header */}
               <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-[#5c141e]/10">
@@ -212,7 +212,7 @@ export function RsvpGuests({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#371017] mb-1.5">
+                  <label htmlFor={`rsvp-email-${index}`} className="block text-xs font-bold uppercase tracking-wider text-[#371017] mb-1.5">
                     {isTitular
                       ? es
                         ? 'Email del titular *'
@@ -243,10 +243,10 @@ export function RsvpGuests({
                     : `Will ${guestDisplayName} attend? *`}
                 </label>
 
-                <div className={`grid gap-3 ${invitedToPreboda ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
+                <div className={`rsvp-attendance grid gap-3 ${invitedToPreboda ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
                   {/* Option 1: Friday Preboda */}
                   {invitedToPreboda && (
-                    <div
+                    <button type="button" aria-pressed={isFriSelected}
                       onClick={() => handleToggleFriday(index, person)}
                       className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between select-none ${
                         isFriSelected
@@ -269,17 +269,14 @@ export function RsvpGuests({
                       </div>
                       <div>
                         <span className="text-xs font-semibold text-[#5c141e] block leading-snug">
-                          {es ? 'Preboda en Salamanca' : 'Welcome Cocktail'}
-                        </span>
-                        <span className="text-[11px] text-[#6e675f] block mt-0.5">
-                          {es ? 'Salamanca' : 'Salamanca'}
+                          {es ? 'Preboda' : 'Welcome cocktail'}
                         </span>
                       </div>
-                    </div>
+                    </button>
                   )}
 
                   {/* Option 2: Saturday Wedding Day */}
-                  <div
+                  <button type="button" aria-pressed={isSatSelected}
                     onClick={() => handleToggleSaturday(index, person)}
                     className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between select-none ${
                       isSatSelected
@@ -290,7 +287,7 @@ export function RsvpGuests({
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-[#371017]">
                         <Castle className={`w-4 h-4 ${isSatSelected ? 'text-[#5c141e]' : 'text-[#8c6d4f]'}`} />
-                        <span>{es ? 'Sábado 4 Septiembre 2027' : 'Saturday 4 September 2027'}</span>
+                        <span>{es ? 'Sábado 4' : 'Saturday 4'}</span>
                       </div>
                       <div
                         className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
@@ -304,14 +301,11 @@ export function RsvpGuests({
                       <span className="text-xs font-semibold text-[#5c141e] block leading-snug">
                         {es ? 'Boda' : 'Wedding'}
                       </span>
-                      <span className="text-[11px] text-[#6e675f] block mt-0.5">
-                        {es ? 'Castillo del Buen Amor' : 'Castillo del Buen Amor'}
-                      </span>
                     </div>
-                  </div>
+                  </button>
 
                   {/* Option 3: Decline / No podré asistir */}
-                  <div
+                  <button type="button" aria-pressed={isDeclined}
                     onClick={() => handleDecline(index)}
                     className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between select-none ${
                       isDeclined
@@ -337,7 +331,7 @@ export function RsvpGuests({
                         {es ? 'Gracias por avisarnos' : 'Thank you for letting us know'}
                       </span>
                     </div>
-                  </div>
+                  </button>
                 </div>
               </div>
 
@@ -351,12 +345,13 @@ export function RsvpGuests({
                       <span>{es ? `Preferencia de Menú de ${person.fullName.trim() || 'este invitado'}:` : 'Dietary Preference:'}</span>
                     </label>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-1.5">
+                    <div className="rsvp-menu-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-1.5">
                       {menuOptions.map((opt) => {
                         const isSelected = person.dietaryPreference === opt.id;
                         return (
                           <button
                             key={opt.id}
+                            aria-pressed={isSelected}
                             type="button"
                             onClick={() => update(index, { dietaryPreference: opt.id })}
                             className={`p-2.5 rounded-xl border text-xs font-semibold transition-all flex flex-col items-center justify-center gap-1 text-center cursor-pointer ${

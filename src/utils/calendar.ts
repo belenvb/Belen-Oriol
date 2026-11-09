@@ -13,6 +13,7 @@ export function generateGoogleCalendarUrl(params: CalendarEventParams): string {
     details: params.description,
     location: params.location,
     dates: `${params.startTime}/${params.endTime}`,
+    ctz: 'Europe/Madrid',
   });
   return `${base}&${query.toString()}`;
 }
@@ -28,8 +29,8 @@ export function downloadIcsFile(params: CalendarEventParams, filename = 'boda-be
     `SUMMARY:${params.title.replace(/,/g, '\\,')}`,
     `DESCRIPTION:${params.description.replace(/,/g, '\\,')}`,
     `LOCATION:${params.location.replace(/,/g, '\\,')}`,
-    `DTSTART:${params.startTime}`,
-    `DTEND:${params.endTime}`,
+    `DTSTART;TZID=Europe/Madrid:${params.startTime}`,
+    `DTEND;TZID=Europe/Madrid:${params.endTime}`,
     'STATUS:CONFIRMED',
     'END:VEVENT',
     'END:VCALENDAR',

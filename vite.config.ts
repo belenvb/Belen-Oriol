@@ -5,7 +5,28 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), {
+      name: 'wedding-public-link-preview',
+      transformIndexHtml(html) {
+        // WhatsApp/iMessage read the initial HTML rather than running React.
+        // Their image URLs should be absolute HTTPS URLs on the public domain.
+        // Vercel provides production URL variables automatically; a custom domain
+        // can be set explicitly using WEDDING_PUBLIC_URL.
+        const raw = (
+          process.env.WEDDING_PUBLIC_URL ||
+          process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+          process.env.VERCEL_URL ||
+          ''
+        ).trim().replace(/\/+$/, '');
+        const origin = raw ? (/^https?:\/\//i.test(raw) ? raw : `https://${raw}`) : '';
+        // Relative URLs allow local browsing; public deployments MUST have an absolute origin.
+        const imageUrl = (origin || '') + '/invitacion-preview.jpg';
+        const pageUrl = (origin || '') + '/';
+        return html
+          .replaceAll('__WEDDING_OG_IMAGE_URL__', imageUrl)
+          .replaceAll('__WEDDING_OG_PAGE_URL__', pageUrl);
+      },
+    }],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

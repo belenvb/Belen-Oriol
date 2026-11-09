@@ -1,9 +1,8 @@
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import './cleanup.css';
-import './refinements.css';
+import './styles/site-overrides.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -11,7 +10,11 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 );
 
+import './styles/magazine.css';
 
-import "./components/InteractionRefinements.css";
+import './styles/travel-refinement.css';
 
-import './WeddingPolish.css';
+import './styles/sleek.css';
+import './styles/finishing.css';
+
+import './styles/editorial-polish.css';
