@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const NAV_SECTION_IDS = ['hero', 'story', 'schedule', 'journey', 'registry', 'rsvp', 'faq'] as const;
 import { Language } from './types';
@@ -21,12 +21,22 @@ import { Footer } from './components/Footer';
 import './styles/chapters.css';
 import { invitationCodeFromHash } from './utils/invitationLink';
 import type { GiftPaymentDetails } from './utils/rsvp';
+import { invitationLanguageFromSearch, isInvitationLanguagePending } from './utils/invitationLanguage';
 
 export default function App() {
-  const [lang, setLang] = useState<Language>(() => new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'es');
+  const [lang, setLang] = useState<Language>(() => invitationLanguageFromSearch(window.location.search) ?? 'es');
   const [selectedDay, setSelectedDay] = useState<'sept3' | 'sept4' | 'sept5'>('sept4');
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [privateInvitationCode, setPrivateInvitationCode] = useState(() => invitationCodeFromHash(window.location.hash));
+  const [resolvedLanguageCode, setResolvedLanguageCode] = useState('');
+  const manualLanguageChoice = useRef(false);
+  const explicitLanguage = invitationLanguageFromSearch(window.location.search);
+  const languagePending = isInvitationLanguagePending(privateInvitationCode, resolvedLanguageCode, explicitLanguage);
+  const chooseLanguage = (language: Language) => {
+    manualLanguageChoice.current = true;
+    setResolvedLanguageCode(privateInvitationCode);
+    setLang(language);
+  };
   const [prebodaUnlocked, setPrebodaUnlocked] = useState(false);
   const [registryVerified, setRegistryVerified] = useState(false);
   const [giftDetails, setGiftDetails] = useState<GiftPaymentDetails | null>(null);
@@ -58,6 +68,8 @@ export default function App() {
   useEffect(() => {
     const onHashChange = () => {
       setPrivateInvitationCode(invitationCodeFromHash(window.location.hash));
+      manualLanguageChoice.current = false;
+      setResolvedLanguageCode('');
       setRegistryVerified(false);
       setGiftDetails(null);
     };
@@ -151,7 +163,8 @@ export default function App() {
       {showIntro && (
         <EnvelopeIntro
           lang={lang}
-          onLanguageChange={setLang}
+          languagePending={languagePending}
+          onLanguageChange={chooseLanguage}
           onEnter={() => {
             try { sessionStorage.setItem('belen_oriol_invitation_opened', 'true'); } catch { /* Storage may be unavailable */ }
             setShowIntro(false);
@@ -159,7 +172,7 @@ export default function App() {
         />
       )}
 
-      {!showIntro && <Header lang={lang} onLanguageChange={setLang} activeSection={activeSection} />}
+      {!showIntro && <Header lang={lang} onLanguageChange={chooseLanguage} activeSection={activeSection} />}
 
       <main className="w-full relative">
         <Hero lang={lang} onNavigate={scrollToSection} />
@@ -179,7 +192,9 @@ export default function App() {
             setPrebodaUnlocked(Boolean(invitation?.invitedToPreboda));
              setRegistryVerified(Boolean(invitation));
              setGiftDetails(invitation?.giftDetails ?? null);
-            if (invitation?.language === 'es' || invitation?.language === 'en') setLang(invitation.language);
+            setResolvedLanguageCode(privateInvitationCode);
+            if (!explicitLanguage && !manualLanguageChoice.current &&
+              (invitation?.language === 'es' || invitation?.language === 'en')) setLang(invitation.language);
           }}
         />
         <FaqSection lang={lang} />

@@ -5,6 +5,7 @@ import './EnvelopeIntro.css';
 
 interface EnvelopeIntroProps {
   lang: Language;
+  languagePending?: boolean;
   onLanguageChange: (language: Language) => void;
   onEnter: () => void;
   monogramSrc?: string;
@@ -18,6 +19,7 @@ interface EnvelopeIntroProps {
 /** A single cinematic opening scene; the actual wedding site remains behind it. */
 export function EnvelopeIntro({
   lang,
+  languagePending = false,
   onLanguageChange,
   onEnter,
   coupleNames = 'Belén & Oriol',
@@ -51,7 +53,7 @@ export function EnvelopeIntro({
   }, []);
 
   const startOpening = () => {
-    if (hasOpened.current) return;
+    if (languagePending || hasOpened.current) return;
     hasOpened.current = true;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setOpening(true);
@@ -171,7 +173,7 @@ export function EnvelopeIntro({
       if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
       if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }}
-      aria-label={lang === 'es' ? 'Invitación de boda' : 'Wedding invitation'}>
+      aria-busy={languagePending} aria-label={languagePending ? 'Invitation / Invitación' : (lang === 'es' ? 'Invitación de boda' : 'Wedding invitation')}>
       <svg width="0" height="0" aria-hidden="true" style={{position:'absolute'}}><defs>
         <filter id="bo-monogram-ink"><feComponentTransfer><feFuncA type="linear" slope="3" /></feComponentTransfer></filter>
         <clipPath id="bo-pocket-cut" clipPathUnits="objectBoundingBox"><path d="M0,0 C.16,.12 .34,.34 .475,.50 Q.50,.53 .525,.50 C.66,.34 .84,.12 1,0 L1,1 L0,1 Z" /></clipPath>
@@ -183,23 +185,23 @@ export function EnvelopeIntro({
       <div className="bo-intro__light" aria-hidden="true" />
 
       <header className="bo-intro__topline">
-        <div className="bo-intro__languages" aria-label={lang === 'es' ? 'Idioma' : 'Language'}>
-          <button type="button" aria-pressed={lang === 'es'} disabled={opening} onClick={() => onLanguageChange('es')}>ES</button>
+        <div className="bo-intro__languages" aria-label={languagePending ? 'Language / Idioma' : (lang === 'es' ? 'Idioma' : 'Language')}>
+          <button type="button" aria-pressed={!languagePending && lang === 'es'} disabled={opening} onClick={() => onLanguageChange('es')}>ES</button>
           <span aria-hidden="true">/</span>
-          <button type="button" aria-pressed={lang === 'en'} disabled={opening} onClick={() => onLanguageChange('en')}>EN</button>
+          <button type="button" aria-pressed={!languagePending && lang === 'en'} disabled={opening} onClick={() => onLanguageChange('en')}>EN</button>
         </div>
       </header>
 
       <main className="bo-intro__scene">
         <div className="bo-intro__stationery">
-          <div className="bo-intro__envelope" role="button" tabIndex={opening && !canEnter ? -1 : 0} onClick={() => canEnter ? reveal.current?.() : startOpening()} aria-disabled={opening && !canEnter}
+          <div className="bo-intro__envelope" role="button" tabIndex={languagePending || (opening && !canEnter) ? -1 : 0} onClick={() => canEnter ? reveal.current?.() : startOpening()} aria-disabled={languagePending || (opening && !canEnter)}
             onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); if (canEnter) reveal.current?.(); else startOpening(); } }}
-            aria-label={canEnter ? (lang === 'es' ? 'Entrar en nuestra web' : 'Enter our wedding website') : (lang === 'es' ? 'Abrir la invitación' : 'Open the invitation')}>
+            aria-label={languagePending ? 'Loading invitation / Cargando invitación' : canEnter ? (lang === 'es' ? 'Entrar en nuestra web' : 'Enter our wedding website') : (lang === 'es' ? 'Abrir la invitación' : 'Open the invitation')}>
             <span className="bo-intro__closed-photo" aria-hidden="true" />
             <span className="bo-intro__envelope-shadow" aria-hidden="true" />
             <span className="bo-intro__shell bo-intro__photo-back" aria-hidden="true" />
             <span className="bo-intro__letter">
-              <span className="bo-intro__letter-frame">
+              <span className="bo-intro__letter-frame" style={languagePending ? { visibility: 'hidden' } : undefined}>
                 <span className="bo-intro__identity-mark" aria-hidden="true"><img src={boLogo} alt="" /></span>
                 <span className="bo-intro__letter-names">{coupleNames}</span>
                 <span className="bo-intro__letter-small">{lang === 'es' ? 'Os invitamos a celebrar nuestra boda' : 'We invite you to celebrate our wedding'}</span>
@@ -212,8 +214,8 @@ export function EnvelopeIntro({
             <span className="bo-intro__flap" aria-hidden="true"><span className="bo-intro__flap-face" /><span className="bo-intro__flap-reverse" />
             <span className="bo-intro__seal" aria-hidden="true"><img src={boLogo} alt="" /></span><span className="bo-intro__seal-back" aria-hidden="true" /></span>
           </div>
-          <button className="bo-intro__action" type="button" onClick={startOpening} disabled={opening}>
-            {lang === 'es' ? 'Abrir la invitación' : 'Open the invitation'}
+          <button className="bo-intro__action" type="button" onClick={startOpening} disabled={opening || languagePending} aria-label={languagePending ? 'Loading invitation / Cargando invitación' : undefined}>
+            {languagePending ? '…' : (lang === 'es' ? 'Abrir la invitación' : 'Open the invitation')}
           </button>
         </div>
       </main>
