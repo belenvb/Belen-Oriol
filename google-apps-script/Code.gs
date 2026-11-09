@@ -23,6 +23,7 @@ const ROOM_CONFIG = [
 ];
 
 let rsvpSnapshot = null;
+let roomSheetSnapshot = null;
 
 // Configure these values privately in Apps Script > Project Settings > Script Properties.
 // They must never be hard-coded in website files or committed to GitHub.
@@ -171,7 +172,9 @@ function findGiftDetailsByGuestInput_(rawInput) {
 
 function doPost(e) {
   rsvpSnapshot = null;
+  roomSheetSnapshot = null;
   const startedAt = Date.now();
+  const timings = {};
   let lock;
 
   try {
@@ -275,12 +278,18 @@ function doPost(e) {
 
     const formVersion = text(data.formVersion || RSVP_FORM_VERSION, 80);
 
+    timings.validationMs = Date.now() - startedAt;
+    const waitStartedAt = Date.now();
     lock = LockService.getScriptLock();
     lock.waitLock(15000);
+    timings.lockWaitMs = Date.now() - waitStartedAt;
+    const prepareStartedAt = Date.now();
 
     const book = getSpreadsheet();
-    const previous = getPreviousRsvp(book, code);
-    const availabilityBefore = getRoomAvailability(book, previous ? previous.submissionId : id);
+    // Saving only needs the previous submission ID, not the full guest response.
+    const previousRow = findRsvpRow(book.getSheetByName(RSVP_TAB), code);
+    const previousId = previousRow ? String(readRsvpSnapshot(book).rows[previousRow - 2][0]) : id;
+    const availabilityBefore = getRoomAvailability(book, previousId);
     Object.keys(roomBookings).forEach(roomId => {
       const room = availabilityBefore.find(item => item.id === roomId);
       if (!room || roomBookings[roomId] > room.remaining) throw Error('Room allocation unavailable');
@@ -335,6 +344,8 @@ function doPost(e) {
     const existingSnapshot = readRsvpSnapshot(book);
     const alreadyExists = existingSnapshot.rows.some(row => String(row[0]) === id);
 
+    timings.prepareMs = Date.now() - prepareStartedAt;
+    const saveStartedAt = Date.now();
     if (!alreadyExists) {
       const row = [
         id,
@@ -362,19 +373,23 @@ function doPost(e) {
         JSON.stringify(Object.assign({}, data, {submissionId:id, invitationCode:code, code:code, guests:people, roomBookings:roomBookings, outboundShuttleCount:outboundCount, returnShuttleCount:returnCount})),
       ];
 
-      const existingRow = findRsvpRow(sheet, code);
+      const existingRow = previousRow;
       if (existingRow) sheet.getRange(existingRow, 1, 1, row.length).setValues([row.map(literal)]);
       else sheet.appendRow(row.map(literal));
       sheet.getRange(existingRow || sheet.getLastRow(), 2).setNumberFormat('dd/MM/yyyy HH:mm:ss');
     }
 
     saveGuestDetails(book, id, code, titularEmail, people, literal);
+    timings.saveMs = Date.now() - saveStartedAt;
+    const flushStartedAt = Date.now();
     SpreadsheetApp.flush();
+    timings.flushMs = Date.now() - flushStartedAt;
     const availabilityAfter = availabilityBefore.map(room => ({...room,
       reserved: room.reserved + (roomBookings[room.id] || 0),
       remaining: Math.max(0, room.remaining - (roomBookings[room.id] || 0))
     }));
     console.log('RSVP processing ms: ' + (Date.now() - startedAt));
+    console.log('RSVP timing breakdown: ' + JSON.stringify(timings));
 
     return jsonReply({
       ok: true,
@@ -688,9 +703,18 @@ function getRoomsSheet(book) {
   return sheet;
 }
 
-function getRoomTotals(book) {
+// Per-request snapshot only: never reuse availability across submissions.
+function readRoomSheetSnapshot_(book) {
+  if (roomSheetSnapshot) return roomSheetSnapshot;
   const sheet = getRoomsSheet(book);
-  const rows = sheet.getLastRow() > 1 ? sheet.getRange(2, 1, sheet.getLastRow() - 1, 3).getValues() : [];
+  const lastRow = sheet.getLastRow();
+  const lastCol = Math.max(3, sheet.getLastColumn());
+  const values = lastRow ? sheet.getRange(1, 1, lastRow, lastCol).getValues() : [];
+  return roomSheetSnapshot = { headings: values[0] || [], rows: values.slice(1) };
+}
+
+function getRoomTotals(book) {
+  const rows = readRoomSheetSnapshot_(book).rows;
   const totals = {};
 
   ROOM_CONFIG.forEach(room => {
@@ -772,12 +796,10 @@ function parseRoomPrice(value) {
 }
 
 function getRoomSheetPublicFields(book) {
-  const sheet = getRoomsSheet(book);
-  const lastRow = sheet.getLastRow();
-  const lastCol = Math.max(3, typeof sheet.getLastColumn === 'function' ? sheet.getLastColumn() : 3);
+  const snapshot = readRoomSheetSnapshot_(book);
   const result = {};
-  if (lastRow < 2) return result;
-  const headings = sheet.getRange(1, 1, 1, lastCol).getValues()[0] || [];
+  if (!snapshot.rows.length) return result;
+  const headings = snapshot.headings;
   const index = makeHeaderIndex(headings);
   const idCol = findOptionalColumn(index, ['id habitacion', 'id habitación', 'id', 'room id']);
   const priceCol = findOptionalColumn(index, [
@@ -791,7 +813,7 @@ function getRoomSheetPublicFields(book) {
     'habitaciones disponibles ahora', 'disponibles ahora', 'stock disponible', 'rooms available',
     'remaining rooms', 'remaining', 'open rooms',
   ]);
-  const rows = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+  const rows = snapshot.rows;
   rows.forEach(row => {
     const id = String(row[idCol < 0 ? 0 : idCol] || '').trim();
     if (!ROOM_CONFIG.some(room => room.id === id)) return;
@@ -883,8 +905,8 @@ function saveGuestDetails(book, id, code, titularEmail, people, literal) {
   }
 
   const last = gSheet.getLastRow();
-  const rows = last > 1 ? gSheet.getRange(2,1,last-1,13).getValues() : [];
-  const positions = rows.map((row,i)=>String(row[3]).trim().toUpperCase()===code ? i+2 : 0).filter(Boolean);
+  const rows = last > 1 ? gSheet.getRange(2,4,last-1,1).getValues() : [];
+  const positions = rows.map((row,i)=>String(row[0]).trim().toUpperCase()===code ? i+2 : 0).filter(Boolean);
   const values = people.map((person,index)=>[id,id+':'+index,new Date(),code,titularEmail,person.fullName,person.email,person.attendance==='yes'?'Sí':'No',person.attendingFriday?'Sí':'No',person.attendingSaturday?'Sí':'No',dayLabel(person),person.dietaryPreference,person.allergiesNote].map(literal));
   const reused = Math.min(positions.length, values.length);
   for(let i=0;i<reused;) {
