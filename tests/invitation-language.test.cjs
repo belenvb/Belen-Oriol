@@ -31,3 +31,13 @@ test('all delivery call sites pass the invitation language',()=>{
  assert(calls.length>=6);
  for(const call of calls) assert.equal(call[2],', '+call[1]+'.language');
 });
+
+test('email HTML, plain text and WhatsApp ask for RSVP in the invitation language',()=>{
+ for(const language of ['es','en']){
+  const r={name:'Example guest',code,shortCode:'ABC234',language,friday:false};
+  const link=ctx.sendingLink_(code,language);
+  const email=ctx.invitationEmail_(r,link),copy=ctx.sendingCopy_(r,link);
+  const request=language==='es'?'Por favor, confirma tu asistencia':'Please confirm your attendance';
+  assert(email.htmlBody.includes(request));assert(email.body.includes(request));assert(copy.whatsapp.includes(request));assert(copy.whatsapp.endsWith(link));
+ }
+});
