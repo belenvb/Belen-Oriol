@@ -10,7 +10,6 @@ import { Language } from './types';
 import { EnvelopeIntro } from './components/EnvelopeIntro';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
-import { HorizontalTrencadis } from './components/HorizontalTrencadis';
 import { StorySection } from './components/StorySection';
 import { ScheduleSection } from './components/ScheduleSection';
 import { JourneyMap } from './components/JourneyMap';
@@ -174,7 +173,6 @@ export default function App() {
       <main className="w-full relative">
         <Hero lang={lang} onNavigate={scrollToSection} />
         <div className="page-content-stack">
-        <HorizontalTrencadis />
         <StorySection lang={lang} />
 
 

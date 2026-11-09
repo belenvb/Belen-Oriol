@@ -36,7 +36,7 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAcce
               </button>
             ))}
           </div>
-          <p>{sunday ? (es ? 'Brunch de despedida para quienes se alojen en el castillo.' : 'Farewell brunch for guests staying at the castle.') : day.subtitle}</p>
+          <p>{sunday ? (es ? 'Desayuno para quienes se alojen en el castillo.' : 'Breakfast for guests staying at the castle.') : day.subtitle}</p>
           <p>{sunday ? 'Castillo del Buen Amor' : day.location}</p>
           {!sunday && <a className="editorial-link" target="_blank" rel="noreferrer" href={generateGoogleCalendarUrl(day.calEvent)}>
             {es ? 'Añadir al calendario' : 'Add to calendar'}
@@ -47,7 +47,7 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAcce
           {selectedDay === 'sept4' && <p><Bus className="detail-emblem" size={24} aria-hidden="true"/><strong>{day.shuttleInfo.title}</strong><br />{day.shuttleInfo.description}</p>}
         </div>}
         <ol className="event-list">
-          {sunday && <li><div className="schedule-event"><span className="event-emblem" aria-hidden="true"><Coffee size={26} strokeWidth={1.2}/></span><div><p className="eyebrow">{es ? 'Domingo 5 · Mañana' : 'Sunday 5 · Morning'}</p><h3>{es ? 'Brunch de despedida' : 'Farewell brunch'}</h3><p>{es ? 'Para los invitados que se alojen en el castillo.' : 'For wedding guests staying at the castle.'}</p></div></div></li>}
+          {sunday && <li><div className="schedule-event"><span className="event-emblem" aria-hidden="true"><Coffee size={26} strokeWidth={1.2}/></span><div><p className="eyebrow">{es ? 'Domingo 5 · Mañana' : 'Sunday 5 · Morning'}</p><h3>{es ? 'Desayuno' : 'Breakfast'}</h3><p>{es ? 'Para los invitados que se alojen en el castillo.' : 'For wedding guests staying at the castle.'}</p></div></div></li>}
           {!sunday && day.events.map((event, index) => {
             const Icon = eventIcons[event.iconName as keyof typeof eventIcons] || Sparkles;
             return (

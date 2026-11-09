@@ -69,6 +69,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
   const [formData, setFormData] = useState<Partial<GuestRsvp>>({
     fullName: '',
     email: '',
+    postalAddress: '',
     attendance: 'yes',
     attendingDays: 'both',
     plusOneCount: 1,
@@ -228,7 +229,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
         setRoomQuantities(next);
         setReturnShuttleBooking(false);
         setOutboundCount(1); setReturnCount(1);
-        setFormData(prev => ({ ...prev, songRequest: '', blessingMessage: '', shuttleBooking: true, roomBooking: firstSelectedRoom(next), roomBookings: next, returnShuttleBooking: false }));
+        setFormData(prev => ({ ...prev, postalAddress: '', songRequest: '', blessingMessage: '', shuttleBooking: true, roomBooking: firstSelectedRoom(next), roomBookings: next, returnShuttleBooking: false }));
       }
     } catch {
       onInvitationValidated?.(null);
@@ -319,6 +320,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       code: invitationCode.trim().toUpperCase() || 'RSVP-WEB',
       fullName: formData.fullName.trim(),
       email: formData.email.trim(),
+      postalAddress: (formData.postalAddress || '').trim(),
       attendance: isAnyAttending ? 'yes' : 'no',
       attendingDays: isAnyAttending ? collectiveDays : undefined,
       plusOneCount: attendingGuests.length,
@@ -531,6 +533,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                       type="button"
                       disabled={isSending}
                       onClick={() => {
+                        setFormData(prev => ({ ...prev, postalAddress: '' }));
                         setInvitation(null);
                         onInvitationValidated?.(null);
                         setInvitationCode('');
@@ -554,6 +557,17 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                         invitationText={invitation.invitationText}
                         onChange={updateGuests}
                       />
+
+                      <div className="rsvp-postal-address">
+                        <label htmlFor="rsvp-postal-address" className="block text-sm text-[#5c141e]">
+                          {es ? 'Dirección postal (opcional)' : 'Postal address (optional)'}
+                        </label>
+                        <textarea id="rsvp-postal-address" name="postalAddress" autoComplete="street-address"
+                          rows={3} maxLength={500} value={formData.postalAddress || ''}
+                          placeholder={es ? 'Calle y número, código postal, ciudad y país' : 'Street address, postal code, city and country'}
+                          onChange={event => setFormData(prev => ({ ...prev, postalAddress: event.target.value }))}
+                          className="block w-full mt-2 px-4 py-3 border border-[#5c141e]/25 rounded bg-white" />
+                      </div>
 
                       {hasAttendingGuests && (
                         <div className="rsvp-logistics space-y-6 pt-6 border-t-2 border-[#5c141e]/15 animate-fade-in">

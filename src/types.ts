@@ -49,6 +49,7 @@ export interface RegistryItem {
 }
 
 export interface GuestRsvp {
+  postalAddress?: string;
   code?: string;
   fullName: string;
   email: string;
