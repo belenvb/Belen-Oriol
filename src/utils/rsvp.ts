@@ -41,6 +41,7 @@ export type GiftPaymentDetails = {
   bizum?: string;
   venmo?: string;
   zelle?: string;
+  zelleQrDataUrl?: string;
 };
 
 export type InvitationLookup = {
@@ -122,16 +123,14 @@ export async function loadRoomCatalogue(): Promise<void> {
   await request({ action: 'rooms' }, true);
 }
 
-// Gift-only access deliberately never retrieves RSVP answers, codes or guest names.
-// Full-name matching is convenience access, not proof of identity.
-export async function lookupGiftByName(fullName: string): Promise<GiftPaymentDetails> {
-  const name = fullName.trim().replace(/\s+/g, ' ');
-  if (name.length < 5 || name.length > 120 || name.split(' ').length < 2) {
-    throw new Error('GIFT_NAME_INVALID');
-  }
-  const result = await request({ action: 'giftByName', fullName: name });
+// Gift lookup never returns RSVP responses, family details, guest lists or codes.
+// First-name/email recognition is convenience access, NOT identity verification.
+export async function lookupGiftAccess(guestInput: string): Promise<GiftPaymentDetails> {
+  const input = guestInput.trim().replace(/\s+/g, ' ');
+  if (input.length < 3 || input.length > 254) throw new Error('GIFT_ACCESS_INVALID');
+  const result = await request({ action: 'giftAccess', guestInput: input });
   if (!result.giftDetails || typeof result.giftDetails !== 'object') {
-    throw new Error('GIFT_NAME_NOT_FOUND');
+    throw new Error('GIFT_ACCESS_NOT_FOUND');
   }
   return result.giftDetails;
 }

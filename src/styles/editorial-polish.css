@@ -204,3 +204,56 @@
   cursor: not-allowed;
   opacity: .5;
 }
+
+/* Payment links are shown only after server-side guest validation. */
+#registry.home-gift .home-gift__payment-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 16px 0 10px;
+}
+#registry.home-gift .home-gift__payment-link,
+#registry.home-gift .home-gift__payment-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid #754153;
+  border-radius: 2px;
+  color: #fff9ee;
+  background: #632738;
+  text-decoration: none;
+  font: 500 12px/1.4 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+}
+#registry.home-gift .home-gift__payment-copy {
+  background: transparent;
+  color: #632738;
+}
+#registry.home-gift .home-gift__payment-link:focus-visible,
+#registry.home-gift .home-gift__payment-copy:focus-visible {
+  outline: 2px solid #946b50;
+  outline-offset: 3px;
+}
+
+/* QR is supplied by the private Apps Script backend only after guest validation. */
+#registry.home-gift .home-gift__zelle-qr {
+  max-width: 360px;
+  margin: 0 auto 22px;
+  text-align: center;
+}
+#registry.home-gift .home-gift__zelle-qr img {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 0 auto 12px;
+  background: #fff;
+}
+#registry.home-gift .home-gift__zelle-qr .home-gift__note {
+  max-width: 340px;
+  margin: 0 auto;
+}

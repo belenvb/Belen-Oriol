@@ -40,15 +40,36 @@ function privateWeddingPaymentDetails_() {
     bizum: value('WEDDING_BIZUM'),
     venmo: value('WEDDING_VENMO'),
     zelle: value('WEDDING_ZELLE'),
+    // The private Zelle QR is read from a non-public Drive file only after guest access validation.
+    zelleQrDataUrl: privateWeddingZelleQrDataUrl_(p.getProperty('WEDDING_ZELLE_QR_FILE_ID')),
+
   };
 }
 
 
-// Gift-only lookup by a guest's exact full name. This is a convenience check,
-// NOT authentication: someone who knows an invitee's full name may gain access.
-// Never return invitation codes, guest lists, RSVP responses, or emails here.
-function normalizeGiftGuestName_(name) {
-  return String(name || '').trim().normalize('NFD')
+function privateWeddingZelleQrDataUrl_(fileId) {
+  const id = String(fileId || '').trim();
+  if (!id || !/^[a-zA-Z0-9_-]{10,120}$/.test(id)) return '';
+  try {
+    // The script must be deployed to execute as the organizer, who has access
+    // to this PRIVATE Drive file. Do not change Drive file sharing to public.
+    const file = DriveApp.getFileById(id);
+    if (file.getSize() > 600000) return ''; // Keep Apps Script replies lightweight.
+    const blob = file.getBlob();
+    const mime = String(blob.getContentType() || '').toLowerCase();
+    if (!['image/png','image/jpeg','image/webp'].includes(mime)) return '';
+    return 'data:' + mime + ';base64,' + Utilities.base64Encode(blob.getBytes());
+  } catch (error) {
+    console.error('Private Zelle QR cannot be loaded: ' + String(error));
+    return '';
+  }
+}
+
+
+// Gift-only lookup, independent of RSVP. Name/email are convenience access,
+// NOT authentication. Do not expose guest lists, personal codes or RSVP responses.
+function normalizeGiftGuestName_(value) {
+  return String(value || '').trim().normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[^a-z\s'-]/g, ' ')
@@ -56,51 +77,70 @@ function normalizeGiftGuestName_(name) {
     .replace(/\s+/g, ' ').trim();
 }
 
-function checkGiftNameRate_() {
-  // Coarse global cap; Apps Script web apps do not expose a reliable IP to rate limit.
+function checkGiftAccessRate_() {
+  // Coarse global throttle. Apps Script does not give reliable visitor IPs.
   const cache = CacheService.getScriptCache();
-  const key = 'wedding_gift_name_requests_' + Math.floor(Date.now() / 60000);
+  const key = 'wedding_gift_access_' + Math.floor(Date.now() / 60000);
   const hits = Number(cache.get(key) || '0');
   if (hits >= 60) throw Error('Unable to verify guest');
   cache.put(key, String(hits + 1), 75);
 }
 
-function findGiftDetailsByGuestName_(submittedName) {
-  checkGiftNameRate_();
-  const input = String(submittedName || '');
-  const name = normalizeGiftGuestName_(input);
-  // Require a first name and a surname, without allowing huge input strings.
-  if (input.length > 120 || name.length < 5 || name.split(' ').length < 2) {
+function findGiftDetailsByGuestInput_(rawInput) {
+  checkGiftAccessRate_();
+  const input = String(rawInput == null ? '' : rawInput).trim();
+  if (input.length < 3 || input.length > 254) throw Error('Unable to verify guest');
+  const upper = input.toUpperCase();
+
+  // Accept either existing long private codes or the 6-character short code.
+  if (/^[A-Z0-9-]{16,80}$/.test(upper) || /^[A-HJ-NP-Z2-9]{6}$/.test(upper)) {
+    findInvitation(upper); // Checks that the invitation exists and is active.
+    return privateWeddingPaymentDetails_();
+  }
+
+  const isEmail = input.includes('@');
+  const normalizedEmail = input.toLowerCase();
+  if (isEmail && (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input) || input.length > 254)) {
     throw Error('Unable to verify guest');
   }
+
+  // A submitted "Nombre Apellidos" checks only the first given name,
+  // because the sheet may not include surnames. No suggestions/autocomplete.
+  const normalizedName = normalizeGiftGuestName_(input);
+  const parts = normalizedName.split(' ').filter(Boolean);
+  if (!isEmail && (input.length > 120 || parts.length < 2)) {
+    throw Error('Unable to verify guest');
+  }
+  const firstName = parts[0];
+  const familyLabel = /^(familia|padres|madres|hermanos|hermanas|amigos|primos|tios|tias|sr|sra)$/;
 
   const sheet = getSpreadsheet().getSheetByName(INVITATIONS_TAB);
   if (!sheet || sheet.getLastRow() < 2) throw Error('Unable to verify guest');
   const values = sheet.getDataRange().getValues();
   const idx = makeHeaderIndex(values[0]);
-  const activeCol = findOptionalColumn(idx, ['activa', 'activa si no', 'activa sí no', 'active']);
-  const holderCol = findOptionalColumn(idx, ['titular / familia', 'titular', 'familia', 'guest name', 'name']);
+  const activeCol = findOptionalColumn(idx, ['activa','activa si no','activa sí no','active']);
+  const emailCol = findOptionalColumn(idx, ['email','e-mail','correo electronico','correo electrónico','email invitado']);
+  const holderCol = findOptionalColumn(idx, ['titular / familia','titular','familia','guest name','name']);
   const guestCols = [];
   for (let n = 1; n <= 20; n++) {
-    const col = findOptionalColumn(idx, [
-      'invitado ' + n, 'nombre invitado ' + n, 'guest ' + n, 'guest name ' + n
-    ]);
+    const col = findOptionalColumn(idx, ['invitado ' + n, 'nombre invitado ' + n, 'guest ' + n, 'guest name ' + n]);
     if (col >= 0 && !guestCols.includes(col)) guestCols.push(col);
   }
 
-  // Family labels such as "Padres Oriol" do not count as a guest's full name.
-  const familyLabel = /^(familia|padres|madres|hermanos|hermanas|amigos|primos|tios|tias|sr y sra)\b/;
   const allowed = values.slice(1).some(row => {
     if (activeCol >= 0 && !yesNo(row[activeCol], true)) return false;
-    const names = guestCols.map(col => normalizeGiftGuestName_(row[col]));
-    // Some legacy invitations store the named holder without an Invitado 1.
-    if (holderCol >= 0) {
-      const holder = normalizeGiftGuestName_(row[holderCol]);
-      if (holder && !familyLabel.test(holder)) names.push(holder);
+    if (isEmail) {
+      // The Invitations sheet always stores the invitation email in column B.
+      const invitationEmail = String(row[emailCol >= 0 ? emailCol : 1] || '').trim().toLowerCase();
+      return invitationEmail !== '' && invitationEmail === normalizedEmail;
     }
-    return names.some(value => value === name);
+    const names = guestCols.map(col => normalizeGiftGuestName_(row[col]));
+    if (holderCol >= 0) names.push(normalizeGiftGuestName_(row[holderCol]));
+    return names.some(name => {
+      const first = name.split(' ')[0];
+      return first && !familyLabel.test(first) && first === firstName;
+    });
   });
-
   if (!allowed) throw Error('Unable to verify guest');
   return privateWeddingPaymentDetails_();
 }
@@ -117,9 +157,9 @@ function doPost(e) {
 
     const data = JSON.parse(e.postData.contents);
 
-    // Separate gift access: no RSVP submission, invitation-code discovery, or guest data.
-    if (data.action === 'giftByName') {
-      return jsonReply({ ok: true, giftDetails: findGiftDetailsByGuestName_(data.fullName) });
+    // Gift-only access: validates name, email or code without returning RSVP data.
+    if (data.action === 'giftAccess') {
+      return jsonReply({ ok: true, giftDetails: findGiftDetailsByGuestInput_(data.guestInput) });
     }
 
     // Public room catalogue: exposes ONLY category, price, and availability,
