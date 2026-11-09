@@ -21,20 +21,17 @@ import { Footer } from './components/Footer';
 import './styles/chapters.css';
 import { invitationCodeFromHash } from './utils/invitationLink';
 import type { GiftPaymentDetails } from './utils/rsvp';
-import { invitationLanguageFromSearch, isInvitationLanguagePending } from './utils/invitationLanguage';
+import { invitationLanguageFromSearch, initialInvitationLanguage } from './utils/invitationLanguage';
 
 export default function App() {
-  const [lang, setLang] = useState<Language>(() => invitationLanguageFromSearch(window.location.search) ?? 'es');
+  const [lang, setLang] = useState<Language>(() => initialInvitationLanguage(window.location.search, navigator.language));
   const [selectedDay, setSelectedDay] = useState<'sept3' | 'sept4' | 'sept5'>('sept4');
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [privateInvitationCode, setPrivateInvitationCode] = useState(() => invitationCodeFromHash(window.location.hash));
-  const [resolvedLanguageCode, setResolvedLanguageCode] = useState('');
   const manualLanguageChoice = useRef(false);
   const explicitLanguage = invitationLanguageFromSearch(window.location.search);
-  const languagePending = isInvitationLanguagePending(privateInvitationCode, resolvedLanguageCode, explicitLanguage);
   const chooseLanguage = (language: Language) => {
     manualLanguageChoice.current = true;
-    setResolvedLanguageCode(privateInvitationCode);
     setLang(language);
   };
   const [prebodaUnlocked, setPrebodaUnlocked] = useState(false);
@@ -70,7 +67,6 @@ export default function App() {
     const onHashChange = () => {
       setPrivateInvitationCode(invitationCodeFromHash(window.location.hash));
       manualLanguageChoice.current = false;
-      setResolvedLanguageCode('');
       setRegistryVerified(false);
       setGiftDetails(null);
     };
@@ -164,7 +160,6 @@ export default function App() {
       {showIntro && (
         <EnvelopeIntro
           lang={lang}
-          languagePending={languagePending}
           onLanguageChange={chooseLanguage}
           onEnter={(destination) => {
             if (destination === 'rsvp') setRsvpEntryRequested(true);
@@ -195,8 +190,7 @@ export default function App() {
             setPrebodaUnlocked(Boolean(invitation?.invitedToPreboda));
              setRegistryVerified(Boolean(invitation));
              setGiftDetails(invitation?.giftDetails ?? null);
-            setResolvedLanguageCode(privateInvitationCode);
-            if (!explicitLanguage && !manualLanguageChoice.current &&
+                    if (!explicitLanguage && !manualLanguageChoice.current &&
               (invitation?.language === 'es' || invitation?.language === 'en')) setLang(invitation.language);
           }}
         />
