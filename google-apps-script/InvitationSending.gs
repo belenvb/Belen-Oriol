@@ -392,7 +392,7 @@ function ensureReadyToSend_(r, targetChannel) {
   sendingLink_(r.code, r.language);
   if (targetChannel) {
     if (!r.channels.includes(targetChannel)) throw Error('Selecciona ' + targetChannel + ' en esta familia');
-    if (targetChannel === 'Email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) throw Error('Email inválido');
+    if (targetChannel === 'Email') invitationEmailAddresses_(r.email);
     if (targetChannel !== 'Email' && !normalizedPhone_(r.phone)) throw Error('Escribe el teléfono en formato internacional (por ejemplo +34600123456 o +16175551234).');
   }
 }
@@ -517,7 +517,7 @@ function getSendingDashboardData() {
         whatsappUrl='https://wa.me/'+phone.slice(1)+'?text='+encodeURIComponent(whatsappText);
         smsUrl='sms:'+phone+'?body='+encodeURIComponent(smsText);
       }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) issues.Email='Introduce un email válido';
+      try { invitationEmailAddresses_(r.email); } catch (e) { issues.Email=String(e.message || e); }
       if (!phone) {issues.WhatsApp='Indica un teléfono con prefijo internacional (+34…, +1…).';issues.SMS='Indica un teléfono con prefijo internacional (+34…, +1…).';}
     } catch(e) { mainIssue=String(e.message||e); }
     return {
@@ -541,14 +541,34 @@ function invitationBccRecipient_() {
   return value;
 }
 
+/** One group cell may contain comma- or semicolon-separated plain addresses. */
+function invitationEmailAddresses_(value) {
+  const parts = String(value || '').trim().split(/[,;]/).map(address => address.trim());
+  if (parts.some(address => address.length > 254 || !/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(address))) {
+    throw Error('Introduce correos válidos separados por comas (sin nombres ni campos vacíos).');
+  }
+  const seen = new Set();
+  const addresses = parts.filter(address => {
+    const key = address.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  // Reserve one recipient for the organizer's private BCC.
+  if (addresses.length > 49) throw Error('Máximo 49 correos distintos por grupo.');
+  return addresses;
+}
+
 function invitationMailRecipients_(recipient, bcc) {
-  const to = String(recipient || '').trim();
-  // A test addressed to the organizer already delivers their copy.
-  return to.toLowerCase() === bcc.toLowerCase() ? {to: to} : {to: to, bcc: bcc};
+  const addresses = invitationEmailAddresses_(recipient);
+  const to = addresses.join(',');
+  // An organizer already included in To must not receive a duplicate BCC.
+  return addresses.some(address => address.toLowerCase() === bcc.toLowerCase()) ? {to: to} : {to: to, bcc: bcc};
 }
 
 function invitationRecipientCount_(recipient, bcc) {
-  return invitationMailRecipients_(recipient, bcc).bcc ? 2 : 1;
+  const mail = invitationMailRecipients_(recipient, bcc);
+  return mail.to.split(',').length + (mail.bcc ? 1 : 0);
 }
 
 function sendInvitationEmailsByRows(rowNumbers) {
@@ -595,7 +615,7 @@ function sendTestInvitationEmail(rowNumber, testAddress) {
   const {records} = sendingRows_();
   const r = records.find(x => x.row === Number(rowNumber));
   if (!r) throw Error('No existe esa familia');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(testAddress || '').trim())) throw Error('Introduce un email válido para la prueba');
+  invitationEmailAddresses_(testAddress);
   if (!r.active || !r.code || !r.fridaySpecified || !r.saturdaySpecified) throw Error('Completa la invitación antes de probar');
   const bcc = invitationBccRecipient_();
   if (invitationRecipientCount_(testAddress, bcc) > MailApp.getRemainingDailyQuota()) {

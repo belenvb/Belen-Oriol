@@ -156,8 +156,9 @@ function findGiftDetailsByGuestInput_(rawInput) {
     if (activeCol >= 0 && !yesNo(row[activeCol], true)) return false;
     if (isEmail) {
       // The Invitations sheet always stores the invitation email in column B.
-      const invitationEmail = String(row[emailCol >= 0 ? emailCol : 1] || '').trim().toLowerCase();
-      return invitationEmail !== '' && invitationEmail === normalizedEmail;
+      const invitationEmails = String(row[emailCol >= 0 ? emailCol : 1] || '')
+        .split(/[,;]/).map(address => address.trim().toLowerCase()).filter(Boolean);
+      return invitationEmails.includes(normalizedEmail);
     }
     const names = guestCols.map(col => normalizeGiftGuestName_(row[col]));
     if (holderCol >= 0) names.push(normalizeGiftGuestName_(row[holderCol]));
