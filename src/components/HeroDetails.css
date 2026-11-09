@@ -8,14 +8,14 @@
 
 /* Keep the couple clear of the information block. */
 :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-copy h1{font-size:clamp(64px,8.5vw,132px)!important}
-:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details{bottom:18px!important}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details{bottom:max(32px, env(safe-area-inset-bottom))!important}
 :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-discover{left:auto!important;right:24px!important;bottom:20px!important;transform:none!important}
-@media(max-width:640px){:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-copy h1{font-size:clamp(44px,10vw,74px)!important}:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details{bottom:20px!important}:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-discover{right:12px!important;bottom:10px!important}}
+@media(max-width:640px){:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-copy h1{font-size:clamp(44px,10vw,74px)!important}:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details{bottom:max(28px, env(safe-area-inset-bottom))!important}:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-discover{right:12px!important;bottom:10px!important}}
 
 /* Keep the original photo-only cover, with the details in the clear lower water. */
 :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero {
   height:100svh!important;
-  min-height:740px!important;
+  min-height:0!important;
 }
 :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-fixed-photo img,
 :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-shade {
@@ -24,5 +24,16 @@
   min-height:0!important;
 }
 @media(max-width:640px) {
+  :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-discover { display:none!important; }
+}
+
+/* Keep the whole cover inside shorter browser windows instead of overflowing them. */
+@media(max-height:740px) {
+  :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details .hero-venue-line { font-size:20px!important; line-height:1.25!important; }
+  :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details .hero-date-long { font-size:16px!important; line-height:1.3!important; margin-top:8px!important; }
+  :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-rsvp { margin-top:12px; }
+}
+@media(max-height:540px) and (min-width:641px) {
+  :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details { left:68%; right:3%; bottom:28px!important; }
   :is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-discover { display:none!important; }
 }
