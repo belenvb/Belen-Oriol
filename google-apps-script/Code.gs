@@ -23,6 +23,26 @@ const ROOM_CONFIG = [
 ];
 
 let rsvpSnapshot = null;
+
+// Configure these values privately in Apps Script > Project Settings > Script Properties.
+// They must never be hard-coded in website files or committed to GitHub.
+function privateWeddingPaymentDetails_() {
+  const p = PropertiesService.getScriptProperties();
+  const value = (key) => String(p.getProperty(key) || '').trim().slice(0, 200);
+  return {
+    usBank: value('WEDDING_US_BANK'),
+    usHolder: value('WEDDING_US_HOLDER'),
+    usAccount: value('WEDDING_US_ACCOUNT'),
+    usRouting: value('WEDDING_US_ROUTING'),
+    esHolder: value('WEDDING_ES_HOLDER'),
+    esIban: value('WEDDING_ES_IBAN'),
+    esBic: value('WEDDING_ES_BIC'),
+    bizum: value('WEDDING_BIZUM'),
+    venmo: value('WEDDING_VENMO'),
+    zelle: value('WEDDING_ZELLE'),
+  };
+}
+
 function doPost(e) {
   rsvpSnapshot = null;
   const startedAt = Date.now();
@@ -56,6 +76,8 @@ function doPost(e) {
         language: invitation.language,
         guests: invitation.guests,
         invitationText: invitation.invitationText,
+        // Only sent after findInvitation has validated an active private code.
+        giftDetails: privateWeddingPaymentDetails_(),
         roomAvailability: getRoomAvailability(book, previous && previous.submissionId),
       });
     }
