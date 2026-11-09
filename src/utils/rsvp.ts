@@ -40,6 +40,7 @@ export type GiftPaymentDetails = {
   esBic?: string;
   bizum?: string;
   venmo?: string;
+  venmoQrDataUrl?: string;
   zelle?: string;
   zelleQrDataUrl?: string;
 };
