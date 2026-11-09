@@ -20,6 +20,7 @@ import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 import './styles/chapters.css';
 import { invitationCodeFromHash } from './utils/invitationLink';
+import type { GiftPaymentDetails } from './utils/rsvp';
 
 export default function App() {
   const [lang, setLang] = useState<Language>(() => new URLSearchParams(window.location.search).get('lang') === 'en' ? 'en' : 'es');
@@ -27,6 +28,8 @@ export default function App() {
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [privateInvitationCode, setPrivateInvitationCode] = useState(() => invitationCodeFromHash(window.location.hash));
   const [prebodaUnlocked, setPrebodaUnlocked] = useState(false);
+  const [registryVerified, setRegistryVerified] = useState(false);
+  const [giftDetails, setGiftDetails] = useState<GiftPaymentDetails | null>(null);
   
   // En local o si la URL lleva ?intro o ?para=..., siempre mostramos el sobre para facilitar pruebas
   const [showIntro, setShowIntro] = useState<boolean>(() => {
@@ -53,7 +56,11 @@ export default function App() {
   useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   useEffect(() => {
-    const onHashChange = () => setPrivateInvitationCode(invitationCodeFromHash(window.location.hash));
+    const onHashChange = () => {
+      setPrivateInvitationCode(invitationCodeFromHash(window.location.hash));
+      setRegistryVerified(false);
+      setGiftDetails(null);
+    };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
@@ -164,12 +171,14 @@ export default function App() {
 
         <ScheduleSection lang={lang} selectedDay={selectedDay} onSelectDay={setSelectedDay} hasPrebodaAccess={prebodaUnlocked} />
         <JourneyMap lang={lang} />
-        <RegistrySection lang={lang} />
+        <RegistrySection lang={lang} verified={registryVerified} giftDetails={giftDetails} />
         <RsvpSection
           lang={lang}
           initialInvitationCode={privateInvitationCode}
           onInvitationValidated={(invitation) => {
             setPrebodaUnlocked(Boolean(invitation?.invitedToPreboda));
+             setRegistryVerified(Boolean(invitation));
+             setGiftDetails(invitation?.giftDetails ?? null);
             if (invitation?.language === 'es' || invitation?.language === 'en') setLang(invitation.language);
           }}
         />
