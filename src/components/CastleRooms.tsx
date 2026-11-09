@@ -41,7 +41,7 @@ export function CastleRooms({ lang }: { lang: Language }) {
 
           <p className="castle-stay__intro">{es ? 'Tenemos habitaciones a precios especiales para nuestros invitados en el Castillo del Buen Amor, para la noche del 4 al 5 de septiembre de 2027.' : 'We have rooms at special rates for our wedding guests at Castillo del Buen Amor for the night of September 4–5, 2027.'}</p>
           <p>{es ? 'Para el bloqueo preliminar, envíanos tu solicitud antes del 31 de diciembre.' : 'Please send us your request before December 31 for the preliminary room block.'}</p>
-          <p>{es ? 'Las habitaciones del castillo se asignan por orden de confirmación en el formulario de RSVP. La selección de habitación es una solicitud y queda sujeta a confirmación.' : 'Castle rooms are allocated in order of confirmation in the RSVP form. Room selection is a request and remains subject to confirmation.'}</p>
+          <p>{es ? 'Las habitaciones son limitadas y se gestionan por orden de solicitud. Una vez recibamos la tuya a través del RSVP, te enviaremos los datos necesarios para finalizar la reserva.' : 'Rooms are limited and requests are handled in the order received. Once we receive your request through the RSVP, we'll send you the details to finalize your booking.'}</p>
           <a className="castle-stay__explore" href={es ? 'https://www.buenamor.net/habitaciones' : 'https://www.buenamor.net/en/habitaciones'} target="_blank" rel="noopener noreferrer">{es ? 'Ver fotos de las habitaciones' : 'View room photos'}</a>
         </aside>
         <div className="castle-stay__catalogue">
