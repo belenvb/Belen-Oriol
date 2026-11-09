@@ -2,6 +2,8 @@ import { useState, type FormEvent } from 'react';
 import type { Language } from '../types';
 import { lookupGiftAccess, type GiftPaymentDetails } from '../utils/rsvp';
 import './RegistrySection.css';
+import { venmoProfileUrl } from '../utils/paymentLinks';
+import { PaymentQr } from './PaymentQr';
 
 type PaymentMethod = 'bank' | 'bizum' | 'venmo' | 'zelle';
 
@@ -67,10 +69,7 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
     : method === 'venmo' ? details?.venmo
     : method === 'zelle' ? details?.zelle
     : undefined;
-  const venmoName = String(details?.venmo || '').trim().replace(/^@/, '');
-  const venmoProfile = /^[a-zA-Z0-9._-]{2,40}$/.test(venmoName)
-    ? 'https://venmo.com/' + encodeURIComponent(venmoName)
-    : null;
+  const venmoProfile = venmoProfileUrl(details?.venmo);
   const copyPayment = async (value: string) => {
     try {
       await navigator.clipboard.writeText(value);
@@ -165,19 +164,12 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                         );
                       })}
                     </div>
-                  ) : (paymentIdentifier || (method === 'zelle' && details?.zelleQrDataUrl) || (method === 'venmo' && details?.venmoQrDataUrl)) ? (
+                  ) : (paymentIdentifier || method === 'zelle' || method === 'venmo') ? (
                     <div className="home-gift__payment-link-area">
-                      {method === 'venmo' && details?.venmoQrDataUrl && (
-                        <div className="home-gift__zelle-qr">
-                          <img src={details.venmoQrDataUrl} alt={es ? 'Código QR de Venmo del destinatario' : "Recipient's Venmo QR code"} loading="lazy" decoding="async" />
-                          <p className="home-gift__note">{es ? 'Escanea el código con Venmo y comprueba el destinatario antes de enviar el regalo.' : 'Scan this code using Venmo and confirm the recipient before sending your gift.'}</p>
-                        </div>
-                      )}
-                      {method === 'zelle' && details?.zelleQrDataUrl && (
-                        <div className="home-gift__zelle-qr">
-                          <img src={details.zelleQrDataUrl} alt={es ? 'Código QR oficial para enviar el regalo mediante Zelle' : 'Official Zelle QR code for sending a gift'} loading="lazy" decoding="async" />
-                          <p className="home-gift__note">{es ? 'Escanea este código desde la aplicación de tu banco compatible con Zelle. Comprueba el nombre del destinatario antes de enviar.' : 'Scan this code using your Zelle-enabled banking app. Confirm the recipient before sending.'}</p>
-                        </div>
+                      {(method === 'venmo' || method === 'zelle') && (
+                        <PaymentQr
+                          method={method} lang={lang}
+                          src={method === 'venmo' ? details?.venmoQrDataUrl : details?.zelleQrDataUrl} />
                       )}
                       {paymentIdentifier && <dl className="home-gift__payment-identifier">
                         <dt>{method === 'bizum' ? 'Bizum' : method === 'venmo' ? 'Venmo' : 'Zelle'}</dt>
@@ -197,7 +189,7 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                         ? (es ? 'Abre Bizum desde la aplicación de tu banco e introduce este número.' : 'Open Bizum in your banking app and enter this number.')
                         : method === 'zelle'
                         ? (es ? 'Abre Zelle desde tu banco e introduce este email o teléfono. Comprueba siempre el nombre antes de confirmar.' : 'Open Zelle in your banking app and enter this email or phone number. Confirm the recipient before sending.')
-                        : (es ? 'Comprueba que el destinatario sea correcto antes de enviar el regalo.' : 'Please confirm the recipient before sending your gift.')}
+                        : (es ? 'Venmo puede pedirte iniciar sesión. Si no aparece el destinatario, abre Venmo y busca el usuario indicado o escanea el QR. Comprueba el destinatario antes de enviar.' : 'Venmo may ask you to sign in. If the recipient does not appear, open Venmo and search for the username shown or scan the QR. Confirm the recipient before sending.')}
                       </p>
                     </div>
                   ) : (
