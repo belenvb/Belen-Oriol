@@ -170,6 +170,13 @@ function findGiftDetailsByGuestInput_(rawInput) {
   return privateWeddingPaymentDetails_();
 }
 
+// Optional household address, kept only in the private stored RSVP JSON.
+function normalizePostalAddress_(value) {
+  if (value == null) return '';
+  if (typeof value !== 'string' || value.length > 500) throw Error('Invalid postal address');
+  return value.trim();
+}
+
 function doPost(e) {
   rsvpSnapshot = null;
   roomSheetSnapshot = null;
@@ -241,6 +248,7 @@ function doPost(e) {
 
     const titularName = text(data.fullName || people[0].fullName, 200);
     const titularEmail = text(data.email || people[0].email, 254).toLowerCase();
+    const postalAddress = normalizePostalAddress_(data.postalAddress);
 
     if (!titularEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(titularEmail)) {
       throw Error('Invalid contact email');
@@ -370,7 +378,7 @@ function doPost(e) {
         message,
         outboundCount,
         returnCount,
-        JSON.stringify(Object.assign({}, data, {submissionId:id, invitationCode:code, code:code, guests:people, roomBookings:roomBookings, outboundShuttleCount:outboundCount, returnShuttleCount:returnCount})),
+        JSON.stringify(Object.assign({}, data, {submissionId:id, invitationCode:code, code:code, guests:people, postalAddress:postalAddress, roomBookings:roomBookings, outboundShuttleCount:outboundCount, returnShuttleCount:returnCount})),
       ];
 
       const existingRow = previousRow;
