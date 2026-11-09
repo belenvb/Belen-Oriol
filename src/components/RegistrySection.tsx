@@ -165,21 +165,27 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                         );
                       })}
                     </div>
-                  ) : paymentIdentifier ? (
+                  ) : (paymentIdentifier || (method === 'zelle' && details?.zelleQrDataUrl)) ? (
                     <div className="home-gift__payment-link-area">
-                      <dl className="home-gift__payment-identifier">
+                      {method === 'zelle' && details?.zelleQrDataUrl && (
+                        <div className="home-gift__zelle-qr">
+                          <img src={details.zelleQrDataUrl} alt={es ? 'Código QR oficial para enviar el regalo mediante Zelle' : 'Official Zelle QR code for sending a gift'} loading="lazy" decoding="async" />
+                          <p className="home-gift__note">{es ? 'Escanea este código desde la aplicación de tu banco compatible con Zelle. Comprueba el nombre del destinatario antes de enviar.' : 'Scan this code using your Zelle-enabled banking app. Confirm the recipient before sending.'}</p>
+                        </div>
+                      )}
+                      {paymentIdentifier && <dl className="home-gift__payment-identifier">
                         <dt>{method === 'bizum' ? 'Bizum' : method === 'venmo' ? 'Venmo' : 'Zelle'}</dt>
                         <dd className="home-gift__value">{paymentIdentifier}</dd>
-                      </dl>
+                      </dl>}
                       <div className="home-gift__payment-actions">
                         {method === 'venmo' && venmoProfile && (
                           <a className="home-gift__payment-link" href={venmoProfile} target="_blank" rel="noopener noreferrer">
                             {es ? 'Abrir perfil en Venmo' : 'Open Venmo profile'}
                           </a>
                         )}
-                        <button type="button" className="home-gift__payment-copy" onClick={() => { void copyPayment(paymentIdentifier); }}>
+                        {paymentIdentifier && <button type="button" className="home-gift__payment-copy" onClick={() => { void copyPayment(paymentIdentifier); }}>
                           {copied ? (es ? 'Copiado' : 'Copied') : (es ? 'Copiar identificador' : 'Copy payment details')}
-                        </button>
+                        </button>}
                       </div>
                       <p className="home-gift__note">{method === 'bizum'
                         ? (es ? 'Abre Bizum desde la aplicación de tu banco e introduce este número.' : 'Open Bizum in your banking app and enter this number.')
