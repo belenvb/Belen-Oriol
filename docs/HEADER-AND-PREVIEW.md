@@ -1,6 +1,6 @@
 # Cover and sharing preview
 
-The cover now has a photograph stage followed by an information band in normal document flow. Venue, date, and RSVP cannot overlap the couple. The main branch already omits the horizontal trencadis component; keep it omitted.
+The cover keeps the photograph behind the venue, date and RSVP, without a separate colored band. The details sit at the bottom over the lower water. A minimum cover height gives the information room on short screens. The main branch already omits the horizontal trencadis component; keep it omitted.
 
 On 2026-11-09 the production bundle at belen-oriol-psi.vercel.app still rendered the horizontal trencadis immediately before the story section. It differed from main. After reviewing and merging, ensure Vercel's Production deployment uses the intended repository and current main commit; redeploy that commit if needed. Do not regenerate invitation codes, change personal links, or recreate sheet rows.
 
@@ -16,6 +16,6 @@ Precise edit, mixed media wedding WhatsApp preview. Image 1 is EDIT TARGET. Imag
 
 ## Validation
 
-TypeScript check and production build. Browser checks in Spanish and English at 1440×900, 1024×768, 393×852, 375×667 and 844×390: information begins at or below the photograph's bottom, no horizontal overflow, no top mosaic. Inspect desktop and mobile screenshots.
+TypeScript check and production build. Browser checks in Spanish and English at 1440×900, 1024×768, 393×852, 375×667 and 844×390: lower information remains on the photograph, no separate colored band, no horizontal overflow, no top mosaic. Inspect desktop and mobile screenshots.
 
 After deployment, open an existing invitation in a private mobile browser, enter the site, and check the cover. Paste an existing link into a personal WhatsApp draft and wait for its preview without sending. WhatsApp may retain cached cards; changing the image filename does not guarantee that already-sent cards refresh. No invitation identifiers need to change.
