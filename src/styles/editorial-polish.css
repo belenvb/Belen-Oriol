@@ -238,3 +238,22 @@
   outline: 2px solid #946b50;
   outline-offset: 3px;
 }
+
+/* QR is supplied by the private Apps Script backend only after guest validation. */
+#registry.home-gift .home-gift__zelle-qr {
+  max-width: 360px;
+  margin: 0 auto 22px;
+  text-align: center;
+}
+#registry.home-gift .home-gift__zelle-qr img {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  margin: 0 auto 12px;
+  background: #fff;
+}
+#registry.home-gift .home-gift__zelle-qr .home-gift__note {
+  max-width: 340px;
+  margin: 0 auto;
+}
