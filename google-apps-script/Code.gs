@@ -40,7 +40,28 @@ function privateWeddingPaymentDetails_() {
     bizum: value('WEDDING_BIZUM'),
     venmo: value('WEDDING_VENMO'),
     zelle: value('WEDDING_ZELLE'),
+    // The private Zelle QR is read from a non-public Drive file only after guest access validation.
+    zelleQrDataUrl: privateWeddingZelleQrDataUrl_(p.getProperty('WEDDING_ZELLE_QR_FILE_ID')),
+
   };
+}
+
+
+function privateWeddingZelleQrDataUrl_(fileId) {
+  const id = String(fileId || '').trim();
+  if (!id || !/^[a-zA-Z0-9_-]{10,120}$/.test(id)) return '';
+  try {
+    // The script must be deployed to execute as the organizer, who has access
+    // to this PRIVATE Drive file. Do not change Drive file sharing to public.
+    const blob = DriveApp.getFileById(id).getBlob();
+    const mime = String(blob.getContentType() || '').toLowerCase();
+    if (!['image/png','image/jpeg','image/webp'].includes(mime)) return '';
+    if (blob.getSize() > 600000) return ''; // Keep Apps Script replies lightweight.
+    return 'data:' + mime + ';base64,' + Utilities.base64Encode(blob.getBytes());
+  } catch (error) {
+    console.error('Private Zelle QR cannot be loaded: ' + String(error));
+    return '';
+  }
 }
 
 
