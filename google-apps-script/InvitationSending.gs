@@ -250,12 +250,12 @@ function sendingCopy_(r, link) {
   // Social previews come from public Open Graph metadata and never contain a guest name or code.
   if (spanish) return {
     subject: 'Belén & Oriol | Nuestra invitación de boda',
-    whatsapp: '¡Hola, ' + r.name + '! 🌹\n\n¡Nos casamos el 4 de septiembre de 2027 en el Castillo del Buen Amor, Salamanca!\nHemos preparado una invitación muy especial para vosotros.' + fridayEs + '\n\nCódigo privado de acceso: ' + code + '\n\nAbre vuestro sobre aquí:\n' + link,
+    whatsapp: 'Hola, ' + r.name + '!\n\nEl 4 de septiembre de 2027 celebraremos nuestra boda en el Castillo del Buen Amor, Salamanca, y nos encantaría compartir ese día con vosotros. Hemos preparado una invitación muy especial para vosotros.' + fridayEs + '\n\nCódigo privado de acceso: ' + code + '\n\nAbre vuestro sobre aquí:\n' + link,
     sms: 'Belén y Oriol: ¡tenéis una invitación para nuestra boda! Código privado: ' + code + '\nAbre el sobre: ' + link,
   };
   return {
     subject: 'Belén & Oriol | Our Wedding Invitation',
-    whatsapp: 'Hi ' + r.name + '! 🌹\n\nWe’re getting married on September 4, 2027 at Castillo del Buen Amor in Salamanca! We have a very special invitation for you.' + fridayEn + '\n\nPrivate access code: ' + code + '\n\nOpen your envelope:\n' + link,
+    whatsapp: 'Hi ' + r.name + '!\n\nWe’re celebrating our wedding on September 4, 2027 at Castillo del Buen Amor in Salamanca, and we would love to share the day with you. We have a very special invitation for you.' + fridayEn + '\n\nPrivate access code: ' + code + '\n\nOpen your envelope:\n' + link,
     sms: 'Belén & Oriol: You are invited to our wedding! Private code: ' + code + '\nOpen your envelope: ' + link,
   };
 }
