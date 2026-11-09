@@ -13,6 +13,7 @@ interface Props {
 
 export function RegistrySection({ lang, verified, giftDetails }: Props) {
   const [method, setMethod] = useState<PaymentMethod>('bank');
+  const [copied, setCopied] = useState(false);
   const es = lang === 'es';
   const [guestAccess, setGuestAccess] = useState('');
   const [checkingAccess, setCheckingAccess] = useState(false);
@@ -66,6 +67,18 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
     : method === 'venmo' ? details?.venmo
     : method === 'zelle' ? details?.zelle
     : undefined;
+  const venmoName = String(details?.venmo || '').trim().replace(/^@/, '');
+  const venmoProfile = /^[a-zA-Z0-9._-]{2,40}$/.test(venmoName)
+    ? 'https://venmo.com/' + encodeURIComponent(venmoName)
+    : null;
+  const copyPayment = async (value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   return (
     <section id="registry" className="home-gift" aria-labelledby="home-gift-title">
@@ -125,7 +138,7 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
               <>
                 <div className="home-gift__methods" role="group" aria-label={es ? 'Forma de aportar' : 'Ways to give'}>
                   {(['bank', 'bizum', 'venmo', 'zelle'] as const).map(id => (
-                    <button key={id} type="button" aria-pressed={method === id} aria-controls="home-gift-payment" onClick={() => setMethod(id)}>
+                    <button key={id} type="button" aria-pressed={method === id} aria-controls="home-gift-payment" onClick={() => { setMethod(id); setCopied(false); }}>
                       {id === 'bank' ? (es ? 'Transferencia' : 'Bank transfer') : id === 'bizum' ? 'Bizum' : id === 'venmo' ? 'Venmo' : 'Zelle'}
                     </button>
                   ))}
@@ -153,10 +166,28 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                       })}
                     </div>
                   ) : paymentIdentifier ? (
-                    <dl className="home-gift__payment-identifier">
-                      <dt>{method === 'bizum' ? 'Bizum' : method === 'venmo' ? 'Venmo' : 'Zelle'}</dt>
-                      <dd className="home-gift__value">{paymentIdentifier}</dd>
-                    </dl>
+                    <div className="home-gift__payment-link-area">
+                      <dl className="home-gift__payment-identifier">
+                        <dt>{method === 'bizum' ? 'Bizum' : method === 'venmo' ? 'Venmo' : 'Zelle'}</dt>
+                        <dd className="home-gift__value">{paymentIdentifier}</dd>
+                      </dl>
+                      <div className="home-gift__payment-actions">
+                        {method === 'venmo' && venmoProfile && (
+                          <a className="home-gift__payment-link" href={venmoProfile} target="_blank" rel="noopener noreferrer">
+                            {es ? 'Abrir perfil en Venmo' : 'Open Venmo profile'}
+                          </a>
+                        )}
+                        <button type="button" className="home-gift__payment-copy" onClick={() => { void copyPayment(paymentIdentifier); }}>
+                          {copied ? (es ? 'Copiado' : 'Copied') : (es ? 'Copiar identificador' : 'Copy payment details')}
+                        </button>
+                      </div>
+                      <p className="home-gift__note">{method === 'bizum'
+                        ? (es ? 'Abre Bizum desde la aplicación de tu banco e introduce este número.' : 'Open Bizum in your banking app and enter this number.')
+                        : method === 'zelle'
+                        ? (es ? 'Abre Zelle desde tu banco e introduce este email o teléfono. Comprueba siempre el nombre antes de confirmar.' : 'Open Zelle in your banking app and enter this email or phone number. Confirm the recipient before sending.')
+                        : (es ? 'Comprueba que el destinatario sea correcto antes de enviar el regalo.' : 'Please confirm the recipient before sending your gift.')}
+                      </p>
+                    </div>
                   ) : (
                     <p className="home-gift__note">{es ? 'Datos pendientes de confirmar.' : 'Details to be confirmed.'}</p>
                   )}
