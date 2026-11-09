@@ -13,6 +13,7 @@ export function PaymentQr({ method, lang, src }: {
     <div className="home-gift__zelle-qr">
       {valid && failedSrc !== src ? <>
         <img src={src} alt={es ? `Código QR del destinatario de ${name}` : `${name} recipient QR code`}
+          className="home-gift__qr-image" style={{ width: 'auto', maxWidth: 'min(100%, 240px)', height: 'auto', display: 'block', margin: '0 auto 12px' }}
           decoding="async" onError={() => setFailedSrc(src || '')} />
         <p className="home-gift__note">{method === 'zelle'
           ? (es ? 'Escanea el QR desde la aplicación de tu banco compatible con Zelle. Comprueba el destinatario antes de enviar.' : 'Scan the QR using your Zelle-enabled banking app. Confirm the recipient before sending.')

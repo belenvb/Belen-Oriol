@@ -1,13 +1,13 @@
 /* Readable wedding details and a direct RSVP entry on the cover. */
-#hero.editorial-hero .hero-details .hero-venue-line{font-size:clamp(20px,2.2vw,29px)!important;font-weight:600!important;line-height:1.35!important;letter-spacing:.02em!important;text-wrap:balance}
-#hero.editorial-hero .hero-details .hero-date-long{font-size:clamp(16px,1.5vw,21px)!important;font-weight:700!important;line-height:1.5!important;letter-spacing:.06em!important;margin-top:12px!important}
-#hero.editorial-hero .hero-rsvp{display:inline-flex;align-items:center;justify-content:center;min-height:46px;margin-top:22px;padding:12px 25px;border:1px solid #f7eddd;border-radius:999px;background:#f7eddd;color:#542b31;font:600 12px/1.4 'Plus Jakarta Sans',Arial,sans-serif;letter-spacing:.04em;text-shadow:none;cursor:pointer}
-#hero.editorial-hero .hero-rsvp:hover{background:#fffaf2}
-#hero.editorial-hero .hero-rsvp:focus-visible{outline:3px solid #fff;outline-offset:5px}
-@media(max-width:640px){#hero.editorial-hero .hero-details{left:6%;right:6%}#hero.editorial-hero .hero-rsvp{margin-top:17px;max-width:100%;padding:12px 20px}}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details .hero-venue-line{font-size:clamp(20px,2.2vw,29px)!important;font-weight:600!important;line-height:1.35!important;letter-spacing:.02em!important;text-wrap:balance}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details .hero-date-long{font-size:clamp(16px,1.5vw,21px)!important;font-weight:700!important;line-height:1.5!important;letter-spacing:.06em!important;margin-top:12px!important}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-rsvp{display:inline-flex;align-items:center;justify-content:center;min-height:46px;margin-top:22px;padding:12px 25px;border:1px solid #f7eddd;border-radius:999px;background:#f7eddd;color:#542b31;font:600 12px/1.4 'Plus Jakarta Sans',Arial,sans-serif;letter-spacing:.04em;text-shadow:none;cursor:pointer}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-rsvp:hover{background:#fffaf2}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-rsvp:focus-visible{outline:3px solid #fff;outline-offset:5px}
+@media(max-width:640px){:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details{left:6%;right:6%}:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-rsvp{margin-top:17px;max-width:100%;padding:12px 20px}}
 
 /* Keep the couple clear of the information block. */
-#hero.editorial-hero .hero-copy h1{font-size:clamp(64px,8.5vw,132px)!important}
-#hero.editorial-hero .hero-details{bottom:32px!important}
-#hero.editorial-hero .hero-discover{left:auto!important;right:24px!important;bottom:20px!important;transform:none!important}
-@media(max-width:640px){#hero.editorial-hero .hero-copy h1{font-size:clamp(44px,10vw,74px)!important}#hero.editorial-hero .hero-details{bottom:72px!important}#hero.editorial-hero .hero-discover{right:12px!important;bottom:10px!important}}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-copy h1{font-size:clamp(64px,8.5vw,132px)!important}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details{bottom:32px!important}
+:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-discover{left:auto!important;right:24px!important;bottom:20px!important;transform:none!important}
+@media(max-width:640px){:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-copy h1{font-size:clamp(44px,10vw,74px)!important}:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-details{bottom:72px!important}:is(#hero, .bo-intro__portal .editorial-hero).editorial-hero .hero-discover{right:12px!important;bottom:10px!important}}

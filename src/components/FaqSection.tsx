@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { Language } from '../types';
+import './FaqSection.css';
 
 interface FaqSectionProps {
   lang: Language;

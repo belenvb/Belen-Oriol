@@ -1,0 +1,8 @@
+/* A long mobile chapter needs paper texture and separate proportional borders. */
+@media(max-width:700px){
+ #journey.magazine-journey.magazine-journey{position:relative;isolation:isolate;background:radial-gradient(ellipse at 10% 8%,#e8ce9c30,transparent 48%),radial-gradient(ellipse at 92% 86%,#d4b38820,transparent 48%),#fbf2e3!important;padding-bottom:110px!important}
+ #journey.magazine-journey::before,#journey.magazine-journey::after{content:'';position:absolute;left:0;right:0;z-index:0;pointer-events:none;background-image:url('/photos/wedding-watercolor-trencadis.png');background-size:100% auto;background-repeat:no-repeat}
+ #journey.magazine-journey::before{top:0;height:100px;background-position:center top;mask-image:linear-gradient(#000,transparent)}
+ #journey.magazine-journey::after{bottom:0;height:110px;background-position:center bottom;mask-image:linear-gradient(transparent,#000 40%)}
+ #journey.magazine-journey > *{position:relative;z-index:1}
+}

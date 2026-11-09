@@ -357,3 +357,13 @@
 }
 
 
+
+/* The mobile venue stays in the clear left side of the illustration. */
+@media(max-width:600px){
+ .bo-intro__letter-place{display:flex;flex-direction:column;align-items:flex-start;width:48%;max-width:48%;gap:2px;white-space:normal}
+ .bo-intro__letter-venue{display:block;max-width:100%;white-space:normal;line-height:1.12}
+ .bo-intro__letter-city{display:block;margin:0;line-height:1.12}
+ .bo-intro__letter-city::before{content:none}
+}
+
+@media(max-width:600px){.bo-intro__letter-frame > .bo-intro__identity-mark{top:5%}.bo-intro__letter-names{margin-top:5%}.bo-intro__letter-small{margin-bottom:1.2%}}
