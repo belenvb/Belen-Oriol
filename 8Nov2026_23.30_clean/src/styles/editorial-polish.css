@@ -1,0 +1,85 @@
+/* Restrained editorial details. The envelope keeps its own cinematic timing. */
+#story .atlantic-story__article{max-width:1040px;padding-top:26px}
+.story-origins{position:relative;max-width:820px;margin:0 auto 28px;width:100%;color:#742e40}
+.story-origins>img{display:block;width:100%;height:auto;aspect-ratio:3/1;object-fit:contain}
+.story-origins__thread{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.story-origins__labels{display:flex;justify-content:space-between;padding:0 12%;margin-top:4px;color:#816c57;font:400 15px/1.4 'Cormorant Garamond',Georgia,serif;letter-spacing:.04em}
+#story .atlantic-story__image{animation:editorial-photo-reveal .32s ease-out both}
+@keyframes editorial-photo-reveal{from{opacity:.5}to{opacity:1}}
+#story .atlantic-story__controls{background:transparent;padding:0;gap:12px}
+#story .atlantic-story__controls button{opacity:.8;transition:opacity .18s ease}
+#story .atlantic-story__controls button:hover{opacity:1}
+#story .atlantic-story__controls>span{font-variant-numeric:tabular-nums}
+/* Interaction relies on color and fine rules, with no scaling or heavy shadows. */
+:is(#registry,#rsvp,#journey) button,:is(#registry,#rsvp,#journey) a{transition:color .18s ease,background-color .18s ease,border-color .18s ease,opacity .18s ease!important}
+:is(#registry,#rsvp,#journey) button:hover{transform:none!important;box-shadow:none!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card button{box-shadow:none!important;border-radius:2px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet button[aria-pressed=false]{background:transparent;border-color:#d7c9bb}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet button[aria-pressed=false]:hover{border-color:#875a60;background:#f5eee580}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-shuttle-panel,#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-panel{border:0!important;border-top:1px solid #d7c9bb!important;border-radius:0!important;padding-inline:0!important;box-shadow:none!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-logistics>div:first-child h4{font-weight:500;text-transform:none;letter-spacing:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-logistics svg{width:15px;height:15px;stroke-width:1.4}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-return-title{font-weight:500}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests__summary{font-weight:400}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-panel>div:first-child>span{background:transparent;font-weight:400;letter-spacing:.03em}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact #rsvp-questionnaire>fieldset>button{border-radius:2px!important;box-shadow:none!important}
+#registry.home-gift .home-gift__reveal{box-shadow:none;transition:border-color .18s ease}
+#registry.home-gift .home-gift__reveal:hover{transform:none;box-shadow:none}
+#registry.home-gift .home-gift__photo img{transition:opacity .3s ease;transform:none!important}
+#registry.home-gift .home-gift__methods button{border-radius:0;box-shadow:none;font-weight:400}
+#registry.home-gift .home-gift__field button{border:0;border-bottom:1px solid #a78c6a;border-radius:0;background:transparent;min-height:44px}
+#journey #castle-rooms .castle-stay__photo-link{transition:color .18s ease!important}
+#journey #castle-rooms .castle-stay__photo-link:hover{color:#925963}
+#journey #castle-rooms .castle-stay__room:hover{background:transparent}
+#journey .castle-stay__room:hover>figure img{transform:none}
+/* Stop repeated decorative pulses and scroll-linked title movement. */
+.editorial-hero .hero-copy,.editorial-hero .hero-copy h1{animation:none!important}
+.hero-discover i,.hero-discover::before,.hero-discover::after{animation:none!important}
+.wedding-header__desktop button{transition:color .18s ease,opacity .18s ease}
+:is(button,a,input,select,summary):focus-visible{outline:2px solid #986b4b;outline-offset:4px}
+@media(max-width:700px){.story-origins{margin-bottom:24px}.story-origins__labels{font-size:13px;padding-inline:8%}#story .atlantic-story__article{padding-top:22px}.story-origins__thread{stroke-width:1.8}}
+@media(prefers-reduced-motion:reduce){#story .atlantic-story__image{animation:none!important}:is(#registry,#rsvp,#journey) button,:is(#registry,#rsvp,#journey) a{transition:none!important}}
+/* Put the cities in the existing article margins, without a new header row. */
+#story .atlantic-story__article{position:relative;display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,820px) minmax(110px,1fr);column-gap:24px;max-width:1440px;padding:38px 28px 20px;align-items:center}
+#story .atlantic-story__prose{grid-column:2;grid-row:1;width:100%;min-width:0}
+.story-city{width:100%;min-width:0;margin:0;grid-row:1;align-self:center;pointer-events:none}
+.story-city--salamanca{grid-column:1}.story-city--barcelona{grid-column:3}
+.story-city>div{position:relative;overflow:hidden;width:100%;aspect-ratio:1}
+.story-city img{position:absolute;width:300%;max-width:none;height:100%;object-fit:fill;top:0}
+.story-city--salamanca img{left:0}.story-city--barcelona img{right:0}
+.story-city figcaption{text-align:center;color:#816c57;font:400 14px/1.4 'Cormorant Garamond',Georgia,serif;letter-spacing:.03em;margin-top:6px}
+.story-thread-footer{grid-column:1/-1;grid-row:2;height:54px;margin-top:8px;color:#742e40;pointer-events:none}
+.story-thread-footer svg{display:block;width:100%;height:100%}
+@media(max-width:1100px){#story .atlantic-story__article{grid-template-columns:110px minmax(0,1fr) 110px;column-gap:14px;padding-inline:20px}}
+@media(max-width:760px){#story .atlantic-story__article{display:block;padding:28px 24px 20px}.story-city{display:none}.story-thread-footer{height:42px;margin-top:12px}}
+/* Full-scale architectural margins rather than small inset vignettes. */
+#story.atlantic-story .atlantic-story__article{max-width:1680px;grid-template-columns:minmax(240px,1fr) minmax(0,820px) minmax(240px,1fr);gap:0 28px;padding-inline:24px}
+#story.atlantic-story .story-city{width:100%;max-width:360px;justify-self:center}
+#story.atlantic-story .story-city>div{aspect-ratio:.88}
+#story.atlantic-story .story-city img{width:300%;height:auto;top:50%;transform:translateY(-50%)}
+#story.atlantic-story .story-city figcaption{font-size:17px;margin-top:0}
+#story.atlantic-story .atlantic-story__prose{font-size:clamp(21px,1.65vw,24px);line-height:1.55}
+@media(min-width:761px) and (max-width:1100px){#story.atlantic-story .atlantic-story__article{grid-template-columns:190px minmax(0,1fr) 190px;gap:0 18px;padding-inline:16px}#story.atlantic-story .atlantic-story__prose{font-size:20px;line-height:1.5}}
+@media(max-width:760px){#story.atlantic-story .atlantic-story__article{display:block;padding:28px 24px 20px}#story.atlantic-story .story-city{display:none}#story.atlantic-story .atlantic-story__prose{font-size:21px;line-height:1.55}}
+#story.atlantic-story .story-city img{width:275%}
+#rsvp.rsvp-refined .rsvp-paper-monogram{width:96px;height:64px;margin:0 auto 10px;letter-spacing:0;line-height:0}
+#rsvp.rsvp-refined .rsvp-paper-monogram img{display:block;width:100%;height:100%;object-fit:contain}
+/* Architectural watermarks: generous scale without changing the text flow. */
+#story.atlantic-story .atlantic-story__article{display:block;max-width:none;position:relative;isolation:isolate;overflow:hidden;padding:38px 28px 20px}
+#story.atlantic-story .atlantic-story__prose{position:relative;z-index:1;max-width:820px;margin-inline:auto}
+#story.atlantic-story .story-city{display:block;position:absolute;top:50%;transform:translateY(-50%);width:clamp(440px,43vw,780px);max-width:none;margin:0;z-index:-1;opacity:.17;pointer-events:none;mix-blend-mode:multiply}
+#story.atlantic-story .story-city--salamanca{left:clamp(-180px,-9vw,-70px)}
+#story.atlantic-story .story-city--barcelona{right:clamp(-180px,-9vw,-70px)}
+#story.atlantic-story .story-city>div{width:100%;aspect-ratio:1;overflow:hidden}
+#story.atlantic-story .story-city img{width:275%;max-width:none;height:auto;top:50%;transform:translateY(-50%)}
+#story.atlantic-story .story-thread-footer{position:relative;z-index:1;max-width:1120px;margin:12px auto 0;height:54px}
+@media(max-width:760px){#story.atlantic-story .atlantic-story__article{padding:28px 24px 20px}#story.atlantic-story .story-city{width:420px;opacity:.09}#story.atlantic-story .story-city--salamanca{left:-200px;top:30%}#story.atlantic-story .story-city--barcelona{right:-200px;top:74%}#story.atlantic-story .story-thread-footer{height:42px}}
+/* RSVP is a persistent action, including when navigation collapses on mobile. */
+.wedding-header .wedding-header__tools{gap:14px}
+.wedding-header .wedding-header__rsvp-button{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 16px;background:#642635;border:1px solid #642635;border-radius:2px;color:#fff8ed;font:500 10px/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:.1em;white-space:nowrap;cursor:pointer;transition:background-color .18s ease,border-color .18s ease}
+.wedding-header .wedding-header__rsvp-button:hover{background:#7b3545;border-color:#7b3545}
+.wedding-header .wedding-header__rsvp-button:focus-visible{outline:2px solid #c3a072;outline-offset:3px}
+#journey #castle-rooms .castle-stay__aside>a{border:0!important;box-shadow:none!important;background-image:none!important;text-decoration:underline!important;text-decoration-thickness:1px!important;text-underline-offset:6px;white-space:nowrap;width:max-content;max-width:100%}
+#journey #castle-rooms .castle-stay__aside>a::before,#journey #castle-rooms .castle-stay__aside>a::after{content:none!important}
+@media(max-width:1099px){.wedding-header .wedding-header__tools{gap:10px}.wedding-header .wedding-header__rsvp-button{padding:8px 11px;min-height:36px;font-size:10px}}
+@media(max-width:380px){.wedding-header .wedding-header__tools{gap:6px}.wedding-header .wedding-header__rsvp-button{padding-inline:9px}.wedding-header .wedding-header__bar{gap:6px;padding-inline:14px}}

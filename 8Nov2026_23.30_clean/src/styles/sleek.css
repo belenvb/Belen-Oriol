@@ -1,0 +1,183 @@
+/* A restrained editorial spread and a spacious, responsive invitation. */
+#journey .fashion-travel{max-width:1360px;grid-template-columns:.9fr 1.1fr;padding:100px 6% 80px;gap:9%}
+#journey .fashion-travel__photo{min-height:0;align-self:center}
+#journey .fashion-travel__photo img{mask-image:none;-webkit-mask-image:none;opacity:.9}
+#journey .fashion-travel__photo figcaption{font-size:9px;letter-spacing:.13em;padding-top:24px}
+#journey .fashion-travel h2{font-size:clamp(64px,6.8vw,96px)!important;line-height:.98!important;margin-bottom:32px}
+#journey .fashion-travel__kicker{font-size:10px;margin-bottom:24px}
+#journey .fashion-travel__venue p{font-size:13px}
+#journey .fashion-travel__tabs button{font-size:12px;min-height:56px}
+#journey .fashion-travel__columns{gap:30px;min-height:240px}
+#journey .fashion-travel__columns p{font-size:13px;line-height:1.8}
+#journey .fashion-travel__columns .fashion-travel__distance{font-size:11px}
+#journey .castle-stay{max-width:1196px;padding:38px 0 60px;margin:0 auto;width:88%}
+#journey .castle-stay__body{grid-template-columns:minmax(0,.75fr) minmax(0,1.5fr);gap:70px}
+#journey .castle-stay__header h3{font-size:52px;line-height:1.03}
+#journey .castle-stay__aside{font-size:13px;line-height:1.85}
+#journey .castle-stay__aside p{max-width:33ch}
+#journey .castle-stay__room{grid-template-columns:112px minmax(0,1fr) auto auto;gap:20px;padding:22px 0;align-items:center}
+#journey .castle-stay__room>figure{width:112px;height:94px;margin:0;overflow:hidden}
+#journey .castle-stay__room>figure img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .3s}
+#journey .castle-stay__room:hover>figure img{transform:scale(1.04)}
+#journey .castle-stay__name h4{font-size:26px;line-height:1.12}
+#journey .castle-stay__name p{font-size:10px;line-height:1.6;max-width:24ch}
+#journey .castle-stay__price{font-size:26px;white-space:nowrap}
+#journey .castle-stay__room button{font-size:11px;min-height:44px}
+#journey .castle-stay__notes{font-size:11px;line-height:1.8}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-paper-layout{width:100%;max-width:1480px;padding:52px 4% 36px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-response-layout{width:100%;max-width:none!important;grid-template-columns:minmax(0,1fr)}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid>.rsvp-guest-sheet{padding:26px!important;border-radius:2px!important;min-width:0;container-type:inline-size}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]{position:relative;padding:16px!important;min-height:88px;text-align:left}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]:last-child{grid-column:1/-1;min-height:60px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child{display:flex;justify-content:space-between;gap:12px;padding:0!important;width:100%}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:first-child{font-size:13px;min-width:0;line-height:1.5}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:last-child{position:static!important;flex:0 0 18px;width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;margin:0!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance svg{flex-shrink:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:last-child>span{font-size:12px;line-height:1.5}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet input{font-size:16px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .rsvp-menu-grid{display:flex;flex-wrap:wrap}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .rsvp-menu-grid button{flex:1 1 120px;white-space:normal}
+@container(max-width:440px){.rsvp-guest-sheet>div.grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:1100px){
+ #rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid{grid-template-columns:minmax(0,1fr)}
+ #journey .castle-stay__body{gap:35px;grid-template-columns:.75fr 1.25fr}
+ #journey .castle-stay__room{grid-template-columns:88px minmax(0,1fr) auto;gap:14px}
+ #journey .castle-stay__room>figure{width:88px;height:88px;grid-row:span 2}
+ #journey .castle-stay__room button{grid-column:2/-1;justify-self:start;min-height:36px}
+}
+@media(max-width:700px){
+ #journey .fashion-travel{display:flex;flex-direction:column-reverse;padding:48px 6% 38px;gap:28px}
+ #journey .fashion-travel__copy{padding:0}
+ #journey .fashion-travel h2{font-size:64px!important}
+ #journey .fashion-travel__photo{padding:0;width:100%;max-width:420px}
+ #journey .fashion-travel__photo img{max-height:220px;object-fit:contain}
+ #journey .fashion-travel__columns{min-height:0;gap:22px}
+ #journey .castle-stay__body{display:block}
+ #journey .castle-stay__header h3{font-size:44px}
+ #journey .castle-stay__aside p{max-width:none}
+ #journey .castle-stay__catalogue{margin-top:32px}
+ #journey .castle-stay__name h4{font-size:24px}
+ #rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-paper-layout{padding:48px 18px 28px!important}
+ #rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid>.rsvp-guest-sheet{padding:18px!important}
+ #rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]{padding:12px!important}
+}
+@media(prefers-reduced-motion:reduce){#journey .castle-stay__room>figure img{transition:none}}
+#journey #castle-rooms .castle-stay__columns{background:transparent;color:#796957;padding:12px 0;border-bottom:1px solid #8b705740}
+#journey #castle-rooms .castle-stay__name{grid-row:auto}
+#journey #castle-rooms .castle-stay__room:not(:has(>figure)){grid-template-columns:minmax(0,1fr) auto 76px}
+#journey #castle-rooms .castle-stay__room:not(:has(>figure)) button{grid-column:auto;justify-self:end}
+@media(max-width:420px){#journey #castle-rooms .castle-stay__room:not(:has(>figure)){grid-template-columns:minmax(0,1fr) auto}#journey #castle-rooms .castle-stay__room:not(:has(>figure)) button{grid-column:2}}
+/* Soft pigment washes on warm paper; compact invitation controls. */
+#journey.magazine-journey,#rsvp.rsvp-refined{background:radial-gradient(ellipse at 0% 20%,#a9b6a422,transparent 48%),radial-gradient(ellipse at 95% 65%,#c08c8220,transparent 50%),radial-gradient(ellipse at 35% 95%,#d5bd8e22,transparent 55%),#faf7f0!important}
+#journey .fashion-travel{padding:52px 6% 34px;gap:7%;align-items:center}
+#journey .fashion-travel__photo img{max-height:230px;object-fit:contain}
+#journey .fashion-travel__photo figcaption{display:none}
+#journey .fashion-travel__venue{text-align:center;padding:16px 0 0}
+#journey .fashion-travel__venue h3{font-size:28px}
+#journey .fashion-travel__venue p{font-size:11px;margin-bottom:8px}
+#journey .fashion-travel h2{font-size:66px!important;margin-bottom:22px}
+#journey .fashion-travel__columns{min-height:0;padding-top:20px}
+#journey .castle-stay{padding-bottom:32px}
+#journey .magazine-stay{background:transparent}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-paper-layout{max-width:1280px;padding:38px 9% 28px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card,#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card .rsvp-guest-sheet{background:transparent!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid{gap:22px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid>.rsvp-guest-sheet{padding:16px!important;border:0!important;border-top:1px solid #cbbcb0!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed],#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]:last-child{grid-column:auto;min-height:64px;padding:9px!important;gap:5px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:first-child{font-size:11px;gap:4px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:first-child svg{display:none}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:last-child{flex-basis:13px;width:13px!important;height:13px!important;min-width:13px!important;min-height:13px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:last-child>span{font-size:10px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .rsvp-menu-grid{display:flex;gap:5px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .rsvp-menu-grid button{flex:1 1 0;min-width:0;min-height:44px;padding:5px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .rsvp-menu-grid button span{font-size:10px;line-height:1.3}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet input{font-size:14px!important;padding:9px 10px!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card button,#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card label{font-family:'Plus Jakarta Sans',sans-serif}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card input:not([type=checkbox]),#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card textarea{background:#fffcf780!important;border:0!important;border-bottom:1px solid #bba99b!important;border-radius:0!important;font-family:'Plus Jakarta Sans',sans-serif}
+#rsvp-invitation-access{max-width:460px;margin:12px auto 24px}
+#rsvp-invitation-access>label{font-size:12px;font-weight:400;letter-spacing:.02em}
+#rsvp-invitation-access>button{background:#672535;border-radius:2px;padding:12px 22px;font-size:11px;letter-spacing:.08em}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-paper-botanical{z-index:0;opacity:.85}
+#rsvp.rsvp-refined .rsvp-response-layout{position:relative;z-index:1}
+@media(min-width:1101px){#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){#journey .fashion-travel{flex-direction:column;padding:32px 7%;gap:28px}#journey .fashion-travel__destination{width:100%}#journey .fashion-travel h2{font-size:54px!important}#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-paper-layout{padding:46px 6% 24px!important}#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid>.rsvp-guest-sheet{padding:10px 0!important}}
+/* Final density pass: a narrow botanical-safe form and quiet modern typography. */
+#journey.magazine-journey{background:#faf7f0 url('/watercolor-paper.svg') center/100% 100%!important}
+#journey .fashion-travel{padding-block:34px 26px;gap:6%;grid-template-columns:.85fr 1.15fr}
+#journey .fashion-travel h2{font-size:clamp(44px,4.7vw,64px)!important;line-height:1!important;margin-bottom:20px}
+#journey .fashion-travel__photo img{max-height:195px}
+#journey .fashion-travel__venue h3{font-size:24px}
+#journey .fashion-travel__venue{padding-top:8px}
+#journey .fashion-travel__tabs{border-top:0}
+#journey .fashion-travel__tabs button{min-height:42px;font-size:11px}
+#journey .fashion-travel__columns h4{font:500 14px/1.4 'Plus Jakarta Sans',sans-serif;margin-bottom:8px;letter-spacing:-.02em}
+#journey .fashion-travel__columns p{font-size:12px;line-height:1.65;margin-bottom:8px}
+#journey #castle-rooms{padding:22px 0 26px;background:transparent}
+#journey #castle-rooms .castle-stay__body{padding:12px 0;gap:38px;grid-template-columns:.8fr 1.5fr}
+#journey #castle-rooms .castle-stay__header h3{font-size:38px}
+#journey #castle-rooms .castle-stay__aside{font-size:12px;line-height:1.65}
+#journey #castle-rooms .castle-stay__room{padding:10px 0;gap:8px 16px;min-height:66px}
+#journey #castle-rooms .castle-stay__name h4{font:500 13px/1.4 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em}
+#journey #castle-rooms .castle-stay__name p{margin-top:3px;font-size:10px}
+#journey #castle-rooms .castle-stay__price{font:400 18px/1.3 'Plus Jakarta Sans',sans-serif}
+#journey #castle-rooms .castle-stay__room button{min-height:38px;font-size:11px;text-decoration:none}
+#journey #castle-rooms .castle-stay__masthead{padding-bottom:10px}
+#journey #castle-rooms .castle-stay__colophon{margin-top:10px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-paper-layout{max-width:1280px;padding:28px 0 24px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-response-layout{width:72%;max-width:920px!important;margin-inline:auto!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-paper-header{margin-bottom:12px!important;padding-bottom:0!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-paper-header h2{font-size:54px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-paper-subtitle{margin:6px 0 12px;font-size:20px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card :is(fieldset,form){min-width:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact #rsvp-questionnaire fieldset>*+*{margin-top:16px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-logistics{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:14px;margin-top:14px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-logistics>*{margin:0!important;min-width:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-logistics>div:not(.rsvp-shuttle-panel){grid-column:1/-1}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-logistics>div:first-child h4{font-size:13px;letter-spacing:0;text-transform:none}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-shuttle-panel{padding:12px!important;background:transparent!important;border-radius:3px!important;display:flex;flex-direction:column;justify-content:space-between;gap:8px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-shuttle-panel :is(span,div){font-size:11px;line-height:1.5;text-transform:none;letter-spacing:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-return-title{display:flex;align-items:center;gap:6px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-passengers{display:flex;justify-content:space-between;align-items:center;margin:0;padding-top:5px;font-size:11px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-passengers select{width:64px;padding:5px 8px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-panel{padding:12px!important;background:transparent!important;border-width:1px;border-radius:3px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-panel>p{font-size:11px;line-height:1.5;margin-bottom:8px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-panel>div:last-child{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-choice{margin:0!important;padding:9px 0!important;gap:8px;border:0;border-top:1px solid #d8ccc0;border-radius:0;background:transparent;display:flex;flex-direction:row;align-items:center}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-choice>div>span.block{display:none}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-choice>div>span.inline-flex{background:transparent;border:0;padding:0;margin-top:3px;font-size:9px;font-weight:400;text-transform:none}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-choice label>span{display:none}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-choice select{min-width:52px;padding:5px 7px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-choice>div>div{gap:2px 8px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-choice>div>div>span{font-size:11px;font-weight:500}
+@media(max-width:1100px){#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid{grid-template-columns:1fr}}
+@media(max-width:700px){#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-response-layout{width:88%}#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-paper-botanical{opacity:.5}#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-logistics{grid-template-columns:1fr}#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-panel>div:last-child{grid-template-columns:1fr}#journey #castle-rooms .castle-stay__body{display:block}#journey .fashion-travel{padding-block:26px}#journey #castle-rooms .castle-stay__header h3{font-size:34px}}
+/* Illustrated wedding stationery, matched to the email invitation. */
+#journey.magazine-journey{background:#f8efdf url('/photos/wedding-watercolor-stationery.png') center/cover no-repeat!important}
+#journey .magazine-stay,#journey #castle-rooms{background:transparent}
+#journey .fashion-travel__photo img{mix-blend-mode:multiply}
+#journey .fashion-travel__photo img{filter:sepia(.72) saturate(1.3) hue-rotate(350deg);opacity:.94}
+#faq .faq-editorial-question{grid-template-columns:auto minmax(0,1fr)}
+#journey #castle-rooms{padding-bottom:48px}
+#journey.magazine-journey{background-image:url('/photos/wedding-watercolor-trencadis.png')!important}
+#journey.magazine-journey{background-size:100% 100%!important}
+/* Keep the access-form toolbar clear of the decorative botanical edges too. */
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card:not(:has(#rsvp-questionnaire)){width:100%;max-width:460px;margin-inline:auto!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-form-toolbar{justify-content:flex-end;padding:8px 0!important;margin:0 0 12px!important;min-height:40px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-form-toolbar button{font-size:12px;min-height:36px}
+#journey #castle-rooms .castle-stay__aside>a{font-size:14px;line-height:1.6;display:inline-block;padding-block:7px}
+#journey #castle-rooms .castle-stay__name p{max-width:none;font-size:10px;line-height:1.3}
+#journey #castle-rooms .castle-stay__price{display:flex;align-items:baseline;gap:4px;flex-wrap:wrap;max-width:160px}
+#journey #castle-rooms .castle-stay__breakfast{font:400 9px/1.3 'Plus Jakarta Sans',sans-serif;color:#706254;white-space:nowrap;margin-left:4px}
+#journey #castle-rooms .castle-stay__room{min-height:55px;padding-block:8px}
+/* Settle near chapter boundaries without forcing long chapters to advance. */
+html:root{scroll-snap-type:y proximity;scroll-padding-top:58px}
+#hero,#story,#schedule,#journey,#registry,#rsvp,#faq{scroll-snap-align:start;scroll-snap-stop:normal;scroll-margin-top:0!important}
+@media(prefers-reduced-motion:reduce){html:root{scroll-snap-type:none;scroll-behavior:auto!important}}
+@media(max-width:700px){#journey #castle-rooms .castle-stay__price{max-width:110px}#journey #castle-rooms .castle-stay__breakfast{margin-left:0}}
+
+/* Long content must remain freely scrollable; in particular FAQ must not
+   pull the reader back to its start when continuing to the footer. */
+#schedule,#journey,#rsvp,#faq{scroll-snap-align:none}

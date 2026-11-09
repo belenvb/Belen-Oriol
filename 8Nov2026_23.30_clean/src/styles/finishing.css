@@ -1,0 +1,224 @@
+/* Wedding refinements: preserve free reading within long chapters. */
+html:root { scroll-snap-type: none!important; scroll-padding-top: 58px; }
+#hero,#story,#schedule,#journey,#registry,#rsvp,#faq { scroll-snap-align: none!important; }
+@media (prefers-reduced-motion: reduce) { html:root { scroll-snap-type: none; } }
+@media (max-width: 767px) { html:root { scroll-snap-type: none; } }
+.editorial-hero .hero-discover { left:50%; right:auto; transform:translateX(-50%); bottom:24px; }
+.wedding-header__desktop button { font-size:12px; letter-spacing:.045em; opacity:.92; }
+.weekend-heading .day-tabs button[aria-pressed=true] { font-size:1.12em; font-weight:700; }
+#castle-rooms .castle-stay__aside>a { font-weight:700; color:#572b37; }
+#castle-rooms .castle-stay__room { position:relative; isolation:isolate; }
+#castle-rooms .castle-stay__room button,#castle-rooms .castle-stay__details { position:relative; z-index:4; }
+#castle-rooms .castle-stay__room { grid-template-columns:minmax(0,1fr) auto auto!important; gap:clamp(7px,1vw,15px); }
+#castle-rooms .castle-stay__name { grid-column:1; grid-row:1; min-width:0; }
+#castle-rooms .castle-stay__price { grid-column:2; grid-row:1; }
+#castle-rooms .castle-stay__name h4 a { color:inherit; text-decoration:none; }
+#castle-rooms .castle-stay__name h4 a span { font:500 13px 'Plus Jakarta Sans',sans-serif; color:#ab826d; vertical-align:middle; }
+#castle-rooms .castle-stay__name h4 a:hover { text-decoration:underline; text-underline-offset:4px; }
+#castle-rooms .castle-stay__room button { grid-column:3!important; grid-row:1; white-space:nowrap; }
+/* Keep the final room's Request control clear of the decorative rose. */
+#journey #castle-rooms .castle-stay__catalogue { padding-right:clamp(26px,3.2vw,50px); box-sizing:border-box; }
+@media(max-width:700px) { #journey #castle-rooms .castle-stay__catalogue { padding-right:20px; } }
+#castle-rooms .castle-stay__name h4 .castle-stay__photo-link {
+  display:inline; padding:0; min-height:0; background:none; border:0;
+  color:inherit; font:inherit; text-align:left; cursor:pointer;
+  text-decoration:none; white-space:normal;
+}
+#castle-rooms .castle-stay__name h4 .castle-stay__photo-link:hover { text-decoration:underline; text-underline-offset:4px; }
+#castle-rooms .castle-stay__name h4 .castle-stay__photo-link span { font:500 13px 'Plus Jakarta Sans',sans-serif; color:#ab826d; }
+#castle-rooms .castle-stay__explore { color:#572b37; border:0; border-bottom:1px solid currentColor; background:none; padding:7px 0; font:700 13px/1.6 'Plus Jakarta Sans',sans-serif; cursor:pointer; }
+.castle-photos__overlay { position:fixed; inset:0; z-index:2000; display:grid; place-items:center; padding:22px; background:#180d14db; backdrop-filter:blur(7px); }
+.castle-photos__dialog { position:relative; width:min(800px,100%); max-height:94vh; overflow:auto; padding:20px; background:#f9f5ec; box-shadow:0 18px 70px #0008; color:#492935; }
+.castle-photos__close { position:absolute; top:8px; right:10px; z-index:3; width:38px; height:38px; border-radius:50%; background:#f9f5ec; color:#492935; font-size:30px; line-height:1; cursor:pointer; }
+.castle-photos__image-wrap { height:min(60vh,540px); background:#e7ddd1; display:grid; place-items:center; }
+.castle-photos__image-wrap img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
+/* The Medieval Suite portrait must fit entirely in the visible dialog. */
+.castle-photos__dialog--medieval { display:flex; flex-direction:column; max-height:calc(100dvh - 28px); overflow:hidden; }
+.castle-photos__dialog--medieval .castle-photos__image-wrap { height:auto; min-height:0; flex:1 1 auto; max-height:calc(100dvh - 180px); }
+.castle-photos__dialog--medieval .castle-photos__image-wrap img { display:block; width:auto; height:auto; max-width:100%; max-height:calc(100dvh - 180px); object-fit:contain; }
+.castle-photos__dialog--medieval .castle-photos__footer,.castle-photos__dialog--medieval .castle-photos__booking-note { flex-shrink:0; }
+@media(max-height:600px) { .castle-photos__dialog--medieval .castle-photos__image-wrap,.castle-photos__dialog--medieval .castle-photos__image-wrap img { max-height:calc(100dvh - 146px); } }
+.castle-photos__footer { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:15px 0 8px; }
+.castle-photos__footer h3 { font:400 clamp(25px,3vw,36px)/1.1 'Cormorant Garamond',serif; margin:0 0 4px; }
+.castle-photos__footer p,.castle-photos__booking-note { font:400 11px/1.5 'Plus Jakarta Sans',sans-serif; margin:0; color:#79695f; }
+.castle-photos__actions { display:flex; gap:8px; }
+.castle-photos__actions button { width:38px; height:38px; border:1px solid #a9927c; border-radius:50%; background:#fff8ef; color:#492935; cursor:pointer; }
+.castle-photos__booking-note { border-top:1px solid #b9a99780; padding-top:10px; }
+#registry.home-gift .home-gift__methods { display:flex; justify-content:flex-start; flex-wrap:wrap; gap:7px; border:0; }
+#registry.home-gift .home-gift__methods button { flex:0 0 auto; border:1px solid #a3865773; border-radius:999px!important; background:linear-gradient(145deg,#fffaf057,#f5eddf0b)!important; padding:10px 16px; min-height:44px; font-size:12px; transition:background .22s,box-shadow .22s,transform .22s; }
+#registry.home-gift .home-gift__methods button:hover { transform:translateY(-1px); box-shadow:0 4px 14px #26111a24; }
+#registry.home-gift .home-gift__methods button[aria-pressed=true] { background:linear-gradient(145deg,#754653,#4e2937)!important; color:#fff7e9!important; border-color:#754653; box-shadow:0 3px 12px #26111a30; }
+#registry.home-gift .home-gift__methods button::after { display:none; }
+@media(max-width:640px) { #registry.home-gift .home-gift__methods { gap:6px; } #registry.home-gift .home-gift__methods button { padding-inline:12px; } }
+
+/* Transport choices should read as a single grouped control, not a spread-out row. */
+#journey .fashion-travel__tabs { display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:clamp(8px,1.5vw,22px); }
+#journey .fashion-travel__tabs button { flex:0 0 auto; padding-inline:6px; white-space:nowrap; }
+#journey .fashion-travel__wedding-shuttle { margin-top:25px; border-top:1px solid #9b7e6960; padding-top:19px; max-width:660px; }
+#journey .fashion-travel__wedding-shuttle h4 { font:500 15px/1.4 'Plus Jakarta Sans',sans-serif; color:#542b31; margin:0 0 8px; }
+#journey .fashion-travel__wedding-shuttle p { font:400 12px/1.75 'Plus Jakarta Sans',sans-serif; color:#675e57; margin:0 0 7px; }
+
+/* Editorial highlights and tighter transition from transport to castle rooms. */
+#journey .fashion-travel { padding-bottom:10px; }
+#journey .fashion-travel__columns { padding-top:13px; }
+#journey .fashion-travel__columns article { border-left:2px solid #b9906680; padding-left:14px; }
+#journey .fashion-travel__columns h4 { color:#542b37; font-weight:650; }
+#journey .fashion-travel__columns .fashion-travel__distance {
+  color:#8e583b; font-weight:700; background:#e9ddca80; border-radius:4px;
+  padding:5px 8px; margin-left:-8px; width:fit-content; max-width:100%;
+}
+#journey .fashion-travel__information a { color:#753847; font-weight:700; text-decoration-thickness:1px; }
+#journey .fashion-travel__wedding-shuttle {
+  margin-top:12px; padding:12px 15px 9px; max-width:660px;
+  border:1px solid #bca58a78; border-left:3px solid #a3774d;
+  background:linear-gradient(120deg,#eadfcd70,#f8f5ee12); border-radius:3px;
+}
+#journey .fashion-travel__wedding-shuttle h4 { margin-bottom:5px; color:#763747; font-weight:700; }
+#journey .fashion-travel__wedding-shuttle p { line-height:1.55; margin-bottom:5px; }
+#journey #castle-rooms .castle-stay { padding-top:16px; }
+#journey #castle-rooms .castle-stay__body { padding-top:5px; }
+@media(max-width:700px) {
+  #journey .fashion-travel { padding-bottom:12px; }
+  #journey .fashion-travel__columns article { padding-left:10px; }
+  #journey #castle-rooms .castle-stay { padding-top:14px; }
+}
+
+/* A single continuous velvet texture follows the actual hinged triangle.
+   Do not paste the complete email photograph here: its baked-in seal and
+   envelope folds were being cropped into visible, displaced fragments. */
+.bo-intro__flap-face {
+  background-image:linear-gradient(170deg,#3d0a190a,#31091918),url('/photos/envelope-cotton-burgundy.webp')!important;
+  background-size:100% 100%,1886px 1201px!important;
+  background-position:center,center bottom -34px!important;
+  filter:drop-shadow(0 4px 3px #1b0710aa) drop-shadow(0 8px 6px #17050c70)!important;
+}
+.bo-intro__flap-face::after {
+  background:linear-gradient(180deg,#fff3e00b,transparent 55%,#15030c24 96%)!important;
+  box-shadow:inset 0 2px 2px #f2c4a655,inset 0 -5px 4px #19050d70!important;
+}
+.bo-intro__seal { background-image:url('/photos/wax-seal-BO-photographic-v15.png')!important; width:clamp(92px,10vw,130px); height:clamp(92px,10vw,130px); }
+/* Realistic underside of the pressed wax: it appears when the flap turns over. */
+.bo-intro__seal-back {
+  display:none!important;
+}
+/* On opening, the wax stays on the outside: only a shallow impression appears
+   on the inner paper rather than a second raised disk floating above the flap. */
+.bo-intro__flap-reverse::after {
+  content:'';position:absolute;left:50%;top:92%;transform:translate(-50%,-50%);
+  width:clamp(66px,7vw,91px);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,#765a4930 0 56%,#4b281c20 67%,transparent 74%);
+  box-shadow:inset 0 2px 5px #34170f45,inset 0 -2px 2px #fff0d024;
+  pointer-events:none;
+}
+
+/* Compact transfer details without reducing the size of the copy controls. */
+#registry.home-gift .home-gift__field { padding:5px 0!important; }
+#registry.home-gift dt { margin-bottom:1px; }
+#registry.home-gift #home-gift-payment { min-height:0!important; }
+#registry.home-gift .home-gift__payment-content { padding-top:16px; }
+
+/* Legible featured wedding day, including its month label. */
+#schedule .day-tabs button[aria-pressed="true"] { color:#fff8e9!important; border-bottom:3px solid #e9cf94!important; font-size:clamp(42px,4.5vw,62px)!important; opacity:1!important; text-shadow:0 1px 8px #18070b99; }
+#schedule .day-tabs button[aria-pressed="true"] span { color:#fff8e9!important; font-size:12px!important; font-weight:700; text-shadow:none; }
+#schedule .day-tabs button:not([aria-pressed="true"]) { color:#d6c9b8; }
+
+/* Keep the introductory hero's date and scroll invitation separate. */
+.editorial-hero .hero-details { bottom:clamp(118px,16vh,180px)!important; }
+.editorial-hero .hero-discover { bottom:16px!important; }
+@media(max-width:640px) { .editorial-hero .hero-details { bottom:118px!important; } .editorial-hero .hero-discover { bottom:10px!important; } }
+
+/* Less empty space above the program; long content still scrolls normally. */
+#schedule .schedule-content { align-content:start!important; padding-top:clamp(44px,5vw,72px)!important; }
+#schedule .weekend-heading h2 { margin-top:0!important; }
+
+/* Broaden the story lines instead of increasing its vertical footprint. */
+#story.atlantic-story .atlantic-story__article { max-width:1120px; }
+#story.atlantic-story .atlantic-story__prose { max-width:65ch; font-size:clamp(21px,2vw,24px); line-height:1.58; }
+@media(max-width:600px) { #story.atlantic-story .atlantic-story__prose { max-width:100%; font-size:21px; line-height:1.55; } }
+
+/* Preserve the same pointed silhouette on both sides while the hinge rotates. */
+.bo-intro__identity-mark { mask:none!important; background:none!important; filter:none!important; }
+.bo-intro__identity-mark img { display:block!important; width:100%; height:100%; object-fit:contain; filter:none!important; }
+
+/* Retain the envelope's original flap photography and reverse face from
+   EnvelopeIntro.css. The later crop distorted the velvet into visible patches. */
+
+/* Photographic gold wax from the invitation email, with its engraved BO.
+   Keep the existing seal element and flap animation; only replace the rendering. */
+.bo-intro__seal {
+  background:transparent url('/photos/wax-seal-email-realistic.png') center/contain no-repeat;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  top:98%;
+  width:clamp(76px,8.5vw,116px);
+  height:clamp(76px,8.5vw,116px);
+}
+.bo-intro__seal::before,.bo-intro__seal::after { content:none; }
+.bo-intro__seal img { display:none; }
+
+/* Closed outer flap only: velvet grain and the raised folded-paper edge.
+   The reverse face and its opening animation remain entirely untouched. */
+.bo-intro__flap-face {
+  filter:drop-shadow(0 3px 1px #27091390) drop-shadow(0 7px 4px #20081152);
+}
+.bo-intro__flap-face::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(172deg,#efbcb01a 0%,transparent 24%,#1b06102a 78%,#1b061058 98%);
+  box-shadow:inset 0 2px 1px #efbcb033,inset 0 -4px 5px #24091350;
+}
+
+/* A softly raised seam on the *closed* velvet face only. */
+.bo-intro__flap-face { filter:drop-shadow(0 5px 3px #19040d99) drop-shadow(0 10px 8px #19040d55); }
+.bo-intro__flap-face::after { box-shadow:inset 0 4px 3px #f7c9ae3d,inset 0 -8px 8px #1b061080; }
+
+/* Quiet editorial registry: no ornamental rules at the section edges. */
+#registry.home-gift { padding-top:56px!important; padding-bottom:56px!important; }
+#registry.home-gift::before,#registry.home-gift::after { display:none!important; }
+@media(max-width:760px) { #registry.home-gift { padding-top:42px!important; padding-bottom:42px!important; } }
+
+/* November refinements: preserve legibility while using the available width. */
+#journey .fashion-travel__photo img { max-height:245px; }
+#journey .fashion-travel { padding-top:27px; padding-bottom:8px; }
+#journey .fashion-travel__columns { padding-top:10px; gap:16px; }
+#journey .fashion-travel__tabs button { min-height:38px; }
+#journey .fashion-travel__venue { padding-bottom:10px; }
+#journey .fashion-travel__columns p { margin-bottom:6px; line-height:1.5; }
+#journey .fashion-travel__wedding-shuttle { margin-top:8px; padding-top:8px; padding-bottom:5px; }
+#journey .fashion-travel__wedding-shuttle p { margin:0; line-height:1.45; }
+#journey .fashion-travel__wedding-shuttle p + p { margin-top:1px; }
+@media(min-width:1100px) {
+  #journey .fashion-travel__wedding-shuttle .fashion-travel__castle-distance { white-space:nowrap; font-size:11px; letter-spacing:-.012em; }
+}
+#journey #castle-rooms .castle-stay__name h4 { font-size:clamp(28px,2.5vw,34px); font-weight:600; line-height:1.12; letter-spacing:-.015em; }
+#journey #castle-rooms .castle-stay__name-line { display:flex; align-items:baseline; gap:8px 12px; flex-wrap:wrap; }
+#journey #castle-rooms .castle-stay__name-line p { margin:0; color:#856753; font-size:10px; white-space:nowrap; }
+@media(max-width:640px) { #journey #castle-rooms .castle-stay__name h4 { font-size:29px; } }
+#schedule .schedule-art { min-height:0; background:#fff!important; }
+#schedule .schedule-art img { object-fit:cover; object-position:center top; }
+#schedule .schedule-content { padding-bottom:28px!important; }
+@media(max-width:700px) {
+  #journey .fashion-travel__photo img { max-height:245px; }
+  #journey #castle-rooms .castle-stay__name-line p { white-space:normal; }
+  #schedule .schedule-art { height:55svh; }
+  #schedule .schedule-art img { object-position:center top; }
+}
+
+/* Lift the invitation typography above the botanical illustration. */
+.bo-intro__letter-frame { padding-top:7.4%; }
+.bo-intro__letter-frame > .bo-intro__identity-mark { top:6.6%; }
+.bo-intro__letter-names { margin-top:5.4%; }
+@media(max-width:600px) {
+  .bo-intro__letter-frame { padding-top:7%; }
+  .bo-intro__letter-frame > .bo-intro__identity-mark { top:6.3%; }
+  .bo-intro__letter-names { margin-top:6%; }
+}
+/* The original cream velvet lining and hinge choreography are retained. */
+.bo-intro__flap-reverse::after{content:none!important}
+.bo-intro__seal-back{display:none!important}
+.bo-intro__seal{backface-visibility:hidden}
+.bo-intro__closed-photo{position:absolute;inset:-2%;z-index:7;pointer-events:none;background:url('/photos/envelope-closed-clean-v20.png') center/contain no-repeat;filter:drop-shadow(0 12px 15px #20071055)}
+.bo-intro[data-opening="false"] .bo-intro__shell,.bo-intro[data-opening="false"] .bo-intro__flap{visibility:hidden}
+#journey #castle-rooms .castle-stay__name h4 .castle-stay__photo-link{font-family:'Cormorant Garamond',Georgia,serif!important;font-size:clamp(25px,2.5vw,32px)!important;line-height:1.1!important;font-weight:500!important;white-space:normal;text-align:left}
+#journey #castle-rooms .castle-stay__name h4 .castle-stay__photo-link>span{font:400 12px 'Plus Jakarta Sans',sans-serif}
+@media(max-width:640px){#journey #castle-rooms .castle-stay__name h4 .castle-stay__photo-link{font-size:24px!important}}

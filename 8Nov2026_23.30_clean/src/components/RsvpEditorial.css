@@ -1,0 +1,103 @@
+/* RSVP visual layer: retain the wheat-and-rose header and live form. */
+#rsvp.rsvp-refined.rsvp-air{background:#fff!important;color:#28342b}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-layout{max-width:1170px;padding:92px 46px 34px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-botanical{top:18px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-header{padding-bottom:14px;margin-bottom:34px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-response-layout{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.35fr);gap:46px;align-items:start;border-top:1px solid #b6bdb3;padding-top:24px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice{border:0;padding:0}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice .rsvp-paper-eyebrow{font:400 9px/1.5 Arial,sans-serif!important;color:#52614e!important;margin-bottom:14px!important;letter-spacing:.1em!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice h3{font:400 27px/1.15 Georgia,serif!important;letter-spacing:-.02em;margin-bottom:8px!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice .rsvp-paper-date{font:400 20px/1.3 Georgia,serif!important;margin-bottom:16px!important;color:#602330!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice>p:not(.rsvp-paper-eyebrow):not(.rsvp-paper-date){font:400 12px/1.75 Arial,sans-serif!important;max-width:300px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-entry{padding:0!important;text-align:left}
+#rsvp.rsvp-refined.rsvp-air .rsvp-entry-copy h3{font:400 43px/1.05 Georgia,serif;letter-spacing:-.04em;margin:0 0 16px;color:#28342b}
+#rsvp.rsvp-refined.rsvp-air .rsvp-entry-copy p{font:400 13px/1.8 Arial,sans-serif;max-width:380px;margin:0 0 24px;color:#485345}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-entry .rsvp-confirm-button{min-height:48px;border-radius:0!important;background:#293d30!important;border-color:#293d30!important;padding:15px 24px!important;font-size:10px!important;letter-spacing:.1em!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-entry .rsvp-confirm-button:hover{background:#405b47!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-paper-invitation{font:400 10px/1.6 Arial,sans-serif;text-align:right;color:#52614e;margin-top:22px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card{margin:0;padding:0!important;background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important;min-width:0}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card h3{font:400 27px/1.1 Georgia,serif!important;letter-spacing:-.025em;text-transform:none!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card h4{font-family:Arial,sans-serif;font-weight:500;letter-spacing:.04em;font-size:12px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card input:not([type=checkbox]):not([type=radio]),#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card select,#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card textarea{background:#f5f7f3!important;border:1px solid #a5b1a1!important;border-radius:0!important;color:#28342b!important;box-shadow:none!important;min-width:0;max-width:100%;font-family:Arial,sans-serif;font-size:16px}
+#rsvp.rsvp-refined.rsvp-air input:focus-visible,#rsvp.rsvp-refined.rsvp-air select:focus-visible,#rsvp.rsvp-refined.rsvp-air textarea:focus-visible,#rsvp.rsvp-refined.rsvp-air button:focus-visible{outline:2px solid #345c42!important;outline-offset:3px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card input[type=checkbox]{accent-color:#345c42}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card button{border-radius:2px;box-shadow:none!important;font-family:Arial,sans-serif;letter-spacing:.025em}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card .rsvp-guest-sheet{background:#fff!important;border:0!important;border-top:1px solid #a5b1a1!important;border-radius:0!important;padding:22px 0!important;box-shadow:none!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card .rsvp-guests__summary{background:#eef3ec!important;border:0!important;border-radius:0!important}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card .bg-white{box-shadow:none!important;border-radius:2px}
+#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card label{font-family:Arial,sans-serif}
+@media(max-width:760px){#rsvp.rsvp-refined.rsvp-air .rsvp-paper-layout{padding:80px 24px 28px}#rsvp.rsvp-refined.rsvp-air .rsvp-response-layout{grid-template-columns:1fr;gap:26px;padding-top:20px}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-header{margin-bottom:26px}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice .rsvp-paper-eyebrow{grid-column:1/-1}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice h3{font-size:24px!important}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice .rsvp-paper-date{font-size:20px!important}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-notice>p:not(.rsvp-paper-eyebrow):not(.rsvp-paper-date){grid-column:1/-1;max-width:none;font-size:11px!important;margin:5px 0!important}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-entry{border-top:1px solid #b6bdb3!important;padding-top:22px!important}#rsvp.rsvp-refined.rsvp-air .rsvp-entry-copy h3{font-size:36px}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-invitation{text-align:left}#rsvp.rsvp-refined.rsvp-air .rsvp-readable-card{padding:0!important}#rsvp.rsvp-refined.rsvp-air .rsvp-paper-entry .rsvp-confirm-button{width:auto}}
+
+/* Compact stationery form: two guest cards on desktop, one on phones. */
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-response-layout{grid-template-columns:1fr;gap:20px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-paper-notice{display:none}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid>.rsvp-guest-sheet{margin:0!important;padding:18px!important;border:1px solid #dacfc4!important;border-radius:6px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid:has(>.rsvp-guest-sheet:only-child){grid-template-columns:1fr}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests__summary{padding:10px 0!important;background:none!important;border-bottom:1px solid #ded5ca!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet>div{margin-bottom:14px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet>div:first-child{padding-bottom:10px;margin-bottom:14px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet h4{font-size:11px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet button[aria-pressed]{text-align:left;border-width:1px;border-radius:5px;box-shadow:none;min-height:44px;padding:9px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet button[aria-pressed]>div:first-child{margin-bottom:4px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .md\:grid-cols-5{display:flex;flex-wrap:wrap;gap:6px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .md\:grid-cols-5 button{flex-direction:row;padding:8px 10px;gap:6px;flex:1 0 auto}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .md\:grid-cols-5 button>span:first-child{font-size:13px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .space-y-4{padding-top:12px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card input:not([type=checkbox]):not([type=radio]),#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card textarea,#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card select{background:#fffdfa!important;border:1px solid #d9cec3!important;border-radius:4px!important;font-size:14px;padding:10px 12px;color:#492730!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card input:focus-visible,#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card textarea:focus-visible,#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card select:focus-visible,#rsvp.rsvp-refined.rsvp-air.rsvp-compact button:focus-visible{outline-color:#752b3c!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact #rsvp-questionnaire fieldset{display:flex;flex-direction:column;gap:22px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact #rsvp-questionnaire fieldset>*{margin-top:0!important;margin-bottom:0!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-edit-hint{font-size:12px;color:#735f60;max-width:75%;margin:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-edit-hint+button{font-size:12px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card:has(#rsvp-questionnaire)>div:first-child{justify-content:flex-end;padding:0 0 10px;margin-bottom:10px;border:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card:has(#rsvp-questionnaire)>div:nth-child(2){background:none;border:0;padding:6px 0;margin-bottom:12px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-passengers{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:12px;margin-top:10px;padding-left:30px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-passengers select{min-width:70px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact #rsvp-questionnaire .bg-white{border-color:#ded3c8;border-width:1px;border-radius:5px;padding:16px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact label{letter-spacing:.02em}
+@media(max-width:900px){#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid{grid-template-columns:1fr}}
+@media(min-width:901px){#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .sm\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .sm\:grid-cols-3 button>div:first-child>div:first-child{flex-direction:column;align-items:start;font-size:11px}}
+
+@media(max-width:760px){#rsvp.rsvp-refined.rsvp-air.rsvp-compact input:not([type=checkbox]),#rsvp.rsvp-refined.rsvp-air.rsvp-compact select,#rsvp.rsvp-refined.rsvp-air.rsvp-compact textarea{font-size:16px!important}}
+
+/* A denser layout without shrinking mobile controls. */
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-paper-header{margin-bottom:8px;padding-bottom:4px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact.rsvp-is-open .rsvp-response-layout{padding-top:8px;gap:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card:has(#rsvp-questionnaire)>div:first-child{margin:0 0 4px;padding:0;min-height:24px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card:has(#rsvp-questionnaire)>div:nth-child(2){margin:0 0 8px;padding:4px 0;min-height:26px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests{margin:0}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests__summary{margin:0 0 12px!important;padding:6px 0!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests-grid>.rsvp-guest-sheet{padding:14px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet>div:first-child{height:40px;padding-bottom:8px;margin-bottom:10px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet>div:first-child button{background:none;border:0;padding:4px;font-size:11px;min-height:36px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet>div{margin-bottom:10px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet label{font-size:10px;font-weight:500;margin-bottom:5px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:6px;min-height:54px;padding:8px;position:relative}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child{margin:0;gap:4px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:first-child{display:flex;flex-direction:row;gap:5px;font-size:11px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:last-child{width:16px;height:16px;position:absolute;right:6px;top:6px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:last-child{font-size:10px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:last-child span{font-size:10px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]:last-child>div:last-child{display:none}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]{flex-direction:column;align-items:flex-start;justify-content:center;padding-right:22px;gap:2px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-menu-grid{display:flex;flex-wrap:wrap;gap:5px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-menu-grid button[aria-pressed]{flex:0 1 auto;min-height:34px;padding:7px 9px;font-size:10px;gap:4px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-menu-grid button[aria-pressed] span{font-size:10px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-menu-grid button[aria-pressed]>span:first-child{display:none}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .space-y-4{padding-top:10px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet .space-y-4>div+div{margin-top:10px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guest-sheet input{padding:9px 10px!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-guests>p:last-child{margin-top:12px;font-size:10px}
+@media(max-width:760px){
+ #rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-menu-grid button[aria-pressed]{min-height:44px;padding:9px 10px;font-size:11px}
+ #rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ #rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:first-child svg{display:none}
+ #rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]{padding-left:7px;font-size:10px;min-height:60px}
+}
+
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card:has(#rsvp-questionnaire)>div:first-child{display:none!important}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-readable-card:has(#rsvp-questionnaire)>div:nth-child(2){margin:0 0 8px!important;padding:6px 0!important;gap:16px;min-height:32px}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-edit-hint{max-width:none;flex:1}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-collapse-inline{font-size:12px;text-decoration:underline;cursor:pointer;background:none;border:0;color:#752b3c}
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance button[aria-pressed]>div:first-child>div:last-child{width:14px!important;height:14px!important;min-width:14px!important;min-height:14px!important}

@@ -1,0 +1,9 @@
+/* Native section snapping: tall chapters remain freely readable, including forms.
+   No wheel/touch interception; keyboard and trackpad keep browser-native behavior. */
+/* Gentle snapping allows scrolling beyond the last chapter into the footer. */
+html:root{scroll-snap-type:y proximity;scroll-padding-top:58px}
+#hero,#story,#schedule,#journey,#registry,#rsvp,#faq{scroll-snap-align:start;scroll-margin-top:0!important;scroll-snap-stop:normal}
+/* The hero begins behind the transparent navigation. */
+#hero{scroll-margin-top:-58px!important}
+@media(max-width:1099px){html:root{scroll-padding-top:56px}#hero{scroll-margin-top:-56px!important}}
+@media(prefers-reduced-motion:reduce){html:root{scroll-snap-type:none;scroll-behavior:auto!important}}
