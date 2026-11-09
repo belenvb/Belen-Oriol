@@ -1,15 +1,50 @@
 import { useState } from 'react';
-import { Language } from '../types';
+import type { Language } from '../types';
+import type { GiftPaymentDetails } from '../utils/rsvp';
 import './RegistrySection.css';
 
 type PaymentMethod = 'bank' | 'bizum' | 'venmo' | 'zelle';
 
-export function RegistrySection({ lang }: { lang: Language }) {
+interface Props {
+  lang: Language;
+  verified: boolean;
+  giftDetails: GiftPaymentDetails | null;
+}
+
+export function RegistrySection({ lang, verified, giftDetails }: Props) {
   const [method, setMethod] = useState<PaymentMethod>('bank');
   const es = lang === 'es';
+
+  // Actual payment identifiers are read from private Apps Script properties
+  // after invitation lookup; they are never included in the public website.
+  const bankGroups = [
+    {
+      id: 'us',
+      title: es ? 'Transferencia desde Estados Unidos' : 'US bank transfer',
+      rows: [
+        { label: es ? 'Banco' : 'Bank', value: giftDetails?.usBank },
+        { label: es ? 'Titular' : 'Account holder', value: giftDetails?.usHolder },
+        { label: es ? 'Número de cuenta' : 'Account number', value: giftDetails?.usAccount },
+        { label: 'Routing number', value: giftDetails?.usRouting },
+      ],
+    },
+    {
+      id: 'es',
+      title: es ? 'Transferencia desde España' : 'Transfer from Spain',
+      rows: [
+        { label: es ? 'Titular' : 'Account holder', value: giftDetails?.esHolder },
+        { label: 'IBAN', value: giftDetails?.esIban },
+        { label: es ? 'BIC / SWIFT' : 'BIC / SWIFT', value: giftDetails?.esBic },
+      ],
+    },
+  ];
+  const paymentIdentifier = method === 'bizum' ? giftDetails?.bizum
+    : method === 'venmo' ? giftDetails?.venmo
+    : method === 'zelle' ? giftDetails?.zelle
+    : undefined;
+
   return (
     <section id="registry" className="home-gift" aria-labelledby="home-gift-title">
-      
       <div className="home-gift__layout">
         <header className="home-gift__story">
           <p className="eyebrow">{es ? 'Un regalo para lo que viene' : 'A gift for what comes next'}</p>
@@ -30,29 +65,64 @@ export function RegistrySection({ lang }: { lang: Language }) {
                 <span className="home-gift__card-title">{es ? 'Nuestra primera casa' : 'Our first home'}</span>
                 <span className="home-gift__card-action">{es ? 'Contribuir a nuestro hogar' : 'Contribute to our home'}</span>
               </span>
-              <span className="home-gift__reveal-mark" aria-hidden="true">↗</span>
+              <span className="home-gift__reveal-mark" aria-hidden="true">+</span>
             </span>
           </summary>
           <div className="home-gift__payment-content">
-          <div className="home-gift__methods" role="group" aria-label={es ? 'Forma de aportar' : 'Ways to give'}>
-            {(['bank', 'bizum', 'venmo', 'zelle'] as const).map(id => <button key={id} type="button" aria-pressed={method === id} aria-controls="home-gift-payment" onClick={() => setMethod(id)}>
-              {id === 'bank' ? (es ? 'Transferencia' : 'Bank transfer') : id === 'bizum' ? 'Bizum' : id === 'venmo' ? 'Venmo' : 'Zelle'}
-            </button>)}
-          </div>
-          <div id="home-gift-payment" className="home-gift__private-details">
-            <p className="home-gift__note">
-              {es
-                ? method === 'bank'
-                  ? 'Si quieres hacer una transferencia desde España o Estados Unidos, escríbenos directamente y te compartiremos los datos bancarios por privado.'
-                  : `Para regalarnos algo por ${method === 'bizum' ? 'Bizum' : method === 'venmo' ? 'Venmo' : 'Zelle'}, pídenos los datos por privado.`
-                : method === 'bank'
-                  ? 'If you would like to make a bank transfer from Spain or the United States, please contact us directly for the banking details.'
-                  : `If you would like to use ${method === 'bizum' ? 'Bizum' : method === 'venmo' ? 'Venmo' : 'Zelle'}, please ask us privately for the details.`}
-            </p>
-            <p className="home-gift__note">
-              {es ? 'Por privacidad, no publicamos números de cuenta, teléfonos ni identificadores de pago en esta web.' : 'For privacy, we do not publish bank account numbers, phone numbers or payment identifiers on this website.'}
-            </p>
-          </div>
+            {!verified ? (
+              <div className="home-gift__private-details">
+                <p className="home-gift__note">{es
+                  ? 'Para consultar los datos de transferencia y las demás opciones de regalo, abre tu invitación con el código privado en la sección RSVP.'
+                  : 'To see bank transfer details and other gift options, please open your invitation using the private code in the RSVP section.'}</p>
+                <button type="button" className="home-gift__access-button" onClick={() => document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                  {es ? 'Introducir código de invitación' : 'Enter invitation code'}
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="home-gift__methods" role="group" aria-label={es ? 'Forma de aportar' : 'Ways to give'}>
+                  {(['bank', 'bizum', 'venmo', 'zelle'] as const).map(id => (
+                    <button key={id} type="button" aria-pressed={method === id} aria-controls="home-gift-payment" onClick={() => setMethod(id)}>
+                      {id === 'bank' ? (es ? 'Transferencia' : 'Bank transfer') : id === 'bizum' ? 'Bizum' : id === 'venmo' ? 'Venmo' : 'Zelle'}
+                    </button>
+                  ))}
+                </div>
+                <div id="home-gift-payment" className="home-gift__private-details">
+                  {method === 'bank' ? (
+                    <div className="home-gift__bank-groups">
+                      {bankGroups.map(group => {
+                        const available = group.rows.filter(row => Boolean(row.value));
+                        return (
+                          <section key={group.id} className="home-gift__bank-group" aria-label={group.title}>
+                            <h3>{group.title}</h3>
+                            {available.length ? (
+                              <dl>{available.map(row => (
+                                <div className="home-gift__bank-row" key={row.label}>
+                                  <dt>{row.label}</dt>
+                                  <dd className="home-gift__value">{row.value}</dd>
+                                </div>
+                              ))}</dl>
+                            ) : (
+                              <p className="home-gift__note">{es ? 'Datos pendientes de confirmar.' : 'Details to be confirmed.'}</p>
+                            )}
+                          </section>
+                        );
+                      })}
+                    </div>
+                  ) : paymentIdentifier ? (
+                    <dl className="home-gift__payment-identifier">
+                      <dt>{method === 'bizum' ? 'Bizum' : method === 'venmo' ? 'Venmo' : 'Zelle'}</dt>
+                      <dd className="home-gift__value">{paymentIdentifier}</dd>
+                    </dl>
+                  ) : (
+                    <p className="home-gift__note">{es ? 'Datos pendientes de confirmar.' : 'Details to be confirmed.'}</p>
+                  )}
+                  <p className="home-gift__note">{es
+                    ? 'Estos datos son exclusivos para personas con invitación. Por favor, no compartas el enlace ni el código.'
+                    : 'These details are for invited guests only. Please do not share your invitation link or code.'}</p>
+                </div>
+              </>
+            )}
           </div>
         </details>
       </div>
