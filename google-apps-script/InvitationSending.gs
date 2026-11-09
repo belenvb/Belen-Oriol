@@ -192,7 +192,7 @@ function sendingRows_() {
       friday: yesNo(cells[4], false), saturday: yesNo(cells[5], false),
       fridaySpecified: ['sí','si','no','yes'].includes(String(cells[4] || '').trim().toLowerCase()),
       saturdaySpecified: ['sí','si','no','yes'].includes(String(cells[5] || '').trim().toLowerCase()),
-      language: String(cells[6] || '').toLowerCase() === 'en' ? 'en' : 'es',
+      language: String(cells[6] || '').trim().toLowerCase() === 'en' ? 'en' : 'es',
       active: yesNo(cells[7], true), phone: String(field('Teléfono internacional') || '').trim(),
       channel: channel, channels: channelList,
       status: legacyStatus || 'Pendiente',
@@ -206,11 +206,12 @@ function sendingRows_() {
   return {sheet, columns, records: records.filter(r => r.name)};
 }
 
-function sendingLink_(code) {
+function sendingLink_(code, language) {
   const base = getWeddingWebsiteUrl();
   if (!base) throw Error('Primero configura la URL de la web.');
   if (!/^[A-Z0-9-]{16,80}$/.test(code)) throw Error('Código privado ausente o inválido');
-  return base + '/#invitacion=' + encodeURIComponent(code);
+  const lang = String(language || '').trim().toLowerCase() === 'en' ? 'en' : 'es';
+  return base + '/?lang=' + lang + '#invitacion=' + encodeURIComponent(code);
 }
 
 function normalizedPhone_(value) {
@@ -345,7 +346,7 @@ function getInvitationEmailPreview(rowNumber) {
   if (!record) throw Error('No se ha encontrado la familia seleccionada.');
   // Non-functional placeholder when the live website/link has not been configured yet.
   let previewLink = 'https://example.invalid/vista-previa';
-  try { previewLink = sendingLink_(record.code); } catch (e) { /* visual preview only */ }
+  try { previewLink = sendingLink_(record.code, record.language); } catch (e) { /* visual preview only */ }
   const message = invitationEmail_(record, previewLink);
   // Inline the local envelope image for read-only preview without email or image hosting.
   const es = record.language !== 'en';
@@ -376,7 +377,7 @@ function ensureReadyToSend_(r, targetChannel) {
   if (!r.name || !Number.isInteger(r.maxGuests) || r.maxGuests < 1 || r.maxGuests > 20) throw Error('Nombre o número de personas inválido');
   if (!r.fridaySpecified || !r.saturdaySpecified) throw Error('Revisa los permisos explícitos de viernes y sábado');
   if (!r.friday && !r.saturday) throw Error('Esta familia no está invitada a ninguna jornada');
-  sendingLink_(r.code);
+  sendingLink_(r.code, r.language);
   if (targetChannel) {
     if (!r.channels.includes(targetChannel)) throw Error('Selecciona ' + targetChannel + ' en esta familia');
     if (targetChannel === 'Email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) throw Error('Email inválido');
@@ -434,7 +435,7 @@ function prepareInvitationSending() {
   let count = 0;
   result.records.forEach(r => {
     if (!r.code) return;
-    const link = sendingLink_(r.code);
+    const link = sendingLink_(r.code, r.language);
     result.sheet.getRange(r.row, result.columns['Enlace privado']).setRichTextValue(richLink_('Abrir invitación', link));
     const phone = normalizedPhone_(r.phone);
     const copy = sendingCopy_(r, link);
@@ -483,7 +484,7 @@ function getSendingDashboardData() {
     const issues = {};
     try {
       ensureReadyToSend_(r);
-      link=sendingLink_(r.code);
+      link=sendingLink_(r.code, r.language);
       const copy=sendingCopy_(r,link);
       whatsappText=copy.whatsapp; smsText=copy.sms;
       const phone=normalizedPhone_(r.phone);
@@ -526,7 +527,7 @@ function sendInvitationEmailsByRows(rowNumbers) {
     toSend.forEach(r=>{
       const now=new Date();sheet.getRange(r.row,columns['Último intento']).setValue(now);
       try {
-        const message=invitationEmail_(r,sendingLink_(r.code));
+        const message=invitationEmail_(r,sendingLink_(r.code, r.language));
         MailApp.sendEmail({to:r.email,subject:message.subject,htmlBody:message.htmlBody,body:message.body,name:'Belén & Oriol',inlineImages:{weddingTop:weddingEmailTopBlob_(r.language!=='en'),weddingBottom:weddingEmailBottomBlob_(r.language!=='en'),weddingGuestPaper:weddingEmailGuestBlob_()}});
         // Record only the Email channel; other channels remain independently pending.
         sheet.getRange(r.row,columns['Email enviado el']).setValue(now);
@@ -550,7 +551,7 @@ function sendTestInvitationEmail(rowNumber, testAddress) {
   if (!r) throw Error('No existe esa familia');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(testAddress || '').trim())) throw Error('Introduce un email válido para la prueba');
   if (!r.active || !r.code || !r.fridaySpecified || !r.saturdaySpecified) throw Error('Completa la invitación antes de probar');
-  const message = invitationEmail_(r, sendingLink_(r.code));
+  const message = invitationEmail_(r, sendingLink_(r.code, r.language));
   MailApp.sendEmail({to:String(testAddress).trim(),subject:'[PRUEBA] ' + message.subject,htmlBody:message.htmlBody,body:message.body,name:'Belén & Oriol',inlineImages:{weddingTop:weddingEmailTopBlob_(r.language !== 'en'),weddingBottom:weddingEmailBottomBlob_(r.language !== 'en'),weddingGuestPaper:weddingEmailGuestBlob_()}});
   // A test must never mark the real family as sent.
   return {ok:true};
