@@ -49,22 +49,44 @@ function privateWeddingPaymentDetails_() {
 }
 
 
-function privateWeddingPaymentQrDataUrl_(fileId) {
+// Keep diagnostics separate from guest replies: never return Drive IDs or raw errors.
+function readPrivateWeddingPaymentQr_(fileId) {
   const id = String(fileId || '').trim();
-  if (!id || !/^[a-zA-Z0-9_-]{10,120}$/.test(id)) return '';
+  if (!id) return { status: 'not_configured', dataUrl: '' };
+  if (!/^[a-zA-Z0-9_-]{10,120}$/.test(id)) return { status: 'invalid_file_id', dataUrl: '' };
   try {
-    // The script must be deployed to execute as the organizer, who has access
-    // to this PRIVATE Drive file. Do not change Drive file sharing to public.
     const file = DriveApp.getFileById(id);
-    if (file.getSize() > 600000) return ''; // Keep Apps Script replies lightweight.
+    if (file.getSize() > 600000) return { status: 'too_large', dataUrl: '' };
     const blob = file.getBlob();
     const mime = String(blob.getContentType() || '').toLowerCase();
-    if (!['image/png','image/jpeg','image/webp'].includes(mime)) return '';
-    return 'data:' + mime + ';base64,' + Utilities.base64Encode(blob.getBytes());
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(mime)) {
+      return { status: 'unsupported_type', dataUrl: '' };
+    }
+    const bytes = blob.getBytes();
+    if (!bytes.length) return { status: 'empty_file', dataUrl: '' };
+    if (bytes.length > 600000) return { status: 'too_large', dataUrl: '' };
+    return { status: 'ready', dataUrl: 'data:' + mime + ';base64,' + Utilities.base64Encode(bytes) };
   } catch (error) {
-    console.error('Private wedding payment QR cannot be loaded: ' + String(error));
-    return '';
+    return { status: 'unreadable_or_unauthorized', dataUrl: '' };
   }
+}
+
+function privateWeddingPaymentQrDataUrl_(fileId) {
+  return readPrivateWeddingPaymentQr_(fileId).dataUrl;
+}
+
+// Run manually in the Apps Script editor as the deploying organizer to authorize
+// Drive and check configuration. Not exposed by doGet/doPost; no guest data logged.
+function checkWeddingPaymentQrConfiguration() {
+  const p = PropertiesService.getScriptProperties();
+  const result = {};
+  ['ZELLE', 'VENMO'].forEach(method => {
+    result[method.toLowerCase()] = readPrivateWeddingPaymentQr_(
+      p.getProperty('WEDDING_' + method + '_QR_FILE_ID')
+    ).status;
+  });
+  console.log(JSON.stringify(result));
+  return result;
 }
 
 
