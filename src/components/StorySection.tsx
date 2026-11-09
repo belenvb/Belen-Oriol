@@ -28,6 +28,7 @@ const photographs = [
   {"id": "memory-5", "width": 559, "height": 994, "es": "Belén y Oriol junto a la escultura I love you en el bosque", "en": "Belén and Oriol beside the I love you sculpture in the woods", "name": "I love you", "nameEn": "I love you"},
   {"id": "memory-6", "width": 1625, "height": 914, "es": "Belén y Oriol frente a una cueva rodeada de vegetación", "en": "Belén and Oriol in front of a cave surrounded by greenery", "name": "De aventura", "nameEn": "On an adventure"},
   { id:'memory-jurassic', width:1448, height:1086, es:'Belén y Oriol junto a un dinosaurio de Jurassic Park', en:'Belén and Oriol beside a Jurassic Park dinosaur', name:'Jurassic Park', nameEn:'Jurassic Park' },
+  { id:'memory-rocky', width:1012, height:1800, es:'Belén y Oriol junto a la estatua de Rocky, con los brazos levantados', en:'Belén and Oriol beside the Rocky statue, with their arms raised', name:'Rocky, Filadelfia', nameEn:'Rocky, Philadelphia' },
 ];
 export function StorySection({ lang }: { lang: Language }) {
   const es = lang === 'es';
