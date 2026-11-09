@@ -39,7 +39,7 @@ export function ScheduleSection({ lang, selectedDay, onSelectDay, hasPrebodaAcce
           <p>{sunday ? (es ? 'Brunch de despedida para quienes se alojen en el castillo.' : 'Farewell brunch for guests staying at the castle.') : day.subtitle}</p>
           <p>{sunday ? 'Castillo del Buen Amor' : day.location}</p>
           {!sunday && <a className="editorial-link" target="_blank" rel="noreferrer" href={generateGoogleCalendarUrl(day.calEvent)}>
-            {es ? 'Añadir al calendario' : 'Add to calendar'} ↗
+            {es ? 'Añadir al calendario' : 'Add to calendar'}
           </a>}
         </div>
         {!sunday && <div className="weekend-details">
