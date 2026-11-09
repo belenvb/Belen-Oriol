@@ -39,15 +39,17 @@ function privateWeddingPaymentDetails_() {
     esBic: value('WEDDING_ES_BIC'),
     bizum: value('WEDDING_BIZUM'),
     venmo: value('WEDDING_VENMO'),
+    venmoQrDataUrl: privateWeddingPaymentQrDataUrl_(p.getProperty('WEDDING_VENMO_QR_FILE_ID')),
+
     zelle: value('WEDDING_ZELLE'),
-    // The private Zelle QR is read from a non-public Drive file only after guest access validation.
-    zelleQrDataUrl: privateWeddingZelleQrDataUrl_(p.getProperty('WEDDING_ZELLE_QR_FILE_ID')),
+    // The private payment QR is read from a non-public Drive file only after guest access validation.
+    zelleQrDataUrl: privateWeddingPaymentQrDataUrl_(p.getProperty('WEDDING_ZELLE_QR_FILE_ID')),
 
   };
 }
 
 
-function privateWeddingZelleQrDataUrl_(fileId) {
+function privateWeddingPaymentQrDataUrl_(fileId) {
   const id = String(fileId || '').trim();
   if (!id || !/^[a-zA-Z0-9_-]{10,120}$/.test(id)) return '';
   try {
@@ -60,7 +62,7 @@ function privateWeddingZelleQrDataUrl_(fileId) {
     if (!['image/png','image/jpeg','image/webp'].includes(mime)) return '';
     return 'data:' + mime + ';base64,' + Utilities.base64Encode(blob.getBytes());
   } catch (error) {
-    console.error('Private Zelle QR cannot be loaded: ' + String(error));
+    console.error('Private wedding payment QR cannot be loaded: ' + String(error));
     return '';
   }
 }
