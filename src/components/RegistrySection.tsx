@@ -4,6 +4,7 @@ import { lookupGiftAccess, type GiftPaymentDetails } from '../utils/rsvp';
 import './RegistrySection.css';
 import { venmoProfileUrl } from '../utils/paymentLinks';
 import { PaymentQr } from './PaymentQr';
+import { PaymentBrand } from './PaymentBrand';
 
 type PaymentMethod = 'bank' | 'bizum' | 'venmo' | 'zelle';
 
@@ -138,7 +139,7 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                 <div className="home-gift__methods" role="group" aria-label={es ? 'Forma de aportar' : 'Ways to give'}>
                   {(['bank', 'bizum', 'venmo', 'zelle'] as const).map(id => (
                     <button key={id} type="button" aria-pressed={method === id} aria-controls="home-gift-payment" onClick={() => { setMethod(id); setCopied(false); }}>
-                      {id === 'bank' ? (es ? 'Transferencia' : 'Bank transfer') : id === 'bizum' ? 'Bizum' : id === 'venmo' ? 'Venmo' : 'Zelle'}
+                      {id === 'bank' ? (es ? 'Transferencia' : 'Bank transfer') : <PaymentBrand method={id} />}
                     </button>
                   ))}
                 </div>
@@ -166,6 +167,7 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                     </div>
                   ) : (paymentIdentifier || method === 'zelle' || method === 'venmo') ? (
                     <div className="home-gift__payment-link-area">
+                      <div className="home-gift__brand-heading"><PaymentBrand method={method} /></div>
                       {(method === 'venmo' || method === 'zelle') && (
                         <PaymentQr
                           method={method} lang={lang}
