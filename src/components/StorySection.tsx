@@ -19,7 +19,7 @@ const story = {
 
 const photographs = [
   { id: '19', es: 'Belén y Oriol en Islandia, junto al cañón de basalto', en: 'Belén and Oriol in Iceland, beside the basalt canyon', name: 'Islandia', nameEn: 'Iceland' },
-  { id: '25', es: 'Oriol besa a Belén bajo los árboles', en: 'Oriol kisses Belén beneath the trees', name: 'Un instante nuestro', nameEn: 'A moment of our own' },
+  { id:'memory-boston', width:1350, height:1800, es:'Belén y Oriol junto al puerto de Boston', en:'Belén and Oriol beside Boston harbor', name:'Boston', nameEn:'Boston' },
   { id: 'memory-hawaii', width:2000, height:1500, es:'Belén y Oriol al atardecer en Hawaii', en:'Belén and Oriol at sunset in Hawaii', name:'Hawaii', nameEn:'Hawaii' },
   {"id": "memory-1", "width": 1200, "height": 1600, "es": "Belén y Oriol sonriendo en un restaurante", "en": "Belén and Oriol smiling in a restaurant", "name": "Navidad en París", "nameEn": "Christmas in Paris"},
   {"id": "memory-2", "width": 900, "height": 1600, "es": "Belén a la espalda de Oriol en casa", "en": "Belén on Oriol’s back at home", "name": "Así somos", "nameEn": "This is us"},
@@ -33,7 +33,7 @@ const photographs = [
   { id:'memory-toto', width:1800, height:1013, es:'Belén y Oriol en casa con Totò', en:'Belén and Oriol at home with Totò', name:'Los tres', nameEn:'The three of us' },
   { id:'memory-ocean', width:1800, height:1012, es:'Belén y Oriol en un mirador sobre el océano', en:'Belén and Oriol at a viewpoint above the ocean', name:'Con vistas al mar', nameEn:'An ocean view' },
   { id:'memory-louvre', width:1800, height:1350, es:'Oriol besa a Belén junto a la pirámide iluminada del Louvre', en:'Oriol kisses Belén beside the illuminated Louvre pyramid', name:'Una noche en París', nameEn:'A night in Paris' },
-  { id:'memory-boston', width:1350, height:1800, es:'Belén y Oriol junto al puerto de Boston', en:'Belén and Oriol beside Boston harbor', name:'Boston', nameEn:'Boston' },
+  { id: '25', es: 'Oriol besa a Belén bajo los árboles', en: 'Oriol kisses Belén beneath the trees', name: 'Un instante nuestro', nameEn: 'A moment of our own' },
 ];
 export function StorySection({ lang }: { lang: Language }) {
   const es = lang === 'es';
