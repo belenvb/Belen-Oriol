@@ -1,4 +1,15 @@
 /* A photographic cover followed by a typeset article. One image at a time. */
+#story.atlantic-story .atlantic-story__stage{touch-action:pan-y}
+#story.atlantic-story .atlantic-story__stage::after{content:'';position:absolute;inset:auto 0 0;height:110px;background:linear-gradient(transparent,#10100f99);pointer-events:none;z-index:1}
+#story.atlantic-story .atlantic-story__folio{z-index:2}
+#story.atlantic-story .atlantic-story__controls{z-index:2;gap:12px;background:transparent;padding:0;color:#fff8ed}
+#story.atlantic-story .atlantic-story__controls button{display:inline-flex;align-items:center;justify-content:center;min-width:48px;min-height:48px;border:0;background:transparent;color:#fff8ed;opacity:1;filter:drop-shadow(0 1px 5px #0008)}
+#story.atlantic-story .atlantic-story__controls button:hover{color:#e2c58e}
+#story.atlantic-story .atlantic-story__controls button svg{width:32px;height:32px;stroke-width:1.5}
+#story.atlantic-story .atlantic-story__controls .atlantic-story__next svg{width:38px;height:38px;stroke-width:1.4}
+#story.atlantic-story .atlantic-story__controls .atlantic-story__pause{min-width:44px;min-height:44px;width:44px;height:44px;border:1px solid #f8edde70;border-radius:50%;background:#1b1b19cc;margin-left:4px}
+#story.atlantic-story .atlantic-story__controls .atlantic-story__pause svg{width:17px;height:17px}
+@media(max-width:760px){#story.atlantic-story .atlantic-story__controls{gap:8px}#story.atlantic-story .atlantic-story__controls button{min-width:44px;min-height:44px}#story.atlantic-story .atlantic-story__controls .atlantic-story__next svg{width:34px;height:34px}}
 #story.atlantic-story{background:#f8f5ee;color:#542b31;scroll-margin-top:56px;padding:0}
 .atlantic-story figure,.atlantic-story p{margin:0}.atlantic-story__stage{position:relative;height:clamp(540px,48vw,740px);background:#211e1b;overflow:hidden}
 .atlantic-story__image{display:block;width:100%;height:100%;object-fit:cover;object-position:center 52%}.atlantic-story__stage--25 .atlantic-story__image{object-fit:contain}.atlantic-story__stage--03 .atlantic-story__image{object-position:center 43%}
