@@ -150,6 +150,16 @@
 }
 
 /* Payment brands: local assets, original proportions and accessible names. */
+#registry.home-gift .home-gift__note-form{margin:26px 0 12px;padding-top:22px;border-top:1px solid #d8c5a6;text-align:left}
+#registry.home-gift .home-gift__note-form h3{font:400 27px/1.2 'Cormorant Garamond',Georgia,serif;color:#742d43;margin:0 0 8px}
+#registry.home-gift .home-gift__note-form p{font-size:12px;line-height:1.65;color:#796c62;margin:8px 0 14px}
+#registry.home-gift .home-gift__note-form fieldset{border:0;padding:0;margin:0;min-width:0;display:flex;flex-direction:column;gap:7px}
+#registry.home-gift .home-gift__note-form label{font-size:12px;color:#742d43;margin-top:6px}
+#registry.home-gift .home-gift__note-form input,#registry.home-gift .home-gift__note-form textarea{width:100%;min-width:0;border:0;border-bottom:1px solid #cab69c;background:transparent;color:#542c35;font:400 16px/1.5 'Plus Jakarta Sans',Arial,sans-serif;padding:7px 0;border-radius:0}
+#registry.home-gift .home-gift__note-form textarea{resize:vertical}
+#registry.home-gift .home-gift__note-form button{align-self:flex-start;margin-top:10px;min-height:44px}
+#registry.home-gift .home-gift__note-form .home-gift__note-disclaimer{font-size:11px;margin-top:12px}
+#registry.home-gift .home-gift__note-sent{color:#742d43;padding:20px 0;font-size:14px}
 #registry.home-gift .home-gift__brand{display:inline-flex;align-items:center;justify-content:center;gap:7px;vertical-align:middle;line-height:1}
 #registry.home-gift .home-gift__brand img{display:block;object-fit:contain;max-width:none;border:0;border-radius:0;box-shadow:none;margin:0;background:none;aspect-ratio:auto}
 #registry.home-gift .home-gift__brand--bizum img{width:67px;height:21px}
