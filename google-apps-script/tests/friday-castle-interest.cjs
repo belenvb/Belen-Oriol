@@ -10,7 +10,7 @@ assert.equal(normalize(true,true,rooms),true);
 assert.equal(normalize(false,true,rooms),false);
 assert.equal(normalize(undefined,true,rooms),false);
 assert.equal(normalize(true,false,rooms),false);
-assert.equal(normalize(true,true,{}),false);
+assert.equal(normalize(true,true,{}),true);
 assert.throws(()=>normalize('true',true,rooms));
 assert.deepEqual(rooms,{estandar:1}); // No extra inventory reservation.
 const stored={code:'EXAMPLE-CODE-12345678',roomBookings:rooms,fridayCastleInterest:true};

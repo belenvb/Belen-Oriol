@@ -1,6 +1,8 @@
 import './RsvpStationery.css';
 import boLogo from '../assets/images/bo-logo.webp';
 import './RsvpEditorial.css';
+import './RsvpModern.css';
+import { RsvpQuantity } from './RsvpQuantity';
 import { HorizontalTrencadis } from './HorizontalTrencadis';
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
@@ -144,7 +146,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       ...prev,
       roomBooking: firstSelectedRoom(next),
       roomBookings: next,
-      fridayCastleInterest: getRoomCount(next) > 0 && Boolean(prev.fridayCastleInterest),
+      fridayCastleInterest: Boolean(prev.fridayCastleInterest),
     }));
   };
 
@@ -337,7 +339,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       shuttlePickupLocation: isAnyAttending && formData.shuttleBooking ? formData.shuttlePickupLocation : '',
       roomBooking: isAnyAttending ? firstSelectedRoom(cleanedRoomQuantities) : 'none',
       roomBookings: isAnyAttending ? cleanedRoomQuantities : {},
-      fridayCastleInterest: isAnyAttending && getRoomCount(cleanedRoomQuantities) > 0 && formData.fridayCastleInterest === true,
+      fridayCastleInterest: isAnyAttending && formData.fridayCastleInterest === true,
       returnShuttleBooking: saturdayGuests > 0 && safeReturnCount > 0 ? returnShuttleBooking : false,
       songRequest: isAnyAttending ? formData.songRequest || '' : '',
       blessingMessage: formData.blessingMessage || '',
@@ -389,7 +391,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
   };
 
   return (
-    <section id="rsvp" className={`rsvp-compact ${isFormOpen ? 'rsvp-is-open' : ''} rsvp-section-shell rsvp-stationery rsvp-refined rsvp-air relative`}>
+    <section id="rsvp" className={`rsvp-modern rsvp-compact ${isFormOpen ? 'rsvp-is-open' : ''} rsvp-section-shell rsvp-stationery rsvp-refined rsvp-air relative`}>
       <div className="rsvp-paper-layout">
         <img className="rsvp-paper-botanical" src="/photos/rsvp-botanical-refined.webp" alt="" aria-hidden="true" />
         <header className="rsvp-paper-header">
@@ -566,7 +568,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                           {es ? 'Dirección postal (opcional)' : 'Postal address (optional)'}
                         </label>
                         <textarea id="rsvp-postal-address" name="postalAddress" autoComplete="street-address"
-                          rows={3} maxLength={500} value={formData.postalAddress || ''}
+                          rows={1} maxLength={500} value={formData.postalAddress || ''}
                           placeholder={es ? 'Calle y número, código postal, ciudad y país' : 'Street address, postal code, city and country'}
                           onChange={event => setFormData(prev => ({ ...prev, postalAddress: event.target.value }))}
                           className="block w-full mt-2 px-4 py-3 border border-[#5c141e]/25 rounded bg-white" />
@@ -583,37 +585,15 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                             </p>
                           </div>
 
-                          <div className="rsvp-shuttle-panel p-4 sm:p-5 bg-white rounded-xl border border-[#b89243]/30 shadow-xs">
-                            <label className="flex items-start gap-3.5 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={Boolean(formData.shuttleBooking)}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, shuttleBooking: e.target.checked }))}
-                                className="mt-1 w-4 h-4 rounded text-[#5c141e] focus:ring-[#5c141e] border-gray-300"
-                              />
-                              <div className="text-xs">
-                                <span className="font-bold text-[#37080e] flex items-center gap-1.5 uppercase tracking-wider text-xs sm:text-sm">
-                                  <Bus className="w-4 h-4 text-[#b89243]" />
-                                  {es ? 'Autobús gratuito · Salamanca → Castillo' : 'Free guest shuttle · Salamanca → Castle'}
-                                </span>
-                                <span className="text-[#6e675f] block mt-1 leading-relaxed">
-                                  {es
-                                    ? 'Gratis para invitados · Sábado 4 de septiembre.'
-                                    : 'Free for wedding guests · Saturday, September 4.'}
-                                </span>
-                              </div>
-                            </label>
-                            {formData.shuttleBooking && <label className="rsvp-passengers">{es ? 'Personas · ida' : 'Passengers · outbound'}<select aria-label={es ? 'Personas en el autobús de ida' : 'Outbound passengers'} value={safeOutboundCount} onChange={e => setOutboundCount(Number(e.target.value))}>{Array.from({length:saturdayGuests+1},(_,i)=><option key={i} value={i}>{i}</option>)}</select></label>}
+                          <div className="rsvp-transport-grid">
+                            <div className="rsvp-transfer"><h5><Bus aria-hidden="true"/>{es ? 'Salamanca → Castillo' : 'Salamanca → Castle'}</h5><div className="rsvp-transfer-bottom"><span>{es ? 'Sábado 4 de septiembre · Gratuito' : 'Saturday, September 4 · Free'}</span>
+                              <RsvpQuantity label={es ? 'Personas · ida' : 'Passengers · outbound'} value={formData.shuttleBooking ? safeOutboundCount : 0} max={saturdayGuests} onChange={value=>{setOutboundCount(value);setFormData(prev=>({...prev,shuttleBooking:value>0}));}}/>
+                            </div></div>
+                            <div className="rsvp-transfer"><h5><Bus aria-hidden="true"/>{es ? 'Castillo → Salamanca' : 'Castle → Salamanca'}</h5><div className="rsvp-transfer-bottom"><span>{es ? 'Al finalizar la boda · Noche del 4 al 5 de septiembre · Gratuito' : 'After the wedding · Night of September 4–5 · Free'}</span>
+                              <RsvpQuantity label={es ? 'Personas · vuelta' : 'Passengers · return'} value={returnShuttleBooking ? safeReturnCount : 0} max={saturdayGuests} onChange={value=>{setReturnCount(value);updateReturnShuttle(value>0);}}/>
+                            </div></div>
                           </div>
-
-                          <div className="rsvp-shuttle-panel rsvp-return-panel bg-white p-4 border border-[#b89243]/30 rounded-xl">
-                            <label className="flex items-center gap-3 cursor-pointer">
-                              <input type="checkbox" checked={returnShuttleBooking} onChange={e=>updateReturnShuttle(e.target.checked)}/>
-                              <span><span className="rsvp-return-title font-semibold"><Bus className="w-4 h-4 text-[#b89243]" aria-hidden="true"/>{es ? 'Autobús de vuelta · Castillo → Salamanca' : 'Return shuttle · Castle → Salamanca'}</span><span className="block text-xs text-[#6e675f]">{es ? 'Gratis para invitados · Al finalizar la boda, la noche del 4 al 5 de septiembre.' : 'Free for wedding guests · After the wedding, on the night of September 4–5.'}</span></span>
-                            </label>
-                            {returnShuttleBooking && <label className="rsvp-passengers">{es ? 'Personas · vuelta' : 'Passengers · return'}<select aria-label={es ? 'Personas en el autobús de vuelta' : 'Return passengers'} value={safeReturnCount} onChange={e=>setReturnCount(Number(e.target.value))}>{Array.from({length:saturdayGuests+1},(_,i)=><option key={i} value={i}>{i}</option>)}</select></label>}
-                          </div>
-                          <div className="rsvp-room-panel p-5 bg-white rounded-xl border-2 border-[#b89243]/40 shadow-xs">
+                          <div className="rsvp-room-panel">
                             <div className="flex items-center justify-between gap-2 mb-2">
                               <label className="block text-xs font-bold tracking-wider uppercase text-[#5c141e] flex items-center gap-1.5">
                                 <BedDouble className="w-4 h-4 text-[#b89243]" />
@@ -639,93 +619,31 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                                   const maxQty = getRemoteRemaining(room.id);
                                   const isSelected = currentQty > 0;
 
-                                  return (
-                                    <div
-                                      key={room.id}
-                                      className={`rsvp-room-choice p-3 rounded-xl border-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs transition-all ${
-                                        maxQty === 0
-                                          ? 'border-gray-200 bg-gray-100 opacity-60 text-gray-400'
-                                          : isSelected
-                                          ? 'border-[#5c141e] bg-[#5c141e]/5 font-semibold text-[#37080e] shadow-xs'
-                                          : 'border-gray-200 bg-white hover:border-[#b89243]/60 text-[#44403c]'
-                                      }`}
-                                    >
-                                      <div className="rsvp-room-detail">
-                                        {Boolean(room.photos?.[0]) && (
-                                          <button type="button" className="rsvp-room-thumbnail"
-                                            onClick={() => { setPhotoRoom(room); setPhotoIndex(0); }}
-                                            aria-label={es ? `Abrir fotos de ${room.name}` : `Open photos of ${room.nameEn}`}>
-                                            <img src={room.photos![0]} alt="" loading="lazy" decoding="async" />
-                                          </button>
-                                        )}
-                                        <div className="rsvp-room-detail__text">
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                          <button type="button" className="rsvp-room-photo-link rsvp-room-name-button"
-                                            onClick={() => { setPhotoRoom(room); setPhotoIndex(0); }}
-                                            aria-label={es ? `Ver fotos de ${room.name}` : `View photos of ${room.nameEn}`}>
-                                            {es ? room.name : room.nameEn}
-                                          </button>
-                                          <span className="text-[#8c6d4f] font-semibold text-[11px]">
-                                            {remoteAvailability?.price != null
-                                              ? `${new Intl.NumberFormat(es ? 'es-ES' : 'en-GB', { maximumFractionDigits: 2 }).format(remoteAvailability.price)} € / ${es ? 'noche' : 'night'}`
-                                              : (es ? 'Tarifa pendiente de consultar' : 'Rate to be confirmed')}
-                                          </span>
-                                        </div>
-                                        {(es ? room.description : room.descriptionEn) && (
-                                          <span className="text-[10.5px] text-[#6e675f] block mt-0.5 font-normal">
-                                            {es ? room.description : room.descriptionEn}
-                                          </span>
-                                        )}
-                                        <span className="inline-flex mt-2 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200">
-                                          {remoteAvailability
-                                            ? (es ? `${remaining} disponibles tras tu selección` : `${remaining} left after your selection`)
-                                            : (es ? 'Disponibilidad pendiente de confirmar' : 'Availability subject to confirmation')}
-                                        </span>
-                                        </div>
+                                  return <div key={room.id} className={`rsvp-room-choice ${isSelected ? 'rsvp-room-choice--selected' : ''}`}>
+                                    <div className="rsvp-room-detail">
+                                      {room.photos?.[0] && <button type="button" className="rsvp-room-thumbnail" onClick={()=>{setPhotoRoom(room);setPhotoIndex(0);}} aria-label={es ? `Abrir fotos de ${room.name}` : `Open photos of ${room.nameEn}`}><img src={room.photos[0]} alt="" loading="lazy" decoding="async"/></button>}
+                                      <div className="rsvp-room-detail__text">
+                                        <button type="button" className="rsvp-room-name-button" onClick={()=>{setPhotoRoom(room);setPhotoIndex(0);}} aria-label={es ? `Ver fotos de ${room.name}` : `View photos of ${room.nameEn}`}>{es ? room.name : room.nameEn}</button>
+                                        {(es ? room.description : room.descriptionEn) && <p className="rsvp-room-description">{es ? room.description : room.descriptionEn}</p>}
+                                        <span className="rsvp-room-availability" aria-live="polite">{remoteAvailability ? (es ? `${remaining} disponibles tras tu selección` : `${remaining} left after your selection`) : (es ? 'Disponibilidad pendiente de confirmar' : 'Availability subject to confirmation')}</span>
                                       </div>
-
-                                      <label className="flex items-center gap-2 self-start sm:self-center">
-                                        <span className="text-[11px] uppercase tracking-wider text-[#5c141e] font-bold">
-                                          {es ? 'Cantidad' : 'Qty'}
-                                        </span>
-                                        <select
-                                          value={currentQty}
-                                          disabled={maxQty === 0}
-                                          onChange={(e) => updateRoomQuantity(room.id, Number(e.target.value))}
-                                          className="px-3 py-2 rounded-lg bg-[#faf7f2] border border-[#5c141e]/25 text-[#37080e] font-bold disabled:opacity-50"
-                                        >
-                                          {Array.from({ length: maxQty + 1 }, (_, qty) => (
-                                            <option key={qty} value={qty}>{qty}</option>
-                                          ))}
-                                        </select>
-                                      </label>
                                     </div>
-                                  );
+                                    <div className="rsvp-room-selection"><span className="rsvp-room-price">{remoteAvailability?.price != null ? <>{new Intl.NumberFormat(es ? 'es-ES' : 'en-GB',{maximumFractionDigits:2}).format(remoteAvailability.price)} € <small>/ {es ? 'noche' : 'night'}</small></> : (es ? 'Tarifa por confirmar' : 'Rate to be confirmed')}</span>
+                                      <RsvpQuantity label={es ? `Cantidad · ${room.name}` : `Quantity · ${room.nameEn}`} value={currentQty} max={maxQty} onChange={value=>updateRoomQuantity(room.id,value)}/>
+                                    </div>
+                                  </div>;
                                 })}
                               </div>
                             )}
                           </div>
 
-                          {selectedRoomCount > 0 && <fieldset className="p-4 rounded-xl border border-[#5c141e]/15 bg-white">
-                            <legend className="text-sm font-semibold text-[#5c141e]">
-                              {es ? '¿Os gustaría alojaros también la noche anterior, del 3 al 4 de septiembre?' : 'Would you also like to stay at the castle the night before, September 3–4?'}
-                            </legend>
-                            <div className="space-y-3 mt-2 text-sm">
-                              <label className="flex items-start gap-2">
-                                <input type="radio" name="fridayCastleInterest" checked={!formData.fridayCastleInterest}
-                                  onChange={() => setFormData(prev => ({...prev, fridayCastleInterest:false}))} />
-                                <span>{es ? 'No, solo del 4 al 5 de septiembre.' : 'No, just September 4–5.'}</span>
-                              </label>
-                              <label className="flex items-start gap-2">
-                                <input type="radio" name="fridayCastleInterest" checked={formData.fridayCastleInterest === true}
-                                  onChange={() => setFormData(prev => ({...prev, fridayCastleInterest:true}))} />
-                                <span>{es ? 'Sí, enviadnos disponibilidad y precio para la noche del 3 al 4 de septiembre.' : 'Yes, please send me availability and pricing for September 3–4.'}</span>
-                              </label>
-                            </div>
-                            <p className="text-xs text-[#6e675f] mt-3">{es ? 'La tarifa del viernes puede ser diferente. Os confirmaremos los detalles antes de añadir la noche extra; esta solicitud no confirma una reserva.' : 'Friday’s rate may differ. We’ll confirm the details with you before adding the extra night; this request does not confirm a booking.'}</p>
-                          </fieldset>}
+                          <label className="rsvp-friday-interest">
+                            <input type="checkbox" checked={Boolean(formData.fridayCastleInterest)} onChange={event=>setFormData(prev=>({...prev,fridayCastleInterest:event.target.checked}))}/>
+                            <span><strong>{es ? 'También me interesa la noche del 3 al 4 de septiembre.' : 'I’m also interested in the night of September 3–4.'}</strong>
+                            <small>{es ? 'La tarifa del viernes puede ser diferente. Os contactaremos para confirmar disponibilidad, precio y todos los detalles antes de añadir la noche extra; esta solicitud no confirma una reserva.' : 'Friday’s rate may differ. We’ll contact you to confirm availability, pricing and all details before adding the extra night; this request does not confirm a booking.'}</small></span>
+                          </label>
 
-                          <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#5c141e]/15">
+                          <div className="rsvp-personal-note">
                             <label className="block text-xs font-bold uppercase tracking-wider text-[#5c141e] mb-1.5 flex items-center gap-1.5">
                               <Music className="w-4 h-4 text-[#b89243]" />
                               <span>{es ? '¿Qué canción no puede faltar en la fiesta?' : 'DJ Song Request'}</span>
@@ -741,7 +659,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                         </div>
                       )}
 
-                      <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#5c141e]/15">
+                      <div className="rsvp-personal-note">
                         <label className="block text-xs font-bold uppercase tracking-wider text-[#5c141e] mb-1.5 flex items-center gap-1.5">
                           <Heart className="w-4 h-4 text-[#b89243]" />
                           <span>{es ? 'Unas palabras o dedicatoria para Belén & Oriol' : 'A note for Belén & Oriol'}</span>
