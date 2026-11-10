@@ -144,6 +144,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       ...prev,
       roomBooking: firstSelectedRoom(next),
       roomBookings: next,
+      fridayCastleInterest: getRoomCount(next) > 0 && Boolean(prev.fridayCastleInterest),
     }));
   };
 
@@ -229,7 +230,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
         setRoomQuantities(next);
         setReturnShuttleBooking(false);
         setOutboundCount(1); setReturnCount(1);
-        setFormData(prev => ({ ...prev, postalAddress: '', songRequest: '', blessingMessage: '', shuttleBooking: true, roomBooking: firstSelectedRoom(next), roomBookings: next, returnShuttleBooking: false }));
+        setFormData(prev => ({ ...prev, postalAddress: '', fridayCastleInterest: false, songRequest: '', blessingMessage: '', shuttleBooking: true, roomBooking: firstSelectedRoom(next), roomBookings: next, returnShuttleBooking: false }));
       }
     } catch {
       onInvitationValidated?.(null);
@@ -336,6 +337,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       shuttlePickupLocation: isAnyAttending && formData.shuttleBooking ? formData.shuttlePickupLocation : '',
       roomBooking: isAnyAttending ? firstSelectedRoom(cleanedRoomQuantities) : 'none',
       roomBookings: isAnyAttending ? cleanedRoomQuantities : {},
+      fridayCastleInterest: isAnyAttending && getRoomCount(cleanedRoomQuantities) > 0 && formData.fridayCastleInterest === true,
       returnShuttleBooking: saturdayGuests > 0 && safeReturnCount > 0 ? returnShuttleBooking : false,
       songRequest: isAnyAttending ? formData.songRequest || '' : '',
       blessingMessage: formData.blessingMessage || '',
@@ -456,6 +458,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
               </div>
 
               {getRoomCount(submittedRsvp.roomBookings || {}) > 0 && <p className="rsvp-room-receipt">{es ? 'Hemos recibido tu solicitud de habitación. La reserva queda pendiente de confirmación.' : 'We have received your room request. Your booking is pending confirmation.'}</p>}
+              {submittedRsvp.fridayCastleInterest && <p className="rsvp-room-receipt">{es ? 'También habéis solicitado disponibilidad y precio para la noche del 3 al 4 de septiembre. Os contactaremos antes de añadirla.' : 'You have also requested availability and pricing for September 3–4. We’ll contact you before adding the extra night.'}</p>}
               <button
                 onClick={handleEdit}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-semibold tracking-wider uppercase border border-[#dfc285] bg-[#5c141e] text-white hover:bg-[#7a1d2b] hover:border-[#f2d99a] transition-colors cursor-pointer shadow-md"
@@ -702,6 +705,25 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                               </div>
                             )}
                           </div>
+
+                          {selectedRoomCount > 0 && <fieldset className="p-4 rounded-xl border border-[#5c141e]/15 bg-white">
+                            <legend className="text-sm font-semibold text-[#5c141e]">
+                              {es ? '¿Os gustaría alojaros también la noche anterior, del 3 al 4 de septiembre?' : 'Would you also like to stay at the castle the night before, September 3–4?'}
+                            </legend>
+                            <div className="space-y-3 mt-2 text-sm">
+                              <label className="flex items-start gap-2">
+                                <input type="radio" name="fridayCastleInterest" checked={!formData.fridayCastleInterest}
+                                  onChange={() => setFormData(prev => ({...prev, fridayCastleInterest:false}))} />
+                                <span>{es ? 'No, solo del 4 al 5 de septiembre.' : 'No, just September 4–5.'}</span>
+                              </label>
+                              <label className="flex items-start gap-2">
+                                <input type="radio" name="fridayCastleInterest" checked={formData.fridayCastleInterest === true}
+                                  onChange={() => setFormData(prev => ({...prev, fridayCastleInterest:true}))} />
+                                <span>{es ? 'Sí, enviadnos disponibilidad y precio para la noche del 3 al 4 de septiembre.' : 'Yes, please send me availability and pricing for September 3–4.'}</span>
+                              </label>
+                            </div>
+                            <p className="text-xs text-[#6e675f] mt-3">{es ? 'La tarifa del viernes puede ser diferente. Os confirmaremos los detalles antes de añadir la noche extra; esta solicitud no confirma una reserva.' : 'Friday’s rate may differ. We’ll confirm the details with you before adding the extra night; this request does not confirm a booking.'}</p>
+                          </fieldset>}
 
                           <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#5c141e]/15">
                             <label className="block text-xs font-bold uppercase tracking-wider text-[#5c141e] mb-1.5 flex items-center gap-1.5">
