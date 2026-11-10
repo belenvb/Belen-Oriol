@@ -27,6 +27,9 @@ export default defineConfig(() => {
           .replaceAll('__WEDDING_OG_PAGE_URL__', pageUrl);
       },
     }],
+    build: {
+      rollupOptions: { input: { main: path.resolve(__dirname, 'index.html'), english: path.resolve(__dirname, 'english.html') } },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
