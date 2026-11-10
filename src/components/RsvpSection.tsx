@@ -617,7 +617,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                             <div className="flex items-center justify-between gap-2 mb-2">
                               <label className="block text-xs font-bold tracking-wider uppercase text-[#5c141e] flex items-center gap-1.5">
                                 <BedDouble className="w-4 h-4 text-[#b89243]" />
-                                <span>{es ? 'Solicitud de habitación en El Castillo del Buen Amor' : 'Castle Room Request'}</span>
+                                <span>{es ? 'Habitación en el castillo · Noche del 4 al 5 de septiembre de 2027' : 'Castle room request · September 4–5, 2027'}</span>
                               </label>
                               <span className="text-[10px] font-bold text-[#b89243] uppercase tracking-wider bg-[#b89243]/10 px-2 py-0.5 rounded">
                                 {es ? `${selectedRoomCount} seleccionada${selectedRoomCount === 1 ? '' : 's'}` : `${selectedRoomCount} selected`}
@@ -631,7 +631,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                             </p>
 
                             {(
-                              <div className="space-y-2.5 mt-4">
+                              <div className="rsvp-room-grid space-y-2.5 mt-4">
                                 {sortedRooms.map((room) => {
                                   const currentQty = roomQuantities[room.id] || 0;
                                   const remoteAvailability = invitation?.roomAvailability?.find((item) => item.id === room.id);
