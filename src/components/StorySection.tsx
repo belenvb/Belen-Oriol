@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowLeft, ArrowRight, Pause, Play } from 'lucide-react';
 import type { Language } from '../types';
 import './StoryEditorial.css';
 
@@ -38,18 +39,53 @@ const photographs = [
 export function StorySection({ lang }: { lang: Language }) {
   const es = lang === 'es';
   const [selected, setSelected] = useState(0);
+  const [paused, setPaused] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const [inView, setInView] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [visible, setVisible] = useState(() => !document.hidden);
+  const stage = useRef<HTMLDivElement>(null);
+  const pointerStart = useRef<number | null>(null);
   const current = photographs[selected];
-  const step = (direction: number) => setSelected(i => (i + direction + photographs.length) % photographs.length);
+  const step = (direction: number) => {
+    setPaused(true);
+    setSelected(i => (i + direction + photographs.length) % photographs.length);
+  };
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting && entry.intersectionRatio >= .25), { threshold: .25 });
+    if (stage.current) observer.observe(stage.current);
+    const visibility = () => setVisible(!document.hidden);
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const reduce = () => { if (motion.matches) setPaused(true); };
+    document.addEventListener('visibilitychange', visibility);
+    motion.addEventListener('change', reduce);
+    return () => { observer.disconnect(); document.removeEventListener('visibilitychange', visibility); motion.removeEventListener('change', reduce); };
+  }, []);
+  useEffect(() => {
+    if (paused || !inView || hovered || focused || !visible) return;
+    const timer = window.setTimeout(() => setSelected(i => (i + 1) % photographs.length), 7000);
+    return () => window.clearTimeout(timer);
+  }, [paused, inView, hovered, focused, visible, selected]);
   return (
     <section id="story" className="atlantic-story" aria-label={es ? 'Nuestra historia' : 'Our story'}>
-      <div className={`atlantic-story__stage atlantic-story__stage--${current.id}${current.id.startsWith('memory-') ? ' atlantic-story__stage--full-photo' : ''}`}>
+      <div ref={stage} className={`atlantic-story__stage atlantic-story__stage--${current.id}${current.id.startsWith('memory-') ? ' atlantic-story__stage--full-photo' : ''}`}
+        onPointerEnter={event => { if (event.pointerType === 'mouse') setHovered(true); }} onPointerLeave={() => setHovered(false)}
+        onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}
+        onPointerDown={event => { pointerStart.current = event.clientX; }}
+        onPointerUp={event => { const start = pointerStart.current; pointerStart.current = null; if (start !== null && Math.abs(event.clientX - start) > 40) step(event.clientX < start ? 1 : -1); }}
+        onPointerCancel={() => { pointerStart.current = null; }}
+        onKeyDown={event => { if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') { event.preventDefault(); step(event.key === 'ArrowRight' ? 1 : -1); } }}>
         <img key={current.id} className="atlantic-story__image" src={`/photos/album/${current.id}.webp`} alt={es ? current.es : current.en} loading="lazy" width={current.width ?? (current.id === '25' ? 920 : 1800)} height={current.height ?? (current.id === '25' ? 1454 : 1013)}/>
         {selected === 0 && <div className="atlantic-story__cover" aria-hidden="true"><span>Belén &amp; Oriol</span><p>{es ? 'Nuestra' : 'Our'}<br/><em>{es ? 'historia.' : 'story.'}</em></p></div>}
-        <div className="atlantic-story__folio" aria-live="polite">{es ? current.name : current.nameEn}</div>
+        <div className="atlantic-story__folio" aria-live={paused ? 'polite' : 'off'}>{es ? current.name : current.nameEn}</div>
         <div className="atlantic-story__controls" role="group" aria-label={es ? 'Fotografías de nuestra historia' : 'Our story photographs'}>
-          <button type="button" onClick={() => step(-1)} aria-label={es ? 'Foto anterior' : 'Previous photo'}>←</button>
+          <button type="button" className="atlantic-story__previous" onClick={() => step(-1)} aria-label={es ? 'Foto anterior' : 'Previous photo'}><ArrowLeft aria-hidden="true" /></button>
           <span>{String(selected + 1).padStart(2,'0')} <i>/</i> {String(photographs.length).padStart(2,'0')}</span>
-          <button type="button" onClick={() => step(1)} aria-label={es ? 'Foto siguiente' : 'Next photo'}>→</button>
+          <button type="button" className="atlantic-story__next" onClick={() => step(1)} aria-label={es ? 'Foto siguiente' : 'Next photo'}><ArrowRight aria-hidden="true" /></button>
+          <button type="button" className="atlantic-story__pause" onClick={() => setPaused(value => !value)} aria-pressed={paused}
+            aria-label={es ? (paused ? 'Reanudar cambio automático' : 'Pausar cambio automático') : (paused ? 'Resume slideshow' : 'Pause slideshow')}>
+            {paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
+          </button>
         </div>
       </div>
       <div className="atlantic-story__article">
