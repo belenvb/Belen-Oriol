@@ -5,6 +5,7 @@ import './RegistrySection.css';
 import { venmoProfileUrl } from '../utils/paymentLinks';
 import { PaymentQr } from './PaymentQr';
 import { PaymentBrand } from './PaymentBrand';
+import { GiftNoteForm } from './GiftNoteForm';
 
 type PaymentMethod = 'bank' | 'bizum' | 'venmo' | 'zelle';
 
@@ -84,7 +85,6 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
     <section id="registry" className="home-gift" aria-labelledby="home-gift-title">
       <div className="home-gift__layout">
         <header className="home-gift__story">
-          <p className="eyebrow">{es ? 'Un regalo para lo que viene' : 'A gift for what comes next'}</p>
           <h2 id="home-gift-title">{es ? 'Lista de bodas' : 'Wedding registry'}</h2>
           <p className="home-gift__lead">{es ? 'Vuestra presencia en nuestra boda es el mejor regalo que podríamos recibir.' : 'Your presence at our wedding is the greatest gift we could ask for.'}</p>
           <p>{es
@@ -204,6 +204,7 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
                     <p className="home-gift__note">{es ? 'Datos pendientes de confirmar.' : 'Details to be confirmed.'}</p>
                   )}
                 </div>
+                {details?.giftNoteToken && <div key={details.giftNoteToken}><GiftNoteForm token={details.giftNoteToken} method={method} lang={lang}/></div>}
               </>
             )}
           </div>

@@ -86,6 +86,7 @@ function render(){
        actions.push('<button class="light" data-action="copy" data-channel="'+ch+'" data-row="'+r.row+'">Copiar mensaje</button>');
        if(!sent(r,ch))actions.push('<button class="light" data-action="mark" data-channel="'+ch+'" data-row="'+r.row+'">Marcar '+ch+' enviado</button>');
      }
+     if(ch==='SMS'&&valid(r)&&r.link)actions.push('<button class="light" data-action="copyLink" data-row="'+r.row+'">Copiar solo enlace · SMS</button>');
      actions.push('<button class="light" data-action="preview" data-channel="'+ch+'" data-row="'+r.row+'">Vista previa '+ch+'</button>');
    }
    const issues=(r.issue?'<div class="error">'+h(r.issue)+'</div>':'')+(r.error?'<div class="error">'+h(r.error)+'</div>':'')+((r.channels||[]).map(ch=>r.channelIssues?.[ch]?'<div class="error">'+h(ch)+': '+h(r.channelIssues[ch])+'</div>':'').join(''));
@@ -100,7 +101,7 @@ function render(){
 function buildPreview(r,ch){
  const body=ch==='WhatsApp'?r.whatsappText:r.smsText;
  const image='<div class="preview-banner"><img src="'+PREVIEW_IMAGE+'" alt="Sobre burdeos B | O · Vista previa de la invitación"><div class="preview-hint">Belén &amp; Oriol · 4 septiembre 2027</div></div>';
- const n=ch==='WhatsApp'?'La imagen de arriba es una simulación. WhatsApp solo la generará de verdad cuando esté publicada en Vercel y el enlace se comparta en la conversación.':'En iMessage la vista previa depende del dispositivo; en SMS normal puede mostrarse únicamente el enlace.';
+ const n=ch==='WhatsApp'?'La imagen de arriba es una simulación. WhatsApp solo la generará de verdad cuando esté publicada en Vercel y el enlace se comparta en la conversación.':'Esta imagen es una simulación. iPhone Messages decide si genera una tarjeta; no podemos forzarla. Prueba «Copiar solo enlace · SMS» y pega el enlace como único contenido del mensaje. Se conserva la misma invitación y código.';
  return '<div class="preview"><h3 class="preview-heading">'+channelIcon(ch)+' Vista previa · '+h(ch)+'</h3>'+image+'<div class="bubble">'+h(body||'Primero configura la dirección de la web y comprueba el código privado.')+'</div><p class="tiny">'+h(n)+'</p></div>';
 }
 $('list').addEventListener('change',async e=>{
@@ -124,6 +125,7 @@ $('list').addEventListener('click',async e=>{
  }
  if(mode==='preview'){const div=$('preview-'+row);div.innerHTML=buildPreview(r,ch);div.style.display=div.style.display==='none'?'block':'none';return;}
  if(mode==='copy'){const text=ch==='WhatsApp'?r.whatsappText:r.smsText;try{await navigator.clipboard.writeText(text);status('Mensaje de '+ch+' copiado.');}catch(e){prompt('Copia el mensaje:',text);}return;}
+ if(mode==='copyLink'){if(!r.link)return;try{await navigator.clipboard.writeText(r.link);status('Enlace original copiado. Pégalo solo en Messages; no cambia el código ni se marca como enviado.');}catch(e){prompt('Copia el enlace original:',r.link);}return;}
  if(mode==='emailPreview'){await action('openInvitationEmailPreview',row);return;}
  if(mode==='emailTest'){const address=prompt('Email para la prueba (no se marcará como enviada)',r.email||'');if(!address)return;const result=await action('sendTestInvitationEmail',row,address);if(result)status('Prueba enviada a '+address+'.');return;}
  if(mode==='emailReal'){if(!confirm('¿Enviar EMAIL REAL a '+r.name+' ('+r.email+')?'))return;const result=await action('sendInvitationEmailsByRows',[row]);if(result)status('Emails enviados: '+result.sent+'. Errores: '+result.failed.length,result.failed.length>0);return;}

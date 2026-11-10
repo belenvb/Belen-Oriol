@@ -224,6 +224,90 @@ function prepareRsvpPostalAddressColumn() {
   } finally { lock.releaseLock(); }
 }
 
+// Recipient stays in private Script Properties. Access tokens are short-lived,
+// one-note capabilities, not proof of identity or payment.
+function weddingGiftNoteRecipient_() {
+  const address = String(PropertiesService.getScriptProperties().getProperty('WEDDING_GIFT_NOTE_EMAIL') || '').trim();
+  return /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(address) ? address : '';
+}
+
+function withWeddingGiftNoteAccess_(details) {
+  if (!weddingGiftNoteRecipient_()) return details;
+  const token = (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, '').toLowerCase();
+  CacheService.getScriptCache().put('gift_note_access_' + token, 'ready', 21600);
+  return Object.assign({}, details, { giftNoteToken: token });
+}
+
+function escapeGiftNoteHtml_(text) {
+  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function weddingGiftNoteCard_(data) {
+  const es = data.language === 'es';
+  const methods = {bank: es ? 'Transferencia' : 'Bank transfer', bizum:'Bizum', venmo:'Venmo', zelle:'Zelle'};
+  const t = escapeGiftNoteHtml_;
+  const heading = es ? 'Una nota para vosotros' : 'A note for you';
+  const from = es ? 'DE PARTE DE' : 'WITH LOVE FROM';
+  const disclaimer = es ? 'Nota enviada desde la lista de bodas. La opción indicada la ha seleccionado el invitado; este mensaje no confirma ningún pago.' : 'A note from the wedding registry. The gift option was selected by the guest; this message does not confirm a payment.';
+  const methodLabel = es ? 'Opción de regalo' : 'Gift option';
+  const body = heading + '\n\n' + data.note + '\n\n' + data.senderName + '\n' + methodLabel + ': ' + methods[data.method] + '\n\n' + disclaimer;
+  const htmlBody = `<!doctype html><html lang="${es ? 'es' : 'en'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;padding:0;background:#f4efe6;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4efe6;"><tr><td align="center" style="padding:32px 16px;">
+  <table role="presentation" width="560" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:560px;background:#fffaf0;border:1px solid #d6bf90;">
+  <tr><td align="center" style="padding:32px 26px 18px;color:#a98344;font:normal 20px Georgia,serif;letter-spacing:5px;">B | O</td></tr>
+  <tr><td align="center" style="padding:0 26px;color:#742d43;font:normal 34px/1.2 Georgia,'Times New Roman',serif;">${heading}</td></tr>
+  <tr><td align="center" style="padding:10px 26px 24px;color:#89745e;font:normal 12px/1.6 Arial,sans-serif;letter-spacing:1px;">Belén &amp; Oriol · 04.09.2027</td></tr>
+  <tr><td style="padding:0 30px;"><div style="height:1px;background:#d6bf90;"></div></td></tr>
+  <tr><td style="padding:30px;color:#542c35;font:normal 22px/1.65 Georgia,'Times New Roman',serif;overflow-wrap:anywhere;word-break:break-word;">${t(data.note).replace(/\r?\n/g,'<br>')}</td></tr>
+  <tr><td align="center" style="padding:0 26px 5px;color:#967c5a;font:normal 10px/1.6 Arial,sans-serif;letter-spacing:2px;">${from}</td></tr>
+  <tr><td align="center" style="padding:0 26px 24px;color:#742d43;font:italic 24px/1.4 Georgia,'Times New Roman',serif;overflow-wrap:anywhere;word-break:break-word;">${t(data.senderName)}</td></tr>
+  <tr><td align="center" style="padding:16px 26px;background:#f5ecdf;color:#795c46;font:normal 12px/1.6 Arial,sans-serif;">${methodLabel}: ${methods[data.method]}</td></tr>
+  </table><table role="presentation" width="560" style="width:100%;max-width:560px;"><tr><td align="center" style="padding:16px 10px;color:#817366;font:normal 11px/1.6 Arial,sans-serif;">${disclaimer}</td></tr></table>
+  </td></tr></table></body></html>`;
+  return {subject: (es ? 'Una nota de ' : 'A note from ') + data.senderName + ' · Belén & Oriol', body:body, htmlBody:htmlBody};
+}
+
+function sendWeddingGiftNote_(data) {
+  const invalid = () => { throw Error('Unable to send gift note'); };
+  if (typeof data.token !== 'string' || !/^[a-f0-9]{64}$/.test(data.token) ||
+      typeof data.requestId !== 'string' || !/^[a-zA-Z0-9-]{16,80}$/.test(data.requestId) ||
+      !['bank','bizum','venmo','zelle'].includes(data.method) ||
+      !['en','es'].includes(data.language) || typeof data.senderName !== 'string' ||
+      !data.senderName.trim() || data.senderName.length > 120 || /[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(data.senderName) || typeof data.note !== 'string' ||
+      !data.note.trim() || data.note.length > 2000 || /[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(data.note)) invalid();
+  const recipient = weddingGiftNoteRecipient_();
+  if (!recipient) invalid();
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const cache = CacheService.getScriptCache();
+    const key = 'gift_note_access_' + data.token;
+    const state = cache.get(key);
+    if (state === 'sent:' + data.requestId) return {ok:true}; // Safe retry after a lost response.
+    if (state !== 'ready') invalid();
+    const rateKey = 'gift_note_hour_' + Math.floor(Date.now()/3600000);
+    const count = Number(cache.get(rateKey) || '0');
+    if (count >= 30 || MailApp.getRemainingDailyQuota() < 1) invalid();
+    const card = weddingGiftNoteCard_({senderName:data.senderName.replace(/[\r\n\t]+/g,' ').trim(),note:data.note.trim(),method:data.method,language:data.language});
+    // Reserve before sending. On an ambiguous mail failure do not resend automatically.
+    cache.put(key, 'sending:' + data.requestId, 21600);
+    cache.put(rateKey, String(count + 1), 3700);
+    MailApp.sendEmail({to:recipient,name:'Belén & Oriol · Wedding notes',subject:card.subject,body:card.body,htmlBody:card.htmlBody});
+    cache.put(key, 'sent:' + data.requestId, 21600);
+    return {ok:true};
+  } catch (error) {
+    throw Error('Unable to send gift note');
+  } finally { lock.releaseLock(); }
+}
+
+// Run once manually to grant mail permission and verify private configuration.
+// This check never sends an email and never logs the recipient.
+function checkWeddingGiftNoteEmailConfiguration() {
+  const ready = Boolean(weddingGiftNoteRecipient_()) && MailApp.getRemainingDailyQuota() > 0;
+  console.log(ready ? 'gift_notes_ready' : 'gift_notes_not_configured_or_quota_empty');
+  return {ready:ready};
+}
+
 function doPost(e) {
   rsvpSnapshot = null;
   roomSheetSnapshot = null;
@@ -238,9 +322,11 @@ function doPost(e) {
 
     const data = JSON.parse(e.postData.contents);
 
+    if (data.action === 'giftNote') return jsonReply(sendWeddingGiftNote_(data));
+
     // Gift-only access: validates name, email or code without returning RSVP data.
     if (data.action === 'giftAccess') {
-      return jsonReply({ ok: true, giftDetails: findGiftDetailsByGuestInput_(data.guestInput) });
+      return jsonReply({ ok: true, giftDetails: withWeddingGiftNoteAccess_(findGiftDetailsByGuestInput_(data.guestInput)) });
     }
 
     // Public room catalogue: exposes ONLY category, price, and availability,
@@ -265,7 +351,7 @@ function doPost(e) {
         guests: invitation.guests,
         invitationText: invitation.invitationText,
         // Only sent after findInvitation has validated an active private code.
-        giftDetails: privateWeddingPaymentDetails_(),
+        giftDetails: withWeddingGiftNoteAccess_(privateWeddingPaymentDetails_()),
         roomAvailability: getRoomAvailability(book, previous && previous.submissionId),
       });
     }

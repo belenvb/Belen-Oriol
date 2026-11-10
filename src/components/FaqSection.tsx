@@ -29,8 +29,8 @@ const faqs: FaqItem[] = [
   {
     qEs: '¿Cuál es el código de vestimenta para el sábado 4?',
     qEn: 'What is the dress code for Saturday, September 4?',
-    aEs: 'Para la boda del Sábado 4 en el castillo el dress code es Cocktail o Black Tie (vestido de cóctel o largo para señoras, traje oscuro o esmoquin para caballeros).',
-    aEn: 'For Saturday Sep 4 at the castle, the dress code is Cocktail or Black Tie (cocktail or evening gown for ladies, dark suit or tuxedo for gentlemen).',
+    aEs: 'Para la boda del Sábado 4 en el castillo el dress code es Cocktail o Black Tie (vestido de cóctel o largo para señoras, traje o esmoquin para caballeros).',
+    aEn: 'For Saturday Sep 4 at the castle, the dress code is Cocktail or Black Tie (cocktail or evening gown for ladies, suit or tuxedo for gentlemen).',
   },
   {
     qEs: '¿Hay aparcamiento en El Castillo del Buen Amor?',

@@ -74,7 +74,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       location: 'El Castillo del Buen Amor',
       dressCode: {
         title: 'Cocktail o Black Tie',
-        description: 'Vestido de cóctel o largo para ellas, traje oscuro o esmoquin para ellos.',
+        description: 'Vestido de cóctel o largo para ellas, traje o esmoquin para ellos.',
       },
       shuttleInfo: {
         title: 'Habrá autobús para invitados entre Salamanca y el Castillo del Buen Amor',
@@ -178,7 +178,7 @@ export const scheduleData: Record<Language, { sept3: DaySchedule; sept4: DaySche
       location: 'Castillo del Buen Amor',
       dressCode: {
         title: 'Cocktail or Black Tie',
-        description: 'Cocktail or floor-length gown for ladies, dark suit or tuxedo for gentlemen.',
+        description: 'Cocktail or floor-length gown for ladies, suit or tuxedo for gentlemen.',
       },
       shuttleInfo: {
         title: 'Guest bus service between Salamanca and Castillo del Buen Amor',

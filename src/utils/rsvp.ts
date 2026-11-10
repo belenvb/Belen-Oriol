@@ -31,6 +31,7 @@ export type RsvpSubmission = GuestRsvp & {
 // These values are received only after an invitation code is validated.
 // Their actual contents are stored in Apps Script Script Properties, not the website.
 export type GiftPaymentDetails = {
+  giftNoteToken?: string;
   usBank?: string;
   usHolder?: string;
   usAccount?: string;
@@ -44,6 +45,10 @@ export type GiftPaymentDetails = {
   zelle?: string;
   zelleQrDataUrl?: string;
 };
+
+export async function sendGiftNote(data: { token: string; method: 'bank' | 'bizum' | 'venmo' | 'zelle'; language: Language; senderName: string; note: string; requestId: string }): Promise<void> {
+  await request({ action: 'giftNote', ...data });
+}
 
 export type InvitationLookup = {
   previousRsvp?: RsvpSubmission;
