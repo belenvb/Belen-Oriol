@@ -86,10 +86,14 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
         <header className="home-gift__story">
           <p className="eyebrow">{es ? 'Un regalo para lo que viene' : 'A gift for what comes next'}</p>
           <h2 id="home-gift-title">{es ? 'Lista de bodas' : 'Wedding registry'}</h2>
-          <p className="home-gift__lead">{es ? 'Nos hace mucha ilusión compartir este día con vosotros.' : 'We are so happy to share this day with you.'}</p>
+          <p className="home-gift__lead">{es ? 'Vuestra presencia en nuestra boda es el mejor regalo que podríamos recibir.' : 'Your presence at our wedding is the greatest gift we could ask for.'}</p>
           <p>{es
-            ? 'Estamos ahorrando para comprar nuestra primera casa juntos. Si os apetece hacernos un regalo, podéis ayudarnos a dar ese paso. Gracias por acompañarnos en la boda y en todo lo que viene después.'
-            : 'We are saving to buy our first home together. If you would like to give us a gift, we would love your help taking that next step. Thank you for being part of our wedding and everything that comes after.'}</p>
+            ? 'Tenemos la suerte de contar ya con todo lo que necesitamos, así que no hace falta que nos regaléis nada.'
+            : 'We’re lucky to already have everything we need, so please don’t feel you need to bring anything.'}</p>
+          <p>{es
+            ? 'Si aun así os apetece hacernos un regalo, os agradeceríamos que nos lo enviarais a nuestra casa en Estados Unidos; solo tenéis que pedirnos la dirección. Otra opción es ayudarnos con nuestra primera casa: estamos ahorrando para comprarla juntos y vuestra aportación a esta nueva etapa nos haría mucha ilusión.'
+            : 'If you’d still like to give us a gift, we’d be grateful if you could send it to our home in the United States—just ask us for the address. Alternatively, we’re saving to buy our first home together, and a contribution towards that next chapter would mean a lot to us.'}</p>
+          <p>{es ? 'Gracias por celebrar con nosotros y formar parte de nuestra historia.' : 'Thank you for celebrating with us and being part of our story.'}</p>
           <p className="home-gift__signoff">Belén &amp; Oriol</p>
         </header>
         <details className="home-gift__details">
@@ -99,13 +103,16 @@ export function RegistrySection({ lang, verified, giftDetails }: Props) {
             </span>
             <span className="home-gift__card-caption">
               <span className="home-gift__card-copy">
-                <span className="home-gift__card-title">{es ? 'Nuestra primera casa' : 'Our first home'}</span>
-                <span className="home-gift__card-action">{es ? 'Contribuir a nuestro hogar' : 'Contribute to our home'}</span>
+                <span className="home-gift__card-title">{es ? 'Fondo para nuestra primera casa' : 'Our First Home Fund'}</span>
+                <span className="home-gift__card-action">{es ? 'Aportar para nuestra primera casa' : 'Give towards our first home'}</span>
               </span>
               <span className="home-gift__reveal-mark" aria-hidden="true">+</span>
             </span>
           </summary>
           <div className="home-gift__payment-content">
+            <p className="home-gift__note">{es
+              ? 'Estamos ahorrando para nuestra primera casa juntos. Si os apetece ayudarnos a dar ese paso, encontraréis las opciones de regalo a continuación.'
+              : 'We’re saving for our first home together. If you’d like to help us take that next step, you can find the gift options below.'}</p>
             {!unlocked ? (
               <div className="home-gift__private-details">
                 <p className="home-gift__note">{es
