@@ -1,4 +1,5 @@
-import { Check, Plus, Trash2, Utensils, X, Wine, Castle } from 'lucide-react';
+import './RsvpAttendance.css';
+import { Check, Plus, Trash2, Utensils } from 'lucide-react';
 import type { Language } from '../types';
 import type { RsvpPerson } from '../utils/rsvp';
 
@@ -235,105 +236,24 @@ export function RsvpGuests({
                 </div>
               </div>
 
-              {/* Dynamic 3-Option Attendance Choice: Friday / Saturday / Decline */}
-              <div className="mb-5">
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#371017] mb-2.5">
-                  {es
-                    ? `¿Asistirá ${guestDisplayName}? *`
-                    : `Will ${guestDisplayName} attend? *`}
-                </label>
-
-                <div className={`rsvp-attendance grid gap-3 ${invitedToPreboda ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
-                  {/* Option 1: Friday Preboda */}
-                  {invitedToPreboda && (
-                    <button type="button" aria-pressed={isFriSelected}
-                      onClick={() => handleToggleFriday(index, person)}
-                      className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between select-none ${
-                        isFriSelected
-                          ? 'border-[#5c141e] bg-[#5c141e]/8 shadow-sm ring-1 ring-[#5c141e]/20'
-                          : 'border-gray-200 bg-[#faf7f2] hover:border-[#b89243]/60 hover:bg-white'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-[#371017]">
-                          <Wine className={`w-4 h-4 ${isFriSelected ? 'text-[#5c141e]' : 'text-[#8c6d4f]'}`} />
-                          <span>{es ? 'Viernes 3' : 'Friday 3'}</span>
-                        </div>
-                        <div
-                          className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                            isFriSelected ? 'bg-[#5c141e] border-[#5c141e] text-white' : 'border-gray-300 bg-white'
-                          }`}
-                        >
-                          {isFriSelected && <Check className="w-3.5 h-3.5 text-[#dfc285]" />}
-                        </div>
-                      </div>
-                      <div>
-                        <span className="text-xs font-semibold text-[#5c141e] block leading-snug">
-                          {es ? 'Preboda' : 'Welcome cocktail'}
-                        </span>
-                      </div>
-                    </button>
-                  )}
-
-                  {/* Option 2: Saturday Wedding Day */}
-                  <button type="button" aria-pressed={isSatSelected}
-                    onClick={() => handleToggleSaturday(index, person)}
-                    className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between select-none ${
-                      isSatSelected
-                        ? 'border-[#5c141e] bg-[#5c141e]/8 shadow-sm ring-1 ring-[#5c141e]/20'
-                        : 'border-gray-200 bg-[#faf7f2] hover:border-[#b89243]/60 hover:bg-white'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#371017]">
-                        <Castle className={`w-4 h-4 ${isSatSelected ? 'text-[#5c141e]' : 'text-[#8c6d4f]'}`} />
-                        <span>{es ? 'Sábado 4' : 'Saturday 4'}</span>
-                      </div>
-                      <div
-                        className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                          isSatSelected ? 'bg-[#5c141e] border-[#5c141e] text-white' : 'border-gray-300 bg-white'
-                        }`}
-                      >
-                        {isSatSelected && <Check className="w-3.5 h-3.5 text-[#dfc285]" />}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-xs font-semibold text-[#5c141e] block leading-snug">
-                        {es ? 'Boda' : 'Wedding'}
-                      </span>
-                    </div>
-                  </button>
-
-                  {/* Option 3: Decline / No podré asistir */}
-                  <button type="button" aria-pressed={isDeclined}
-                    onClick={() => handleDecline(index)}
-                    className={`p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between select-none ${
-                      isDeclined
-                        ? 'border-[#371017] bg-[#371017]/8 shadow-sm ring-1 ring-[#371017]/20'
-                        : 'border-gray-200 bg-[#faf7f2] hover:border-[#b89243]/60 hover:bg-white'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#371017]">
-                        <X className={`w-4 h-4 ${isDeclined ? 'text-[#371017]' : 'text-gray-400'}`} />
-                        <span>{es ? 'No podré asistir' : 'Unable to attend'}</span>
-                      </div>
-                      <div
-                        className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
-                          isDeclined ? 'bg-[#371017] border-[#371017] text-white' : 'border-gray-300 bg-white'
-                        }`}
-                      >
-                        {isDeclined && <Check className="w-3.5 h-3.5 text-white" />}
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-[11px] text-[#6e675f] block mt-0.5">
-                        {es ? 'Gracias por avisarnos' : 'Thank you for letting us know'}
-                      </span>
-                    </div>
+              <fieldset className="rsvp-attendance-soft">
+                <legend>{es ? `¿Asistirá ${guestDisplayName}?` : `Will ${guestDisplayName} attend?`}</legend>
+                <div className={`rsvp-attendance-soft__events ${!invitedToPreboda ? 'rsvp-attendance-soft__events--single' : ''}`}>
+                  {invitedToPreboda && <button type="button" aria-label={es ? 'Viernes 3 de septiembre · Preboda' : 'Friday September 3 · Welcome cocktail'} aria-pressed={isFriSelected} onClick={() => handleToggleFriday(index, person)}>
+                    <span className="rsvp-attendance-soft__date" aria-hidden="true">03</span>
+                    <span className="rsvp-attendance-soft__copy"><span className="rsvp-attendance-soft__day">{es ? 'Viernes · Septiembre' : 'Friday · September'}</span><span className="rsvp-attendance-soft__event">{es ? 'Preboda' : 'Welcome cocktail'}</span></span>
+                    <span className="rsvp-attendance-soft__mark" aria-hidden="true">{isFriSelected && <Check />}</span>
+                  </button>}
+                  <button type="button" aria-label={es ? 'Sábado 4 de septiembre · Boda' : 'Saturday September 4 · The wedding'} aria-pressed={isSatSelected} onClick={() => handleToggleSaturday(index, person)}>
+                    <span className="rsvp-attendance-soft__date" aria-hidden="true">04</span>
+                    <span className="rsvp-attendance-soft__copy"><span className="rsvp-attendance-soft__day">{es ? 'Sábado · Septiembre' : 'Saturday · September'}</span><span className="rsvp-attendance-soft__event">{es ? 'Boda' : 'The wedding'}</span></span>
+                    <span className="rsvp-attendance-soft__mark" aria-hidden="true">{isSatSelected && <Check />}</span>
                   </button>
                 </div>
-              </div>
+                <button type="button" className="rsvp-attendance-soft__decline" aria-pressed={isDeclined} onClick={() => handleDecline(index)}>
+                  {es ? 'No podré asistir' : 'I’m unable to attend'}
+                </button>
+              </fieldset>
 
               {/* Attending Details: Menu Preferences & Allergies (Shown when attending any day) */}
               {!isDeclined && (
