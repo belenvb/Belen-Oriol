@@ -50,6 +50,7 @@ export interface RegistryItem {
 
 export interface GuestRsvp {
   postalAddress?: string;
+  fridayCastleInterest?: boolean;
   code?: string;
   fullName: string;
   email: string;

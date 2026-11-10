@@ -178,6 +178,12 @@ function normalizePostalAddress_(value) {
   return value.trim();
 }
 
+// Interest only: never reserve Friday inventory or assume Saturday's rate.
+function normalizeFridayCastleInterest_(value, anyAttending, roomBookings) {
+  if (value != null && typeof value !== 'boolean') throw Error('Invalid Friday castle interest');
+  return anyAttending && Object.keys(roomBookings).length > 0 && value === true;
+}
+
 function doPost(e) {
   rsvpSnapshot = null;
   roomSheetSnapshot = null;
@@ -243,6 +249,7 @@ function doPost(e) {
 
     const attendingPeople = people.filter(person => person.attendance === 'yes');
     const anyAttending = attendingPeople.length > 0;
+    const fridayCastleInterest = normalizeFridayCastleInterest_(data.fridayCastleInterest, anyAttending, roomBookings);
 
     const fridayCount = people.filter(person => person.attendingFriday).length;
     const saturdayCount = people.filter(person => person.attendingSaturday).length;
@@ -267,7 +274,8 @@ function doPost(e) {
         : '';
 
     const outboundShuttle = anyAttending && data.shuttleBooking === true ? 'Sí' : 'No';
-    const roomSummary = anyAttending ? formatRoomBookings(roomBookings) : '';
+    const roomSummary = (anyAttending ? formatRoomBookings(roomBookings) : '') +
+      (fridayCastleInterest ? ' · Noche 3–4 septiembre: solicita disponibilidad y precio (sin confirmar)' : '');
     const song = anyAttending ? text(data.songRequest, 500) : '';
     const message = text(data.blessingMessage, 3000);
 
@@ -379,7 +387,7 @@ function doPost(e) {
         message,
         outboundCount,
         returnCount,
-        JSON.stringify(Object.assign({}, data, {submissionId:id, invitationCode:code, code:code, guests:people, postalAddress:postalAddress, roomBookings:roomBookings, outboundShuttleCount:outboundCount, returnShuttleCount:returnCount})),
+        JSON.stringify(Object.assign({}, data, {submissionId:id, invitationCode:code, code:code, guests:people, postalAddress:postalAddress, roomBookings:roomBookings, fridayCastleInterest:fridayCastleInterest, outboundShuttleCount:outboundCount, returnShuttleCount:returnCount})),
       ];
 
       const existingRow = previousRow;

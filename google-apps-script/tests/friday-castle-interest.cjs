@@ -1,0 +1,22 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const path = require('node:path');
+const ctx = vm.createContext({});
+vm.runInContext(fs.readFileSync(path.join(__dirname,'../Code.gs'),'utf8'),ctx);
+const normalize = ctx.normalizeFridayCastleInterest_;
+const rooms = {estandar:1};
+assert.equal(normalize(true,true,rooms),true);
+assert.equal(normalize(false,true,rooms),false);
+assert.equal(normalize(undefined,true,rooms),false);
+assert.equal(normalize(true,false,rooms),false);
+assert.equal(normalize(true,true,{}),false);
+assert.throws(()=>normalize('true',true,rooms));
+assert.deepEqual(rooms,{estandar:1}); // No extra inventory reservation.
+const stored={code:'EXAMPLE-CODE-12345678',roomBookings:rooms,fridayCastleInterest:true};
+const row=Array(23).fill(''); row[5]=stored.code; row[22]=JSON.stringify(stored);
+const sheet={};
+ctx.findRsvpRow=()=>2;
+ctx.readRsvpSnapshot=()=>({rows:[row]});
+assert.equal(ctx.getPreviousRsvp({getSheetByName:()=>sheet},stored.code).fridayCastleInterest,true);
+console.log('Friday interest normalization, no inventory mutation and RSVP reload passed.');
