@@ -25,6 +25,19 @@
  #rsvp.rsvp-refined .rsvp-paper-entry .rsvp-confirm-button { width:100%; padding:18px 12px!important; letter-spacing:.12em!important; }
 }
 
+/* Read the live price order down the left column, then down the right column. */
+#rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-panel > .rsvp-room-grid {
+  display:grid;
+  grid-template-rows:repeat(3,auto);
+  grid-auto-flow:column;
+}
+@media(max-width:700px) {
+  #rsvp.rsvp-refined.rsvp-air.rsvp-compact .rsvp-room-panel > .rsvp-room-grid {
+    grid-template-rows:none;
+    grid-auto-flow:row;
+  }
+}
+
 /* Room photos inside RSVP: tap either thumbnail or room name to open gallery. */
 .rsvp-room-detail { display:flex; align-items:flex-start; gap:12px; min-width:0; flex:1; }
 .rsvp-room-detail__text { min-width:0; flex:1; }
