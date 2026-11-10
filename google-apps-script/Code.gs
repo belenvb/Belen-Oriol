@@ -171,7 +171,7 @@ function findGiftDetailsByGuestInput_(rawInput) {
   return privateWeddingPaymentDetails_();
 }
 
-// Optional household address, kept only in the private stored RSVP JSON.
+// Optional household address, stored in private RSVP JSON and its visible sheet column.
 function normalizePostalAddress_(value) {
   if (value == null) return '';
   if (typeof value !== 'string' || value.length > 500) throw Error('Invalid postal address');
@@ -182,6 +182,46 @@ function normalizePostalAddress_(value) {
 function normalizeFridayCastleInterest_(value, anyAttending, roomBookings) {
   if (value != null && typeof value !== 'boolean') throw Error('Invalid Friday castle interest');
   return anyAttending && Object.keys(roomBookings).length > 0 && value === true;
+}
+
+function ensurePostalAddressColumn_(sheet) {
+  const lastColumn = sheet.getLastColumn();
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+  const existing = headers.findIndex(header => String(header).trim().toLowerCase() === 'dirección postal');
+  if (existing >= 0) return existing + 1;
+  const column = Math.max(23, lastColumn) + 1;
+  if (column > sheet.getMaxColumns()) sheet.insertColumnsAfter(sheet.getMaxColumns(), column - sheet.getMaxColumns());
+  sheet.getRange(1, column).setValue('Dirección postal');
+  sheet.setColumnWidth(column, 300);
+  rsvpSnapshot = null;
+  return column;
+}
+
+/** Run manually once to expose postal addresses already saved in private RSVP JSON. */
+function prepareRsvpPostalAddressColumn() {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = getSpreadsheet().getSheetByName(RSVP_TAB);
+    if (!sheet || sheet.getLastRow() < 1) throw Error('No existe la hoja Respuestas web.');
+    const column = ensurePostalAddressColumn_(sheet);
+    let restored = 0;
+    if (sheet.getLastRow() > 1) {
+      const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, Math.max(column, 23)).getValues();
+      rows.forEach((row, index) => {
+        if (String(row[column - 1] || '').trim() || !row[22]) return;
+        let address = '';
+        try { address = normalizePostalAddress_(JSON.parse(String(row[22])).postalAddress); } catch (_) { return; }
+        if (!address) return;
+        const cell = sheet.getRange(index + 2, column);
+        // Leave manually entered values/formulas untouched.
+        if (cell.getFormula()) return;
+        cell.setValue(/^[=+\-@]/.test(address) ? "'" + address : address);
+        restored++;
+      });
+    }
+    return {column:column, restored:restored};
+  } finally { lock.releaseLock(); }
 }
 
 function doPost(e) {
@@ -358,6 +398,7 @@ function doPost(e) {
     }
 
     if (sheet.getLastColumn() < 23) sheet.getRange(1, 21, 1, 3).setValues([['Personas autobús ida', 'Personas autobús vuelta', 'Respuesta JSON']]);
+    const postalAddressColumn = ensurePostalAddressColumn_(sheet);
     const existingSnapshot = readRsvpSnapshot(book);
     const alreadyExists = existingSnapshot.rows.some(row => String(row[0]) === id);
 
@@ -393,6 +434,7 @@ function doPost(e) {
       const existingRow = previousRow;
       if (existingRow) sheet.getRange(existingRow, 1, 1, row.length).setValues([row.map(literal)]);
       else sheet.appendRow(row.map(literal));
+      sheet.getRange(existingRow || sheet.getLastRow(), postalAddressColumn).setValue(literal(postalAddress));
       sheet.getRange(existingRow || sheet.getLastRow(), 2).setNumberFormat('dd/MM/yyyy HH:mm:ss');
     }
 
