@@ -109,241 +109,59 @@ export function RsvpGuests({
     });
   };
 
-  const menuOptions: { id: RsvpPerson['dietaryPreference']; labelEs: string; labelEn: string; icon: string }[] = [
-    { id: 'none', labelEs: 'Tradicional', labelEn: 'Traditional', icon: '🍽️' },
-    { id: 'vegetarian', labelEs: 'Vegetariano', labelEn: 'Vegetarian', icon: '🌱' },
-    { id: 'vegan', labelEs: 'Vegano', labelEn: 'Vegan', icon: '🌿' },
-    { id: 'celiac', labelEs: 'Sin Gluten / Celíaco', labelEn: 'Gluten-Free', icon: '🌾' },
-    { id: 'other', labelEs: 'Otro menú especial', labelEn: 'Other Special', icon: '✨' },
+  const menuOptions: { id: RsvpPerson['dietaryPreference']; es: string; en: string }[] = [
+    { id: 'none', es: 'Tradicional', en: 'Traditional' },
+    { id: 'vegetarian', es: 'Vegetariano', en: 'Vegetarian' },
+    { id: 'vegan', es: 'Vegano', en: 'Vegan' },
+    { id: 'celiac', es: 'Sin gluten', en: 'Gluten-free' },
+    { id: 'other', es: 'Otro', en: 'Other' },
   ];
-
-  const cleanInvitationText = invitationText.trim();
-
-  const invitationSummary = cleanInvitationText
-    ? es
-      ? `Tu invitación incluye a ${cleanInvitationText}.`
-      : `Your invitation includes ${cleanInvitationText}.`
-    : es
-    ? `Tu invitación incluye hasta ${maxGuests} ${maxGuests === 1 ? 'persona' : 'personas'}, incluyendo titular.`
+  const invitationSummary = invitationText.trim()
+    ? (es ? 'Tu invitación incluye a ' : 'Your invitation includes ') + invitationText.trim() + '.'
+    : es ? `Tu invitación incluye hasta ${maxGuests} ${maxGuests === 1 ? 'persona' : 'personas'}, incluyendo titular.`
     : `Your invitation includes up to ${maxGuests} ${maxGuests === 1 ? 'guest' : 'guests'}, including the invitation holder.`;
 
-  return (
-    <div className="rsvp-guests space-y-7">
-      {/* Maximum guests banner */}
-      <div className="rsvp-guests__summary flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-[#f5efe3] border border-[#b89243]/40 text-[#371017]">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#b89243] shrink-0" />
-          <span className="text-xs sm:text-sm font-semibold text-[#371017]">
-            {invitationSummary}
-          </span>
-        </div>
-        <span className="text-xs font-mono text-[#5c141e] font-bold shrink-0 ml-2">
-          {guests.length} / {maxGuests}
-        </span>
-      </div>
-
-      {/* Guest Cards */}
-      <div className="rsvp-guests-grid">
-        {guests.map((person, index) => {
-          const isTitular = index === 0;
-          const isAttending = person.attendance === 'yes';
-          const isFriSelected = isAttending && (person.attendingFriday ?? false);
-          const isSatSelected = isAttending && (person.attendingSaturday ?? false);
-          const isDeclined = person.attendance === 'no' || (!isFriSelected && !isSatSelected);
-
-          const guestDisplayName = person.fullName.trim() || (isTitular ? (es ? 'el titular' : 'the holder') : (es ? `el invitado ${index + 1}` : `Guest ${index + 1}`));
-
-          return (
-            <div
-              key={index}
-              className="rsvp-guest-sheet bg-white rounded-2xl border-2 border-[#b89243]/30 p-5 sm:p-7 shadow-md relative transition-all"
-            >
-              {/* Card Header */}
-              <div className="flex items-center justify-between pb-3.5 mb-5 border-b border-[#5c141e]/10">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-7 h-7 rounded-full bg-[#5c141e] text-white font-cinzel text-xs font-bold flex items-center justify-center shadow-xs shrink-0">
-                    {index + 1}
-                  </span>
-                  <div>
-                    <h4 className="font-cinzel text-sm sm:text-base font-bold text-[#371017] uppercase tracking-wide">
-                      {isTitular
-                        ? es
-                          ? 'Titular de la invitación'
-                          : 'Invitation Holder'
-                        : es
-                        ? `Acompañante ${index + 1}`
-                        : `Guest ${index + 1}`}
-                    </h4>
-                    {isTitular && (
-                      <span className="text-[11px] text-[#6e675f] block font-sans">
-                        {es ? 'Contacto principal del grupo' : 'Primary party contact'}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {!isTitular && (
-                  <button
-                    type="button"
-                    onClick={() => onChange(guests.filter((_, i) => i !== index))}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 transition-colors cursor-pointer"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>{es ? 'Eliminar' : 'Remove'}</span>
-                  </button>
-                )}
-              </div>
-
-              {/* Name & Email Fields */}
-              <div className="grid sm:grid-cols-2 gap-4 mb-5">
-                <div>
-                  <label htmlFor={`rsvp-name-${index}`} className="block text-xs font-bold uppercase tracking-wider text-[#371017] mb-1.5">
-                    {es ? 'Nombre y apellidos *' : 'Full Name *'}
-                  </label>
-                  <input
-                    id={`rsvp-name-${index}`}
-                    autoComplete="name"
-                    required
-                    maxLength={200}
-                    placeholder={es ? 'Ej. María García López' : 'E.g. Jane Doe'}
-                    value={person.fullName}
-                    onChange={(e) => update(index, { fullName: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#5c141e]/25 rounded-lg text-sm text-[#2c241e] placeholder:text-[#8c827a] focus:bg-white focus:outline-none focus:border-[#5c141e] focus:ring-1 focus:ring-[#5c141e] transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor={`rsvp-email-${index}`} className="block text-xs font-bold uppercase tracking-wider text-[#371017] mb-1.5">
-                    {isTitular
-                      ? es
-                        ? 'Email del titular *'
-                        : 'Holder Email *'
-                      : es
-                      ? 'Email (opcional)'
-                      : 'Email (Optional)'}
-                  </label>
-                  <input
-                    id={`rsvp-email-${index}`}
-                    autoComplete="email"
-                    type="email"
-                    required={isTitular}
-                    maxLength={254}
-                    placeholder={es ? 'ejemplo@correo.com' : 'example@email.com'}
-                    value={person.email}
-                    onChange={(e) => update(index, { email: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#5c141e]/25 rounded-lg text-sm text-[#2c241e] placeholder:text-[#8c827a] focus:bg-white focus:outline-none focus:border-[#5c141e] focus:ring-1 focus:ring-[#5c141e] transition-all"
-                  />
-                </div>
-              </div>
-
-              <fieldset className="rsvp-attendance-soft">
-                <legend>{es ? `¿Asistirá ${guestDisplayName}?` : `Will ${guestDisplayName} attend?`}</legend>
-                <div className={`rsvp-attendance-soft__events ${!invitedToPreboda ? 'rsvp-attendance-soft__events--single' : ''}`}>
-                  {invitedToPreboda && <button type="button" aria-label={es ? 'Viernes 3 de septiembre · Preboda' : 'Friday September 3 · Welcome cocktail'} aria-pressed={isFriSelected} onClick={() => handleToggleFriday(index, person)}>
-                    <span className="rsvp-attendance-soft__date" aria-hidden="true">03</span>
-                    <span className="rsvp-attendance-soft__copy"><span className="rsvp-attendance-soft__day">{es ? 'Viernes · Septiembre' : 'Friday · September'}</span><span className="rsvp-attendance-soft__event">{es ? 'Preboda' : 'Welcome cocktail'}</span></span>
-                    <span className="rsvp-attendance-soft__mark" aria-hidden="true">{isFriSelected && <Check />}</span>
-                  </button>}
-                  <button type="button" aria-label={es ? 'Sábado 4 de septiembre · Boda' : 'Saturday September 4 · The wedding'} aria-pressed={isSatSelected} onClick={() => handleToggleSaturday(index, person)}>
-                    <span className="rsvp-attendance-soft__date" aria-hidden="true">04</span>
-                    <span className="rsvp-attendance-soft__copy"><span className="rsvp-attendance-soft__day">{es ? 'Sábado · Septiembre' : 'Saturday · September'}</span><span className="rsvp-attendance-soft__event">{es ? 'Boda' : 'The wedding'}</span></span>
-                    <span className="rsvp-attendance-soft__mark" aria-hidden="true">{isSatSelected && <Check />}</span>
-                  </button>
-                </div>
-                <button type="button" className="rsvp-attendance-soft__decline" aria-pressed={isDeclined} onClick={() => handleDecline(index)}>
-                  {es ? 'No podré asistir' : 'I’m unable to attend'}
-                </button>
-              </fieldset>
-
-              {/* Attending Details: Menu Preferences & Allergies (Shown when attending any day) */}
-              {!isDeclined && (
-                <div className="space-y-4 pt-4 border-t border-[#5c141e]/15">
-                  {/* Dietary Preference Selection */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#371017] mb-1.5 flex items-center gap-1.5">
-                      <Utensils className="w-3.5 h-3.5 text-[#b89243]" />
-                      <span>{es ? `Preferencia de Menú de ${person.fullName.trim() || 'este invitado'}:` : 'Dietary Preference:'}</span>
-                    </label>
-
-                    <div className="rsvp-menu-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-1.5">
-                      {menuOptions.map((opt) => {
-                        const isSelected = person.dietaryPreference === opt.id;
-                        return (
-                          <button
-                            key={opt.id}
-                            aria-pressed={isSelected}
-                            type="button"
-                            onClick={() => update(index, { dietaryPreference: opt.id })}
-                            className={`p-2.5 rounded-xl border text-xs font-semibold transition-all flex flex-col items-center justify-center gap-1 text-center cursor-pointer ${
-                              isSelected
-                                ? 'border-[#5c141e] bg-[#5c141e] text-white shadow-xs'
-                                : 'border-gray-200 bg-[#faf7f2] text-[#371017] hover:border-[#b89243]/60 hover:bg-white'
-                            }`}
-                          >
-                            <span className="text-base">{opt.icon}</span>
-                            <span className="leading-tight text-[11.5px]">
-                              {es ? opt.labelEs : opt.labelEn}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Allergies and Intolerances Note */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-[#371017] mb-1.5">
-                      {es ? 'Alergias o Intolerancias Específicas' : 'Allergies & Intolerances'}
-                    </label>
-                    <input
-                      type="text"
-                      maxLength={1000}
-                      value={person.allergiesNote}
-                      onChange={(e) => update(index, { allergiesNote: e.target.value })}
-                      placeholder={
-                        es
-                          ? 'Ej. Alergia a frutos secos, marisco, lactosa (o escribe "Ninguna")'
-                          : 'E.g. Nut allergy, lactose, seafood (or write "None")'
-                      }
-                      className="w-full px-4 py-2.5 bg-[#faf7f2] border border-[#5c141e]/25 rounded-lg text-sm text-[#2c241e] placeholder:text-[#8c827a] focus:bg-white focus:outline-none focus:border-[#5c141e] transition-all"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {isDeclined && (
-                <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs text-[#6e675f] italic">
-                  {es
-                    ? 'Sentiremos mucho no contar con tu presencia, pero te tendremos muy presente.'
-                    : 'We will miss your presence dearly, but you will be with us in spirit.'}
-                </div>
-              )}
+  return <div className="rsvp-guests">
+    <div className="rsvp-guests__summary"><span>{invitationSummary}</span><span>{guests.length} / {maxGuests}</span></div>
+    <div className="rsvp-guests-grid">
+      {guests.map((person,index) => {
+        const isTitular=index===0;
+        const isFriSelected=person.attendance==='yes' && Boolean(person.attendingFriday);
+        const isSatSelected=person.attendance==='yes' && Boolean(person.attendingSaturday);
+        const isDeclined=!isFriSelected && !isSatSelected;
+        const name=person.fullName.trim() || (isTitular ? (es ? 'el titular' : 'the holder') : (es ? `el invitado ${index+1}` : `Guest ${index+1}`));
+        return <section key={index} className="rsvp-guest-sheet" aria-label={es ? `Datos de ${name}` : `Details for ${name}`}>
+          <header className="rsvp-guest-heading"><span className="rsvp-guest-number">{String(index+1).padStart(2,'0')}</span><div>
+            <h4>{isTitular ? (es ? 'Titular de la invitación' : 'Invitation holder') : (es ? `Acompañante ${index+1}` : `Guest ${index+1}`)}</h4>
+            {isTitular && <span>{es ? 'Contacto principal del grupo' : 'Primary party contact'}</span>}
+          </div>{!isTitular && <button type="button" className="rsvp-remove-guest" onClick={()=>onChange(guests.filter((_,i)=>i!==index))}><Trash2 aria-hidden="true"/><span>{es ? 'Eliminar' : 'Remove'}</span></button>}</header>
+          <div className="rsvp-person-fields">
+            <label className="rsvp-field" htmlFor={`rsvp-name-${index}`}><span>{es ? 'Nombre y apellidos *' : 'Full name *'}</span>
+              <input id={`rsvp-name-${index}`} autoComplete="name" required maxLength={200} placeholder={es ? 'Nombre y apellidos' : 'Full name'} value={person.fullName} onChange={e=>update(index,{fullName:e.target.value})}/></label>
+            <label className="rsvp-field" htmlFor={`rsvp-email-${index}`}><span>{isTitular ? (es ? 'Email del titular *' : 'Holder email *') : (es ? 'Email (opcional)' : 'Email (optional)')}</span>
+              <input id={`rsvp-email-${index}`} type="email" autoComplete="email" required={isTitular} maxLength={254} placeholder={es ? 'ejemplo@correo.com' : 'example@email.com'} value={person.email} onChange={e=>update(index,{email:e.target.value})}/></label>
+          </div>
+          <fieldset className="rsvp-attendance-soft"><legend>{es ? `¿Asistirá ${name}?` : `Will ${name} attend?`}</legend>
+            <div className={`rsvp-attendance-soft__events ${!invitedToPreboda ? 'rsvp-attendance-soft__events--single' : ''}`}>
+              {invitedToPreboda && <button type="button" aria-label={es ? 'Viernes 3 de septiembre · Preboda' : 'Friday September 3 · Welcome cocktail'} aria-pressed={isFriSelected} onClick={()=>handleToggleFriday(index,person)}>
+                <span className="rsvp-attendance-soft__date" aria-hidden="true">03</span><span className="rsvp-attendance-soft__copy"><span className="rsvp-attendance-soft__day">{es ? 'Viernes · Septiembre' : 'Friday · September'}</span><span className="rsvp-attendance-soft__event">{es ? 'Preboda' : 'Welcome cocktail'}</span></span><span className="rsvp-attendance-soft__mark" aria-hidden="true">{isFriSelected && <Check/>}</span>
+              </button>}
+              <button type="button" aria-label={es ? 'Sábado 4 de septiembre · Boda' : 'Saturday September 4 · The wedding'} aria-pressed={isSatSelected} onClick={()=>handleToggleSaturday(index,person)}>
+                <span className="rsvp-attendance-soft__date" aria-hidden="true">04</span><span className="rsvp-attendance-soft__copy"><span className="rsvp-attendance-soft__day">{es ? 'Sábado · Septiembre' : 'Saturday · September'}</span><span className="rsvp-attendance-soft__event">{es ? 'Boda' : 'The wedding'}</span></span><span className="rsvp-attendance-soft__mark" aria-hidden="true">{isSatSelected && <Check/>}</span>
+              </button>
             </div>
-          );
-        })}
-      </div>
-
-      {/* Add Companion Button */}
-      {guests.length < maxGuests && (
-        <button
-          type="button"
-          onClick={() => onChange([...guests, emptyPerson()])}
-          className="w-full py-3.5 px-4 rounded-xl border-2 border-dashed border-[#b89243] bg-[#faf7f2] hover:bg-white text-[#5c141e] hover:border-[#5c141e] font-cinzel text-xs font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-        >
-          <Plus className="w-4 h-4 text-[#b89243]" />
-          <span>
-            {es
-              ? `Añadir acompañante (${guests.length + 1} de ${maxGuests} plazas autorizadas)`
-              : `Add Guest (${guests.length + 1} of ${maxGuests} allowed)`}
-          </span>
-        </button>
-      )}
-
-      <p className="text-[11.5px] text-[#6e675f] italic text-center">
-        {es
-          ? 'Estos datos se guardarán con la máxima confidencialidad para organizar las mesas, menús y traslados.'
-          : 'Your details will be kept in strict confidence to arrange tables, menus and transport.'}
-      </p>
+            <button type="button" className="rsvp-attendance-soft__decline" aria-pressed={isDeclined} onClick={()=>handleDecline(index)}>{es ? 'No podré asistir' : 'I’m unable to attend'}</button>
+          </fieldset>
+          {!isDeclined ? <div className="rsvp-dietary">
+            <fieldset className="rsvp-menu-fieldset"><legend><Utensils aria-hidden="true"/><span>{es ? `Preferencia de menú de ${name}` : `Menu preference for ${name}`}</span></legend>
+              <div className="rsvp-menu-grid">{menuOptions.map(option=><button key={option.id} type="button" aria-pressed={person.dietaryPreference===option.id} onClick={()=>update(index,{dietaryPreference:option.id})}>{es ? option.es : option.en}</button>)}</div>
+            </fieldset>
+            <label className="rsvp-field" htmlFor={`rsvp-allergies-${index}`}><span>{es ? 'Alergias o intolerancias específicas' : 'Allergies & intolerances'}</span><input id={`rsvp-allergies-${index}`} type="text" maxLength={1000} value={person.allergiesNote} onChange={e=>update(index,{allergiesNote:e.target.value})} placeholder={es ? 'Indica cuáles o escribe «Ninguna»' : 'Please specify or write “None”'}/></label>
+          </div> : <p className="rsvp-declined-note">{es ? 'Sentiremos mucho no contar con tu presencia, pero te tendremos muy presente.' : 'We will miss your presence dearly, but you will be with us in spirit.'}</p>}
+        </section>;
+      })}
     </div>
-  );
+    {guests.length<maxGuests && <button type="button" className="rsvp-add-guest" onClick={()=>onChange([...guests,emptyPerson()])}><Plus aria-hidden="true"/>{es ? `Añadir acompañante (${guests.length+1} de ${maxGuests} plazas autorizadas)` : `Add guest (${guests.length+1} of ${maxGuests} allowed)`}</button>}
+    <p className="rsvp-privacy">{es ? 'Estos datos se guardarán con la máxima confidencialidad para organizar las mesas, menús y traslados.' : 'Your details will be kept in strict confidence to arrange tables, menus and transport.'}</p>
+  </div>;
 }

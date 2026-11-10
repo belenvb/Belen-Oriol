@@ -179,9 +179,9 @@ function normalizePostalAddress_(value) {
 }
 
 // Interest only: never reserve Friday inventory or assume Saturday's rate.
-function normalizeFridayCastleInterest_(value, anyAttending, roomBookings) {
+function normalizeFridayCastleInterest_(value, anyAttending) {
   if (value != null && typeof value !== 'boolean') throw Error('Invalid Friday castle interest');
-  return anyAttending && Object.keys(roomBookings).length > 0 && value === true;
+  return anyAttending && value === true;
 }
 
 function ensurePostalAddressColumn_(sheet) {
@@ -289,7 +289,7 @@ function doPost(e) {
 
     const attendingPeople = people.filter(person => person.attendance === 'yes');
     const anyAttending = attendingPeople.length > 0;
-    const fridayCastleInterest = normalizeFridayCastleInterest_(data.fridayCastleInterest, anyAttending, roomBookings);
+    const fridayCastleInterest = normalizeFridayCastleInterest_(data.fridayCastleInterest, anyAttending);
 
     const fridayCount = people.filter(person => person.attendingFriday).length;
     const saturdayCount = people.filter(person => person.attendingSaturday).length;
