@@ -587,10 +587,16 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
 
                           <div className="rsvp-transport-grid">
                             <div className="rsvp-transfer"><h5><Bus aria-hidden="true"/>{es ? 'Salamanca → Castillo' : 'Salamanca → Castle'}</h5><div className="rsvp-transfer-bottom"><span>{es ? 'Sábado 4 de septiembre · Gratuito' : 'Saturday, September 4 · Free'}</span>
-                              <RsvpQuantity label={es ? 'Personas · ida' : 'Passengers · outbound'} value={formData.shuttleBooking ? safeOutboundCount : 0} max={saturdayGuests} onChange={value=>{setOutboundCount(value);setFormData(prev=>({...prev,shuttleBooking:value>0}));}}/>
+                              <div className="flex shrink-0 flex-col items-center gap-1">
+                                <span className="text-[11px]">{es ? 'Número de invitados' : 'Number of guests'}</span>
+                                <RsvpQuantity label={es ? 'Número de invitados · ida' : 'Number of guests · outbound'} value={formData.shuttleBooking ? safeOutboundCount : 0} max={saturdayGuests} onChange={value=>{setOutboundCount(value);setFormData(prev=>({...prev,shuttleBooking:value>0}));}}/>
+                              </div>
                             </div></div>
                             <div className="rsvp-transfer"><h5><Bus aria-hidden="true"/>{es ? 'Castillo → Salamanca' : 'Castle → Salamanca'}</h5><div className="rsvp-transfer-bottom"><span>{es ? 'Al finalizar la boda · Noche del 4 al 5 de septiembre · Gratuito' : 'After the wedding · Night of September 4–5 · Free'}</span>
-                              <RsvpQuantity label={es ? 'Personas · vuelta' : 'Passengers · return'} value={returnShuttleBooking ? safeReturnCount : 0} max={saturdayGuests} onChange={value=>{setReturnCount(value);updateReturnShuttle(value>0);}}/>
+                              <div className="flex shrink-0 flex-col items-center gap-1">
+                                <span className="text-[11px]">{es ? 'Número de invitados' : 'Number of guests'}</span>
+                                <RsvpQuantity label={es ? 'Número de invitados · vuelta' : 'Number of guests · return'} value={returnShuttleBooking ? safeReturnCount : 0} max={saturdayGuests} onChange={value=>{setReturnCount(value);updateReturnShuttle(value>0);}}/>
+                              </div>
                             </div></div>
                           </div>
                           <div className="rsvp-room-panel">
