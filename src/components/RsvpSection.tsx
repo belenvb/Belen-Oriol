@@ -594,13 +594,15 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                             </div></div>
                           </div>
                           <div className="rsvp-room-panel">
-                            <div className="flex items-center justify-between gap-2 mb-2">
+                            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                               <label className="block text-xs font-bold tracking-wider uppercase text-[#5c141e] flex items-center gap-1.5">
                                 <BedDouble className="w-4 h-4 text-[#b89243]" />
                                 <span>{es ? 'Habitación en el castillo · Noche del 4 al 5 de septiembre de 2027' : 'Castle room request · September 4–5, 2027'}</span>
                               </label>
                               <span className="text-[10px] font-bold text-[#b89243] uppercase tracking-wider bg-[#b89243]/10 px-2 py-0.5 rounded">
-                                {es ? `${selectedRoomCount} seleccionada${selectedRoomCount === 1 ? '' : 's'}` : `${selectedRoomCount} selected`}
+                                {es
+                                  ? `${selectedRoomCount} ${selectedRoomCount === 1 ? 'habitación seleccionada' : 'habitaciones seleccionadas'}`
+                                  : `${selectedRoomCount} ${selectedRoomCount === 1 ? 'room' : 'rooms'} selected`}
                               </span>
                             </div>
 
@@ -629,7 +631,10 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                                       </div>
                                     </div>
                                     <div className="rsvp-room-selection"><span className="rsvp-room-price">{remoteAvailability?.price != null ? <>{new Intl.NumberFormat(es ? 'es-ES' : 'en-GB',{maximumFractionDigits:2}).format(remoteAvailability.price)} € <small>/ {es ? 'noche' : 'night'}</small></> : (es ? 'Tarifa por confirmar' : 'Rate to be confirmed')}</span>
-                                      <RsvpQuantity label={es ? `Cantidad · ${room.name}` : `Quantity · ${room.nameEn}`} value={currentQty} max={maxQty} onChange={value=>updateRoomQuantity(room.id,value)}/>
+                                      <div className="flex flex-col items-end gap-1">
+                                        <span className="text-[11px]">{es ? 'Habitaciones' : 'Rooms'}</span>
+                                        <RsvpQuantity label={es ? `Habitaciones · ${room.name}` : `Rooms · ${room.nameEn}`} value={currentQty} max={maxQty} onChange={value=>updateRoomQuantity(room.id,value)}/>
+                                      </div>
                                     </div>
                                   </div>;
                                 })}
