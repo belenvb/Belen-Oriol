@@ -100,7 +100,11 @@ function render(){
 }
 function buildPreview(r,ch){
  const body=ch==='WhatsApp'?r.whatsappText:r.smsText;
- const image='<div class="preview-banner"><img src="'+PREVIEW_IMAGE+'" alt="Sobre burdeos B | O · Vista previa de la invitación"><div class="preview-hint">Belén &amp; Oriol · 4 septiembre 2027</div></div>';
+ const en=r.language==='en';
+ const artwork=en?'https://belen-oriol-psi.vercel.app/invitation-preview-watercolor-en-v2.jpg':PREVIEW_IMAGE;
+ const alt=en?'Burgundy envelope · Invitation preview':'Sobre burdeos B | O · Vista previa de la invitación';
+ const date=en?'September 4, 2027':'4 septiembre 2027';
+ const image='<div class="preview-banner"><img src="'+h(artwork)+'" alt="'+h(alt)+'"><div class="preview-hint">Belén &amp; Oriol · '+h(date)+'</div></div>';
  const n=ch==='WhatsApp'?'La imagen de arriba es una simulación. WhatsApp solo la generará de verdad cuando esté publicada en Vercel y el enlace se comparta en la conversación.':'Esta imagen es una simulación. iPhone Messages decide si genera una tarjeta; no podemos forzarla. Prueba «Copiar solo enlace · SMS» y pega el enlace como único contenido del mensaje. Se conserva la misma invitación y código.';
  return '<div class="preview"><h3 class="preview-heading">'+channelIcon(ch)+' Vista previa · '+h(ch)+'</h3>'+image+'<div class="bubble">'+h(body||'Primero configura la dirección de la web y comprueba el código privado.')+'</div><p class="tiny">'+h(n)+'</p></div>';
 }
