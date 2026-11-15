@@ -571,7 +571,7 @@ function invitationRecipientCount_(recipient, bcc) {
   return mail.to.split(',').length + (mail.bcc ? 1 : 0);
 }
 
-function sendInvitationEmailsByRows(rowNumbers) {
+function sendInvitationEmailsByRows(rowNumbers, allowResponded) {
   if (!Array.isArray(rowNumbers) || !rowNumbers.length) throw Error('Selecciona al menos una familia');
   const selected = [...new Set(rowNumbers.map(Number))];
   if (selected.length > SENDING_MAX_EMAILS_PER_RUN) throw Error('Máximo 40 emails por envío');
@@ -583,7 +583,8 @@ function sendInvitationEmailsByRows(rowNumbers) {
     const list=selected.map(n=>byRow[n]).filter(Boolean);
     if (list.length!==selected.length) throw Error('Fila inexistente');
     const responded=readRsvpCodes_();
-    const toSend=list.filter(r=>r.channels.includes('Email')&&!r.emailSentAt&&!responded[r.code]);
+    const allowIndividualRsvp = allowResponded === true && list.length === 1;
+    const toSend=list.filter(r=>r.channels.includes('Email')&&!r.emailSentAt&&(allowIndividualRsvp||!responded[r.code]));
     toSend.forEach(r=>ensureReadyToSend_(r,'Email'));
     const bcc = toSend.length ? invitationBccRecipient_() : '';
     const recipients = toSend.reduce((total, r) => total + invitationRecipientCount_(r.email, bcc), 0);
@@ -591,6 +592,7 @@ function sendInvitationEmailsByRows(rowNumbers) {
     if(recipients>quota)throw Error('La cuota permite solo '+quota+' destinatarios más hoy, incluida la copia oculta.');
     const failures=[],success=[];
     toSend.forEach(r=>{
+      const hasRsvp = Boolean(responded[r.code]) || r.status === 'RSVP recibido';
       const now=new Date();sheet.getRange(r.row,columns['Último intento']).setValue(now);
       try {
         const message=invitationEmail_(r,sendingLink_(r.code, r.language));
@@ -598,11 +600,11 @@ function sendInvitationEmailsByRows(rowNumbers) {
         // Record only the Email channel; other channels remain independently pending.
         sheet.getRange(r.row,columns['Email enviado el']).setValue(now);
         if(!r.sentAt)sheet.getRange(r.row,columns['Fecha envío']).setValue(now);
-        if(r.status!=='RSVP recibido')sheet.getRange(r.row,columns['Estado envío']).setValue('Enviada');
+        sheet.getRange(r.row,columns['Estado envío']).setValue(hasRsvp ? 'RSVP recibido' : 'Enviada');
         sheet.getRange(r.row,columns['Error envío']).clearContent();
         success.push(r.name);
       }catch(e){
-        if(r.status!=='RSVP recibido')sheet.getRange(r.row,columns['Estado envío']).setValue('Error');
+        if(!hasRsvp)sheet.getRange(r.row,columns['Estado envío']).setValue('Error');
         sheet.getRange(r.row,columns['Error envío']).setValue(String(e.message||e).slice(0,220));
         failures.push(r.name+': '+String(e.message||e));
       }
