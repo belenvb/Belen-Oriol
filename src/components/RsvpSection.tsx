@@ -4,11 +4,12 @@ import './RsvpEditorial.css';
 import './RsvpModern.css';
 import { RsvpQuantity } from './RsvpQuantity';
 import { HorizontalTrencadis } from './HorizontalTrencadis';
-import { useState, useEffect, useRef, type FormEvent } from 'react';
+import { useState, useEffect, useRef, useSyncExternalStore, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { CheckCircle2, Heart, Send, BedDouble, Bus, Music, Edit3, Key } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sendRsvp, lookupInvitation, RsvpSubmission, RsvpPerson, InvitationLookup } from '../utils/rsvp';
+import { sendRsvp, lookupInvitation, loadRoomCatalogue, RsvpSubmission, RsvpPerson, InvitationLookup } from '../utils/rsvp';
+import { roomAvailabilityStore } from '../utils/roomAvailability';
 import { GuestRsvp, Language } from '../types';
 import { RsvpGuests, emptyPerson } from './RsvpGuests';
 import { CASTLE_ROOMS } from '../data/rooms';
@@ -54,6 +55,8 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
   const [codeError, setCodeError] = useState('');
   const [guests, setGuests] = useState<RsvpPerson[]>([emptyPerson()]);
   const [roomQuantities, setRoomQuantities] = useState<RoomQuantities>({});
+  const [savedRoomQuantities, setSavedRoomQuantities] = useState<RoomQuantities>({});
+  const publicRooms = useSyncExternalStore(roomAvailabilityStore.subscribe, roomAvailabilityStore.getSnapshot);
   const [photoRoom, setPhotoRoom] = useState<(typeof CASTLE_ROOMS)[number] | null>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [outboundCount, setOutboundCount] = useState(0);
@@ -89,6 +92,11 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
   const [submittedRsvp, setSubmittedRsvp] = useState<RsvpSubmission | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const hasInvitation = Boolean(invitation);
+
+  useEffect(() => {
+    if (isFormOpen && hasInvitation) void loadRoomCatalogue().catch(() => {});
+  }, [isFormOpen, hasInvitation]);
 
   // Derive shared options from the current guests, never a copied form flag.
   const saturdayGuests = guests.filter(p => p.attendance === 'yes' && p.attendingSaturday).length;
@@ -125,12 +133,20 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
   };
 
   const getRemoteRemaining = (roomId: Exclude<RoomId, 'none'>) => {
+    const publicRoom = publicRooms?.find(room => room.id === roomId);
+    if (publicRoom) {
+      const saved = savedRoomQuantities[roomId] || 0;
+      return Math.max(0, Math.min(publicRoom.remaining + saved, publicRoom.total - publicRoom.reserved + saved));
+    }
     const live = invitation?.roomAvailability?.find((room) => room.id === roomId);
     return Math.max(0, Number(live?.remaining ?? 0));
   };
 
   const getDisplayRemaining = (roomId: Exclude<RoomId, 'none'>) => {
-    return Math.max(0, getRemoteRemaining(roomId) - (roomQuantities[roomId] || 0));
+    const saved = savedRoomQuantities[roomId] || 0;
+    const available = publicRooms?.find(room => room.id === roomId)?.remaining ?? Math.max(0, getRemoteRemaining(roomId) - saved);
+    const added = Math.max(0, (roomQuantities[roomId] || 0) - saved);
+    return Math.max(0, available - added);
   };
 
   const updateRoomQuantity = (roomId: Exclude<RoomId, 'none'>, quantity: number) => {
@@ -220,6 +236,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       const next: RoomQuantities = requested && available && available.remaining > 0 ? { [requested]: 1 } : {};
       pendingRoom.current = null;
       const saved = inv.previousRsvp;
+      setSavedRoomQuantities(saved?.roomBookings || {});
       setLoadedPrevious(Boolean(saved));
       if (saved) {
         setFormData(saved);
@@ -292,7 +309,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
     return () => {
       window.removeEventListener('select_room_in_rsvp', handleRoomSelect);
     };
-  }, [invitation, roomQuantities]);
+  }, [invitation, roomQuantities, publicRooms, savedRoomQuantities]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -367,6 +384,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
     try {
       const record = pending.current.record;
       const editableRooms = await sendRsvp(record, invitationCode);
+      setSavedRoomQuantities(record.roomBookings || {});
       if (editableRooms) {
         setInvitation(current => current && { ...current, roomAvailability: editableRooms });
       }
@@ -548,6 +566,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                         setInvitationCode('');
                         updateGuests([emptyPerson()]);
                         setRoomQuantities({});
+                        setSavedRoomQuantities({});
                         setReturnShuttleBooking(false);
                       }}
                       className="text-[#5c141e] underline hover:text-[#7a1d2b] cursor-pointer"
@@ -626,7 +645,8 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                               <div className="rsvp-room-grid space-y-2.5 mt-4">
                                 {sortedRooms.map((room) => {
                                   const currentQty = roomQuantities[room.id] || 0;
-                                  const remoteAvailability = invitation?.roomAvailability?.find((item) => item.id === room.id);
+                                  const remoteAvailability = publicRooms?.find(item => item.id === room.id)
+                                    ?? invitation?.roomAvailability?.find(item => item.id === room.id);
                                   const remaining = getDisplayRemaining(room.id);
                                   const maxQty = getRemoteRemaining(room.id);
                                   const isSelected = currentQty > 0;

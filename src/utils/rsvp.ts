@@ -96,7 +96,7 @@ function parseRooms(receipt: RsvpReceipt): RoomAvailability[] | undefined {
   }));
 }
 
-async function request(payload: unknown, isPublicCatalogue = false): Promise<RsvpReceipt> {
+async function request(payload: unknown): Promise<RsvpReceipt> {
   const endpoint = import.meta.env.VITE_RSVP_ENDPOINT || 'https://script.google.com/macros/s/AKfycbyHE87sExq-w0tQoH0BzPekSGhU7FWU2dKZTBXFPxFSiJV2FJ8KRbseMv8uxijCkQIBJw/exec';
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 25000);
@@ -116,7 +116,6 @@ async function request(payload: unknown, isPublicCatalogue = false): Promise<Rsv
     const receipt = (await response.json()) as RsvpReceipt;
     if (receipt.ok !== true) throw new Error(receipt.error || 'RSVP_NOT_CONFIRMED');
 
-    if (isPublicCatalogue) roomAvailabilityStore.publishPublic(parseRooms(receipt));
     return receipt;
   } finally {
     clearTimeout(timeout);
@@ -129,7 +128,8 @@ export async function recordInvitationOpening(code: string): Promise<void> {
 
 // Prices are public, but no guest details or private invitation codes are returned.
 export async function loadRoomCatalogue(): Promise<void> {
-  await request({ action: 'rooms' }, true);
+  const publish = roomAvailabilityStore.beginRefresh();
+  publish(parseRooms(await request({ action: 'rooms' })));
 }
 
 // Gift lookup never returns RSVP responses, family details, guest lists or codes.

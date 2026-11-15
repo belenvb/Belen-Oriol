@@ -1,22 +1,25 @@
 import type { RoomAvailability } from './rsvp';
 // Session memory only. Never derive availability from the local initial inventory.
 let snapshot: RoomAvailability[] | undefined;
-let validated = false;
+let revision = 0;
 const listeners = new Set<() => void>();
 export const roomAvailabilityStore = {
   subscribe(listener: () => void) { listeners.add(listener); return () => { listeners.delete(listener); }; },
   getSnapshot() { return snapshot; },
   publish(rooms: RoomAvailability[] | undefined) {
     if (rooms === undefined) return;
-    validated = true;
+    revision++;
     snapshot = rooms;
     listeners.forEach(listener => listener());
   },
   // An earlier catalogue request must not overwrite the inventory returned
   // after a successful save.
-  publishPublic(rooms: RoomAvailability[] | undefined) {
-    if (!rooms || validated) return;
-    snapshot = rooms;
-    listeners.forEach(listener => listener());
+  beginRefresh() {
+    const requestRevision = ++revision;
+    return (rooms: RoomAvailability[] | undefined) => {
+      if (!rooms || requestRevision !== revision) return;
+      snapshot = rooms;
+      listeners.forEach(listener => listener());
+    };
   },
 };
