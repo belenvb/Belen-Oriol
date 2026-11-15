@@ -77,7 +77,7 @@ function render(){
    const actions=['<button class="light" data-action="emailPreview" data-row="'+r.row+'">Vista previa email · gratis</button>'];
    if((r.channels||[]).includes('Email')){
      actions.push('<button class="light" data-action="emailTest" data-row="'+r.row+'">Enviar prueba</button>');
-     if(!sent(r,'Email')&&!r.responded&&valid(r)&&!r.channelIssues?.Email)actions.push('<button class="primary" data-action="emailReal" data-row="'+r.row+'">Enviar email</button>');
+     if(!sent(r,'Email')&&valid(r)&&!r.channelIssues?.Email)actions.push('<button class="primary" data-action="emailReal" data-row="'+r.row+'">Enviar email</button>');
      if(!sent(r,'Email')&&!r.responded&&valid(r)&&!r.channelIssues?.Email) actions.push('<label class="checkbox-select"><input type="checkbox" data-select-row="'+r.row+'" '+(selectedRows.has(r.row)?'checked':'')+'> Seleccionar email</label>');
    }
    for(const ch of ['WhatsApp','SMS'])if((r.channels||[]).includes(ch)){
@@ -132,7 +132,7 @@ $('list').addEventListener('click',async e=>{
  if(mode==='copyLink'){if(!r.link)return;try{await navigator.clipboard.writeText(r.link);status('Enlace original copiado. Pégalo solo en Messages; no cambia el código ni se marca como enviado.');}catch(e){prompt('Copia el enlace original:',r.link);}return;}
  if(mode==='emailPreview'){await action('openInvitationEmailPreview',row);return;}
  if(mode==='emailTest'){const address=prompt('Email para la prueba (no se marcará como enviada)',r.email||'');if(!address)return;const result=await action('sendTestInvitationEmail',row,address);if(result)status('Prueba enviada a '+address+'.');return;}
- if(mode==='emailReal'){if(!confirm('¿Enviar EMAIL REAL a '+r.name+' ('+r.email+')?'))return;const result=await action('sendInvitationEmailsByRows',[row]);if(result)status('Emails enviados: '+result.sent+'. Errores: '+result.failed.length,result.failed.length>0);return;}
+ if(mode==='emailReal'){const warning=r.responded?' Esta familia ya ha respondido al RSVP.':'';if(!confirm('¿Enviar EMAIL REAL a '+r.name+' ('+r.email+')?'+warning))return;const result=await action('sendInvitationEmailsByRows',[row],true);if(result)status('Emails enviados: '+result.sent+'. Errores: '+result.failed.length,result.failed.length>0);return;}
  if(mode==='mark'){if(!confirm('Confirma que ya has pulsado Enviar en '+ch+' para '+r.name+'. Abrir la conversación NO implica envío.'))return;const result=await action('markInvitationManuallySent',row,ch);if(result)status(ch+' registrado como enviado para '+r.name+'.');}
 });
 $('search').addEventListener('input',render);$('filter').addEventListener('change',render);
