@@ -323,6 +323,10 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
 
     if (data.action === 'giftNote') return jsonReply(sendWeddingGiftNote_(data));
+    if (data.action === 'invitationOpened') {
+      recordInvitationOpening_(data.invitationCode);
+      return jsonReply({ok: true});
+    }
 
     // Gift-only access: validates name, email or code without returning RSVP data.
     if (data.action === 'giftAccess') {
@@ -575,7 +579,31 @@ function checkShortInvitationRate_() {
   cache.put(key, String(attempts + 1), 75);
 }
 
-function findInvitation(code) {
+function recordInvitationOpening_(code) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    findInvitation(code, (sheet, rowNumber, headers) => {
+      const title = 'Sobre abierto el';
+      const existing = headers.findIndex(header => String(header).trim().toLowerCase() === title.toLowerCase());
+      const column = existing >= 0 ? existing + 1 : headers.length + 1;
+      if (existing < 0) {
+        const capacity = sheet.getMaxColumns();
+        if (column > capacity) sheet.insertColumnsAfter(capacity, column - capacity);
+        sheet.getRange(1, column).setValue(title);
+      }
+      const cell = sheet.getRange(rowNumber, column);
+      if (cell.getValue() === '' && !cell.getFormula()) {
+        cell.setNumberFormat('dd/MM/yyyy HH:mm:ss').setValue(new Date());
+        SpreadsheetApp.flush();
+      }
+    });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function findInvitation(code, onValidatedRow) {
   // The private invitation code is the sole lookup credential.
   // Email-only lookup previously exposed guest responses and allergy information.
   const key = String(code || '').trim().toUpperCase();
@@ -703,6 +731,7 @@ function findInvitation(code) {
   }
 
   const guests = buildPrefilledGuests(idx, match, maxGuests, holderName);
+  if (onValidatedRow) onValidatedRow(sheet, rows.indexOf(match) + 2, headers);
 
   return {
     invitationCode: resolvedCode,

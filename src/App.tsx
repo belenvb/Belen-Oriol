@@ -19,7 +19,7 @@ import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
 import './styles/chapters.css';
 import { invitationCodeFromHash } from './utils/invitationLink';
-import type { GiftPaymentDetails } from './utils/rsvp';
+import { recordInvitationOpening, type GiftPaymentDetails } from './utils/rsvp';
 import { invitationLanguageFromSearch, initialInvitationLanguage } from './utils/invitationLanguage';
 
 export default function App() {
@@ -159,6 +159,9 @@ export default function App() {
       {showIntro && (
         <EnvelopeIntro
           lang={lang}
+          onOpen={() => {
+            if (privateInvitationCode) void recordInvitationOpening(privateInvitationCode).catch(() => {});
+          }}
           onLanguageChange={chooseLanguage}
           onEnter={(destination) => {
             if (destination === 'rsvp') setRsvpEntryRequested(true);
