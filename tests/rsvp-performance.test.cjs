@@ -3,9 +3,9 @@ const updated=fs.readFileSync('google-apps-script/Code.gs','utf8');
 const plain=x=>JSON.parse(JSON.stringify(x));
 function setup(source=updated){
  const state={locked:false,reads:[],writes:[],flushes:0,logs:[],failGuests:false};
- const headers=Array(23).fill('');headers[0]='ID de envío';headers[5]='Código invitación';headers[17]='Habitaciones JSON';
+ const headers=Array(24).fill('');headers[23]='Dirección postal';headers[0]='ID de envío';headers[5]='Código invitación';headers[17]='Habitaciones JSON';
  const roomData=[['ID habitación','Tipo de habitación','Total habitaciones','Precio por noche (€)','Disponibles'],['estandar','Estándar',2,'125,00 €',''],['superior','Superior',3,140,'']];
- function sheet(name,data){return{name,data,getLastRow:()=>data.length,getLastColumn:()=>Math.max(0,...data.map(r=>r.length)),getRange:(row,col,count=1,width=1)=>({getValues:()=>{state.reads.push({name,col,width,count,locked:state.locked});return Array.from({length:count},(_,i)=>Array.from({length:width},(_,j)=>data[row+i-1]?.[col+j-1]??''));},setValues:values=>{if(name==='Detalle por invitado'&&state.failGuests)throw Error('Simulated write failure');state.writes.push({name,locked:state.locked});values.forEach((r,i)=>{data[row+i-1]??=[];r.forEach((v,j)=>data[row+i-1][col+j-1]=v);});return{};},setNumberFormat(){return this;},setFontWeight(){return this;},setBackground(){return this;},setFontColor(){return this;}}),appendRow:r=>{data.push([...r]);state.writes.push({name,locked:state.locked});},deleteRows:(row,count)=>data.splice(row-1,count),setFrozenRows(){},setColumnWidths(){},setColumnWidth(){}};}
+ function sheet(name,data){return{name,data,getLastRow:()=>data.length,getLastColumn:()=>Math.max(0,...data.map(r=>r.length)),getRange:(row,col,count=1,width=1)=>({getValues:()=>{state.reads.push({name,col,width,count,locked:state.locked});return Array.from({length:count},(_,i)=>Array.from({length:width},(_,j)=>data[row+i-1]?.[col+j-1]??''));},setValues:values=>{if(name==='Detalle por invitado'&&state.failGuests)throw Error('Simulated write failure');state.writes.push({name,locked:state.locked});values.forEach((r,i)=>{data[row+i-1]??=[];r.forEach((v,j)=>data[row+i-1][col+j-1]=v);});return{};},setValue(value){state.writes.push({name,locked:state.locked});data[row-1][col-1]=value;return this;},setNumberFormat(){return this;},setFontWeight(){return this;},setBackground(){return this;},setFontColor(){return this;}}),appendRow:r=>{data.push([...r]);state.writes.push({name,locked:state.locked});},deleteRows:(row,count)=>data.splice(row-1,count),setFrozenRows(){},setColumnWidths(){},setColumnWidth(){}};}
  const sheets={'Habitaciones':sheet('Habitaciones',roomData),'Respuestas web':sheet('Respuestas web',[headers]),'Detalle por invitado':sheet('Detalle por invitado',[Array(13).fill('header')])};
  const book={getSheetByName:name=>sheets[name],insertSheet:name=>sheets[name]=sheet(name,[])};
  const c=vm.createContext({console:{log:x=>state.logs.push(x),error(){}},SpreadsheetApp:{flush:()=>state.flushes++},LockService:{getScriptLock:()=>({waitLock:()=>state.locked=true,hasLock:()=>state.locked,releaseLock:()=>state.locked=false})},Utilities:{getUuid:()=> 'example-id'},ContentService:{MimeType:{JSON:'json'},createTextOutput:text=>({text,setMimeType(){return this;}})}});
@@ -19,3 +19,22 @@ test('retry is idempotent, updates replace the original response, and room data 
 test('partial guest write failure stays unconfirmed; same-ID retry repairs details without duplicating response',()=>{const h=setup();h.state.failGuests=true;assert.equal(h.post().ok,false);assert.equal(h.state.flushes,0);assert.equal(h.state.locked,false);h.state.failGuests=false;assert.equal(h.post().ok,true);assert.equal(h.sheets['Respuestas web'].data.length,2);assert.equal(h.sheets['Detalle por invitado'].data.length,2);});
 test('guest index reads only the code column and preserves other families while removing obsolete rows',()=>{const h=setup();const detail=h.sheets['Detalle por invitado'];const row=code=>['old','person','date',code,'contact','old name','','Sí',false,true,'Sábado','none',''];const other=row('OTHER-FAMILY');detail.data.push(row('EXAMPLE-PRIVATE-CODE'),other,row('EXAMPLE-PRIVATE-CODE'));h.c.saveGuestDetails(h.book,'new','EXAMPLE-PRIVATE-CODE','guest@example.com',[{fullName:'New Name',email:'',attendance:'yes',attendingSaturday:true,dietaryPreference:'none',allergiesNote:''}],x=>x);assert.equal(detail.data.length,3);assert.deepEqual(detail.data[2],other);const read=h.state.reads.find(r=>r.name==='Detalle por invitado');assert.equal(read.col,4);assert.equal(read.width,1);assert.equal(detail.data[1][5],'New Name');});
 test('room header aliases, manual limits and prices keep their behavior',()=>{const h=setup();h.roomData[0]=['ID habitación','Tipo de habitación','Total habitaciones','Tarifa especial','Quedan'];h.roomData[1][4]=1;const rooms=plain(h.c.getRoomAvailability(h.book));const standard=rooms.find(r=>r.id==='estandar');assert.equal(standard.price,125);assert.equal(standard.remaining,1);assert.equal(h.state.reads.filter(r=>r.name==='Habitaciones').length,1);});
+
+test('room counts use saved quantities despite renamed headers and restore released rooms', () => {
+  const h = setup();
+  const headers = h.sheets['Respuestas web'].data[0];
+  headers[0] = 'Identificador';
+  headers[17] = 'Cantidad de habitaciones';
+  const standard = rooms => rooms.find(room => room.id === 'estandar');
+  const first = h.post();
+  assert.equal(first.ok, true);
+  assert.equal(standard(first.roomAvailability).remaining, 1);
+  assert.equal(standard(first.editableRoomAvailability).remaining, 2);
+  assert.equal(standard(h.post({ action: 'rooms' }).roomAvailability).remaining, 1);
+  const rsvp = h.sheets['Respuestas web'].data[1];
+  rsvp[17] = '';
+  assert.equal(standard(h.post({ action: 'rooms' }).roomAvailability).remaining, 1);
+  const edited = h.post({ submissionId: 'updated-submission', roomBookings: {} });
+  assert.equal(edited.ok, true);
+  assert.equal(standard(edited.roomAvailability).remaining, 2);
+});

@@ -366,7 +366,10 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
     setIsSending(true);
     try {
       const record = pending.current.record;
-      await sendRsvp(record, invitationCode);
+      const editableRooms = await sendRsvp(record, invitationCode);
+      if (editableRooms) {
+        setInvitation(current => current && { ...current, roomAvailability: editableRooms });
+      }
       setSubmittedRsvp(record);
       setIsSubmitted(true);
       setIsFormOpen(false);

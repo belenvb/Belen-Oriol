@@ -533,10 +533,9 @@ function doPost(e) {
     const flushStartedAt = Date.now();
     SpreadsheetApp.flush();
     timings.flushMs = Date.now() - flushStartedAt;
-    const availabilityAfter = availabilityBefore.map(room => ({...room,
-      reserved: room.reserved + (roomBookings[room.id] || 0),
-      remaining: Math.max(0, room.remaining - (roomBookings[room.id] || 0))
-    }));
+    rsvpSnapshot = null;
+    roomSheetSnapshot = null;
+    const availabilityAfter = getRoomAvailability(book);
     console.log('RSVP processing ms: ' + (Date.now() - startedAt));
     console.log('RSVP timing breakdown: ' + JSON.stringify(timings));
 
@@ -550,6 +549,7 @@ function doPost(e) {
       saturdayCount,
       roomBookings,
       roomAvailability: availabilityAfter,
+      editableRoomAvailability: getRoomAvailability(book, id),
       processingMs: Date.now() - startedAt,
     });
   } catch (error) {
@@ -922,18 +922,21 @@ function getReservedRoomCounts(book, ignoreSubmissionId) {
   const jsonIndex = findOptionalColumn(idx, ['habitaciones json', 'rooms json']);
   const roomTextIndex = findOptionalColumn(idx, ['habitaciones solicitadas', 'habitacion solicitada', 'habitación solicitada']);
 
-  if (jsonIndex === -1 && roomTextIndex === -1) return counts;
-
   const rows = snapshot.rows;
 
   const latestByCode = {};
   rows.forEach((row, i) => { latestByCode[String(row[5] || row[0] || i).trim().toUpperCase()] = row; });
   Object.keys(latestByCode).map(key => latestByCode[key]).forEach(row => {
-    if (ignoreSubmissionId && idIndex !== -1 && String(row[idIndex] || '') === String(ignoreSubmissionId)) return;
+    if (ignoreSubmissionId && String(row[idIndex < 0 ? 0 : idIndex] || '') === String(ignoreSubmissionId)) return;
 
-    if (jsonIndex !== -1 && row[jsonIndex]) {
+    // The web form writes room quantities to R and the full response to W,
+    // even if someone edits the titles in row 1.
+    for (const [raw, fullResponse] of [[row[17], false], [jsonIndex < 0 ? '' : row[jsonIndex], false], [row[22], true]]) {
+      if (!raw) continue;
       try {
-        const parsed = JSON.parse(String(row[jsonIndex]));
+        const decoded = JSON.parse(String(raw));
+        const parsed = fullResponse ? decoded?.roomBookings : decoded;
+        if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) continue;
         ROOM_CONFIG.forEach(room => {
           counts[room.id] += Math.max(0, Math.floor(Number(parsed[room.id]) || 0));
         });
@@ -1004,6 +1007,7 @@ function getRoomSheetPublicFields(book) {
 function getRoomAvailability(book, ignoreSubmissionId) {
   const totals = getRoomTotals(book);
   const reserved = getReservedRoomCounts(book, ignoreSubmissionId);
+  const allReserved = ignoreSubmissionId ? getReservedRoomCounts(book) : reserved;
   const sheetFields = getRoomSheetPublicFields(book);
 
   return ROOM_CONFIG.map(room => {
@@ -1014,7 +1018,8 @@ function getRoomAvailability(book, ignoreSubmissionId) {
     // beyond total minus outstanding RSVP requests. Updates are checked again
     // under the existing server lock when an RSVP is submitted.
     const remaining = fromSheet && fromSheet.remaining !== null
-      ? Math.min(derivedRemaining, fromSheet.remaining) : derivedRemaining;
+      ? Math.min(derivedRemaining, fromSheet.remaining + Math.max(0, allReserved[room.id] - count))
+      : derivedRemaining;
     return {
       id: room.id,
       total: totals[room.id],
