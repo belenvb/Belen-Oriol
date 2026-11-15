@@ -66,6 +66,7 @@ export type InvitationLookup = {
 };
 
 type RsvpReceipt = {
+  editableRoomAvailability?: RoomAvailability[];
   previousRsvp?: RsvpSubmission;
   ok?: boolean;
   submissionId?: string;
@@ -115,9 +116,7 @@ async function request(payload: unknown, isPublicCatalogue = false): Promise<Rsv
     const receipt = (await response.json()) as RsvpReceipt;
     if (receipt.ok !== true) throw new Error(receipt.error || 'RSVP_NOT_CONFIRMED');
 
-    const rooms = parseRooms(receipt);
-    if (isPublicCatalogue) roomAvailabilityStore.publishPublic(rooms);
-    else if (rooms) roomAvailabilityStore.publish(rooms);
+    if (isPublicCatalogue) roomAvailabilityStore.publishPublic(parseRooms(receipt));
     return receipt;
   } finally {
     clearTimeout(timeout);
@@ -173,7 +172,7 @@ export async function lookupInvitation(invitationCode: string): Promise<Invitati
   };
 }
 
-export async function sendRsvp(record: RsvpSubmission, invitationCode: string): Promise<void> {
+export async function sendRsvp(record: RsvpSubmission, invitationCode: string): Promise<RoomAvailability[] | undefined> {
   const payload: RsvpSubmission & { invitationCode: string } = {
     ...record,
     invitationCode: invitationCode.trim(),
@@ -183,4 +182,6 @@ export async function sendRsvp(record: RsvpSubmission, invitationCode: string): 
 
   const receipt = await request(payload);
   if (receipt.submissionId !== record.submissionId) throw new Error('RSVP_NOT_CONFIRMED');
+  roomAvailabilityStore.publish(parseRooms(receipt));
+  return parseRooms({ roomAvailability: receipt.editableRoomAvailability });
 }

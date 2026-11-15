@@ -12,8 +12,8 @@ export const roomAvailabilityStore = {
     snapshot = rooms;
     listeners.forEach(listener => listener());
   },
-  // A slower public request must never overwrite the personalized inventory
-  // returned when a guest validates their invitation.
+  // An earlier catalogue request must not overwrite the inventory returned
+  // after a successful save.
   publishPublic(rooms: RoomAvailability[] | undefined) {
     if (!rooms || validated) return;
     snapshot = rooms;
