@@ -56,8 +56,8 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
   const [roomQuantities, setRoomQuantities] = useState<RoomQuantities>({});
   const [photoRoom, setPhotoRoom] = useState<(typeof CASTLE_ROOMS)[number] | null>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [outboundCount, setOutboundCount] = useState(1);
-  const [returnCount, setReturnCount] = useState(1);
+  const [outboundCount, setOutboundCount] = useState(0);
+  const [returnCount, setReturnCount] = useState(0);
   const [loadedPrevious, setLoadedPrevious] = useState(false);
   const [returnShuttleBooking, setReturnShuttleBooking] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -77,7 +77,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
     plusOneCount: 1,
     dietaryPreference: 'none',
     allergiesNote: '',
-    shuttleBooking: true,
+    shuttleBooking: false,
     shuttlePickupLocation: 'Salamanca',
     roomBooking: 'none',
     roomBookings: {},
@@ -231,8 +231,9 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       } else {
         setRoomQuantities(next);
         setReturnShuttleBooking(false);
-        setOutboundCount(1); setReturnCount(1);
-        setFormData(prev => ({ ...prev, postalAddress: '', fridayCastleInterest: false, songRequest: '', blessingMessage: '', shuttleBooking: true, roomBooking: firstSelectedRoom(next), roomBookings: next, returnShuttleBooking: false }));
+        setOutboundCount(0);
+        setReturnCount(0);
+        setFormData(prev => ({ ...prev, postalAddress: '', fridayCastleInterest: false, songRequest: '', blessingMessage: '', shuttleBooking: false, roomBooking: firstSelectedRoom(next), roomBookings: next, returnShuttleBooking: false }));
       }
     } catch {
       onInvitationValidated?.(null);
