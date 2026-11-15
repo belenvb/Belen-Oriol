@@ -124,6 +124,10 @@ async function request(payload: unknown, isPublicCatalogue = false): Promise<Rsv
   }
 }
 
+export async function recordInvitationOpening(code: string): Promise<void> {
+  await request({ action: 'invitationOpened', invitationCode: code });
+}
+
 // Prices are public, but no guest details or private invitation codes are returned.
 export async function loadRoomCatalogue(): Promise<void> {
   await request({ action: 'rooms' }, true);

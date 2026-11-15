@@ -7,6 +7,7 @@ interface EnvelopeIntroProps {
   lang: Language;
   onLanguageChange: (language: Language) => void;
   onEnter: (destination?: 'rsvp') => void;
+  onOpen?: () => void;
   monogramSrc?: string;
   coupleNames?: string;
   weddingDate?: string;
@@ -20,6 +21,7 @@ export function EnvelopeIntro({
   lang,
   onLanguageChange,
   onEnter,
+  onOpen,
   coupleNames = 'Belén & Oriol',
   weddingDate,
   location = 'Castillo del Buen Amor · Salamanca',
@@ -53,6 +55,7 @@ export function EnvelopeIntro({
   const startOpening = () => {
     if (hasOpened.current) return;
     hasOpened.current = true;
+    onOpen?.();
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setOpening(true);
     const scene = root.current!;
