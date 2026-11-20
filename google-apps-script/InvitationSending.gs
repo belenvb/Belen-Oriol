@@ -260,13 +260,13 @@ function sendingCopy_(r, link) {
   // Social previews come from public Open Graph metadata and never contain a guest name or code.
   if (spanish) return {
     subject: 'Belén & Oriol | Nuestra invitación de boda',
-    whatsapp: 'Hola, ' + r.name + '!\n\nEl 4 de septiembre de 2027 celebraremos nuestra boda en el Castillo del Buen Amor, Salamanca, y nos encantaría compartir ese día con vosotros. Hemos preparado una invitación muy especial para vosotros.' + fridayEs + '\n\nPor favor, confirma tu asistencia en el RSVP de nuestra web.\n\nCódigo privado de acceso: ' + code + '\n\nAbre vuestro sobre aquí:\n' + link,
-    sms: 'Belén y Oriol: ¡tenéis una invitación para nuestra boda! Código privado: ' + code + '\nAbre el sobre: ' + link,
+    whatsapp: 'Hola, ' + r.name + '!\n\nEl 4 de septiembre de 2027 celebraremos nuestra boda en el Castillo del Buen Amor, Salamanca, y nos encantaría compartir ese día con vosotros. Hemos preparado una invitación muy especial para vosotros.' + fridayEs + '\n\nPor favor, confirma tu asistencia antes del 30 de junio de 2027 en el RSVP de nuestra web.\n\nCódigo privado de acceso: ' + code + '\n\nAbre vuestro sobre aquí:\n' + link,
+    sms: 'Belén y Oriol: ¡tenéis una invitación para nuestra boda! Confirma tu asistencia antes del 30 de junio de 2027. Código privado: ' + code + '\nAbre el sobre: ' + link,
   };
   return {
     subject: 'Belén & Oriol | Our Wedding Invitation',
-    whatsapp: 'Hi ' + r.name + '!\n\nWe’re celebrating our wedding on September 4, 2027 at Castillo del Buen Amor in Salamanca, and we would love to share the day with you. We have a very special invitation for you.' + fridayEn + '\n\nPlease confirm your attendance using the RSVP on our wedding website.\n\nPrivate access code: ' + code + '\n\nOpen your envelope:\n' + link,
-    sms: 'Belén & Oriol: You are invited to our wedding! Private code: ' + code + '\nOpen your envelope: ' + link,
+    whatsapp: 'Hi ' + r.name + '!\n\nWe’re celebrating our wedding on September 4, 2027 at Castillo del Buen Amor in Salamanca, and we would love to share the day with you. We have a very special invitation for you.' + fridayEn + '\n\nPlease RSVP by June 30, 2027 using our wedding website.\n\nPrivate access code: ' + code + '\n\nOpen your envelope:\n' + link,
+    sms: 'Belén & Oriol: You are invited to our wedding! Please RSVP by June 30, 2027. Private code: ' + code + '\nOpen your envelope: ' + link,
   };
 }
 
@@ -283,7 +283,7 @@ function invitationEmail_(r, url) {
   const button = es ? 'ABRIR EL SOBRE' : 'OPEN THE ENVELOPE';
   const date = es ? '4 de septiembre de 2027' : 'September 4, 2027';
   const subject = es ? 'Belén & Oriol · Tu invitación' : 'Belén & Oriol · Your invitation';
-  const rsvpRequest = es ? 'Por favor, confirma tu asistencia en el RSVP de nuestra web.' : 'Please confirm your attendance using the RSVP on our wedding website.';
+  const rsvpRequest = es ? 'Por favor, confirma tu asistencia antes del 30 de junio de 2027 en el RSVP de nuestra web.' : 'Please RSVP by June 30, 2027 using our wedding website.';
   const preheader = es ? 'Una invitación muy especial para ti.' : 'A very special invitation for you.';
   // The email shows the six-character alias. The one-click URL continues to
   // carry the strong original credential from column D.
