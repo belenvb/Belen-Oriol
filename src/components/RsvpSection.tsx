@@ -631,12 +631,13 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                                 <span>{es ? 'Habitación en el castillo · Noche del 4 al 5 de septiembre de 2027' : 'Castle room request · September 4–5, 2027'}</span>
                               </label>
                               <span className="text-[10px] font-bold text-[#b89243] uppercase tracking-wider bg-[#b89243]/10 px-2 py-0.5 rounded">
-                                {es
+                                {returnShuttleBooking && safeReturnCount > 0 ? 'No' : es
                                   ? selectedRoomCount === 0 ? 'No · Sin habitación para el 4–5 de septiembre' : `${selectedRoomCount} ${selectedRoomCount === 1 ? 'habitación seleccionada' : 'habitaciones seleccionadas'}`
                                   : selectedRoomCount === 0 ? 'No · No room for September 4–5' : `${selectedRoomCount} ${selectedRoomCount === 1 ? 'room' : 'rooms'} selected`}
                               </span>
                             </div>
 
+                            {!(returnShuttleBooking && safeReturnCount > 0) && <>
                             <p className="text-xs text-[#6e675f] mb-4 leading-relaxed">
                               {es
                                 ? 'Tarifas especiales para invitados, con desayuno incluido, para la noche del 4 al 5 de septiembre de 2027. Solicitud para el bloqueo preliminar antes del 31 de diciembre; el castillo confirmará la disponibilidad y gestionará el pago.'
@@ -672,6 +673,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                                 })}
                               </div>
                             )}
+                            </>}
                           </div>
 
                           <label className="rsvp-friday-interest">
