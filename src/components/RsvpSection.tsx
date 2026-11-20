@@ -168,7 +168,11 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
 
   const updateReturnShuttle = (checked: boolean) => {
     setReturnShuttleBooking(checked);
-    setFormData(prev => ({...prev, returnShuttleBooking: checked}));
+    if (checked) setRoomQuantities({});
+    setFormData(prev => ({
+      ...prev, returnShuttleBooking: checked,
+      ...(checked ? { roomBooking: 'none', roomBookings: {} } : {}),
+    }));
   };
 
   const updateGuests = (people: RsvpPerson[]) => {
@@ -195,7 +199,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
     }));
   };
 
-  const verifyInvitation = async (code: string, automatic = false) => {
+  const verifyInvitation = async (code: string) => {
     if (!code.trim()) return;
     setInvitationCode(code);
     setCheckingCode(true);
@@ -204,7 +208,6 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       const inv = await lookupInvitation(code);
       setInvitation(inv);
       onInvitationValidated?.(inv);
-      if (automatic) setIsFormOpen(true);
 
       if (inv.guests?.length) {
         const prefilledGuests = inv.guests.map((guest) => {
@@ -254,7 +257,6 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
       }
     } catch {
       onInvitationValidated?.(null);
-      if (automatic) setIsFormOpen(true);
       setCodeError(
         es
           ? 'No hemos encontrado tu invitación. Comprueba el código privado de tu email.'
@@ -274,7 +276,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
   useEffect(() => {
     if (!initialInvitationCode || lastAutoCode.current === initialInvitationCode) return;
     lastAutoCode.current = initialInvitationCode;
-    void verifyInvitation(initialInvitationCode, true);
+    void verifyInvitation(initialInvitationCode);
     // This is deliberately triggered only by a new private link, never by a language change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialInvitationCode]);
@@ -485,7 +487,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
               {submittedRsvp.fridayCastleInterest && <p className="rsvp-room-receipt">{es ? 'También habéis solicitado disponibilidad y precio para la noche del 3 al 4 de septiembre. Os contactaremos antes de añadirla.' : 'You have also requested availability and pricing for September 3–4. We’ll contact you before adding the extra night.'}</p>}
               <button
                 onClick={handleEdit}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-semibold tracking-wider uppercase border border-[#dfc285] bg-[#5c141e] text-white hover:bg-[#7a1d2b] hover:border-[#f2d99a] transition-colors cursor-pointer shadow-md"
+                className="rsvp-receipt-edit inline-flex items-center gap-2 px-5 py-2.5 rounded text-xs font-semibold tracking-wider uppercase border border-[#dfc285] bg-[#5c141e] text-white hover:bg-[#7a1d2b] hover:border-[#f2d99a] transition-colors cursor-pointer shadow-md"
               >
                 <Edit3 className="w-3.5 h-3.5 text-[#dfc285]" />
                 <span>{es ? 'Modificar respuesta' : 'Edit RSVP'}</span>
@@ -499,7 +501,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
               exit={{ opacity: 0, y: -8 }}
               className="rsvp-paper-entry"
             >
-              <div className="rsvp-entry-copy"><p>{es ? 'Con el código privado de tu invitación podrás confirmar o modificar la asistencia, los menús y el transporte o alojamiento.' : 'Use your private invitation code to confirm or update attendance, dietary requirements, transport and accommodation.'}</p></div>
+              <div className="rsvp-entry-copy"><p>{invitation ? (es ? 'Tu invitación está lista. Puedes confirmar o modificar la asistencia, los menús y el transporte o alojamiento.' : 'Your invitation is ready. You can confirm or update attendance, dietary requirements, transport and accommodation.') : (es ? 'Con el código privado de tu invitación podrás confirmar o modificar la asistencia, los menús y el transporte o alojamiento.' : 'Use your private invitation code to confirm or update attendance, dietary requirements, transport and accommodation.')}</p></div>
               <button
                 type="button"
                 aria-controls="rsvp-invitation-access"
@@ -630,8 +632,8 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
                               </label>
                               <span className="text-[10px] font-bold text-[#b89243] uppercase tracking-wider bg-[#b89243]/10 px-2 py-0.5 rounded">
                                 {es
-                                  ? `${selectedRoomCount} ${selectedRoomCount === 1 ? 'habitación seleccionada' : 'habitaciones seleccionadas'}`
-                                  : `${selectedRoomCount} ${selectedRoomCount === 1 ? 'room' : 'rooms'} selected`}
+                                  ? selectedRoomCount === 0 ? 'No · Sin habitación para el 4–5 de septiembre' : `${selectedRoomCount} ${selectedRoomCount === 1 ? 'habitación seleccionada' : 'habitaciones seleccionadas'}`
+                                  : selectedRoomCount === 0 ? 'No · No room for September 4–5' : `${selectedRoomCount} ${selectedRoomCount === 1 ? 'room' : 'rooms'} selected`}
                               </span>
                             </div>
 
