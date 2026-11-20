@@ -110,3 +110,8 @@
  #rsvp.rsvp-modern.rsvp-refined.rsvp-air.rsvp-compact .rsvp-quantity{gap:4px}
  #rsvp.rsvp-modern.rsvp-refined.rsvp-air.rsvp-compact .rsvp-menu-grid button[aria-pressed],#rsvp.rsvp-modern.rsvp-refined.rsvp-air.rsvp-compact .rsvp-attendance-soft__decline,#rsvp.rsvp-modern.rsvp-refined.rsvp-air.rsvp-compact .rsvp-remove-guest{min-height:44px}
 }
+
+/* Receipt action stays legible above the legacy text-color rules. */
+#rsvp.rsvp-modern.rsvp-refined.rsvp-air.rsvp-compact .rsvp-receipt-edit,
+#rsvp.rsvp-modern.rsvp-refined.rsvp-air.rsvp-compact .rsvp-receipt-edit span{color:#fff9f1!important}
+#rsvp.rsvp-modern.rsvp-refined.rsvp-air.rsvp-compact .rsvp-receipt-edit svg{color:#dfc285!important}
