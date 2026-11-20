@@ -420,7 +420,7 @@ export function RsvpSection({ lang, initialInvitationCode = '', openRequested = 
           <p className="rsvp-paper-eyebrow">RSVP</p>
           <span className="rsvp-paper-monogram" aria-hidden="true"><img src={boLogo} alt="" width="96" height="64" /></span>
           <h2>{es ? '¿Nos acompañas?' : 'Will you join us?'}</h2>
-          <p className="rsvp-paper-subtitle">{es ? 'Esperamos celebrar este día contigo.' : 'We look forward to celebrating with you.'}</p>
+          <p className="rsvp-paper-subtitle">{es ? 'Por favor, confirma tu asistencia antes del 30 de junio de 2027.' : 'Please RSVP by June 30, 2027.'}</p>
         </header>
         <div className="rsvp-response-layout">
         <aside className="rsvp-paper-notice">
